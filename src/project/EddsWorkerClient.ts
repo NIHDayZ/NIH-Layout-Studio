@@ -6,7 +6,16 @@ export function CreateEddsDecodeSession() {
 	let worker: Worker | null = null;
 	let workerFailed = false;
 	let rejectPending: (() => void) | null = null;
+	let workerConfirmed = false;
+	let fallbackReported = false;
+	function ReportFallback(reason: string) {
+		if (fallbackReported)
+			return;
+		fallbackReported = true;
+		console.warn(`[NIH Layout Studio] EDDS worker fallback: ${reason}; decoding on main thread`);
+	}
 	const handleWorkerError = () => {
+		ReportFallback("worker error or message error");
 		workerFailed = true;
 		rejectPending?.();
 	};
@@ -17,9 +26,11 @@ export function CreateEddsDecodeSession() {
 			worker.addEventListener("error", handleWorkerError);
 			worker.addEventListener("messageerror", handleWorkerError);
 		}
-	} catch {
-		// Existing decoder remains available in browsers without module workers.
+	} catch (error) {
+		ReportFallback(`worker creation failed: ${error instanceof Error ? error.message : String(error)}`);
 	}
+	if (!worker)
+		ReportFallback("module Worker or OffscreenCanvas unavailable");
 
 	return {
 		async Decode(file: File) {
@@ -55,8 +66,13 @@ export function CreateEddsDecodeSession() {
 						reject(error);
 					}
 				});
+				if (!workerConfirmed) {
+					workerConfirmed = true;
+					console.info("[NIH Layout Studio] EDDS worker active; decoding off main thread");
+				}
 				if (response.error) {
 					if (response.fallback) {
+						ReportFallback(`worker canvas failure: ${response.error}`);
 						workerFailed = true;
 						active.terminate();
 						worker = null;
@@ -68,7 +84,8 @@ export function CreateEddsDecodeSession() {
 				if (!response.blob || !response.width || !response.height)
 					throw new Error("Invalid EDDS worker response");
 				return { url: URL.createObjectURL(response.blob), width: response.width, height: response.height };
-			} catch {
+			} catch (error) {
+				ReportFallback(`worker request failed: ${error instanceof Error ? error.message : String(error)}`);
 				active.terminate();
 				worker = null;
 				workerFailed = true;
