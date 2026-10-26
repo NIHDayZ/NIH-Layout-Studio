@@ -450,7 +450,7 @@ function RefreshNodeIds(node: LayoutNode) {
 		RefreshNodeIds(child);
 }
 
-const sampleLayout = `FrameWidgetClass NIH_Root {
+const sampleLayout = `FrameWidgetClass SampleRoot {
  position 0 0
  size 1 1
  hexactpos 0
@@ -458,28 +458,65 @@ const sampleLayout = `FrameWidgetClass NIH_Root {
  hexactsize 0
  vexactsize 0
  {
-  PanelWidgetClass RaidPanel {
-   position 0.5 0.08
-   size 520 110
+  PanelWidgetClass ExamplePanel {
+   position 0 0
+   size 560 260
    halign center_ref
+   valign center_ref
    hexactpos 0
    vexactpos 0
    hexactsize 1
    vexactsize 1
-   color 0.035 0.045 0.06 0.104
+   color 0.04 0.05 0.07 0.95
    style rover_sim_colorable
    {
-    TextWidgetClass RaidTitle {
-     position 20 14
-     size 480 32
+    TextWidgetClass ExampleTitle {
+     position 24 24
+     size 512 36
      hexactpos 1
      vexactpos 1
      hexactsize 1
      vexactsize 1
-     text "NIH RAID ACTIVE"
-     font "gui/fonts/sdf_metronbook24"
-     "exact text size" 22
-     color 0.103 0.105 1 1
+     text "Sample Interface"
+     "exact text size" 24
+     color 0.92 0.95 1 1
+     "text halign" center
+    }
+    TextWidgetClass ExampleDescription {
+     position 40 84
+     size 480 54
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Open a layout or project to begin editing."
+     "exact text size" 18
+     color 0.72 0.78 0.86 1
+     "text halign" center
+    }
+    PanelWidgetClass ExampleContent {
+     position 40 164
+     size 480 56
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     color 0.1 0.12 0.16 0.8
+     style rover_sim_colorable
+     {
+      TextWidgetClass ExampleContentLabel {
+       position 12 12
+       size 456 32
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Select a widget to inspect its properties."
+       "exact text size" 16
+       color 0.82 0.87 0.94 1
+       "text halign" center
+      }
+     }
     }
    }
   }
@@ -609,7 +646,7 @@ export default function App() {
 	const [zoom, setZoom] = useState(DEFAULT_ZOOM);
 	const [parseError, setParseError] = useState<string | null>(null);
 	const [debug, setDebug] = useState<CanvasDebugOptions>({ showBounds: false, showNames: false, showAnchors: false });
-	const [fileName, setFileName] = useState("edited.layout");
+	const [fileName, setFileName] = useState("Sample.layout");
 	const [activeProjectPath, setActiveProjectPath] = useState<string | null>(null);
 	const [project, setProject] = useState<ProjectWorkspaceModel | null>(null);
 	const [dependencyProjects, setDependencyProjects] = useState<ProjectWorkspaceModel[]>([]);

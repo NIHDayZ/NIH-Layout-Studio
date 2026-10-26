@@ -1,4 +1,4 @@
-FrameWidgetClass Root {
+FrameWidgetClass SampleRoot {
  position 0 0
  size 1 1
  hexactpos 0
@@ -7,8 +7,8 @@ FrameWidgetClass Root {
  vexactsize 0
  {
   PanelWidgetClass ExamplePanel {
-   position 0.5 0.5
-   size 420 180
+   position 0 0
+   size 560 260
    halign center_ref
    valign center_ref
    hexactpos 0
@@ -16,17 +16,55 @@ FrameWidgetClass Root {
    hexactsize 1
    vexactsize 1
    color 0.04 0.05 0.07 0.95
+   style rover_sim_colorable
    {
     TextWidgetClass ExampleTitle {
-     position 20 20
-     size 380 32
+     position 24 24
+     size 512 36
      hexactpos 1
      vexactpos 1
      hexactsize 1
      vexactsize 1
-     text "NIH Layout Studio"
-     color 0.9 0.95 1 1
+     text "Sample Interface"
+     "exact text size" 24
+     color 0.92 0.95 1 1
      "text halign" center
+    }
+    TextWidgetClass ExampleDescription {
+     position 40 84
+     size 480 54
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "Open a layout or project to begin editing."
+     "exact text size" 18
+     color 0.72 0.78 0.86 1
+     "text halign" center
+    }
+    PanelWidgetClass ExampleContent {
+     position 40 164
+     size 480 56
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     color 0.1 0.12 0.16 0.8
+     style rover_sim_colorable
+     {
+      TextWidgetClass ExampleContentLabel {
+       position 12 12
+       size 456 32
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       text "Select a widget to inspect its properties."
+       "exact text size" 16
+       color 0.82 0.87 0.94 1
+       "text halign" center
+      }
+     }
     }
    }
   }
