@@ -731,6 +731,10 @@ export default function App() {
 	const [snapSize, setSnapSize] = useState(5);
 	const [contextMenu, setContextMenu] = useState<{ x: number; y: number; nodeId: string } | null>(null);
 	const [projectLoading, setProjectLoading] = useState(false);
+	const [textureProgress, setTextureProgress] = useState<{ project: { completed: number; total: number } | null; dependency: { completed: number; total: number } | null; vanilla: { completed: number; total: number } | null }>({ project: null, dependency: null, vanilla: null });
+	function TrackTextures(kind: "project" | "dependency" | "vanilla") {
+		return (progress: { completed: number; total: number }) => setTextureProgress((previous) => ({ ...previous, [kind]: progress }));
+	}
 	const [leftWidth, setLeftWidth] = useState(DEFAULT_LEFT_WIDTH);
 	const [rightWidth, setRightWidth] = useState(DEFAULT_RIGHT_WIDTH);
 	const [projectHeight, setProjectHeight] = useState(DEFAULT_PROJECT_HEIGHT);
@@ -843,7 +847,7 @@ export default function App() {
 		setLocalSourceMode(false);
 		setProjectLoading(true);
 		try {
-			const nextProject = await BuildProjectWorkspace(files);
+			const nextProject = await BuildProjectWorkspace(files, TrackTextures("project"));
 			setProject(nextProject);
 			setWorkspaceStarted(true);
 			const firstLayout = nextProject.files.find((file) => file.extension === ".layout");
@@ -861,7 +865,7 @@ export default function App() {
 			return;
 		setVanillaLoading(true);
 		try {
-			const nextVanilla = await BuildProjectWorkspace(files);
+			const nextVanilla = await BuildProjectWorkspace(files, TrackTextures("vanilla"));
 			setVanillaProject(nextVanilla);
 			setParseError(null);
 		} catch (error) {
@@ -879,7 +883,7 @@ export default function App() {
 			return;
 		setDependencyLoading(true);
 		try {
-			const nextDependency = await BuildProjectWorkspace(files);
+			const nextDependency = await BuildProjectWorkspace(files, TrackTextures("vanilla"));
 			setDependencyProjects((current) => [...current, nextDependency]);
 			setParseError(null);
 		} catch (error) {
@@ -1354,7 +1358,7 @@ export default function App() {
 			const directoryHandle = await picker({ mode: "readwrite" });
 			setProjectLoading(true);
 			const collected = await CollectDirectoryFiles(directoryHandle, directoryHandle.name || "Project");
-			const nextProject = await BuildProjectWorkspace(collected.files);
+			const nextProject = await BuildProjectWorkspace(collected.files, TrackTextures("project"));
 			projectFileHandlesRef.current = collected.handles;
 			projectDirectoryHandleRef.current = directoryHandle;
 			setProject(nextProject);
@@ -1435,7 +1439,7 @@ export default function App() {
 		if (!directoryHandle)
 			return;
 		const collected = await CollectDirectoryFiles(directoryHandle, directoryHandle.name || "Project");
-		const nextProject = await BuildProjectWorkspace(collected.files);
+		const nextProject = await BuildProjectWorkspace(collected.files, TrackTextures("project"));
 		projectFileHandlesRef.current = collected.handles;
 		setProject(nextProject);
 	}
@@ -1543,7 +1547,7 @@ export default function App() {
 			setDependencyLoading(true);
 			const directoryHandle = await picker({ mode: "read", id: "nih-layout-studio-dependency-mod" });
 			const collected = await CollectDirectoryFiles(directoryHandle, directoryHandle.name || "Dependency");
-			const nextDependency = await BuildProjectWorkspace(collected.files);
+			const nextDependency = await BuildProjectWorkspace(collected.files, TrackTextures("dependency"));
 			setDependencyProjects((current) => [...current, nextDependency]);
 			setParseError(null);
 		} catch (error) {
@@ -1565,7 +1569,7 @@ export default function App() {
 			setVanillaLoading(true);
 			const directoryHandle = await picker({ mode: "read", id: "nih-layout-studio-vanilla-gui" });
 			const collected = await CollectDirectoryFiles(directoryHandle, directoryHandle.name || "gui");
-			const nextVanilla = await BuildProjectWorkspace(collected.files);
+			const nextVanilla = await BuildProjectWorkspace(collected.files, TrackTextures("vanilla"));
 			setVanillaProject(nextVanilla);
 			setParseError(null);
 		} catch (error) {
@@ -1721,11 +1725,12 @@ export default function App() {
 		<div className="app">
 			<div className="resource-loading-announcement" role="status" aria-live="polite" aria-atomic="true">
 				{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : vanillaLoading ? "Indexing vanilla GUI resources…" : ""}
+				{(projectLoading && textureProgress.project && textureProgress.project.total > 0) ? `Decoding textures (${textureProgress.project.completed}/${textureProgress.project.total})` : (dependencyLoading && textureProgress.dependency && textureProgress.dependency.total > 0) ? `Decoding textures (${textureProgress.dependency.completed}/${textureProgress.dependency.total})` : (vanillaLoading && textureProgress.vanilla && textureProgress.vanilla.total > 0) ? `Decoding textures (${textureProgress.vanilla.completed}/${textureProgress.vanilla.total})` : ""}
 			</div>
 			{(projectLoading || dependencyLoading || vanillaLoading) && (
 				<div className="resource-loading-status" aria-hidden="true">
 					<span className="resource-loading-spinner" />
-					<span>{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : "Indexing vanilla GUI resources…"}</span>
+					<span>{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : "Indexing vanilla GUI resources…"} {(projectLoading && textureProgress.project && textureProgress.project.total > 0) ? `Decoding textures (${textureProgress.project.completed}/${textureProgress.project.total})` : (dependencyLoading && textureProgress.dependency && textureProgress.dependency.total > 0) ? `Decoding textures (${textureProgress.dependency.completed}/${textureProgress.dependency.total})` : (vanillaLoading && textureProgress.vanilla && textureProgress.vanilla.total > 0) ? `Decoding textures (${textureProgress.vanilla.completed}/${textureProgress.vanilla.total})` : ""}</span>
 				</div>
 			)}
 			<header className="toolbar">
