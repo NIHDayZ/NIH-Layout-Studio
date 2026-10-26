@@ -1,8 +1,16 @@
 import { DecodeEddsToPixels } from "./EddsDecoder";
 
 self.onmessage = async (event: MessageEvent<{ buffer: ArrayBuffer }>) => {
+	let decoded: ReturnType<typeof DecodeEddsToPixels>;
 	try {
-		const { width, height, rgba } = DecodeEddsToPixels(event.data.buffer);
+		decoded = DecodeEddsToPixels(event.data.buffer);
+	} catch (error) {
+		self.postMessage({ error: error instanceof Error ? error.message : String(error), fallback: false });
+		return;
+	}
+
+	try {
+		const { width, height, rgba } = decoded;
 		const canvas = new OffscreenCanvas(width, height);
 		const context = canvas.getContext("2d");
 		if (!context)
@@ -11,6 +19,6 @@ self.onmessage = async (event: MessageEvent<{ buffer: ArrayBuffer }>) => {
 		const blob = await canvas.convertToBlob({ type: "image/png" });
 		self.postMessage({ blob, width, height });
 	} catch (error) {
-		self.postMessage({ error: error instanceof Error ? error.message : String(error), fallback: !(error instanceof Error && /^(Unsupported|Invalid DDS|EDDS|Truncated)/.test(error.message)) });
+		self.postMessage({ error: error instanceof Error ? error.message : String(error), fallback: true });
 	}
 };
