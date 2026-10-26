@@ -368,7 +368,9 @@ async function ImageDataToObjectUrl(width: number, height: number, rgba: Uint8Cl
 	const context = canvas.getContext("2d");
 	if (!context)
 		throw new Error("Canvas 2D context unavailable");
-	const imageDataBytes = new Uint8ClampedArray(rgba.length);\n\timageDataBytes.set(rgba);\n\tcontext.putImageData(new ImageData(imageDataBytes, width, height), 0, 0);
+	const imageDataBytes = new Uint8ClampedArray(rgba.length);
+	imageDataBytes.set(rgba);
+	context.putImageData(new ImageData(imageDataBytes, width, height), 0, 0);
 	const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
 	if (!blob)
 		throw new Error("Could not create PNG preview");
