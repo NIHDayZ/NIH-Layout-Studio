@@ -29,10 +29,10 @@ Highlights include:
 
 ## Run locally
 
-Requirements: Node.js 20 or newer.
+Requirements: Node.js 20.19 or newer (Node.js 22 recommended).
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
