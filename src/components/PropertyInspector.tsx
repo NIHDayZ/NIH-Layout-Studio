@@ -495,6 +495,10 @@ export function PropertyInspector({ node, onRename, onPropertyChange, onAddPrope
 	const [newName, setNewName] = useState("");
 	const [newValue, setNewValue] = useState("");
 	useEffect(() => setEditName(node?.name ?? ""), [node?.id, node?.name]);
+	useEffect(() => {
+		setNewName("");
+		setNewValue("");
+	}, [node?.id]);
 	if (!node)
 		return <div className="empty-panel">Select a widget.</div>;
 
@@ -574,7 +578,13 @@ export function PropertyInspector({ node, onRename, onPropertyChange, onAddPrope
 						fontOptions={fontOptions}
 						styleOptions={styleOptions}
 					/>
-					<button disabled={!newName.trim() || ((newName.toLowerCase() === "style" || newName.toLowerCase() === "font") && !newValue.trim())} onClick={() => { onAddProperty(node, newName.trim(), newName.toLowerCase() === "font" ? QuoteLayoutString(newValue) : newValue); setNewName(""); setNewValue(""); }}>Add</button>
+					<button disabled={!newName.trim() || ((newName.toLowerCase() === "style" || newName.toLowerCase() === "font") && !newValue.trim())} onClick={() => {
+						const normalizedName = newName.toLowerCase();
+						const rawValue = normalizedName === "font" ? QuoteLayoutString(StripLayoutQuotes(newValue)) : newValue;
+						onAddProperty(node, newName.trim(), rawValue);
+						setNewName("");
+						setNewValue("");
+					}}>Add</button>
 				</div>
 				<div className="property-group-title custom-property-title">Custom property</div>
 				<CustomPropertyAdder node={node} onAddProperty={onAddProperty} />
