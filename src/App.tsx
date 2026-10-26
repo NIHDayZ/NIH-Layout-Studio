@@ -450,7 +450,7 @@ function RefreshNodeIds(node: LayoutNode) {
 		RefreshNodeIds(child);
 }
 
-const sampleLayout = `FrameWidgetClass NIH_Root {
+const sampleLayout = `FrameWidgetClass ExampleRoot {
  position 0 0
  size 1 1
  hexactpos 0
@@ -458,7 +458,7 @@ const sampleLayout = `FrameWidgetClass NIH_Root {
  hexactsize 0
  vexactsize 0
  {
-  PanelWidgetClass RaidPanel {
+  PanelWidgetClass ExamplePanel {
    position 0.5 0.08
    size 520 110
    halign center_ref
@@ -469,17 +469,17 @@ const sampleLayout = `FrameWidgetClass NIH_Root {
    color 0.035 0.045 0.06 0.104
    style rover_sim_colorable
    {
-    TextWidgetClass RaidTitle {
+    TextWidgetClass ExampleTitle {
      position 20 14
      size 480 32
      hexactpos 1
      vexactpos 1
      hexactsize 1
      vexactsize 1
-     text "NIH RAID ACTIVE"
+     text "EXAMPLE LAYOUT"
      font "gui/fonts/sdf_metronbook24"
      "exact text size" 22
-     color 0.103 0.105 1 1
+     color 0.9 0.95 1 1
     }
    }
   }
