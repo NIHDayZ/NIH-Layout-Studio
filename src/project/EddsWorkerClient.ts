@@ -44,7 +44,11 @@ export function CreateEddsDecodeSession() {
 						reject(new Error("EDDS worker failed"));
 					};
 					active.addEventListener("message", onMessage);
-										try {
+					if (workerFailed) {
+						rejectPending();
+						return;
+					}
+					try {
 						active.postMessage({ buffer }, [buffer]);
 					} catch (error) {
 						cleanup();
@@ -67,6 +71,7 @@ export function CreateEddsDecodeSession() {
 			} catch {
 				active.terminate();
 				worker = null;
+				workerFailed = true;
 				return DecodeEddsToObjectUrl(file);
 			}
 		},
