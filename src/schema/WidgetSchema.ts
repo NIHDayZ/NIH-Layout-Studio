@@ -254,16 +254,34 @@ export function FindWidgetPropertySchema(widgetType: string, propertyName: strin
 }
 
 
+export const WorkbenchWidgetTypes = [
+	"BaseListboxWidgetClass", "BasicGraphWidgetClass", "ButtonWidgetClass", "CanvasWidgetClass",
+	"CheckBoxWidgetClass", "ConsoleWidgetClass", "ContentWidgetClass", "ContextMenuWidgetClass",
+	"DiagMenuWidgetClass", "EditBoxWidgetClass", "EmbededWidgetClass", "FrameWidgetClass",
+	"GenericListboxWidgetClass", "GridSpacerWidgetClass", "HtmlWidgetClass", "ImageWidgetClass",
+	"ItemPreviewWidgetClass", "MapWidgetClass", "MenuStripWidgetClass", "MultilineEditBoxWidgetClass",
+	"MultilineTextWidgetClass", "PanelWidgetClass", "PasswordEditBoxWidgetClass", "PlayerPreviewWidgetClass",
+	"ProgressBarWidgetClass", "RTTextureWidgetClass", "RenderTargetWidgetClass", "RichTextWidgetClass",
+	"RingBufferGraphWidgetClass", "ScrollWidgetClass", "ServerBrowserWidgetClass",
+	"SimpleProgressBarWidgetClass", "SliderWidgetClass", "SmartPanelWidgetClass",
+	"SpacerBaseWidgetClass", "SpacerWidgetClass", "StyledWidgetClass", "TextListboxWidgetClass",
+	"TextWidgetClass", "ThreeStateCheckboxWidgetClass", "TimeBasedGraphWidgetClass",
+	"TimeBasedGraphWithAxesWidgetClass", "UniversalListboxWidgetClass", "VideoWidgetClass",
+	"WidgetClass", "WindowWidgetClass", "WorkspaceWidgetClass", "WrapSpacerWidgetClass",
+	"XComboBoxWidgetClass"
+] as const;
+
+// Kept for compatibility with layouts/API terminology observed outside this Workbench executable.
+const AdditionalKnownWidgetTypes = ["ComboBoxWidgetClass", "SimpleListboxWidgetClass"] as const;
+
+export function IsKnownWidgetType(widgetType: string): boolean {
+	const normalized = widgetType.toLowerCase();
+	return [...WorkbenchWidgetTypes, ...AdditionalKnownWidgetTypes].some((type) => type.toLowerCase() === normalized);
+}
+
 export function FindPropertyOwners(propertyName: string): string[] {
 	const normalized = propertyName.toLowerCase();
-	const candidates = [
-		"FrameWidgetClass", "PanelWidgetClass", "TextWidgetClass", "RichTextWidgetClass",
-		"MultilineTextWidgetClass", "ButtonWidgetClass", "ImageWidgetClass", "EditBoxWidgetClass",
-		"MultilineEditBoxWidgetClass", "PasswordEditBoxWidgetClass", "XComboBoxWidgetClass",
-		"ComboBoxWidgetClass", "CheckBoxWidgetClass", "SliderWidgetClass",
-		"SimpleProgressBarWidgetClass", "ProgressBarWidgetClass", "BaseListboxWidgetClass",
-		"SimpleListboxWidgetClass", "TextListboxWidgetClass", "GenericListboxWidgetClass",
-		"VideoWidgetClass", "RTTextureWidgetClass", "RenderTargetWidgetClass", "CanvasWidgetClass", "ConsoleWidgetClass", "ContentWidgetClass", "UniversalListboxWidgetClass", "SpacerWidgetClass", "GridSpacerWidgetClass", "WrapSpacerWidgetClass", "ScrollWidgetClass"
-	];
-	return candidates.filter((type) => GetWidgetSchema(type).some((property) => property.name.toLowerCase() === normalized));
+	return [...WorkbenchWidgetTypes, ...AdditionalKnownWidgetTypes].filter((type) =>
+		GetWidgetSchema(type).some((property) => property.name.toLowerCase() === normalized)
+	);
 }
