@@ -1702,6 +1702,12 @@ export default function App() {
 
 	return (
 		<div className="app">
+			{(projectLoading || dependencyLoading || vanillaLoading) && (
+				<div className="resource-loading-status" role="status" aria-live="polite" aria-busy="true">
+					<span className="resource-loading-spinner" aria-hidden="true" />
+					<span>{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : "Indexing vanilla GUI resources…"}</span>
+				</div>
+			)}
 			<header className="toolbar">
 				<div className="brand"><strong>NIH</strong> Layout Studio <span>0.36</span></div>
 				<span className="workspace-mode">{project ? (localSourceMode ? "PROJECT SOURCE" : "PROJECT UPLOAD") : (localSourceMode ? "LOCAL SOURCE" : "STANDALONE")}</span>
