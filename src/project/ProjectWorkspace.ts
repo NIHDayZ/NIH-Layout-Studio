@@ -359,6 +359,15 @@ async function DecodeTgaToObjectUrl(file: File): Promise<string | null> {
 }
 
 export async function BuildProjectWorkspace(inputFiles: File[]): Promise<ProjectWorkspaceModel> {
+	// Timings are diagnostic only: no resource-processing order or output changes.
+	const timingStart = performance.now();
+	let timingLast = timingStart;
+	const timingStages: Array<{ stage: string; milliseconds: number }> = [];
+	function MarkStage(stage: string) {
+		const now = performance.now();
+		timingStages.push({ stage, milliseconds: Math.round((now - timingLast) * 10) / 10 });
+		timingLast = now;
+	}
 	const name = GetRootName(inputFiles);
 	const files: ProjectFile[] = inputFiles.map((file) => {
 		const fullPath = GetProjectRelativePath(file);
@@ -368,6 +377,7 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 		return { path, name: file.name, extension: dot >= 0 ? lowerName.slice(dot) : "", file };
 	}).sort((a, b) => a.path.localeCompare(b.path));
 	const filesByPath = new Map(files.map((file) => [file.path.toLowerCase(), file]));
+	MarkStage("file paths / indexing");
 	const imageSets = new Map<string, ImageSetDefinition>();
 	const imageSetAliases = new Map<string, ImageSetDefinition>();
 	const widgetStyles = new Map<string, WidgetStyleDefinition[]>();
@@ -384,6 +394,7 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 		AddImageSetAlias(imageSetAliases, parsed.texturePath, parsed);
 	}
 
+	MarkStage("imageset metadata");
 	for (const file of files.filter((candidate) => candidate.extension === ".styles")) {
 		const source = await file.file.text();
 		for (const style of ParseWidgetStyles(file.path, source)) {
@@ -394,6 +405,7 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 		}
 	}
 
+	MarkStage("widget styles");
 	const resourceObjectUrls = new Map<string, string>();
 	const resourceDimensions = new Map<string, { width: number; height: number }>();
 	const eddsDecoded = new Set<string>();
@@ -404,6 +416,7 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 			resourceObjectUrls.set(file.path, url);
 	}
 
+	MarkStage("TGA decoding");
 	for (const file of files.filter((candidate) => candidate.extension === ".edds")) {
 		const decoded = await DecodeEddsToObjectUrl(file.file);
 		if (decoded) {
@@ -415,6 +428,7 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 		}
 	}
 
+	MarkStage("EDDS decoding");
 	const bitmapFonts = new Map<string, BitmapFontDefinition>();
 	for (const fontFile of files.filter((candidate) => candidate.extension === ".fnt")) {
 		const stem = FileStem(fontFile.path);
@@ -433,6 +447,7 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 		bitmapFonts.set(stem.toLowerCase(), parsed);
 	}
 
+	MarkStage("bitmap font parsing");
 	const fontFamilies = new Map<string, string>();
 	const fontObjectUrls: string[] = [];
 	for (const file of files.filter((candidate) => [".ttf", ".otf", ".woff", ".woff2"].includes(candidate.extension))) {
@@ -450,6 +465,24 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 			// Keep the project usable even if one font cannot be decoded by the browser.
 		}
 	}
+	MarkStage("browser font loading");
+	const totalMilliseconds = Math.round((performance.now() - timingStart) * 10) / 10;
+	console.info("[NIH Layout Studio] Resource indexing timings", {
+		workspace: name,
+		fileCount: files.length,
+		counts: {
+			imagesets: files.filter((file) => file.extension === ".imageset").length,
+			styles: files.filter((file) => file.extension === ".styles").length,
+			tga: files.filter((file) => file.extension === ".tga").length,
+			edds: files.filter((file) => file.extension === ".edds").length,
+			eddsDecoded: eddsDecoded.size,
+			eddsFailed: eddsFailed.size,
+			bitmapFonts: files.filter((file) => file.extension === ".fnt").length,
+			webFonts: files.filter((file) => [".ttf", ".otf", ".woff", ".woff2"].includes(file.extension)).length
+		},
+		totalMilliseconds,
+		stages: timingStages
+	});
 	return { name, files, filesByPath, imageSets, imageSetAliases, widgetStyles, fontFamilies, bitmapFonts, fontObjectUrls, resourceObjectUrls, eddsDecoded, eddsFailed };
 }
 
