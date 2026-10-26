@@ -637,9 +637,9 @@ function BuildWorkspaceImageSetOptions(workspace: ProjectWorkspaceModel | null, 
 export default function App() {
 	const parser = useMemo(() => new LayoutParser(), []);
 	const sourceAccessSupported = typeof window !== "undefined" && "showDirectoryPicker" in window && "showOpenFilePicker" in window;
-	const [source, setSource] = useState(sampleLayout);
+	const [source, setSource] = useState("");
 	const [sourceTab, setSourceTab] = useState<"source" | "problems">("source");
-	const [document, setDocument] = useState<LayoutDocument>(() => parser.Parse(sampleLayout));
+	const [document, setDocument] = useState<LayoutDocument>(() => parser.Parse(""));
 	const [selected, setSelected] = useState<LayoutNode | null>(null);
 	const [selectedIds, setSelectedIds] = useState<string[]>([]);
 	const [copiedWidget, setCopiedWidget] = useState<{ type: string; name: string; block: string[] } | null>(null);
@@ -647,7 +647,7 @@ export default function App() {
 	const [zoom, setZoom] = useState(DEFAULT_ZOOM);
 	const [parseError, setParseError] = useState<string | null>(null);
 	const [debug, setDebug] = useState<CanvasDebugOptions>({ showBounds: false, showNames: false, showAnchors: false });
-	const [fileName, setFileName] = useState("Sample.layout");
+	const [fileName, setFileName] = useState("Untitled.layout");
 	const [activeProjectPath, setActiveProjectPath] = useState<string | null>(null);
 	const [project, setProject] = useState<ProjectWorkspaceModel | null>(null);
 	const [dependencyProjects, setDependencyProjects] = useState<ProjectWorkspaceModel[]>([]);
@@ -739,7 +739,8 @@ export default function App() {
 	const [sourcePreserving, setSourcePreserving] = useState(true);
 	const [dirty, setDirty] = useState(false);
 	const [localSourceMode, setLocalSourceMode] = useState(false);
-	const savedSourceRef = useRef(sampleLayout);
+	const [workspaceStarted, setWorkspaceStarted] = useState(false);
+	const savedSourceRef = useRef("");
 	const currentFileHandleRef = useRef<any>(null);
 	const projectFileHandlesRef = useRef<Map<string, any>>(new Map());
 	const projectDirectoryHandleRef = useRef<any>(null);
@@ -820,6 +821,7 @@ export default function App() {
 
 	async function OpenFile(file: File, projectPath: string | null = null, fileHandle: any = null) {
 		const text = await file.text();
+		setWorkspaceStarted(true);
 		setFileName(file.name);
 		setActiveProjectPath(projectPath);
 		setSource(text);
@@ -842,6 +844,7 @@ export default function App() {
 		try {
 			const nextProject = await BuildProjectWorkspace(files);
 			setProject(nextProject);
+			setWorkspaceStarted(true);
 			const firstLayout = nextProject.files.find((file) => file.extension === ".layout");
 			if (firstLayout)
 				await OpenFile(firstLayout.file, firstLayout.path);
@@ -979,6 +982,7 @@ export default function App() {
 			const nextSelected = selectType && selectName ? FindNodeByTypeAndName(parsed.roots, selectType, selectName) : null;
 			setSelected(nextSelected);
 			setSelectedIds(nextSelected ? [nextSelected.id] : []);
+			setWorkspaceStarted(true);
 			setParseError(null);
 		} catch (error) {
 			setParseError(error instanceof Error ? error.message : String(error));
@@ -1353,6 +1357,7 @@ export default function App() {
 			projectFileHandlesRef.current = collected.handles;
 			projectDirectoryHandleRef.current = directoryHandle;
 			setProject(nextProject);
+			setWorkspaceStarted(true);
 			setLocalSourceMode(true);
 			const firstLayout = nextProject.files.find((file) => file.extension === ".layout");
 			if (firstLayout)
@@ -1363,6 +1368,22 @@ export default function App() {
 		} finally {
 			setProjectLoading(false);
 		}
+	}
+
+	function LoadSampleLayout() {
+		setProject(null);
+		projectFileHandlesRef.current = new Map();
+		projectDirectoryHandleRef.current = null;
+		currentFileHandleRef.current = null;
+		setLocalSourceMode(false);
+		setActiveProjectPath(null);
+		setFileName("Sample.layout");
+		setSource(sampleLayout);
+		savedSourceRef.current = sampleLayout;
+		setDirty(false);
+		setSourcePreserving(true);
+		setWorkspaceStarted(true);
+		ParseSource(sampleLayout);
 	}
 
 	function OpenTextureTool(file?: File, projectPath: string | null = null) {
@@ -1813,7 +1834,47 @@ export default function App() {
 
 				<div className="workspace-resizer vertical-resizer" title="Drag to resize Project / Hierarchy panels" onPointerDown={(event) => BeginResize("left", event)} onDoubleClick={() => setLeftWidth(DEFAULT_LEFT_WIDTH)} />
 
-				<section className="center-column" style={{ gridTemplateRows: `34px minmax(180px, 1fr) 5px ${sourceHeight}px` }}>
+				<section className="center-column" style={{ gridTemplateRows: workspaceStarted ? `34px minmax(180px, 1fr) 5px ${sourceHeight}px` : "minmax(0, 1fr)" }}>
+					{!workspaceStarted ? (
+						<div className="welcome-screen">
+							<div className="welcome-card">
+								<div className="welcome-kicker">NIH LAYOUT STUDIO</div>
+								<h1>DayZ / Enfusion layout editing in your browser</h1>
+								<p className="welcome-intro">Open a project or layout to begin. Files stay on your device and are processed locally in the browser.</p>
+								<div className="welcome-actions">
+									<button className="welcome-action primary" onClick={() => void OpenLocalProject()} disabled={projectLoading || !sourceAccessSupported} title={!sourceAccessSupported ? "Source mode requires the File System Access API. Use Project Upload instead." : undefined}>
+										<strong>Open Project (Source)</strong>
+										<span>Writable project folder with source-aware saving</span>
+									</button>
+									<button className="welcome-action" onClick={() => folderRef.current?.click()} disabled={projectLoading}>
+										<strong>Open Project</strong>
+										<span>Upload a project folder for browser-only editing</span>
+									</button>
+									<button className="welcome-action" onClick={() => fileRef.current?.click()}>
+										<strong>Open Layout</strong>
+										<span>Open a standalone .layout file</span>
+									</button>
+									<button className="welcome-action" onClick={LoadSampleLayout}>
+										<strong>Load Sample</strong>
+										<span>Explore a neutral example layout</span>
+									</button>
+								</div>
+								<div className="welcome-resource-section">
+									<div>
+										<strong>Optional resources</strong>
+										<span>Load dependencies or vanilla GUI resources to populate styles, fonts, imagesets, and previews.</span>
+									</div>
+									<div className="welcome-resource-actions">
+										<button onClick={() => dependencyFolderRef.current?.click()} disabled={dependencyLoading}>Dependency Mod</button>
+										<button onClick={() => vanillaFolderRef.current?.click()} disabled={vanillaLoading}>Vanilla GUI</button>
+										{sourceAccessSupported && <button onClick={() => void OpenLocalVanillaGui()} disabled={vanillaLoading}>Vanilla GUI (Source)</button>}
+									</div>
+								</div>
+								<div className="welcome-local-note">LOCAL PROCESSING · Selected files are not uploaded to an NIH server.</div>
+							</div>
+						</div>
+					) : (<>
+
 					<div className="preview-header">
 						<span>PREVIEW</span>
 						<div className="preview-controls">
@@ -1853,7 +1914,9 @@ export default function App() {
 							</div>)}
 						</div>}
 					</div>
-				</section>
+				
+					</>)}
+</section>
 
 				<div className="workspace-resizer vertical-resizer" title="Drag to resize Properties" onPointerDown={(event) => BeginResize("right", event)} onDoubleClick={() => setRightWidth(DEFAULT_RIGHT_WIDTH)} />
 
