@@ -12,6 +12,7 @@ import type { ProjectFile, ProjectWorkspaceModel } from "./project/ProjectTypes"
 import { BuildProjectWorkspace, DisposeProjectWorkspace, ParseImageSetSource, ResolveImageSetAtlasUrl, ResolveProjectImage } from "./project/ProjectWorkspace";
 import { EncodeImageToEdds, type EddsPixelFormat } from "./project/EddsEncoder";
 import { BuildImageSet } from "./project/ImageSetBuilder";
+import { WorkbenchWidgetTypes } from "./schema/WidgetSchema";
 import "./styles.css";
 
 
@@ -1105,7 +1106,9 @@ export default function App() {
 		CommitStructuralEdit(InsertChildBlock(source, target, block), copiedWidget.type, name);
 	}
 
-	const widgetTemplates: Array<{ label: string; type: string; baseName: string; properties: string[] }> = [
+	type WidgetTemplate = { label: string; type: string; baseName: string; properties: string[] };
+
+	const commonWidgetTemplates: WidgetTemplate[] = [
 		{ label: "Panel", type: "PanelWidgetClass", baseName: "Panel", properties: ["position 0 0", "size 200 100", "hexactpos 1", "vexactpos 1", "hexactsize 1", "vexactsize 1", "color 0.15 0.15 0.15 1", "style rover_sim_colorable"] },
 		{ label: "Frame", type: "FrameWidgetClass", baseName: "Frame", properties: ["position 0 0", "size 200 100", "hexactpos 1", "vexactpos 1", "hexactsize 1", "vexactsize 1"] },
 		{ label: "Text", type: "TextWidgetClass", baseName: "Text", properties: ["position 0 0", "size 160 28", "hexactpos 1", "vexactpos 1", "hexactsize 1", "vexactsize 1", "text \"Text\""] },
@@ -1124,6 +1127,37 @@ export default function App() {
 		{ label: "Canvas", type: "CanvasWidgetClass", baseName: "Canvas", properties: ["position 0 0", "size 200 120", "hexactpos 1", "vexactpos 1", "hexactsize 1", "vexactsize 1"] },
 		{ label: "Map", type: "MapWidgetClass", baseName: "Map", properties: ["position 0 0", "size 400 300", "hexactpos 1", "vexactpos 1", "hexactsize 1", "vexactsize 1"] }
 	];
+
+	const nonInsertableWidgetTypes = new Set([
+		"WidgetClass",
+		"StyledWidgetClass",
+		"SpacerBaseWidgetClass"
+	]);
+
+	const commonWidgetTypes = new Set(commonWidgetTemplates.map((template) => template.type));
+
+	function FormatWidgetTypeLabel(type: string) {
+		return type
+			.replace(/WidgetClass$/, "")
+			.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+			.replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
+			.replace(/^RT /, "RT ")
+			.trim();
+	}
+
+	const advancedWidgetTemplates: WidgetTemplate[] = WorkbenchWidgetTypes
+		.filter((type) => !commonWidgetTypes.has(type) && !nonInsertableWidgetTypes.has(type))
+		.map((type) => {
+			const baseName = type.replace(/WidgetClass$/, "") || "Widget";
+			return {
+				label: FormatWidgetTypeLabel(type),
+				type,
+				baseName,
+				properties: ["position 0 0", "size 200 100", "hexactpos 1", "vexactpos 1", "hexactsize 1", "vexactsize 1"]
+			};
+		});
+
+	const widgetTemplates = [...commonWidgetTemplates, ...advancedWidgetTemplates];
 
 	function AddWidget(template: (typeof widgetTemplates)[number]) {
 		const name = MakeUniqueNodeName(document.roots, template.baseName);
@@ -1734,7 +1768,11 @@ export default function App() {
 					<summary>Add Widget ▾</summary>
 					<div className="toolbar-menu-popover widget-palette">
 						<div className="toolbar-menu-label">{selected ? `Add child to ${selected.name}` : "Add root widget"}</div>
-						{widgetTemplates.map((template) => <button key={template.type} onClick={() => { CloseToolbarMenus(); AddWidget(template); }}>{template.label}<span className="widget-palette-type">{template.type.replace(/Class$/, "")}</span></button>)}
+						{commonWidgetTemplates.map((template) => <button key={template.type} onClick={() => { CloseToolbarMenus(); AddWidget(template); }}>{template.label}<span className="widget-palette-type">{template.type.replace(/Class$/, "")}</span></button>)}
+						<div className="toolbar-menu-separator" />
+						<div className="toolbar-menu-label">Advanced / Specialized</div>
+						<div className="widget-palette-note">Audited Workbench types. Some specialized widgets require game/runtime data to render fully.</div>
+						{advancedWidgetTemplates.map((template) => <button key={template.type} onClick={() => { CloseToolbarMenus(); AddWidget(template); }}>{template.label}<span className="widget-palette-type">{template.type.replace(/Class$/, "")}</span></button>)}
 					</div>
 				</details>
 				<details className="toolbar-menu">
