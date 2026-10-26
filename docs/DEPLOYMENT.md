@@ -25,7 +25,7 @@ Selected project, dependency, vanilla GUI, layout, image, font, imageset, and ED
 ## Local production preview
 
 ```bash
-npm install
+npm ci
 npm run build
 npm run preview
 ```
