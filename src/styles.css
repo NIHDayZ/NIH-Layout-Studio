@@ -1158,3 +1158,82 @@ input[type="checkbox"] { accent-color: var(--nih-accent); }
 	white-space: nowrap;
 	border: 0;
 }
+
+
+/* NIH Minimal Tactical — editor component refinement.
+   Scoped to editing chrome; never style .canvas-widget or resolved DayZ sprites. */
+.toolbar-action:hover, .toolbar-menu[open] > summary,
+.view-menu label:hover, .tree-order-menu-button:hover,
+.tree-order-menu button:hover, .canvas-context-menu button:hover:not(:disabled) {
+	background: #293229;
+	border-color: var(--nih-border);
+	color: var(--nih-text);
+}
+.menu-shortcut, .widget-palette-type, .source-title span:last-child,
+.inspector-heading span, .property-row label, .empty-panel,
+.status-property, .status-property small {
+	color: var(--nih-muted);
+}
+.project-children { border-left-color: var(--nih-border); }
+.tree-row.multi-selected {
+	background: #30392e;
+	box-shadow: inset 3px 0 0 var(--nih-accent-hover);
+}
+.tree-row.drag-over {
+	background: #30392e;
+	box-shadow: inset 0 0 0 1px var(--nih-accent-hover);
+}
+.tree-row.selected .tree-row-main { background: transparent; }
+.tree-order-menu, .canvas-context-menu {
+	background: var(--nih-panel);
+	border-color: var(--nih-border);
+	border-radius: 3px;
+}
+.tree-menu-separator { background: var(--nih-border); }
+.source-pane, .render-status, .property-group-title,
+.problems-toolbar, .source-tab-buttons {
+	background-color: var(--nih-panel);
+	border-color: var(--nih-border);
+	color: var(--nih-text);
+}
+.property-group, .property-row, .inspector-heading, .render-status {
+	border-color: var(--nih-border);
+}
+.property-group-title { color: var(--nih-muted); background: #1b1f1c; }
+.render-status summary, .render-status-body, .render-status-body b {
+	color: var(--nih-muted);
+}
+.source-tab-buttons button { color: var(--nih-muted); }
+.source-tab-buttons button.active {
+	color: var(--nih-text);
+	box-shadow: inset 0 -2px var(--nih-accent-hover);
+}
+.property-select:hover, .add-property-row input:hover {
+	border-color: var(--nih-accent-hover);
+	background: #242a23;
+}
+.property-select:focus-visible, .add-property-row input:focus-visible {
+	outline: 2px solid var(--nih-accent-hover);
+	outline-offset: 1px;
+	border-color: var(--nih-accent-hover);
+	background: #1b1f1c;
+}
+.property-select optgroup { background: var(--nih-panel); color: var(--nih-text); }
+.imageset-inspector-modal, .imageset-inspector-header, .imageset-inspector-footer,
+.imageset-inspector-list, .imageset-inspector-properties {
+	background-color: var(--nih-panel);
+	border-color: var(--nih-border);
+	color: var(--nih-text);
+}
+.imageset-inspector-list button { color: var(--nih-text); }
+.imageset-inspector-list button:hover:not(.selected) { background: #242a23; }
+.imageset-inspector-list button.selected { background: #30392e; color: var(--nih-text); }
+.imageset-inspector-preview-wrap {
+	background-color: #171a17;
+	background-image: linear-gradient(45deg,#282c28 25%,transparent 25%),linear-gradient(-45deg,#282c28 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#282c28 75%),linear-gradient(-45deg,transparent 75%,#282c28 75%);
+}
+.imageset-inspector-preview { box-shadow: 0 0 0 1px var(--nih-border); }
+/* Preserve sprite selection/hover appearance, transparency, and semantics. */
+.imageset-sprite-box:hover, .imageset-sprite-box.selected {
+	border-color: #c08a2e;
+}
