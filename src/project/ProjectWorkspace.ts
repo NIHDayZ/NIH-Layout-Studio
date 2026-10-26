@@ -6,7 +6,7 @@ import type {
 	ResolvedImageResource,
 	WidgetStyleDefinition
 } from "./ProjectTypes";
-import { DecodeEddsToObjectUrl } from "./EddsDecoder";
+import { CreateEddsDecodeSession } from "./EddsWorkerClient";
 import { ParseDayZFnt, type BitmapFontDefinition } from "./FntParser";
 
 function NormalizePath(path: string) {
@@ -417,8 +417,10 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 	}
 
 	MarkStage("TGA decoding");
+	const eddsSession = CreateEddsDecodeSession();
+	try {
 	for (const file of files.filter((candidate) => candidate.extension === ".edds")) {
-		const decoded = await DecodeEddsToObjectUrl(file.file);
+		const decoded = await eddsSession.Decode(file.file);
 		if (decoded) {
 			resourceObjectUrls.set(file.path, decoded.url);
 			resourceDimensions.set(file.path, { width: decoded.width, height: decoded.height });
@@ -428,6 +430,9 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 		}
 	}
 
+	} finally {
+		eddsSession.Dispose();
+	}
 	MarkStage("EDDS decoding");
 	const bitmapFonts = new Map<string, BitmapFontDefinition>();
 	for (const fontFile of files.filter((candidate) => candidate.extension === ".fnt")) {
