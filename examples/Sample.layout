@@ -24,7 +24,7 @@ FrameWidgetClass Root {
      vexactpos 1
      hexactsize 1
      vexactsize 1
-     text "NIH Layout Studio"
+     text "Example Interface"
      color 0.9 0.95 1 1
      "text halign" center
     }
