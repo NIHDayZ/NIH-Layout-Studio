@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.37.0 - Workbench inventory and editor onboarding
+
+- Audited Workbench widget class inventory and expanded layout-facing schema coverage, preserving compatibility aliases.
+- Exposed audited advanced and specialized widget types in the Add Widget menu with conservative default properties.
+- Added a neutral first-run welcome screen with explicit project, layout, and sample-opening actions instead of loading a sample automatically.
+- Fixed welcome-screen sizing and the transition into editing when creating a widget from an empty document.
+- Expanded README and user-guide screenshots and workflow explanations.
+- Added `resolve.preserveSymlinks: true` to support development from Windows mapped network drives.
+
 ## 0.36.0 - Distribution readiness
 
 - Added explicit local-processing/privacy indicator in the application toolbar.
