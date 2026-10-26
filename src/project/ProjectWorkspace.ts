@@ -162,7 +162,8 @@ function ParseWidgetStyles(path: string, source: string): WidgetStyleDefinition[
 		return result;
 	const parser = new DOMParser();
 	const xml = parser.parseFromString(source, "application/xml");
-	if (xml.querySelector("parsererror"))
+	// Reject actual DTD declarations, not declaration-like text in comments or CDATA.
+	if (xml.doctype || xml.querySelector("parsererror") || xml.documentElement?.tagName !== "WidgetStyles")
 		return result;
 	for (const widget of Array.from(xml.querySelectorAll("Widget"))) {
 		const widgetType = widget.getAttribute("Name") ?? "";
