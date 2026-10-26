@@ -1083,3 +1083,30 @@ input[type="checkbox"] { accent-color: var(--nih-accent); }
 		transition-duration: .01ms !important;
 	}
 }
+
+
+/* NIH editor chrome follow-up: remove remaining navy hues.
+   Resource previews and their sprite hit targets are intentionally excluded. */
+.toolbar-menu > summary, .toolbar-menu[open] > summary,
+.toolbar-menu-popover, .toolbar-menu-popover button,
+.add-widget-menu .toolbar-menu-popover, .toolbar-menu-label {
+	background-color: var(--nih-panel);
+	border-color: var(--nih-border);
+	color: var(--nih-text);
+}
+.toolbar-menu-popover button:hover:not(:disabled) {
+	background-color: #293229;
+	color: var(--nih-text);
+}
+.toolbar-menu-separator { background: var(--nih-border); }
+.project-root-row, .project-row, .tree-row { color: var(--nih-text); }
+.project-root-icon, .tree-type, .status-property-known span { color: var(--nih-muted); }
+.project-row:hover, .tree-row:hover { background: #252a25; }
+.project-row.selected, .tree-row.selected { background: #293229; }
+.vertical-resizer, .horizontal-resizer { background: var(--nih-bg); border-color: var(--nih-border); }
+.preview-viewport {
+	background-color: #151816;
+	background-image: linear-gradient(#292e29 1px, transparent 1px), linear-gradient(90deg, #292e29 1px, transparent 1px);
+}
+/* This is the editor's preview backdrop, not the DayZ widget canvas. */
+.source-title, .source-tabs, .source-panel, .source-pane { border-color: var(--nih-border); }
