@@ -131,6 +131,80 @@ const CheckBox: WidgetPropertySchema[] = [
 
 
 
+
+const FocusNavigation: WidgetPropertySchema[] = [
+	{ name: "no focus", label: "Won't get focus", category: "Behavior", editor: "boolean", source: "workbench" },
+	{ name: "next left", label: "Left neighbor", category: "Navigation", editor: "text", source: "workbench" },
+	{ name: "next right", label: "Right neighbor", category: "Navigation", editor: "text", source: "workbench" },
+	{ name: "next up", label: "Up neighbor", category: "Navigation", editor: "text", source: "workbench" },
+	{ name: "next down", label: "Down neighbor", category: "Navigation", editor: "text", source: "workbench" }
+];
+
+const ButtonCaption: WidgetPropertySchema[] = [
+	{ name: "text", label: "Text", category: "Button", editor: "text", source: "verified-layout" },
+	{ name: "font", label: "Font", category: "Button", editor: "font", source: "verified-layout" },
+	{ name: "text color", label: "Text color", category: "Button", editor: "color", source: "verified-layout" },
+	{ name: "disabled text color", label: "Disabled text color", category: "Button", editor: "color", source: "verified-layout" },
+	{ name: "italic text", label: "Italic text", category: "Button", editor: "boolean", source: "verified-layout" },
+	{ name: "bold text", label: "Bold text", category: "Button", editor: "boolean", source: "verified-layout" },
+	{ name: "text outline color", label: "Text outline color", category: "Button", editor: "color", source: "verified-layout" },
+	{ name: "text shadow color", label: "Text shadow color", category: "Button", editor: "color", source: "verified-layout" },
+	{ name: "text_proportion", label: "Text proportion of height", category: "Button", editor: "number", min: 0, max: 1, step: 0.01, source: "verified-layout" }
+];
+
+const EditBox: WidgetPropertySchema[] = [
+	{ name: "text", label: "Text", category: "Text Input", editor: "text", source: "verified-layout" },
+	{ name: "font", label: "Font", category: "Text Input", editor: "font", source: "verified-layout" },
+	{ name: "text color", label: "Text color", category: "Text Input", editor: "color", source: "verified-layout" },
+	{ name: "disabled text color", label: "Disabled text color", category: "Text Input", editor: "color", source: "verified-layout" },
+	{ name: "Default text color", label: "Default text color", category: "Text Input", editor: "color", source: "verified-layout" },
+	{ name: "Use default text", label: "Use default text", category: "Text Input", editor: "boolean", source: "verified-layout" },
+	{ name: "limit visible", label: "Limit text to visible area", category: "Text Input", editor: "boolean", source: "verified-layout" },
+	{ name: "exact text", label: "Disable text scaling", category: "Text Input", editor: "boolean", source: "verified-layout" },
+	{ name: "bold text", label: "Bold text", category: "Text Input", editor: "boolean", source: "verified-layout" },
+	{ name: "text valign", label: "Text vertical alignment", category: "Text Input", editor: "enum", options: ["top", "center", "bottom"], source: "verified-layout" }
+];
+
+const PasswordEditBox: WidgetPropertySchema[] = [
+	{ name: "hide text", label: "Hide text", category: "Text Input", editor: "boolean", source: "verified-layout" }
+];
+
+const CheckBoxState: WidgetPropertySchema[] = [
+	{ name: "text", label: "Text", category: "Check Box", editor: "text", source: "verified-layout" },
+	{ name: "font", label: "Font", category: "Check Box", editor: "font", source: "verified-layout" },
+	{ name: "checked", label: "Checked", category: "Check Box", editor: "boolean", source: "verified-layout" }
+];
+
+const ThreeStateCheckBox: WidgetPropertySchema[] = [
+	{ name: "text", label: "Text", category: "Check Box", editor: "text", source: "verified-layout" },
+	{ name: "check", label: "Check image/state", category: "Check Box", editor: "text", source: "workbench" },
+	{ name: "crossed", label: "Crossed image/state", category: "Check Box", editor: "text", source: "workbench" },
+	{ name: "checked", label: "Checked", category: "Check Box", editor: "boolean", source: "workbench" }
+];
+
+const ComboBox: WidgetPropertySchema[] = [
+	{ name: "items", label: "Items", category: "Combo Box", editor: "text", source: "verified-layout" },
+	{ name: "font", label: "Font", category: "Combo Box", editor: "font", source: "verified-layout" },
+	{ name: "text color", label: "Text color", category: "Combo Box", editor: "color", source: "verified-layout" }
+];
+
+const Preview: WidgetPropertySchema[] = [
+	{ name: "force flip enable", label: "Use forced rotation", category: "Preview", editor: "boolean", source: "workbench" },
+	{ name: "force flip", label: "Forced rotation value", category: "Preview", editor: "boolean", source: "workbench" }
+];
+
+const Window: WidgetPropertySchema[] = [
+	{ name: "font", label: "Font", category: "Window", editor: "font", source: "verified-layout" },
+	{ name: "title visible", label: "Title visibility", category: "Window", editor: "boolean", source: "verified-layout" },
+	{ name: "text color", label: "Text color", category: "Window", editor: "color", source: "verified-layout" },
+	{ name: "disabled text color", label: "Disabled text color", category: "Window", editor: "color", source: "verified-layout" }
+];
+
+const Embedded: WidgetPropertySchema[] = [
+	{ name: "layout", label: "Embedded layout", category: "Embedded", editor: "text", source: "verified-layout" },
+	{ name: "Caption", label: "Caption", category: "Embedded", editor: "text", source: "verified-layout" }
+];
+
 const TextListbox: WidgetPropertySchema[] = [
 	{ name: "font", label: "Font", category: "Listbox Text", editor: "font", source: "workbench" },
 	{ name: "Title", label: "Title", category: "Listbox", editor: "text", source: "workbench" },
@@ -200,6 +274,7 @@ const Slider: WidgetPropertySchema[] = [
 	{ name: "maximum", label: "Maximum", category: "Slider", editor: "number", source: "workbench" },
 	{ name: "current", label: "Current", category: "Slider", editor: "number", source: "workbench" },
 	{ name: "step", label: "Step", category: "Slider", editor: "number", source: "workbench" },
+	{ name: "vertical", label: "Vertical orientation", category: "Slider", editor: "boolean", source: "verified-layout" },
 	{ name: "flipped", label: "Flipped direction", category: "Slider", editor: "boolean", source: "workbench" },
 	{ name: "marker thickness", label: "Marker thickness", description: "Percent of total slider length", category: "Slider", editor: "number", source: "workbench" },
 	{ name: "fill in", label: "Fill in", category: "Slider", editor: "boolean", source: "workbench" },
@@ -218,34 +293,86 @@ function Merge(...sets: WidgetPropertySchema[][]) {
 export function GetWidgetSchema(widgetType: string): WidgetPropertySchema[] {
 	const type = widgetType.toLowerCase();
 	const sets: WidgetPropertySchema[][] = [Common];
-	if (type.includes("textwidget") || type.includes("editboxwidget") || type.includes("buttonwidget") || type.includes("checkboxwidget"))
-		sets.push(Text);
-	if (type.includes("multilinetextwidget") || type.includes("multilineeditboxwidget") || type.includes("richtextwidget"))
-		sets.push(Multiline);
-	if (type.includes("imagewidget"))
-		sets.push(Image);
-	if (type.includes("textlistboxwidget"))
-		sets.push(TextListbox);
-	if (type.includes("videowidget"))
-		sets.push(Video, VideoSubtitles);
-	if (type.includes("buttonwidget"))
-		sets.push(Button, ButtonItems);
-	if (type.includes("spacerwidget") || type.includes("scrollwidget"))
-		sets.push(Spacer);
-	if (type.includes("gridspacerwidget"))
-		sets.push(GridSpacer);
-	if (type.includes("scrollwidget"))
-		sets.push(Scroll);
-	if (type.includes("checkboxwidget"))
-		sets.push(CheckBox);
-	if (type.includes("sliderwidget"))
-		sets.push(Slider);
-	if (type.includes("progressbarwidget"))
-		sets.push(ProgressBar);
-	if (type.includes("rttexturewidget"))
-		sets.push(RTTexture);
-	if (type.includes("rendertargetwidget"))
-		sets.push(RenderTarget);
+
+	const Add = (...schemas: WidgetPropertySchema[][]) => sets.push(...schemas);
+
+	switch (type) {
+		case "textwidgetclass":
+			Add(Text);
+			break;
+		case "multilinetextwidgetclass":
+		case "richtextwidgetclass":
+		case "htmlwidgetclass":
+			Add(Text, Multiline);
+			break;
+		case "multilineeditboxwidgetclass":
+			Add(Text, Multiline);
+			break;
+		case "editboxwidgetclass":
+			Add(EditBox, FocusNavigation);
+			break;
+		case "passwordeditboxwidgetclass":
+			Add(EditBox, PasswordEditBox, FocusNavigation);
+			break;
+		case "buttonwidgetclass":
+			Add(ButtonCaption, Button, ButtonItems, FocusNavigation);
+			break;
+		case "checkboxwidgetclass":
+			Add(CheckBoxState, FocusNavigation);
+			break;
+		case "threestatecheckboxwidgetclass":
+			Add(ThreeStateCheckBox, FocusNavigation);
+			break;
+		case "xcomboboxwidgetclass":
+		case "comboboxwidgetclass":
+			Add(ComboBox);
+			break;
+		case "imagewidgetclass":
+			Add(Image);
+			break;
+		case "textlistboxwidgetclass":
+			Add(TextListbox, FocusNavigation);
+			break;
+		case "serverbrowserwidgetclass":
+			Add(TextListbox);
+			break;
+		case "videowidgetclass":
+			Add(Video, VideoSubtitles);
+			break;
+		case "spacerwidgetclass":
+		case "wrapspacerwidgetclass":
+			Add(Spacer, FocusNavigation);
+			break;
+		case "gridspacerwidgetclass":
+			Add(Spacer, GridSpacer, FocusNavigation);
+			break;
+		case "scrollwidgetclass":
+			Add(Spacer, Scroll, FocusNavigation);
+			break;
+		case "sliderwidgetclass":
+			Add(Slider, FocusNavigation);
+			break;
+		case "simpleprogressbarwidgetclass":
+		case "progressbarwidgetclass":
+			Add(ProgressBar);
+			break;
+		case "rttexturewidgetclass":
+			Add(RTTexture);
+			break;
+		case "rendertargetwidgetclass":
+			Add(RenderTarget);
+			break;
+		case "itempreviewwidgetclass":
+			Add(Preview);
+			break;
+		case "windowwidgetclass":
+			Add(Window, FocusNavigation);
+			break;
+		case "embededwidgetclass":
+			Add(Embedded);
+			break;
+	}
+
 	return Merge(...sets);
 }
 
@@ -254,16 +381,34 @@ export function FindWidgetPropertySchema(widgetType: string, propertyName: strin
 }
 
 
+export const WorkbenchWidgetTypes = [
+	"BaseListboxWidgetClass", "BasicGraphWidgetClass", "ButtonWidgetClass", "CanvasWidgetClass",
+	"CheckBoxWidgetClass", "ConsoleWidgetClass", "ContentWidgetClass", "ContextMenuWidgetClass",
+	"DiagMenuWidgetClass", "EditBoxWidgetClass", "EmbededWidgetClass", "FrameWidgetClass",
+	"GenericListboxWidgetClass", "GridSpacerWidgetClass", "HtmlWidgetClass", "ImageWidgetClass",
+	"ItemPreviewWidgetClass", "MapWidgetClass", "MenuStripWidgetClass", "MultilineEditBoxWidgetClass",
+	"MultilineTextWidgetClass", "PanelWidgetClass", "PasswordEditBoxWidgetClass", "PlayerPreviewWidgetClass",
+	"ProgressBarWidgetClass", "RTTextureWidgetClass", "RenderTargetWidgetClass", "RichTextWidgetClass",
+	"RingBufferGraphWidgetClass", "ScrollWidgetClass", "ServerBrowserWidgetClass",
+	"SimpleProgressBarWidgetClass", "SliderWidgetClass", "SmartPanelWidgetClass",
+	"SpacerBaseWidgetClass", "SpacerWidgetClass", "StyledWidgetClass", "TextListboxWidgetClass",
+	"TextWidgetClass", "ThreeStateCheckboxWidgetClass", "TimeBasedGraphWidgetClass",
+	"TimeBasedGraphWithAxesWidgetClass", "UniversalListboxWidgetClass", "VideoWidgetClass",
+	"WidgetClass", "WindowWidgetClass", "WorkspaceWidgetClass", "WrapSpacerWidgetClass",
+	"XComboBoxWidgetClass"
+] as const;
+
+// Kept for compatibility with layouts/API terminology observed outside this Workbench executable.
+const AdditionalKnownWidgetTypes = ["ComboBoxWidgetClass", "SimpleListboxWidgetClass"] as const;
+
+export function IsKnownWidgetType(widgetType: string): boolean {
+	const normalized = widgetType.toLowerCase();
+	return [...WorkbenchWidgetTypes, ...AdditionalKnownWidgetTypes].some((type) => type.toLowerCase() === normalized);
+}
+
 export function FindPropertyOwners(propertyName: string): string[] {
 	const normalized = propertyName.toLowerCase();
-	const candidates = [
-		"FrameWidgetClass", "PanelWidgetClass", "TextWidgetClass", "RichTextWidgetClass",
-		"MultilineTextWidgetClass", "ButtonWidgetClass", "ImageWidgetClass", "EditBoxWidgetClass",
-		"MultilineEditBoxWidgetClass", "PasswordEditBoxWidgetClass", "XComboBoxWidgetClass",
-		"ComboBoxWidgetClass", "CheckBoxWidgetClass", "SliderWidgetClass",
-		"SimpleProgressBarWidgetClass", "ProgressBarWidgetClass", "BaseListboxWidgetClass",
-		"SimpleListboxWidgetClass", "TextListboxWidgetClass", "GenericListboxWidgetClass",
-		"VideoWidgetClass", "RTTextureWidgetClass", "RenderTargetWidgetClass", "CanvasWidgetClass", "ConsoleWidgetClass", "ContentWidgetClass", "UniversalListboxWidgetClass", "SpacerWidgetClass", "GridSpacerWidgetClass", "WrapSpacerWidgetClass", "ScrollWidgetClass"
-	];
-	return candidates.filter((type) => GetWidgetSchema(type).some((property) => property.name.toLowerCase() === normalized));
+	return [...WorkbenchWidgetTypes, ...AdditionalKnownWidgetTypes].filter((type) =>
+		GetWidgetSchema(type).some((property) => property.name.toLowerCase() === normalized)
+	);
 }
