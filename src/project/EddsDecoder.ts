@@ -361,6 +361,10 @@ function DecodeDds(bytes: Uint8Array) {
 	return { width, height, rgba };
 }
 
+export function DecodeEddsToPixels(buffer: ArrayBuffer) {
+	return DecodeDds(DecompressEdds(new Uint8Array(buffer)));
+}
+
 async function ImageDataToObjectUrl(width: number, height: number, rgba: Uint8ClampedArray) {
 	const canvas = document.createElement("canvas");
 	canvas.width = width;
@@ -379,9 +383,7 @@ async function ImageDataToObjectUrl(width: number, height: number, rgba: Uint8Cl
 
 export async function DecodeEddsToObjectUrl(file: File): Promise<{ url: string; width: number; height: number } | null> {
 	try {
-		const edds = new Uint8Array(await file.arrayBuffer());
-		const dds = DecompressEdds(edds);
-		const decoded = DecodeDds(dds);
+		const decoded = DecodeEddsToPixels(await file.arrayBuffer());
 		const url = await ImageDataToObjectUrl(decoded.width, decoded.height, decoded.rgba);
 		return { url, width: decoded.width, height: decoded.height };
 	} catch (error) {
