@@ -1039,8 +1039,8 @@ button, select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([
 	color: var(--nih-text);
 	border-color: var(--nih-border);
 }
-button, select { background: #202321; border-radius: 3px; }
-button:hover:not(:disabled) { background: #2d342c; border-color: var(--nih-accent-hover); }
+button:not(.imageset-sprite-box), select { background: #202321; border-radius: 3px; }
+button:hover:not(:disabled):not(.imageset-sprite-box) { background: #2d342c; border-color: var(--nih-accent-hover); }
 button:focus-visible, select:focus-visible, textarea:focus-visible,
 input:focus-visible, summary:focus-visible {
 	outline: 2px solid var(--nih-accent-hover);
