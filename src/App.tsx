@@ -883,7 +883,7 @@ export default function App() {
 			return;
 		setDependencyLoading(true);
 		try {
-			const nextDependency = await BuildProjectWorkspace(files, TrackTextures("vanilla"));
+			const nextDependency = await BuildProjectWorkspace(files, TrackTextures("dependency"));
 			setDependencyProjects((current) => [...current, nextDependency]);
 			setParseError(null);
 		} catch (error) {
@@ -1725,12 +1725,12 @@ export default function App() {
 		<div className="app">
 			<div className="resource-loading-announcement" role="status" aria-live="polite" aria-atomic="true">
 				{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : vanillaLoading ? "Indexing vanilla GUI resources…" : ""}
-				{(projectLoading && textureProgress.project && textureProgress.project.total > 0) ? `Decoding textures (${textureProgress.project.completed}/${textureProgress.project.total})` : (dependencyLoading && textureProgress.dependency && textureProgress.dependency.total > 0) ? `Decoding textures (${textureProgress.dependency.completed}/${textureProgress.dependency.total})` : (vanillaLoading && textureProgress.vanilla && textureProgress.vanilla.total > 0) ? `Decoding textures (${textureProgress.vanilla.completed}/${textureProgress.vanilla.total})` : ""}
+				{(projectLoading && textureProgress.project && textureProgress.project.total > 0) ? ` · Decoding textures (${textureProgress.project.completed}/${textureProgress.project.total})` : (dependencyLoading && textureProgress.dependency && textureProgress.dependency.total > 0) ? ` · Decoding textures (${textureProgress.dependency.completed}/${textureProgress.dependency.total})` : (vanillaLoading && textureProgress.vanilla && textureProgress.vanilla.total > 0) ? ` · Decoding textures (${textureProgress.vanilla.completed}/${textureProgress.vanilla.total})` : ""}
 			</div>
 			{(projectLoading || dependencyLoading || vanillaLoading) && (
 				<div className="resource-loading-status" aria-hidden="true">
 					<span className="resource-loading-spinner" />
-					<span>{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : "Indexing vanilla GUI resources…"} {(projectLoading && textureProgress.project && textureProgress.project.total > 0) ? `Decoding textures (${textureProgress.project.completed}/${textureProgress.project.total})` : (dependencyLoading && textureProgress.dependency && textureProgress.dependency.total > 0) ? `Decoding textures (${textureProgress.dependency.completed}/${textureProgress.dependency.total})` : (vanillaLoading && textureProgress.vanilla && textureProgress.vanilla.total > 0) ? `Decoding textures (${textureProgress.vanilla.completed}/${textureProgress.vanilla.total})` : ""}</span>
+					<span>{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : "Indexing vanilla GUI resources…"} {(projectLoading && textureProgress.project && textureProgress.project.total > 0) ? ` · Decoding textures (${textureProgress.project.completed}/${textureProgress.project.total})` : (dependencyLoading && textureProgress.dependency && textureProgress.dependency.total > 0) ? ` · Decoding textures (${textureProgress.dependency.completed}/${textureProgress.dependency.total})` : (vanillaLoading && textureProgress.vanilla && textureProgress.vanilla.total > 0) ? ` · Decoding textures (${textureProgress.vanilla.completed}/${textureProgress.vanilla.total})` : ""}</span>
 				</div>
 			)}
 			<header className="toolbar">
