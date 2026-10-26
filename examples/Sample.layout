@@ -1,0 +1,34 @@
+FrameWidgetClass Root {
+ position 0 0
+ size 1 1
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ {
+  PanelWidgetClass ExamplePanel {
+   position 0.5 0.5
+   size 420 180
+   halign center_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 1
+   vexactsize 1
+   color 0.04 0.05 0.07 0.95
+   {
+    TextWidgetClass ExampleTitle {
+     position 20 20
+     size 380 32
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text "NIH Layout Studio"
+     color 0.9 0.95 1 1
+     "text halign" center
+    }
+   }
+  }
+ }
+}
