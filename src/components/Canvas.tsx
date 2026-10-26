@@ -671,7 +671,7 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 	if (kind.isScroll)
 		style.overflow = "hidden";
 
-	function BeginGeometryDrag(event: ReactPointerEvent<HTMLDivElement>, handle: string) {
+	function BeginGeometryDrag(event: ReactPointerEvent<HTMLElement>, handle: string) {
 		if (event.button !== 0)
 			return;
 		event.preventDefault();
