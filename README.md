@@ -61,6 +61,12 @@ When the same resource exists in multiple roots, Layout Studio resolves it in th
 
 Dependency and vanilla resource roots are read-only. The current Source-mode project is writable.
 
+## Contributing
+
+Contributions are welcome through pull requests. The `main` branch is protected; changes must go through review and required CI checks.
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for development, validation, compatibility, and licensing expectations.
+
 ## License
 
 NIH Layout Studio is **source-available for noncommercial use** under the **PolyForm Noncommercial License 1.0.0**.
