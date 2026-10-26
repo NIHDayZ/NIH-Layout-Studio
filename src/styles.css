@@ -996,6 +996,121 @@ body.resizing-panels {
 	}
 }
 
+
+/* NIH Minimal Tactical — editor chrome only.
+   Do not apply these rules to the .canvas or .canvas-widget renderer: those
+   must continue to reflect the actual DayZ layout and resource definitions. */
+:root {
+	--nih-bg: #1a1c1b;
+	--nih-panel: #0e0f0f;
+	--nih-border: #3e4240;
+	--nih-text: #d7d7d2;
+	--nih-muted: #a6aaa4;
+	--nih-accent: #4a5a43;
+	--nih-accent-hover: #5a6c51;
+	--nih-warning: #c08a2e;
+	--nih-error: #a3443f;
+	--nih-space-xs: 4px;
+	--nih-space-sm: 8px;
+	--nih-space-md: 12px;
+	--nih-space-lg: 16px;
+	--nih-space-xl: 24px;
+	font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+	color: var(--nih-text);
+	background: var(--nih-bg);
+	color-scheme: dark;
+}
+.app { background: var(--nih-bg); color: var(--nih-text); }
+.toolbar, .left-panel, .right-panel, .preview-header, .source-header, .panel-title,
+.properties-panel, .tree-panel, .source-panel, .hierarchy-panel, .project-panel {
+	background-color: var(--nih-panel);
+	border-color: var(--nih-border);
+}
+.toolbar { border-bottom: 1px solid var(--nih-border); }
+.panel-title, .preview-header {
+	color: var(--nih-text);
+	border-bottom-color: var(--nih-border);
+	letter-spacing: .08em;
+}
+.brand strong { color: var(--nih-text); }
+.brand span, .preview-hint { color: var(--nih-muted); }
+.toolbar-divider, .tree-children { border-color: var(--nih-border); }
+button, select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+	color: var(--nih-text);
+	border-color: var(--nih-border);
+}
+button:not(.imageset-sprite-box), select { background: #202321; border-radius: 3px; }
+button:hover:not(:disabled):not(.imageset-sprite-box) { background: #2d342c; border-color: var(--nih-accent-hover); }
+button:focus-visible, select:focus-visible, textarea:focus-visible,
+input:focus-visible, summary:focus-visible {
+	outline: 2px solid var(--nih-accent-hover);
+	outline-offset: 2px;
+}
+button:disabled { opacity: .46; cursor: not-allowed; }
+input[type="checkbox"] { accent-color: var(--nih-accent); }
+.tree-row.selected, .tree-row[aria-selected="true"] {
+	background: #293229;
+	box-shadow: inset 2px 0 0 var(--nih-accent-hover);
+}
+.local-processing-indicator {
+	background: #1f2a20;
+	color: #b5c5ac;
+	border-color: var(--nih-accent);
+}
+.welcome-screen {
+	background: radial-gradient(circle at 50% 18%, rgba(74, 90, 67, .09), transparent 45%), var(--nih-bg);
+}
+.welcome-card {
+	background: var(--nih-panel);
+	border: 1px solid var(--nih-border);
+	border-radius: 4px;
+	box-shadow: 0 14px 44px rgba(0, 0, 0, .3);
+}
+.welcome-kicker { color: #aebca7; opacity: 1; }
+.welcome-card h1 { color: var(--nih-text); }
+.welcome-action {
+	border: 1px solid var(--nih-border);
+	border-radius: 3px;
+	background: #1b1f1c;
+}
+.welcome-action:hover:not(:disabled) { background: #293229; border-color: var(--nih-accent-hover); }
+.welcome-action.primary { border-color: var(--nih-accent-hover); }
+.welcome-resource-section { border-top-color: var(--nih-border); }
+.welcome-local-note { color: var(--nih-muted); opacity: .8; }
+@media (prefers-reduced-motion: reduce) {
+	.toolbar *, .welcome-screen *, .left-column *, .right-column * {
+		animation-duration: .01ms !important;
+		transition-duration: .01ms !important;
+	}
+}
+
+
+/* NIH editor chrome follow-up: remove remaining navy hues.
+   Resource previews and their sprite hit targets are intentionally excluded. */
+.toolbar-menu > summary, .toolbar-menu[open] > summary,
+.toolbar-menu-popover, .toolbar-menu-popover button,
+.add-widget-menu .toolbar-menu-popover, .toolbar-menu-label {
+	background-color: var(--nih-panel);
+	border-color: var(--nih-border);
+	color: var(--nih-text);
+}
+.toolbar-menu-popover button:hover:not(:disabled) {
+	background-color: #293229;
+	color: var(--nih-text);
+}
+.toolbar-menu-separator { background: var(--nih-border); }
+.project-root-row, .project-row, .tree-row { color: var(--nih-text); }
+.project-root-icon, .tree-type, .status-property-known span { color: var(--nih-muted); }
+.project-row:hover, .tree-row:hover { background: #252a25; }
+.project-row.selected, .tree-row.selected { background: #293229; }
+.vertical-resizer, .horizontal-resizer { background: var(--nih-bg); border-color: var(--nih-border); }
+.preview-viewport {
+	background-color: #151816;
+	background-image: linear-gradient(#292e29 1px, transparent 1px), linear-gradient(90deg, #292e29 1px, transparent 1px);
+}
+/* This is the editor's preview backdrop, not the DayZ widget canvas. */
+.source-title, .source-tabs, .source-panel, .source-pane { border-color: var(--nih-border); }
+
 /* Resource indexing status: remain visible while existing async loading runs. */
 .resource-loading-status {
 	position: fixed;
