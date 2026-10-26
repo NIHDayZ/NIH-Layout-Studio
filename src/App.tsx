@@ -1371,6 +1371,22 @@ export default function App() {
 		}
 	}
 
+	function StartBlankLayout() {
+		setProject(null);
+		projectFileHandlesRef.current = new Map();
+		projectDirectoryHandleRef.current = null;
+		currentFileHandleRef.current = null;
+		setLocalSourceMode(false);
+		setActiveProjectPath(null);
+		setFileName("Untitled.layout");
+		setSource("");
+		savedSourceRef.current = "";
+		setDirty(false);
+		setSourcePreserving(true);
+		setWorkspaceStarted(true);
+		ParseSource("");
+	}
+
 	function LoadSampleLayout() {
 		setProject(null);
 		projectFileHandlesRef.current = new Map();
@@ -1737,8 +1753,8 @@ export default function App() {
 						{dependencyProjects.length > 1 && <button onClick={() => { CloseToolbarMenus(); UnloadDependencyProjects(); }}>Unload All Dependencies<span className="menu-shortcut">{dependencyProjects.length}</span></button>}
 						<div className="toolbar-menu-separator" />
 						<div className="toolbar-menu-label">Vanilla DayZ resources</div>
-						<button onClick={() => { CloseToolbarMenus(); vanillaFolderRef.current?.click(); }} disabled={vanillaLoading}>Vanilla GUI (Upload)…<span className="menu-shortcut">P:\gui</span></button>
-						<button onClick={() => { CloseToolbarMenus(); void OpenLocalVanillaGui(); }} disabled={vanillaLoading || !sourceAccessSupported} title={!sourceAccessSupported ? "Source mode requires the File System Access API. Use Upload mode in this browser." : undefined}>Vanilla GUI (Source)…<span className="menu-shortcut">P:\gui</span></button>
+						<button onClick={() => { CloseToolbarMenus(); vanillaFolderRef.current?.click(); }} disabled={vanillaLoading || !!vanillaProject}>Vanilla GUI (Upload)…<span className="menu-shortcut">P:\gui</span></button>
+						<button onClick={() => { CloseToolbarMenus(); void OpenLocalVanillaGui(); }} disabled={vanillaLoading || !!vanillaProject || !sourceAccessSupported} title={!sourceAccessSupported ? "Source mode requires the File System Access API. Use Upload mode in this browser." : undefined}>Vanilla GUI (Source)…<span className="menu-shortcut">P:\gui</span></button>
 						{vanillaProject && <button onClick={() => { CloseToolbarMenus(); setVanillaProject(null); }}>Unload Vanilla GUI</button>}
 						<div className="toolbar-menu-separator" />
 						<button onClick={() => { CloseToolbarMenus(); void SaveCurrent(); }} disabled={!dirty}>{localSourceMode ? "Save" : "Export"}<span className="menu-shortcut">Ctrl+S</span></button>
@@ -1869,15 +1885,17 @@ export default function App() {
 										<span>Explore a neutral example layout</span>
 									</button>
 								</div>
+								<button className="welcome-start-blank" onClick={StartBlankLayout}>Start Blank Layout — open an empty editor</button>
 								<div className="welcome-resource-section">
 									<div>
 										<strong>Optional resources</strong>
 										<span>Load dependencies or vanilla GUI resources to populate styles, fonts, imagesets, and previews.</span>
 									</div>
 									<div className="welcome-resource-actions">
-										<button onClick={() => dependencyFolderRef.current?.click()} disabled={dependencyLoading}>Dependency Mod</button>
-										<button onClick={() => vanillaFolderRef.current?.click()} disabled={vanillaLoading}>Vanilla GUI</button>
-										{sourceAccessSupported && <button onClick={() => void OpenLocalVanillaGui()} disabled={vanillaLoading}>Vanilla GUI (Source)</button>}
+										<button onClick={() => dependencyFolderRef.current?.click()} disabled={dependencyLoading}>Dependency Mod (Upload)</button>
+										{sourceAccessSupported && <button onClick={() => void OpenLocalDependencyMod()} disabled={dependencyLoading}>Dependency Mod (Source)</button>}
+										<button onClick={() => vanillaFolderRef.current?.click()} disabled={vanillaLoading || !!vanillaProject}>{vanillaProject ? "Vanilla GUI Loaded" : "Vanilla GUI (Upload)"}</button>
+										{sourceAccessSupported && <button onClick={() => void OpenLocalVanillaGui()} disabled={vanillaLoading || !!vanillaProject}>Vanilla GUI (Source)</button>}
 									</div>
 								</div>
 								<div className="welcome-local-note">LOCAL PROCESSING · Selected files are not uploaded to an NIH server.</div>

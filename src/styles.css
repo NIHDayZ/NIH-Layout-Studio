@@ -1237,3 +1237,36 @@ input[type="checkbox"] { accent-color: var(--nih-accent); }
 .imageset-sprite-box:hover, .imageset-sprite-box.selected {
 	border-color: #c08a2e;
 }
+
+/* Welcome navigation and resource-state affordances. */
+.welcome-start-blank {
+	display: block;
+	margin: 12px 0 0 auto;
+	background: transparent;
+	border: 1px solid var(--nih-border);
+	color: var(--nih-text);
+	font-size: 12px;
+	padding: 9px 12px;
+	cursor: pointer;
+}
+.welcome-start-blank:hover, .welcome-start-blank:focus-visible {
+	background: #293229;
+	border-color: var(--nih-accent-hover);
+}
+.welcome-resource-actions button:disabled {
+	opacity: .48;
+	cursor: not-allowed;
+	border-color: var(--nih-border);
+	background: #191c19;
+	color: var(--nih-muted);
+}
+/* Additional legacy blue editor chrome; do not affect the layout canvas or sprites. */
+.toolbar-divider, .project-children, .tree-children,
+.imageset-source-row, .problems-toolbar { border-color: var(--nih-border); }
+.toolbar-divider, .toolbar-menu-separator { background: var(--nih-border); }
+.toolbar-toggle, .project-root-icon, .project-icon,
+.tree-type, .preview-hint, .source-title span:last-child,
+.menu-shortcut, .image-resource-preview.missing { color: var(--nih-muted); }
+.project-row:hover, .tree-row:hover { background: #252c24; }
+.project-row.selected, .tree-row.selected { background: #30392e; color: var(--nih-text); }
+.image-resource-preview { border-color: var(--nih-border); background-color: #161a17; }
