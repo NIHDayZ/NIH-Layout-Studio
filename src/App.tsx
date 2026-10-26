@@ -1702,9 +1702,12 @@ export default function App() {
 
 	return (
 		<div className="app">
+			<div className="resource-loading-announcement" role="status" aria-live="polite" aria-atomic="true">
+				{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : vanillaLoading ? "Indexing vanilla GUI resources…" : ""}
+			</div>
 			{(projectLoading || dependencyLoading || vanillaLoading) && (
-				<div className="resource-loading-status" role="status" aria-live="polite" aria-busy="true">
-					<span className="resource-loading-spinner" aria-hidden="true" />
+				<div className="resource-loading-status" aria-hidden="true">
+					<span className="resource-loading-spinner" />
 					<span>{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : "Indexing vanilla GUI resources…"}</span>
 				</div>
 			)}
