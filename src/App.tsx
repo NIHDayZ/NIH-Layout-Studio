@@ -13,6 +13,7 @@ import { BuildProjectWorkspace, DisposeProjectWorkspace, ParseImageSetSource, Re
 import { EncodeImageToEdds, type EddsPixelFormat } from "./project/EddsEncoder";
 import { BuildImageSet } from "./project/ImageSetBuilder";
 import { WorkbenchWidgetTypes } from "./schema/WidgetSchema";
+import { version as appVersion } from "../package.json";
 import "./styles.css";
 
 
@@ -1712,7 +1713,7 @@ export default function App() {
 				</div>
 			)}
 			<header className="toolbar">
-				<div className="brand"><strong>NIH</strong> Layout Studio <span>0.36</span></div>
+				<div className="brand"><strong>NIH</strong> Layout Studio <span>{appVersion}</span></div>
 				<span className="workspace-mode">{project ? (localSourceMode ? "PROJECT SOURCE" : "PROJECT UPLOAD") : (localSourceMode ? "LOCAL SOURCE" : "STANDALONE")}</span>
 				<span className={`source-mode ${sourcePreserving ? "aware" : "canonical"}`}>{sourcePreserving ? "SOURCE-AWARE" : "CANONICAL"}</span>
 				{dirty && <span className="dirty-indicator">UNSAVED</span>}
