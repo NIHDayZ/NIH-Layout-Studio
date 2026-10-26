@@ -423,6 +423,61 @@ function PropertyValueEditor({ property, widgetType, fontOptions, imageSetOption
 }
 
 
+function PendingKnownPropertyValueEditor({
+	propertyName,
+	widgetType,
+	value,
+	onChange,
+	fontOptions,
+	styleOptions
+}: {
+	propertyName: string;
+	widgetType: string;
+	value: string;
+	onChange: (value: string) => void;
+	fontOptions: FontResourceOption[];
+	styleOptions: StyleResourceOption[];
+}) {
+	const normalizedName = propertyName.toLowerCase();
+
+	if (normalizedName === "style") {
+		const normalizedWidget = widgetType.replace(/Class$/i, "").toLowerCase();
+		const compatible = styleOptions.filter((option) => option.widgetType.replace(/Class$/i, "").toLowerCase() === normalizedWidget);
+		if (compatible.length > 0) {
+			const known = compatible.some((option) => option.name === value);
+			return (
+				<div className="known-property-resource-editor">
+					<select className="property-select" value={known ? value : ""} onChange={(event) => onChange(event.target.value)}>
+						<option value="" disabled>Choose style…</option>
+						{compatible.some((option) => option.source === "project") && <optgroup label="Project styles">{compatible.filter((option) => option.source === "project").map((option) => <option key={`project:${option.widgetType}:${option.name}`} value={option.name}>{option.name}</option>)}</optgroup>}
+						{compatible.some((option) => option.source === "dependency") && <optgroup label="Dependency styles">{compatible.filter((option) => option.source === "dependency").map((option) => <option key={`dep:${option.sourceLabel ?? "dependency"}:${option.widgetType}:${option.name}`} value={option.name}>{option.name} — {option.sourceLabel ?? "Dependency"}</option>)}</optgroup>}
+						{compatible.some((option) => option.source === "vanilla") && <optgroup label="Vanilla styles">{compatible.filter((option) => option.source === "vanilla").map((option) => <option key={`vanilla:${option.widgetType}:${option.name}`} value={option.name}>{option.name}</option>)}</optgroup>}
+					</select>
+					<span className="font-option-hint">{compatible.length} compatible styles</span>
+				</div>
+			);
+		}
+		return <input placeholder="value" value={value} onChange={(event) => onChange(event.target.value)} title="No compatible style resources are currently loaded." />;
+	}
+
+	if (normalizedName === "font" && fontOptions.length > 0) {
+		const known = fontOptions.some((option) => option.value === value);
+		return (
+			<div className="known-property-resource-editor">
+				<select className="property-select" value={known ? value : ""} onChange={(event) => onChange(event.target.value)}>
+					<option value="" disabled>Choose font…</option>
+					{fontOptions.some((option) => option.source === "project") && <optgroup label="Project fonts">{fontOptions.filter((option) => option.source === "project").map((option) => <option key={`project:${option.value}`} value={option.value}>{option.label.replace(/ — Project$/, "")}</option>)}</optgroup>}
+					{fontOptions.some((option) => option.source === "dependency") && <optgroup label="Dependency mod fonts">{fontOptions.filter((option) => option.source === "dependency").map((option) => <option key={`dependency:${option.sourceLabel ?? "dependency"}:${option.value}`} value={option.value}>{option.label}</option>)}</optgroup>}
+					{fontOptions.some((option) => option.source === "vanilla") && <optgroup label="Vanilla DayZ fonts">{fontOptions.filter((option) => option.source === "vanilla").map((option) => <option key={`vanilla:${option.value}`} value={option.value}>{option.label.replace(/ — Vanilla$/, "")}</option>)}</optgroup>}
+				</select>
+				<span className="font-option-hint">{fontOptions.length} resolved fonts</span>
+			</div>
+		);
+	}
+
+	return <input placeholder="value" value={value} onChange={(event) => onChange(event.target.value)} />;
+}
+
 function CustomPropertyAdder({ node, onAddProperty }: { node: LayoutNode; onAddProperty: (node: LayoutNode, propertyName: string, rawValue: string) => void }) {
 	const [name, setName] = useState("");
 	const [value, setValue] = useState("");
@@ -511,8 +566,15 @@ export function PropertyInspector({ node, onRename, onPropertyChange, onAddPrope
 							</optgroup>
 						))}
 					</select>
-					<input placeholder="value" value={newValue} onChange={(event) => setNewValue(event.target.value)} />
-					<button disabled={!newName.trim()} onClick={() => { onAddProperty(node, newName.trim(), newValue); setNewName(""); setNewValue(""); }}>Add</button>
+					<PendingKnownPropertyValueEditor
+						propertyName={newName}
+						widgetType={node.type}
+						value={newValue}
+						onChange={setNewValue}
+						fontOptions={fontOptions}
+						styleOptions={styleOptions}
+					/>
+					<button disabled={!newName.trim() || ((newName.toLowerCase() === "style" || newName.toLowerCase() === "font") && !newValue.trim())} onClick={() => { onAddProperty(node, newName.trim(), newName.toLowerCase() === "font" ? QuoteLayoutString(newValue) : newValue); setNewName(""); setNewValue(""); }}>Add</button>
 				</div>
 				<div className="property-group-title custom-property-title">Custom property</div>
 				<CustomPropertyAdder node={node} onAddProperty={onAddProperty} />
