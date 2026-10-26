@@ -982,6 +982,7 @@ export default function App() {
 			const nextSelected = selectType && selectName ? FindNodeByTypeAndName(parsed.roots, selectType, selectName) : null;
 			setSelected(nextSelected);
 			setSelectedIds(nextSelected ? [nextSelected.id] : []);
+			setWorkspaceStarted(true);
 			setParseError(null);
 		} catch (error) {
 			setParseError(error instanceof Error ? error.message : String(error));
@@ -1833,7 +1834,7 @@ export default function App() {
 
 				<div className="workspace-resizer vertical-resizer" title="Drag to resize Project / Hierarchy panels" onPointerDown={(event) => BeginResize("left", event)} onDoubleClick={() => setLeftWidth(DEFAULT_LEFT_WIDTH)} />
 
-				<section className="center-column" style={{ gridTemplateRows: `34px minmax(180px, 1fr) 5px ${sourceHeight}px` }}>
+				<section className="center-column" style={{ gridTemplateRows: workspaceStarted ? `34px minmax(180px, 1fr) 5px ${sourceHeight}px` : "minmax(0, 1fr)" }}>
 					{!workspaceStarted ? (
 						<div className="welcome-screen">
 							<div className="welcome-card">
