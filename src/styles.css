@@ -995,3 +995,37 @@ body.resizing-panels {
 		justify-content: flex-start;
 	}
 }
+
+/* Resource indexing status: remain visible while existing async loading runs. */
+.resource-loading-status {
+	position: fixed;
+	top: 56px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 60000;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	max-width: min(90vw, 520px);
+	padding: 10px 16px;
+	border: 1px solid #4a5a43;
+	border-radius: 3px;
+	background: #0e0f0f;
+	color: #d7d7d2;
+	box-shadow: 0 6px 24px rgba(0, 0, 0, .45);
+	font-size: 12px;
+	pointer-events: none;
+}
+.resource-loading-spinner {
+	width: 15px;
+	height: 15px;
+	flex: none;
+	border: 2px solid #3e4240;
+	border-top-color: #8d9f81;
+	border-radius: 50%;
+	animation: nih-loading-spin .8s linear infinite;
+}
+@keyframes nih-loading-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+	.resource-loading-spinner { animation: none; border-top-color: #d7d7d2; }
+}
