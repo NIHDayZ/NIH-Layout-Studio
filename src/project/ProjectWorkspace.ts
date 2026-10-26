@@ -160,13 +160,10 @@ function ParseWidgetStyles(path: string, source: string): WidgetStyleDefinition[
 	const result: WidgetStyleDefinition[] = [];
 	if (!source.includes("<WidgetStyles"))
 		return result;
-	// DayZ widget styles do not require DTDs or entity declarations.
-	// Refuse these constructs in user-supplied XML rather than processing them.
-	if (/<!\s*(?:DOCTYPE|ENTITY)\b/i.test(source))
-		return result;
 	const parser = new DOMParser();
 	const xml = parser.parseFromString(source, "application/xml");
-	if (xml.querySelector("parsererror") || xml.documentElement?.tagName !== "WidgetStyles")
+	// Reject actual DTD declarations, not declaration-like text in comments or CDATA.
+	if (xml.doctype || xml.querySelector("parsererror") || xml.documentElement?.tagName !== "WidgetStyles")
 		return result;
 	for (const widget of Array.from(xml.querySelectorAll("Widget"))) {
 		const widgetType = widget.getAttribute("Name") ?? "";
