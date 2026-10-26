@@ -321,7 +321,7 @@ export function GetWidgetSchema(widgetType: string): WidgetPropertySchema[] {
 			Add(CheckBoxState, FocusNavigation);
 			break;
 		case "threestatecheckboxwidgetclass":
-			Add(ThreeStateCheckBox);
+			Add(ThreeStateCheckBox, FocusNavigation);
 			break;
 		case "xcomboboxwidgetclass":
 		case "comboboxwidgetclass":
