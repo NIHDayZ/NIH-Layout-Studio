@@ -14,6 +14,8 @@ Recommended settings:
 
 No application server, database, file-upload endpoint, or runtime environment variables are required.
 
+Production security headers are defined in `public/_headers`. Vite copies this file into the generated `dist/` output for Cloudflare Pages to apply. Preserve this file when changing the deployment pipeline.
+
 ## Privacy model
 
 Selected project, dependency, vanilla GUI, layout, image, font, imageset, and EDDS files are processed locally by browser JavaScript. NIH Layout Studio does not need to upload those files to a server.
