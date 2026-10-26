@@ -1,0 +1,11 @@
+# NIH Layout Studio code ownership
+# All changes request review from the NIHDayZ repository owner.
+* @NIHDayZ
+
+# Explicitly call out repository-critical areas.
+/.github/ @NIHDayZ
+/LICENSE @NIHDayZ
+/package.json @NIHDayZ
+/vite.config.ts @NIHDayZ
+/src/ @NIHDayZ
+/tools/ @NIHDayZ
