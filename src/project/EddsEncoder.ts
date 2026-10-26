@@ -141,7 +141,9 @@ function GenerateNextMip(level: RgbaLevel): RgbaLevel {
 	const context = canvas.getContext("2d", { willReadFrequently: true });
 	if (!context)
 		throw new Error("Canvas 2D context unavailable");
-	const imageDataBytes = new Uint8ClampedArray(level.rgba.length);\n\timageDataBytes.set(level.rgba);\n\tcontext.putImageData(new ImageData(imageDataBytes, level.width, level.height), 0, 0);
+	const imageDataBytes = new Uint8ClampedArray(level.rgba.length);
+	imageDataBytes.set(level.rgba);
+	context.putImageData(new ImageData(imageDataBytes, level.width, level.height), 0, 0);
 	const nextCanvas = document.createElement("canvas");
 	nextCanvas.width = width;
 	nextCanvas.height = height;
