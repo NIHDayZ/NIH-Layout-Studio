@@ -13,13 +13,13 @@ Thanks for helping improve NIH Layout Studio.
 
 Requirements:
 
-- Node.js 20 or newer
+- Node.js 20.19 or newer (Node.js 22 recommended)
 - npm
 
 Install dependencies and start the development server:
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
