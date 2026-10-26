@@ -541,7 +541,7 @@ function BuildWorkspaceFontOptions(workspace: ProjectWorkspaceModel | null, sour
 		}
 		options.set(value.toLowerCase(), {
 			value,
-			label: `${display} — ${source === "project" ? "Project" : source === "dependency" ? (sourceLabel ?? workspace.name) : "Vanilla"}`,
+			label: `${display} — ${source === "project" ? "Project" : source === "dependency" ? (sourceLabel ?? workspace!.name) : "Vanilla"}`,
 			source,
 			sourceLabel,
 			aliases: [...new Set(aliases)]
