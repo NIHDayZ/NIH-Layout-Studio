@@ -43,7 +43,21 @@ See the full list in [docs/FEATURES.md](docs/FEATURES.md).
 
 ## Screenshots
 
-A gallery of NIH Layout Studio using a neutral example layout will be added once the public demo workspace is ready. This avoids publishing personal mod content or broken screenshot links.
+![NIH Layout Studio main editor showing the neutral sample layout, widget hierarchy, source pane, and preview](docs/images/editor-overview.png)
+
+*Editor overview — neutral sample layout, canvas, hierarchy, and source.*
+
+| Widget editing | Open files and resources |
+| --- | --- |
+| ![ExamplePanel selected with resize handles and property inspector values](docs/images/widget-properties.png) | ![File menu with project, layout, dependency mod, and vanilla GUI loading choices](docs/images/file-menu.png) |
+| Select widgets and edit layout properties | Load layouts, project roots, dependencies, and vanilla resources |
+
+| Texture conversion | Atlas creation |
+| --- | --- |
+| ![PNG/TGA to EDDS conversion dialog with texture format and mipmap options](docs/images/edds-converter.png) | ![Imageset and Atlas Builder with image selection, atlas padding, and format controls](docs/images/atlas-builder.png) |
+| Convert textures locally | Build named imagesets and atlases from source images |
+
+See the [User Guide](docs/USER_GUIDE.md) for more screenshots and workflow descriptions.
 
 ## Quick start
 

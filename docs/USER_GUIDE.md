@@ -35,7 +35,15 @@ This guide covers everyday workflows in NIH Layout Studio. For a fast first run,
 
 **Source mode vs Upload mode.** Source mode opens files directly and can save back to them. Upload mode loads a temporary copy and saves by exporting. See [Loading files](#loading-files).
 
+## Editor overview
+
+![NIH Layout Studio editor with neutral sample and source panel](images/editor-overview.png)
+
+The preview canvas is in the middle, the project and hierarchy panes are on the left, the selected widget's properties are on the right, and source/problems are below the canvas.
+
 ## Loading files
+
+![File menu with upload and source choices for projects, layouts, dependency mods and vanilla GUI](images/file-menu.png)
 
 ### Source mode
 
@@ -76,6 +84,10 @@ Open a `.layout` file to see it rendered. You can:
 
 ## Editing widgets
 
+![ExamplePanel selected on the canvas with resize handles and editable properties](images/widget-properties.png)
+
+Select a widget in the hierarchy or canvas. Its bounding box and inspector values become available; changing a value can affect the preview and source. Save or export according to the current mode.
+
 Typical editing actions:
 
 | Action | What it does |
@@ -105,6 +117,10 @@ Styles are resolved through the same root order as everything else, so a style i
 
 ## Working with imagesets
 
+![Imageset / Atlas Builder showing source image selection, imageset name, padding, output format, and mipmap settings](images/atlas-builder.png)
+
+Open **Tools → Imageset / Atlas Builder** to select PNG/TGA images and configure atlas generation. Output formats and mipmap options are shown in the dialog.
+
 An `.imageset` maps named image regions onto a texture atlas.
 
 - **Inspect** the regions and the texture they reference.
@@ -118,6 +134,10 @@ The property inspector presents the selected widget's editable values. Color con
 If a property is marked unknown, unsupported, or possibly invalid for a widget, review its original source and Workbench behavior before removing it. Do not assume every parsed property is safe to discard.
 
 ## Working with textures and fonts
+
+![PNG/TGA to EDDS converter showing source file, texture format, and mip-chain option](images/edds-converter.png)
+
+Use **Tools → PNG/TGA → EDDS** to select a source image, choose an output format, and optionally generate a full mip chain. Single-mip output is the UI default.
 
 - **EDDS:** the app decodes EDDS textures for display and can encode PNG or TGA files to EDDS. Conversion runs in your browser.
 - **Fonts:** native DayZ FNT3 fonts are supported for text rendering.
