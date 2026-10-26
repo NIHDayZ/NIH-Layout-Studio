@@ -5,7 +5,7 @@ Find your symptom, try the fixes in order.
 ## Quick checks
 
 1. Use a current version of Chrome or Edge on desktop.
-2. Refresh the page and reload your files.
+2. Save your changes (Source mode) or export them (Upload mode) before refreshing the page and reloading your files. Unsaved changes can be lost on refresh.
 3. Confirm you are on the latest release (see the [Changelog](../CHANGELOG.md)).
 
 ## Source mode is disabled or missing
