@@ -860,3 +860,11 @@ body.resizing-panels {
 .widget-style-chrome > .resolved-image {
 	pointer-events: none;
 }
+
+.widget-palette-note {
+	padding: 4px 10px 8px;
+	max-width: 280px;
+	font-size: 11px;
+	line-height: 1.35;
+	opacity: 0.72;
+}
