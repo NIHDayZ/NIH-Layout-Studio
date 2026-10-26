@@ -459,7 +459,7 @@ const sampleLayout = `FrameWidgetClass SampleRoot {
  vexactsize 0
  {
   PanelWidgetClass ExamplePanel {
-   position 0.5 0.5
+   position 0 0
    size 560 260
    halign center_ref
    valign center_ref
