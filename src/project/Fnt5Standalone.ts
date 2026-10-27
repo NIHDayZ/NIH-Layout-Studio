@@ -35,7 +35,9 @@ export function ParseStandaloneFnt5(bytes: Uint8Array, atlasUrl: string, atlasWi
  const first=Array.from(origins.values());
  // Regular fixed-pitch cells are observed in the tested Metron24/72 files.
  const pitch=first.length>1&&first[1].y===first[0].y ? first[1].x-first[0].x : 0;
- if(pitch<=0||pitch>256||first.some(p=>p.x+pitch>atlasWidth||p.y+pitch>atlasHeight))return null;
+ // TCRD widths/heights are nominal glyph extents, not full atlas cells.
+ // Reject impossible metrics rather than letting a padded placement formula mask them.
+ if(pitch<=0||pitch>256||first.some(p=>p.x+pitch>atlasWidth||p.y+pitch>atlasHeight)||Array.from(glyphs.values()).some(g=>g.width>pitch||g.height>pitch))return null;
  return {atlasUrl,metadata:{fontFile:"FNT5",fontSize,sdfType:2,inverted:false,charScale:pitch/fontSize,atlasWidth,atlasHeight,characters:Array.from(origins.keys())},
   glyphs,fnt5Origins:origins,fnt5CellSize:pitch,fnt5PixelMetrics:true};
 }
