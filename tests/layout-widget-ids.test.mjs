@@ -29,7 +29,7 @@ test("parses Workbench ID declarations alongside legacy widget names", () => {
 test("serialization preserves quoted widget ID and friendly Name separately", () => {
 	const parser = new LayoutParser();
 	const serialized = parser.Serialize(parser.Parse(source));
-	assert.match(serialized, /RichTextWidgetClass "\\{00000000E4E67D3A\\}" \\{/);
+	assert.ok(serialized.includes('RichTextWidgetClass "{00000000E4E67D3A}" {'));
 	assert.match(serialized, /Name "DefaultActionWidget"/);
 	const roundTrip = parser.Parse(serialized);
 	assert.equal(roundTrip.roots[0].children.length, 2);
