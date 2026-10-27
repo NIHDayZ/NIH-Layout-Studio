@@ -8,6 +8,7 @@ export interface SdfFontResource {
  glyphs: Map<number, SdfGlyphMetric>;
  atlasUrl: string;
  fnt5Origins?: Map<number, { x: number; y: number }>;
+ fnt5Name?: string;
 }
 interface CachedAtlas {
  source: HTMLCanvasElement;
@@ -45,7 +46,7 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
   return cached;
  const origin = experimentalFnt5Cells ? resource.fnt5Origins?.get(glyph.codePoint) : undefined;
  // Only the tested MetronBook24 atlas has a verified 38px grid pitch.
- const rect = origin && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024
+ const rect = origin && resource.fnt5Name?.toLowerCase() === "sdf_metronbook24" && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024
   ? { left: origin.x, top: origin.y, size: 38, scale: 1 }
   : SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
  if (!rect || rect.left < 0 || rect.top < 0 || rect.left + rect.size > atlas.source.width || rect.top + rect.size > atlas.source.height)
