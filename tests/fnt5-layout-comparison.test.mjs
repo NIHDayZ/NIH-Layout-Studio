@@ -22,3 +22,12 @@ test("full-string SVG displays both un-clipped placement modes",()=>{
  assert.match(svg,/fill="white"/);
  assert.throws(()=>fnt5LayoutSvg({width:40,height:40,rgba},glyphs,{pitch:40,nominalSize:24,sizes:[16]}),/Glyph outside atlas/);
 });
+
+test("negative signed TCRD bearings remain small offsets instead of 65535",()=>{
+ const entries=[{character:"A",record:[1,1,16,18,65535,65534,15]}];
+ const result=layoutFnt5Entries(entries,38,24,24,"bearing");
+ assert.equal(result[0].x,-1-(38-16)/2);
+ assert.equal(result[0].y,24-(-2)-(38-18)/2);
+ assert.ok(Math.abs(result[0].x)<100);
+ assert.ok(Math.abs(result[0].y)<100);
+});
