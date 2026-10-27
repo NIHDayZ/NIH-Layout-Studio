@@ -300,6 +300,7 @@ function ResolveControlTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverrid
 	return textStyle;
 }
 
+const experimentalFnt5Fit = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Fit") === "1";
 const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
@@ -342,8 +343,18 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 			});
 		}
 	}
-	if (sdfFont)
-		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={textStyle.fontSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetNodeProperty(node, "wrap") !== "0"} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
+	if (sdfFont) {
+		// Diagnostic only: compare nominal-size inference against a font size
+		// that fits the widget. Explicit author-provided sizes remain untouched.
+		const explicitTextSize = ["exact text size", "fontsize", "font size"].some((name) => {
+			const value = Number(GetNodeProperty(node, name));
+			return Number.isFinite(value) && value > 0;
+		});
+		const fittedSize = experimentalFnt5Fit && sdfFont.fnt5PixelMetrics && !explicitTextSize
+			? Math.min(textStyle.fontSize, Math.max(1, rect.height * 0.8))
+			: textStyle.fontSize;
+		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={fittedSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetNodeProperty(node, "wrap") !== "0"} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
+	}
 	if (bitmapFont)
 		return RenderBitmapText(node, rect, bitmapFont, color, textStyle);
 
