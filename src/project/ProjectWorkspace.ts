@@ -1,3 +1,4 @@
+import { InspectFnt5, ParseFsdf } from "./Fnt5Metadata";
 import type {
 	ImageSetDefinition,
 	ImageSetImage,
@@ -444,6 +445,8 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 	const bitmapFonts = new Map<string, BitmapFontDefinition>();
 	const unsupportedFontVersions = new Map<string, number>();
 	let parsedBitmapFontCount = 0;
+	let fnt5Inspected = 0;
+	let sdfSidecarsParsed = 0;
 	for (const fontFile of files.filter((candidate) => candidate.extension === ".fnt")) {
 		let version = "unknown";
 		try {
@@ -456,6 +459,27 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 		}
 		if (version !== "FNT3") {
 			unsupportedFontVersions.set(version, (unsupportedFontVersions.get(version) ?? 0) + 1);
+			if (version === "FNT5") {
+				try {
+					const bytes = new Uint8Array(await fontFile.file.arrayBuffer());
+					const structure = InspectFnt5(bytes);
+					if (structure && structure.glyphRecordCount > 0) {
+						++fnt5Inspected;
+						const sidecar = files.find((candidate) => candidate.extension === ".fsdf" && FileStem(candidate.path) === FileStem(fontFile.path));
+						if (sidecar) {
+							try {
+								const metadata = ParseFsdf(await sidecar.file.text());
+								if (metadata)
+									++sdfSidecarsParsed;
+							} catch (error) {
+								console.warn("[NIH Layout Studio] Could not inspect FSDF sidecar", sidecar.path, error);
+							}
+						}
+					}
+				} catch (error) {
+					console.warn("[NIH Layout Studio] Could not inspect FNT5 font", fontFile.path, error);
+				}
+			}
 			continue;
 		}
 		const stem = FileStem(fontFile.path);
@@ -509,6 +533,8 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 			eddsFailed: eddsFailed.size,
 			bitmapFonts: files.filter((file) => file.extension === ".fnt").length,
 			bitmapFontsParsed: parsedBitmapFontCount,
+			fnt5Inspected,
+			sdfSidecarsParsed,
 			bitmapFontsUnsupported: Array.from(unsupportedFontVersions.values()).reduce((sum, count) => sum + count, 0),
 			webFonts: files.filter((file) => [".ttf", ".otf", ".woff", ".woff2"].includes(file.extension)).length
 		},
