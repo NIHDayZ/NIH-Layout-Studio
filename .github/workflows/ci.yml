@@ -32,6 +32,9 @@ jobs:
       - name: Independent BC7 pixel reference
         run: npm run test:bc7:reference
 
+      - name: Workbench widget ID compatibility tests
+        run: npm run test:layout-ids
+
       - name: Production build
         run: npm run build
 

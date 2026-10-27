@@ -1,3 +1,4 @@
+import { MakeCopiedWidgetNameFromNames } from "./model/WidgetCopyName";
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent } from "react";
 import { Canvas, type CanvasDebugOptions } from "./components/Canvas";
 import { ProjectPanel } from "./components/ProjectPanel";
@@ -59,6 +60,10 @@ function CollectNodeNames(nodes: LayoutNode[], names = new Set<string>()): Set<s
 		CollectNodeNames(node.children, names);
 	}
 	return names;
+}
+
+function MakeCopiedWidgetName(nodes: LayoutNode[], name: string): string {
+	return MakeCopiedWidgetNameFromNames(CollectNodeNames(nodes), name);
 }
 
 function MakeUniqueNodeName(nodes: LayoutNode[], baseName: string): string {
@@ -1098,7 +1103,7 @@ export default function App() {
 	function PasteWidgetAsSibling() {
 		if (!copiedWidget || !selected)
 			return;
-		const name = MakeUniqueNodeName(document.roots, `${copiedWidget.name}_Copy`);
+		const name = MakeCopiedWidgetName(document.roots, copiedWidget.name);
 		const block = RenameSourceBlockRoot(copiedWidget.block, copiedWidget.type, copiedWidget.name, name);
 		const { eol, lines } = SplitSourceLines(source);
 		const range = FindNodeLineRange(source, selected);
@@ -1113,7 +1118,7 @@ export default function App() {
 	function PasteWidgetAsChild(target = selected) {
 		if (!copiedWidget || !target)
 			return;
-		const name = MakeUniqueNodeName(document.roots, `${copiedWidget.name}_Copy`);
+		const name = MakeCopiedWidgetName(document.roots, copiedWidget.name);
 		const block = RenameSourceBlockRoot(copiedWidget.block, copiedWidget.type, copiedWidget.name, name);
 		CommitStructuralEdit(InsertChildBlock(source, target, block), copiedWidget.type, name);
 	}
@@ -1272,10 +1277,7 @@ export default function App() {
 	function DuplicateSelected(node = selected) {
 		if (!node)
 			return;
-		let newName = `${node.name}_Copy`;
-		let suffix = 2;
-		while (FindNodeByTypeAndName(document.roots, node.type, newName))
-			newName = `${node.name}_Copy${suffix++}`;
+		const newName = MakeCopiedWidgetName(document.roots, node.name);
 		let nextSource = PatchDuplicateNode(source, node, newName);
 		try {
 			const parsed = parser.Parse(nextSource);

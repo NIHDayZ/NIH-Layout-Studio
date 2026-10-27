@@ -9,3 +9,4 @@ Thumbs.db
 !.env.example
 *.tsbuildinfo
 .bc7-test-build/
+.layout-parser-test-build/
