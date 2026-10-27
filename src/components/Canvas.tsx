@@ -328,7 +328,7 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 	}
 	if (debugTextResolution && text.trim() && loggedTextRoutes.size < 100) {
 		const route = sdfFont ? "SDF" : bitmapFont ? "FNT3 bitmap" : fontOverride ? "webfont" : "CSS fallback";
-		const key = node.id + ":" + route + ":" + text;
+		const key = JSON.stringify([node.id, route, text, fontPath ?? null, sdfFont?.atlasUrl ?? null, bitmapFont?.atlasUrl ?? null, fontOverride ?? null]);
 		if (!loggedTextRoutes.has(key)) {
 			loggedTextRoutes.add(key);
 			console.info("[NIH Layout Studio][Text route]", {
