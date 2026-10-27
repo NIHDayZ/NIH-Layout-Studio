@@ -171,7 +171,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    const key = ResourceId(resource) + ":" + text;
    if (!loggedWidgets.has(key)) {
     loggedWidgets.add(key);
-    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, resourceId: ResourceId(resource), text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf, placementMode: resource.fnt5PixelMetrics && resource.fnt5CellSize ? (experimentalFnt5CellLayout ? "cell" : experimentalFnt5Placement ? "bearing" : "legacy") : "legacy" });
+    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, resourceId: ResourceId(resource), text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf, placementMode: resource.fnt5PixelMetrics && resource.fnt5CellSize ? (experimentalFnt5CellLayout ? "cell" : experimentalFnt5Placement ? "bearing" : "legacy") : "legacy", requestedFontSize: fontSize, nominalFontSize: resource.metadata.fontSize, widgetSize: [width, height], debugExpandedCanvas: debugFnt5Clip && !!resource.fnt5PixelMetrics });
    }
   }
   void LoadAtlas(resource).then((atlas) => {
