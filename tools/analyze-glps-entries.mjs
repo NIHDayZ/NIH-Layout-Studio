@@ -39,7 +39,7 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
  if(!path){console.error("Usage: node tools/analyze-glps-entries.mjs <font.fnt>");process.exitCode=1;}
  else try{
   const report=analyzeGlpsEntries(inspectFnt5(readFileSync(path)));
-  // Keep output tractable while preserving the full entry data on request.
-  console.log(JSON.stringify({...report,uniformCandidate:report.uniformCandidate && {...report.uniformCandidate,entries:report.uniformCandidate.entries.slice(0,16),displayedEntries:16}},null,2));
+  // Diagnostic output must expose all candidate entries for mapping analysis.
+  console.log(JSON.stringify({...report,uniformCandidate:report.uniformCandidate && {...report.uniformCandidate,displayedEntries:report.uniformCandidate.entries.length}},null,2));
  }catch(error){console.error(error);process.exitCode=1;}
 }
