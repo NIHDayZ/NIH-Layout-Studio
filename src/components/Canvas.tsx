@@ -310,10 +310,22 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 	const fontPath = explicitFont && explicitFont.trim() && explicitFont.trim() !== '""' ? explicitFont : styleFont;
 	const fontOverride = ResolveProjectFont(project, fontPath) ?? dependencyProjects.map((dependency) => ResolveProjectFont(dependency, fontPath)).find(Boolean) ?? ResolveProjectFont(vanillaProject, fontPath);
 	const textStyle = ResolveControlTextStyle(node, rect, fontOverride);
-	const sdfFont = ResolveProjectSdfFont(project, fontPath) ?? dependencyProjects.map((dependency) => ResolveProjectSdfFont(dependency, fontPath)).find(Boolean) ?? ResolveProjectSdfFont(vanillaProject, fontPath);
+
+	// Resolve formats in each workspace before continuing to the next workspace.
+	// A project FNT3 override must beat a dependency or vanilla SDF font.
+	const workspaces = [project, ...dependencyProjects, vanillaProject];
+	let sdfFont;
+	let bitmapFont;
+	for (const workspace of workspaces) {
+		if (!workspace)
+			continue;
+		bitmapFont = ResolveProjectBitmapFont(workspace, fontPath);
+		sdfFont = ResolveProjectSdfFont(workspace, fontPath);
+		if (bitmapFont || sdfFont)
+			break;
+	}
 	if (sdfFont)
-		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={textStyle.fontSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} />;
-	const bitmapFont = ResolveProjectBitmapFont(project, fontPath) ?? dependencyProjects.map((dependency) => ResolveProjectBitmapFont(dependency, fontPath)).find(Boolean) ?? ResolveProjectBitmapFont(vanillaProject, fontPath);
+		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={textStyle.fontSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetFlag(node, "wrap")} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
 	if (bitmapFont)
 		return RenderBitmapText(node, rect, bitmapFont, color, textStyle);
 
