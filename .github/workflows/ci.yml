@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: GLPS structure tests
+        run: node --test tests/fnt5-glps-structure.test.mjs
+
       - name: FNT5 mapping probe tests
         run: node --test tests/fnt5-mapping-probe.test.mjs
 
