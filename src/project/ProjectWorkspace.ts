@@ -1,4 +1,4 @@
-import { InspectFnt5, ParseFsdf } from "./Fnt5Metadata";
+import { InspectFnt5, ParseFsdf, ParseFsdfGlyphMetrics } from "./Fnt5Metadata";
 import type {
 	ImageSetDefinition,
 	ImageSetImage,
@@ -447,6 +447,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 	let parsedBitmapFontCount = 0;
 	let fnt5Inspected = 0;
 	let sdfSidecarsParsed = 0;
+	let sdfGlyphsValidated = 0;
 	for (const fontFile of files.filter((candidate) => candidate.extension === ".fnt")) {
 		let version = "unknown";
 		try {
@@ -469,8 +470,12 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 						if (sidecar) {
 							try {
 								const metadata = ParseFsdf(await sidecar.file.text());
-								if (metadata)
+								if (metadata) {
 									++sdfSidecarsParsed;
+									const glyphs = ParseFsdfGlyphMetrics(await sidecar.file.text());
+									if (glyphs)
+										sdfGlyphsValidated += glyphs.length;
+								}
 							} catch (error) {
 								console.warn("[NIH Layout Studio] Could not inspect FSDF sidecar", sidecar.path, error);
 							}
@@ -535,6 +540,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 			bitmapFontsParsed: parsedBitmapFontCount,
 			fnt5Inspected,
 			sdfSidecarsParsed,
+			sdfGlyphsValidated,
 			bitmapFontsUnsupported: Array.from(unsupportedFontVersions.values()).reduce((sum, count) => sum + count, 0),
 			webFonts: files.filter((file) => [".ttf", ".otf", ".woff", ".woff2"].includes(file.extension)).length
 		},

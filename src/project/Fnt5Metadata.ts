@@ -78,3 +78,49 @@ export function InspectFnt5(bytes: Uint8Array): Fnt5Structure | null {
  const glyphRecordBytes = 14;
  return { fontName, chunks, glyphRecordBytes, glyphRecordCount: tcrdLength % glyphRecordBytes === 0 ? tcrdLength / glyphRecordBytes : 0 };
 }
+
+
+/** FSDF glyph geometry remains in its source-atlas coordinate space. */
+export interface SdfGlyphMetric {
+ codePoint: number;
+ x: number;
+ y: number;
+ width: number;
+ height: number;
+ bearingX: number;
+ bearingY: number;
+ advance: number;
+}
+function NumberList(source: string, key: string): number[] | null {
+ const block = source.match(new RegExp("\\b" + key + "\\s*\\{([^}]*)\\}", "i"));
+ if (!block)
+  return null;
+ const text = block[1].trim();
+ if (!text)
+  return [];
+ const entries = text.split(/\s+/).map(Number);
+ if (entries.some((v) => !Number.isFinite(v)))
+  return null;
+ return entries;
+}
+export function ParseFsdfGlyphMetrics(source: string): SdfGlyphMetric[] | null {
+ const metadata = ParseFsdf(source);
+ if (!metadata)
+  return null;
+ const keys = ["SizesX", "SizesY", "BearingsX", "BearingsY", "Advances", "GlyphCoordsX", "GlyphCoordsY"];
+ const arrays = keys.map((key) => NumberList(source, key));
+ if (arrays.some((values) => !values || values.length !== metadata.characters.length))
+  return null;
+ const [widths, heights, bearingXs, bearingYs, advances, xs, ys] = arrays as number[][];
+ const glyphs: SdfGlyphMetric[] = [];
+ for (let i = 0; i < metadata.characters.length; ++i) {
+  const width = widths[i];
+  const height = heights[i];
+  const x = xs[i];
+  const y = ys[i];
+  if (width < 0 || height < 0 || x < 0 || y < 0 || x + width > metadata.atlasWidth || y + height > metadata.atlasHeight || advances[i] < 0)
+   return null;
+  glyphs.push({ codePoint: metadata.characters[i], x, y, width, height, bearingX: bearingXs[i], bearingY: bearingYs[i], advance: advances[i] });
+ }
+ return glyphs;
+}
