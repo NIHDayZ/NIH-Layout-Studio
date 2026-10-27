@@ -315,34 +315,32 @@ function decode_bc7_block(data: Uint8Array, outbuf: Uint32Array, block_num:numbe
             }
 
             var anchor = idx == index_anchor?1:0;
-            var num = new Uint32Array([
-                (mi.index_bits[0] - anchor),
-                has_index_bits1 ? mi.index_bits[1] - anchor : 0,
-            ]);
-
-            var index = new Uint32Array(2);
+            const num0 = mi.index_bits[0] - anchor;
+            const num1 = has_index_bits1 ? mi.index_bits[1] - anchor : 0;
+            let index0 = 0;
+            let index1 = 0;
 
             bit.skip(0,offset[0])
-            var index_0 = num[0] == 0 ? 0 : bit.ubit(num[0]);
+            var index_0 = num0 == 0 ? 0 : bit.ubit(num[0]);
             bit.skip(0,num[0] * -1);
             bit.skip(0,offset[0] * -1);
             if (has_index_bits1) {
                 bit.skip(0,offset[1])
-                var index_1 = num[1] == 0 ? 0 : bit.ubit(num[1]);
+                var index_1 = num1 == 0 ? 0 : bit.ubit(num[1]);
                 bit.skip(0,num[1] * -1);
                 bit.skip(0,offset[1] * -1)
-                index[0] = index_0
-                index[1] = index_1
+                index0 = index_0
+                index1 = index_1
             } else {
                 index[0] = index_0
-                index[1] = index_0
+                index1 = index_0
             }
 
             offset[0] += num[0];
             offset[1] += num[1];
 
-            var fc = factors[index_selection_mode][index[index_selection_mode]];
-            var fa = factors[1 - index_selection_mode][index[1 - index_selection_mode]];
+            var fc = factors[index_selection_mode][(index_selection_mode === 0 ? index0 : index1)];
+            var fa = factors[1 - index_selection_mode][(index_selection_mode === 0 ? index1 : index0)];
 
             var fca = 64 - fc;
             var fcb = fc;
