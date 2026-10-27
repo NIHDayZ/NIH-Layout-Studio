@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
 import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
 import { MsdfAlpha } from "./SdfMsdfMath";
+import { Fnt5Placement } from "./Fnt5Placement";
 
 export interface SdfFontResource {
  metadata: SdfFontMetadata;
@@ -210,11 +211,9 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
        // centering path keeps that padding around the nominal glyph bounds and
        // scales the entire cell using the font's actual FNT5 nominal size.
        if (experimentalFnt5Placement && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
-        const paddingX = Math.max(0, (resource.fnt5CellSize - glyph.width) / 2);
-        const paddingY = Math.max(0, (resource.fnt5CellSize - glyph.height) / 2);
-        const x = penX + (glyph.bearingX - paddingX) * scale;
-        const y = baseY + (meta.fontSize - glyph.bearingY - paddingY) * scale;
-        ink.drawImage(sprite, x, y, sprite.width * scale, sprite.height * scale);
+        const placement = Fnt5Placement(resource.fnt5CellSize, glyph.width, glyph.height, glyph.bearingX, glyph.bearingY, meta.fontSize, fontSize, penX, baseY);
+        if (placement)
+         ink.drawImage(sprite, placement.x, placement.y, placement.size, placement.size);
        } else {
         const x = penX + glyph.bearingX * scale;
         const y = baseY + (meta.fontSize - glyph.bearingY) * scale;
