@@ -12,9 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Widget geometry diagnostic tests
-        run: node --test tests/widget-geometry-diagnostic.test.mjs
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -25,6 +22,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Widget geometry diagnostic tests
+        run: node --test tests/widget-geometry-diagnostic.test.mjs
 
       - name: Typecheck
         run: npm run typecheck
