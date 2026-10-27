@@ -30,7 +30,7 @@ test("BC7 rejects incomplete compressed payload", () => {
 function makeMode6SolidRed() {
 	// BC7 mode 6 has one 4x4 subset, two endpoints with 7-bit RGBA
 	// components and one p-bit per endpoint. Identical endpoints make
-	// indices irrelevant. All bits are packed LSB first as specified by BC7.
+	// indices irrelevant. P-bits of 1 make the nominal zero channels equal 1. All bits are packed LSB first as specified by BC7.
 	const result = new Uint8Array(16);
 	let position = 0;
 	const put = (value, bits) => {
@@ -69,7 +69,7 @@ function makeDx10Dds(dxgiFormat, block) {
 test("BC7 mode 6 renders a known solid opaque red RGBA block", () => {
 	const rgba = decodeBC7(makeMode6SolidRed(), 4, 4);
 	for (let i = 0; i < rgba.length; i += 4)
-		assert.deepEqual([...rgba.subarray(i, i + 4)], [255, 0, 0, 255]);
+		assert.deepEqual([...rgba.subarray(i, i + 4)], [255, 1, 1, 255]);
 });
 
 test("DXGI BC7 formats 98 and 99 decode through the complete EDDS/DDS path", async () => {
@@ -78,7 +78,7 @@ test("DXGI BC7 formats 98 and 99 decode through the complete EDDS/DDS path", asy
 		const decoded = DecodeEddsToPixels(makeDx10Dds(format, makeMode6SolidRed()));
 		assert.equal(decoded.width, 4);
 		assert.equal(decoded.height, 4);
-		assert.deepEqual([...decoded.rgba.subarray(0, 4)], [255, 0, 0, 255]);
+		assert.deepEqual([...decoded.rgba.subarray(0, 4)], [255, 1, 1, 255]);
 		assert.equal(decoded.rgba.length, 64);
 	}
 });
