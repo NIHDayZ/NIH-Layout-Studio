@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { decodeBC7 } from "../src/project/Bc7Decoder.ts";
+import { decodeBC7 } from "../.bc7-test-build/project/Bc7Decoder.js";
 
 test("BC7 mode prefixes decode zero-color blocks correctly", () => {
 	for (let mode = 0; mode < 8; ++mode) {
