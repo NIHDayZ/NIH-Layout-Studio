@@ -358,7 +358,9 @@ async function DecodeTgaToObjectUrl(file: File): Promise<string | null> {
 	}
 }
 
-export async function BuildProjectWorkspace(inputFiles: File[]): Promise<ProjectWorkspaceModel> {
+export type ResourceLoadProgress = { completed: number; total: number };
+
+export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgress?: (progress: ResourceLoadProgress) => void): Promise<ProjectWorkspaceModel> {
 	// Timings are diagnostic only: no resource-processing order or output changes.
 	const timingStart = performance.now();
 	let timingLast = timingStart;
@@ -417,9 +419,12 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 	}
 
 	MarkStage("TGA decoding");
+	const eddsFiles = files.filter((candidate) => candidate.extension === ".edds");
+	let decodedTextureCount = 0;
+	onTextureProgress?.({ completed: 0, total: eddsFiles.length });
 	const eddsSession = CreateEddsDecodeSession();
 	try {
-	for (const file of files.filter((candidate) => candidate.extension === ".edds")) {
+	for (const file of eddsFiles) {
 		const decoded = await eddsSession.Decode(file.file);
 		if (decoded) {
 			resourceObjectUrls.set(file.path, decoded.url);
@@ -428,6 +433,8 @@ export async function BuildProjectWorkspace(inputFiles: File[]): Promise<Project
 		} else {
 			eddsFailed.set(file.path, "Unsupported or invalid EDDS/DDS format");
 		}
+		decodedTextureCount += 1;
+		onTextureProgress?.({ completed: decodedTextureCount, total: eddsFiles.length });
 	}
 
 	} finally {
