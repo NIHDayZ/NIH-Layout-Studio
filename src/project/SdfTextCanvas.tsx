@@ -21,6 +21,7 @@ const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
 // Explicit opt-in via ?experimentalMsdf=1; production remains on legacy red-channel SDF.
 const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Cells") === "1";
 const experimentalFnt5Placement = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Placement") === "1";
+const experimentalFnt5CellLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Layout") === "cell";
 const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedGlyphs = new Set<string>();
 const loggedWidgets = new Set<string>();
@@ -210,7 +211,11 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
        // The standalone FNT5 cell includes distance-field padding. A provisional
        // centering path keeps that padding around the nominal glyph bounds and
        // scales the entire cell using the font's actual FNT5 nominal size.
-       if (experimentalFnt5Placement && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
+       if (experimentalFnt5CellLayout && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
+        // Diagnostic: align the entire reconstructed glyph cell at the line origin.
+        // Keep the existing advance, wrapping and widget clipping unchanged.
+        ink.drawImage(sprite, penX, baseY, resource.fnt5CellSize * scale, resource.fnt5CellSize * scale);
+       } else if (experimentalFnt5Placement && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
         const placement = Fnt5Placement(resource.fnt5CellSize, glyph.width, glyph.height, glyph.bearingX, glyph.bearingY, meta.fontSize, fontSize, penX, baseY);
         if (placement)
          ink.drawImage(sprite, placement.x, placement.y, placement.size, placement.size);
