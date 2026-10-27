@@ -29,10 +29,12 @@ export function inspectFnt5(buffer) {
   if (length > bytes.length - dataStart)
    throw new Error("Chunk exceeds file bounds: " + name);
   chunks.push({ name, offset: dataStart, length });
-  offset = dataStart + length + (length & 1);
+  // FNT5 chunks are packed without mandatory IFF even-byte padding.
+  // MetronLight24 has an odd-sized HEAD immediately followed by GLPS.
+  offset = dataStart + length;
  }
  if (offset !== bytes.length)
-  throw new Error("Invalid IFF chunk padding");
+  throw new Error("Invalid FNT5 chunk boundaries");
  const byName = (name) => chunks.find((chunk) => chunk.name === name);
  const head = byName("HEAD");
  const glps = byName("GLPS");
