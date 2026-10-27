@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: FNT5 binary diagnostic tests
+        run: node --test tests/fnt5-binary-diagnostic.test.mjs
+
       - name: FNT5 metadata tests
         run: npm run test:fnt5
 
