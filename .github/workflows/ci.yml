@@ -26,6 +26,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: BC7 decoder regression tests
+        run: npm run test:bc7
+
       - name: Production build
         run: npm run build
 
