@@ -35,6 +35,9 @@ jobs:
       - name: Workbench widget ID compatibility tests
         run: npm run test:layout-ids
 
+      - name: Native imageset atlas regression tests
+        run: npm run test:imageset
+
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
