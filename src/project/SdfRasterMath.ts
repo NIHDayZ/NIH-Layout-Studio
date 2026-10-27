@@ -15,3 +15,16 @@ export function SdfSampleAlpha(sample: number, inverted: boolean): number {
  const distance = inverted ? 255 - sample : sample;
  return Math.max(0, Math.min(255, Math.round(Math.max(0, Math.min(1, (distance - 112) / 32)) * 255)));
 }
+
+/** Convert FSDF reference glyph cells into cooked atlas source pixels. */
+export function SdfAtlasCell(x: number, y: number, cellSize: number, referenceWidth: number, textureWidth: number, textureHeight: number) {
+	if (![x, y, cellSize, referenceWidth, textureWidth, textureHeight].every(Number.isFinite) || referenceWidth <= 0 || textureWidth <= 0 || textureHeight <= 0 || cellSize <= 0)
+		return null;
+	const scale = textureWidth / referenceWidth;
+	const left = Math.round(x * scale);
+	const top = Math.round(y * scale);
+	const size = Math.round(cellSize * scale);
+	if (left < 0 || top < 0 || size <= 0 || left + size > textureWidth || top + size > textureHeight)
+		return null;
+	return { left, top, size, scale };
+}

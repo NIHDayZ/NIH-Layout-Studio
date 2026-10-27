@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
-import { SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
+import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
 
 export interface SdfFontResource {
  metadata: SdfFontMetadata;
@@ -38,13 +38,14 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  const cached = atlas.glyphs.get(glyph.codePoint);
  if (cached)
   return cached;
- const cell = SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale);
- if (cell <= 0 || glyph.x < 0 || glyph.y < 0 || glyph.x + cell > atlas.source.width || glyph.y + cell > atlas.source.height)
+ const rect = SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
+ if (!rect)
   return null;
+ const { left: sourceX, top: sourceY, size: cell } = rect;
  const sourceCtx = atlas.source.getContext("2d", { willReadFrequently: true });
  if (!sourceCtx)
   return null;
- const pixels = sourceCtx.getImageData(glyph.x, glyph.y, cell, cell);
+ const pixels = sourceCtx.getImageData(sourceX, sourceY, cell, cell);
  for (let p = 0; p < pixels.data.length; p += 4) {
   const alpha = SdfSampleAlpha(pixels.data[p], resource.metadata.inverted);
   pixels.data[p] = 255;
@@ -124,6 +125,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    canvas.height = pixelHeight;
    const meta = resource.metadata;
    const scale = fontSize / meta.fontSize;
+   const atlasScale = atlas.source.width / meta.atlasWidth;
    const advance = (value: string) => Array.from(value).reduce((sum, letter) => {
     const glyph = resource.glyphs.get(letter.codePointAt(0) ?? 0);
     return sum + (glyph ? SdfGlyphAdvance(glyph.advance, fontSize) : fontSize / 2);
@@ -148,7 +150,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
       if (sprite) {
        const x = penX + glyph.bearingX * scale;
        const y = baseY + (meta.fontSize - glyph.bearingY) * scale;
-       ink.drawImage(sprite, x, y, sprite.width * scale, sprite.height * scale);
+       ink.drawImage(sprite, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale);
       }
      }
      penX += SdfGlyphAdvance(glyph.advance, fontSize);
