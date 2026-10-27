@@ -1,4 +1,5 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
+import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
@@ -775,6 +776,12 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 
 export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChange, width, height, zoom, debug, project, dependencyProjects, vanillaProject, snapEnabled, snapSize, showGrid, onContextMenu }: CanvasProps) {
 	const root: Rect = { x: 0, y: 0, width, height };
+	const geometryTraceEnabled = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugWidgetGeometry") === "1";
+	useEffect(() => {
+		if (!geometryTraceEnabled || !selected) return;
+		const ancestry = TraceWidgetGeometry(nodes, selected.id, width, height);
+		console.info("[NIH Layout Studio][Widget geometry]", { root: { width, height }, selectedId: selected.id, ancestry, note: "Calculated rectangles are local to their parents and expressed in unzoomed layout pixels. Spacer child geometry may be overridden by layout behavior." });
+	}, [geometryTraceEnabled, nodes, selected, width, height]);
 	return (
 		<div className="canvas-shell">
 			<div className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}) }} onMouseDown={() => undefined}>
