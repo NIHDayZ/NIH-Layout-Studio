@@ -35,4 +35,15 @@ test("selected widget diagnostic reports parent-local and absolute rectangles se
   assert.deepEqual(selected[1].renderedAbsoluteBounds,{x:100,y:230,width:100,height:30});
   assert.deepEqual(selected[0].renderedAbsoluteBounds,selected[0].absoluteBounds);
  } finally {rmSync(dir,{recursive:true,force:true});}
+  const spacerChild=spacer.children[0];
+  spacerChild.children=[{id:"grandchild",name:"Nested",type:"TextWidgetClass",properties:[property("position","0 5"),property("size","0.5 0.5"),property("hexactpos","1"),property("vexactpos","1")],children:[]}];
+  const nested=TraceWidgetGeometry([spacer],"grandchild",1920,1080);
+  assert.equal(nested[2].absoluteBounds.y,220);
+  assert.equal(nested[2].renderedAbsoluteBounds.y,205);
+  const expanded={id:"expanded",name:"Expanded",type:"PanelWidgetClass",properties:[property("position","0 0"),property("size","100 0"),property("hexactpos","1"),property("vexactpos","1"),property("hexactsize","1"),property("vexactsize","1")],children:[{id:"half",name:"Half",type:"TextWidgetClass",properties:[property("position","0 0"),property("size","1 0.5")],children:[]}]};
+  const expandedSpacer={...spacer,children:[expanded]};
+  const expandedTrace=TraceWidgetGeometry([expandedSpacer],"half",1920,1080);
+  assert.equal(expandedTrace[2].absoluteBounds.height,0);
+  assert.equal(expandedTrace[2].renderedAbsoluteBounds.height,60);
+
 });
