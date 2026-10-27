@@ -195,6 +195,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    const lines = WrapLines(text, width, advance, wrap);
    const lineHeight = fontSize * 1.25;
    let baseY = vAlign === "center" ? (height - lines.length * lineHeight) / 2 : vAlign === "bottom" ? height - lines.length * lineHeight : 0;
+   const initialBaseY = baseY;
    // Render a tinted text layer first, then composite its shadow behind it.
    const layer = document.createElement("canvas");
    layer.width = pixelWidth;
@@ -260,7 +261,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
     context.strokeRect(clipPadding + 0.5, clipPadding + 0.5, Math.max(0, width - 1), Math.max(0, height - 1));
     context.setLineDash([]);
     context.fillStyle = "#f59e0b";
-    context.fillRect(clipPadding, clipPadding + baseY - lines.length * lineHeight, Math.max(1, width), 1);
+    context.fillRect(clipPadding, clipPadding + initialBaseY, Math.max(1, width), 1);
    }
   }).catch((error) => { if (!cancelled) console.warn("[NIH Layout Studio] SDF preview unavailable", error); });
   return () => { cancelled = true; };
