@@ -1,3 +1,4 @@
+import type { SdfFontResource } from "./SdfTextCanvas";
 import type { BitmapFontDefinition } from "./FntParser";
 
 export interface ProjectFile {
@@ -47,6 +48,7 @@ export interface ProjectWorkspaceModel {
 	widgetStyles: Map<string, WidgetStyleDefinition[]>;
 	fontFamilies: Map<string, string>;
 	bitmapFonts: Map<string, BitmapFontDefinition>;
+	sdfFonts: Map<string, SdfFontResource>;
 	fontObjectUrls: string[];
 	resourceObjectUrls: Map<string, string>;
 	eddsDecoded: Set<string>;

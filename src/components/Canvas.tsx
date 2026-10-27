@@ -1,7 +1,8 @@
+import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
-import { ResolveProjectBitmapFont, ResolveProjectFont, ResolveProjectImage, ResolveProjectWidgetStyle } from "../project/ProjectWorkspace";
+import { ResolveProjectBitmapFont, ResolveProjectSdfFont, ResolveProjectFont, ResolveProjectImage, ResolveProjectWidgetStyle } from "../project/ProjectWorkspace";
 import type { BitmapFontDefinition } from "../project/FntParser";
 import {
 	GetFlag,
@@ -309,7 +310,22 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 	const fontPath = explicitFont && explicitFont.trim() && explicitFont.trim() !== '""' ? explicitFont : styleFont;
 	const fontOverride = ResolveProjectFont(project, fontPath) ?? dependencyProjects.map((dependency) => ResolveProjectFont(dependency, fontPath)).find(Boolean) ?? ResolveProjectFont(vanillaProject, fontPath);
 	const textStyle = ResolveControlTextStyle(node, rect, fontOverride);
-	const bitmapFont = ResolveProjectBitmapFont(project, fontPath) ?? dependencyProjects.map((dependency) => ResolveProjectBitmapFont(dependency, fontPath)).find(Boolean) ?? ResolveProjectBitmapFont(vanillaProject, fontPath);
+
+	// Resolve formats in each workspace before continuing to the next workspace.
+	// A project FNT3 override must beat a dependency or vanilla SDF font.
+	const workspaces = [project, ...dependencyProjects, vanillaProject];
+	let sdfFont;
+	let bitmapFont;
+	for (const workspace of workspaces) {
+		if (!workspace)
+			continue;
+		bitmapFont = ResolveProjectBitmapFont(workspace, fontPath);
+		sdfFont = ResolveProjectSdfFont(workspace, fontPath);
+		if (bitmapFont || sdfFont)
+			break;
+	}
+	if (sdfFont)
+		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={textStyle.fontSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetNodeProperty(node, "wrap") !== "0"} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
 	if (bitmapFont)
 		return RenderBitmapText(node, rect, bitmapFont, color, textStyle);
 

@@ -1,3 +1,4 @@
+import type { SdfFontResource } from "./SdfTextCanvas";
 import { InspectFnt5, ParseFsdf, ParseFsdfGlyphMetrics } from "./Fnt5Metadata";
 import type {
 	ImageSetDefinition,
@@ -443,6 +444,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 	}
 	MarkStage("EDDS decoding");
 	const bitmapFonts = new Map<string, BitmapFontDefinition>();
+	const sdfFonts = new Map<string, SdfFontResource>();
 	const unsupportedFontVersions = new Map<string, number>();
 	let parsedBitmapFontCount = 0;
 	let fnt5Inspected = 0;
@@ -473,8 +475,17 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 								if (metadata) {
 									++sdfSidecarsParsed;
 									const glyphs = ParseFsdfGlyphMetrics(await sidecar.file.text());
-									if (glyphs)
+									if (glyphs) {
 										sdfGlyphsValidated += glyphs.length;
+										const atlas = files.find((candidate) => candidate.extension === ".edds" && NormalizePath(candidate.path).toLowerCase() === NormalizePath(fontFile.path).replace(/\.fnt$/i, ".edds").toLowerCase());
+										const atlasUrl = atlas ? resourceObjectUrls.get(atlas.path) : undefined;
+										if (atlasUrl && metadata.sdfType === 2) {
+											const resource: SdfFontResource = { metadata, glyphs: new Map(glyphs.map((glyph) => [glyph.codePoint, glyph])), atlasUrl };
+											const key = NormalizePath(fontFile.path).replace(/\.fnt$/i, "").toLowerCase();
+											sdfFonts.set(key, resource);
+											sdfFonts.set(FileStem(fontFile.path), resource);
+										}
+									}
 								}
 							} catch (error) {
 								console.warn("[NIH Layout Studio] Could not inspect FSDF sidecar", sidecar.path, error);
@@ -547,7 +558,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 		totalMilliseconds,
 		stages: timingStages
 	});
-	return { name, files, filesByPath, imageSets, imageSetAliases, widgetStyles, fontFamilies, bitmapFonts, fontObjectUrls, resourceObjectUrls, eddsDecoded, eddsFailed };
+	return { name, files, filesByPath, imageSets, imageSetAliases, widgetStyles, fontFamilies, bitmapFonts, sdfFonts, fontObjectUrls, resourceObjectUrls, eddsDecoded, eddsFailed };
 }
 
 export function DisposeProjectWorkspace(project: ProjectWorkspaceModel | null) {
@@ -701,4 +712,15 @@ export function ResolveProjectWidgetStyle(project: ProjectWorkspaceModel | null,
 		return undefined;
 	const wanted = Unquote(styleName).toLowerCase();
 	return styles.find((style) => style.name.toLowerCase() === wanted);
+}
+
+export function ResolveProjectSdfFont(project: ProjectWorkspaceModel | null, fontPath: string | undefined): SdfFontResource | undefined {
+	if (!project || !fontPath)
+		return undefined;
+	const cleaned = NormalizePath(StripGuid(Unquote(fontPath))).replace(/\.fnt$/i, "").toLowerCase();
+	for (const [path, font] of project.sdfFonts) {
+		if (path === cleaned || path.endsWith(`/${cleaned}`) || cleaned.endsWith(`/${path}`))
+			return font;
+	}
+	return undefined;
 }
