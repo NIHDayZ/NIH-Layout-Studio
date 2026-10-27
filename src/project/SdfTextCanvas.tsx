@@ -20,6 +20,16 @@ const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchPara
 const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedGlyphs = new Set<string>();
 const loggedWidgets = new Set<string>();
+const resourceIds = new WeakMap<SdfFontResource, number>();
+let nextResourceId = 1;
+function ResourceId(resource: SdfFontResource): number {
+ let id = resourceIds.get(resource);
+ if (id === undefined) {
+  id = nextResourceId++;
+  resourceIds.set(resource, id);
+ }
+ return id;
+}
 const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
@@ -49,16 +59,17 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
   return cached;
  const origin = experimentalFnt5Cells ? resource.fnt5Origins?.get(glyph.codePoint) : undefined;
  // Only the tested MetronBook24 atlas has a verified 38px grid pitch.
- const usesTcrd = Boolean(origin && resource.fnt5Name?.toLowerCase() === "sdf_metronbook24" && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024);
+ const usesTcrd = !!(origin && resource.fnt5Name?.toLowerCase() === "sdf_metronbook24" && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024);
  const rect = usesTcrd
   ? { left: origin.x, top: origin.y, size: 38, scale: 1 }
   : SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
  if (debugFnt5Sampling && loggedGlyphs.size < 120) {
-  const key = (resource.fnt5Name ?? resource.metadata.fontFile) + ":" + glyph.codePoint + ":" + experimentalFnt5Cells + ":" + experimentalMsdf;
+  const key = ResourceId(resource) + ":" + glyph.codePoint + ":" + experimentalFnt5Cells + ":" + experimentalMsdf;
   if (!loggedGlyphs.has(key)) {
    loggedGlyphs.add(key);
    console.info("[NIH Layout Studio][FNT5 sampling]", {
     font: resource.fnt5Name ?? resource.metadata.fontFile,
+    resourceId: ResourceId(resource),
     codePoint: glyph.codePoint,
     character: String.fromCodePoint(glyph.codePoint),
     atlas: [atlas.source.width, atlas.source.height],
@@ -149,10 +160,10 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    return;
   let cancelled = false;
   if (debugFnt5Sampling && loggedWidgets.size < 40) {
-   const key = (resource.fnt5Name ?? resource.metadata.fontFile) + ":" + text;
+   const key = ResourceId(resource) + ":" + text;
    if (!loggedWidgets.has(key)) {
     loggedWidgets.add(key);
-    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf });
+    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, resourceId: ResourceId(resource), text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf });
    }
   }
   void LoadAtlas(resource).then((atlas) => {
