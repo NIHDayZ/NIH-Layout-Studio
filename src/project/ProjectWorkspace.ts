@@ -442,7 +442,22 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 	}
 	MarkStage("EDDS decoding");
 	const bitmapFonts = new Map<string, BitmapFontDefinition>();
+	const unsupportedFontVersions = new Map<string, number>();
+	let parsedBitmapFontCount = 0;
 	for (const fontFile of files.filter((candidate) => candidate.extension === ".fnt")) {
+		let version = "unknown";
+		try {
+			const header = new Uint8Array(await fontFile.file.slice(0, 12).arrayBuffer());
+			version = header.length === 12 ? String.fromCharCode(...header.subarray(8, 12)) : "unknown";
+		} catch (error) {
+			console.warn(`[NIH Layout Studio] Could not read bitmap font header: ${fontFile.path}`, error);
+			unsupportedFontVersions.set("unreadable", (unsupportedFontVersions.get("unreadable") ?? 0) + 1);
+			continue;
+		}
+		if (version !== "FNT3") {
+			unsupportedFontVersions.set(version, (unsupportedFontVersions.get(version) ?? 0) + 1);
+			continue;
+		}
 		const stem = FileStem(fontFile.path);
 		const atlas = files.find((candidate) => candidate.extension === ".edds" && FileStem(candidate.path) === stem);
 		if (!atlas)
@@ -454,11 +469,14 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 		const parsed = await ParseDayZFnt(fontFile.file, fontFile.path, atlas.path, atlasUrl, dimensions.width, dimensions.height);
 		if (!parsed)
 			continue;
+		++parsedBitmapFontCount;
 		const pathKey = NormalizePath(fontFile.path).replace(/\.fnt$/i, "").toLowerCase();
 		bitmapFonts.set(pathKey, parsed);
 		bitmapFonts.set(stem.toLowerCase(), parsed);
 	}
 
+	if (unsupportedFontVersions.size > 0)
+		console.warn("[NIH Layout Studio] Unsupported bitmap font formats (SDF/MSDF previews may differ from Workbench)", Object.fromEntries(unsupportedFontVersions));
 	MarkStage("bitmap font parsing");
 	const fontFamilies = new Map<string, string>();
 	const fontObjectUrls: string[] = [];
@@ -490,6 +508,8 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 			eddsDecoded: eddsDecoded.size,
 			eddsFailed: eddsFailed.size,
 			bitmapFonts: files.filter((file) => file.extension === ".fnt").length,
+			bitmapFontsParsed: parsedBitmapFontCount,
+			bitmapFontsUnsupported: Array.from(unsupportedFontVersions.values()).reduce((sum, count) => sum + count, 0),
 			webFonts: files.filter((file) => [".ttf", ".otf", ".woff", ".woff2"].includes(file.extension)).length
 		},
 		totalMilliseconds,
