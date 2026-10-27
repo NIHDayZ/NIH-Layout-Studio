@@ -53,12 +53,16 @@ export interface ProjectWorkspaceModel {
 	sdfFonts: Map<string, SdfFontResource>;
 	fontObjectUrls: string[];
 	resourceObjectUrls: Map<string, string>;
+	resourceDimensions: Map<string, { width: number; height: number }>;
 	eddsDecoded: Set<string>;
 	eddsFailed: Map<string, string>;
 }
 
 export interface ResolvedImageResource {
 	url: string;
+	/** Logical unscaled size for 9-slice borders and layout measurements. */
+	logicalWidth?: number;
+	logicalHeight?: number;
 	x: number;
 	y: number;
 	width: number;
