@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: FNT5 TCRD atlas origin tests
+        run: node --test tests/fnt5-atlas-origins.test.mjs
+
       - name: Opt-in MSDF renderer math tests
         run: node --test tests/sdf-msdf-render.test.mjs
 
