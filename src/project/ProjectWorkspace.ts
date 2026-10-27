@@ -1,6 +1,7 @@
 import { ScaleImageSetCoordinates } from "./ImageSetVariants";
 import type { SdfFontResource } from "./SdfTextCanvas";
 import { InspectFnt5, ParseFsdf, ParseFsdfGlyphMetrics } from "./Fnt5Metadata";
+import { ParseFnt5AtlasOrigins } from "./Fnt5AtlasOrigins";
 import type {
 	ImageSetDefinition,
 	ImageSetImage,
@@ -496,7 +497,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 										const atlas = files.find((candidate) => candidate.extension === ".edds" && NormalizePath(candidate.path).toLowerCase() === NormalizePath(fontFile.path).replace(/\.fnt$/i, ".edds").toLowerCase());
 										const atlasUrl = atlas ? resourceObjectUrls.get(atlas.path) : undefined;
 										if (atlasUrl && metadata.sdfType === 2) {
-											const resource: SdfFontResource = { metadata, glyphs: new Map(glyphs.map((glyph) => [glyph.codePoint, glyph])), atlasUrl };
+											const resource: SdfFontResource = { metadata, glyphs: new Map(glyphs.map((glyph) => [glyph.codePoint, glyph])), atlasUrl, fnt5Origins: ParseFnt5AtlasOrigins(bytes) ?? undefined, fnt5Name: FileStem(fontFile.path) };
 											const key = NormalizePath(fontFile.path).replace(/\.fnt$/i, "").toLowerCase();
 											sdfFonts.set(key, resource);
 											sdfFonts.set(FileStem(fontFile.path), resource);
