@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: Packed FNT5 chunk tests
+        run: node --test tests/fnt5-packed-chunks.test.mjs
+
       - name: FNT5 unclipped glyph preview tests
         run: node --test tests/fnt5-unclipped-preview.test.mjs
 
