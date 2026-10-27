@@ -33,7 +33,7 @@ export function ParseFsdf(source: string): SdfFontMetadata | null {
   const block = source.match(/\bCharacters\s*\{([^}]*)\}/i);
   if (!fontFile || !block)
    return null;
-  const characters = block[1].trim().split(/\s+/).map(Number);
+  const characters = block[1].trim() ? block[1].trim().split(/\s+/).map(Number) : [];
   if (characters.some((v) => !Number.isInteger(v) || v < 0 || v > 0x10ffff))
    return null;
   const fontSize = Numeric(source, "FontSize");
