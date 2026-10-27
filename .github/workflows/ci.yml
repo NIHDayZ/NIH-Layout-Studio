@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: FNT5 metric correlation tests
+        run: node --test tests/fnt5-tcrd-metric-correlation.test.mjs
+
       - name: GLPS range-mapping tests
         run: node --test tests/fnt5-glps-range-mapping.test.mjs
 
