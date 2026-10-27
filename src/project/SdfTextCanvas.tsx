@@ -167,8 +167,9 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
     context.shadowBlur = 0;
     context.shadowOffsetX = 0;
     context.shadowOffsetY = 0;
+   } else {
+    context.drawImage(layer, 0, 0);
    }
-   context.drawImage(layer, 0, 0);
   }).catch((error) => { if (!cancelled) console.warn("[NIH Layout Studio] SDF preview unavailable", error); });
   return () => { cancelled = true; };
  }, [resource, text, color, fontSize, width, height, hAlign, vAlign, wrap, shadowSize, shadowOffsetX, shadowOffsetY, shadowColor]);
