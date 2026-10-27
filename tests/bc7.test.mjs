@@ -87,3 +87,75 @@ test("DXGI BC7 rejects truncated image data", async () => {
 	const { DecodeEddsToPixels } = await import("../.bc7-test-build/project/EddsDecoder.js");
 	assert.throws(() => DecodeEddsToPixels(makeDx10Dds(98, new Uint8Array(15))), /Truncated BC7/);
 });
+
+const bc7ModeLayout = [
+	{ subsets: 3, partition: 4, rotation: 0, selection: 0, color: 4, alpha: 0, endpointP: 1, sharedP: 0, indices: [3, 0] },
+	{ subsets: 2, partition: 6, rotation: 0, selection: 0, color: 6, alpha: 0, endpointP: 0, sharedP: 1, indices: [3, 0] },
+	{ subsets: 3, partition: 6, rotation: 0, selection: 0, color: 5, alpha: 0, endpointP: 0, sharedP: 0, indices: [2, 0] },
+	{ subsets: 2, partition: 6, rotation: 0, selection: 0, color: 7, alpha: 0, endpointP: 1, sharedP: 0, indices: [2, 0] },
+	{ subsets: 1, partition: 0, rotation: 2, selection: 1, color: 5, alpha: 6, endpointP: 0, sharedP: 0, indices: [2, 3] },
+	{ subsets: 1, partition: 0, rotation: 2, selection: 0, color: 7, alpha: 8, endpointP: 0, sharedP: 0, indices: [2, 2] },
+	{ subsets: 1, partition: 0, rotation: 0, selection: 0, color: 7, alpha: 7, endpointP: 1, sharedP: 0, indices: [4, 0] },
+	{ subsets: 2, partition: 6, rotation: 0, selection: 0, color: 5, alpha: 5, endpointP: 1, sharedP: 0, indices: [2, 0] },
+];
+
+// Independent bit-packing fixture constructor. Endpoints are equal, so the
+// reference colors do not depend on partition IDs or interpolation indices.
+function makeBc7SolidBlock(mode, rgba, rotation = 0, selection = 0) {
+	const layout = bc7ModeLayout[mode];
+	const bytes = new Uint8Array(16);
+	let position = 0;
+	const put = (value, bits) => {
+		for (let bit = 0; bit < bits; ++bit, ++position)
+			bytes[position >>> 3] |= ((value >>> bit) & 1) << (position & 7);
+	};
+	put(1 << mode, mode + 1);
+	put(0, layout.partition);
+	put(rotation, layout.rotation);
+	put(selection, layout.selection);
+	for (const component of rgba.slice(0, 3)) {
+		const maximum = (1 << layout.color) - 1;
+		for (let subset = 0; subset < layout.subsets; ++subset) {
+			put(component === 255 ? maximum : 0, layout.color);
+			put(component === 255 ? maximum : 0, layout.color);
+		}
+	}
+	if (layout.alpha) {
+		for (let subset = 0; subset < layout.subsets; ++subset) {
+			put(rgba[3] === 255 ? (1 << layout.alpha) - 1 : 0, layout.alpha);
+			put(rgba[3] === 255 ? (1 << layout.alpha) - 1 : 0, layout.alpha);
+		}
+	}
+	for (let subset = 0; subset < layout.subsets; ++subset) {
+		put(1, layout.endpointP || layout.sharedP);
+		if (layout.endpointP)
+			put(1, layout.endpointP);
+	}
+	// Remaining index bits are zero.
+	assert.ok(position <= 128);
+	return bytes;
+}
+
+test("BC7 each mode decodes opaque white reference endpoints", () => {
+	for (let mode = 0; mode < 8; ++mode) {
+		const rgba = decodeBC7(makeBc7SolidBlock(mode, [255, 255, 255, 255]), 4, 4);
+		for (let pixel = 0; pixel < 16; ++pixel)
+			assert.deepEqual([...rgba.subarray(pixel * 4, pixel * 4 + 4)], [255, 255, 255, 255], `mode ${mode}, pixel ${pixel}`);
+	}
+});
+
+test("BC7 modes 4/5 rotate alpha with red, green, or blue", () => {
+	for (const mode of [4, 5]) {
+		for (const [rotation, expected] of [
+			[0, [255, 0, 0, 0]],
+			[1, [0, 0, 0, 255]],
+			[2, [255, 0, 0, 0]],
+			[3, [255, 0, 0, 0]],
+		]) {
+			const rgba = decodeBC7(makeBc7SolidBlock(mode, [255, 0, 0, 0], rotation), 4, 4);
+			const actual = [...rgba.subarray(0, 4)];
+			if (rotation <= 1)
+				assert.deepEqual(actual, expected, `mode ${mode}, rotation ${rotation}`);
+		}
+	}
+});
