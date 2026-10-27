@@ -845,7 +845,8 @@ export default function App() {
 		projectDirectoryHandleRef.current = null;
 		currentFileHandleRef.current = null;
 		setLocalSourceMode(false);
-		setProjectLoading(true);
+		setTextureProgress((previous) => ({ ...previous, project: null }));
+			setProjectLoading(true);
 		try {
 			const nextProject = await BuildProjectWorkspace(files, TrackTextures("project"));
 			setProject(nextProject);
@@ -863,7 +864,8 @@ export default function App() {
 	async function OpenVanillaFiles(files: File[]) {
 		if (files.length === 0)
 			return;
-		setVanillaLoading(true);
+		setTextureProgress((previous) => ({ ...previous, vanilla: null }));
+			setVanillaLoading(true);
 		try {
 			const nextVanilla = await BuildProjectWorkspace(files, TrackTextures("vanilla"));
 			setVanillaProject(nextVanilla);
@@ -881,7 +883,8 @@ export default function App() {
 	async function OpenDependencyFiles(files: File[]) {
 		if (files.length === 0)
 			return;
-		setDependencyLoading(true);
+		setTextureProgress((previous) => ({ ...previous, dependency: null }));
+			setDependencyLoading(true);
 		try {
 			const nextDependency = await BuildProjectWorkspace(files, TrackTextures("dependency"));
 			setDependencyProjects((current) => [...current, nextDependency]);
@@ -1356,6 +1359,7 @@ export default function App() {
 		}
 		try {
 			const directoryHandle = await picker({ mode: "readwrite" });
+			setTextureProgress((previous) => ({ ...previous, project: null }));
 			setProjectLoading(true);
 			const collected = await CollectDirectoryFiles(directoryHandle, directoryHandle.name || "Project");
 			const nextProject = await BuildProjectWorkspace(collected.files, TrackTextures("project"));
@@ -1544,6 +1548,7 @@ export default function App() {
 			return;
 		}
 		try {
+			setTextureProgress((previous) => ({ ...previous, dependency: null }));
 			setDependencyLoading(true);
 			const directoryHandle = await picker({ mode: "read", id: "nih-layout-studio-dependency-mod" });
 			const collected = await CollectDirectoryFiles(directoryHandle, directoryHandle.name || "Dependency");
@@ -1566,6 +1571,7 @@ export default function App() {
 			return;
 		}
 		try {
+			setTextureProgress((previous) => ({ ...previous, vanilla: null }));
 			setVanillaLoading(true);
 			const directoryHandle = await picker({ mode: "read", id: "nih-layout-studio-vanilla-gui" });
 			const collected = await CollectDirectoryFiles(directoryHandle, directoryHandle.name || "gui");
@@ -1721,16 +1727,20 @@ export default function App() {
 		});
 	}
 
+	const activeLoadKind = projectLoading ? "project" : dependencyLoading ? "dependency" : vanillaLoading ? "vanilla" : null;
+	const activeTextureProgress = activeLoadKind ? textureProgress[activeLoadKind] : null;
+	const activeLoadLabel = activeLoadKind === "project" ? "Loading project files and indexing resources…" : activeLoadKind === "dependency" ? "Indexing dependency resources…" : activeLoadKind === "vanilla" ? "Indexing vanilla GUI resources…" : "";
+	const activeLoadMessage = activeLoadLabel + (activeTextureProgress && activeTextureProgress.total > 0 ? ` · Decoding textures (${activeTextureProgress.completed}/${activeTextureProgress.total})` : "");
+
 	return (
 		<div className="app">
 			<div className="resource-loading-announcement" role="status" aria-live="polite" aria-atomic="true">
-				{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : vanillaLoading ? "Indexing vanilla GUI resources…" : ""}
-				{(projectLoading && textureProgress.project && textureProgress.project.total > 0) ? ` · Decoding textures (${textureProgress.project.completed}/${textureProgress.project.total})` : (dependencyLoading && textureProgress.dependency && textureProgress.dependency.total > 0) ? ` · Decoding textures (${textureProgress.dependency.completed}/${textureProgress.dependency.total})` : (vanillaLoading && textureProgress.vanilla && textureProgress.vanilla.total > 0) ? ` · Decoding textures (${textureProgress.vanilla.completed}/${textureProgress.vanilla.total})` : ""}
+				{activeLoadMessage}
 			</div>
-			{(projectLoading || dependencyLoading || vanillaLoading) && (
+			{activeLoadKind && (
 				<div className="resource-loading-status" aria-hidden="true">
 					<span className="resource-loading-spinner" />
-					<span>{projectLoading ? "Loading project files and indexing resources…" : dependencyLoading ? "Indexing dependency resources…" : "Indexing vanilla GUI resources…"} {(projectLoading && textureProgress.project && textureProgress.project.total > 0) ? ` · Decoding textures (${textureProgress.project.completed}/${textureProgress.project.total})` : (dependencyLoading && textureProgress.dependency && textureProgress.dependency.total > 0) ? ` · Decoding textures (${textureProgress.dependency.completed}/${textureProgress.dependency.total})` : (vanillaLoading && textureProgress.vanilla && textureProgress.vanilla.total > 0) ? ` · Decoding textures (${textureProgress.vanilla.completed}/${textureProgress.vanilla.total})` : ""}</span>
+					<span>{activeLoadMessage}</span>
 				</div>
 			)}
 			<header className="toolbar">
