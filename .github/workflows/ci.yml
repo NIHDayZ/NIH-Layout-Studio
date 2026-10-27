@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: GLPS entry hypothesis tests
+        run: node --test tests/fnt5-glps-entries.test.mjs
+
       - name: GLPS structure tests
         run: node --test tests/fnt5-glps-structure.test.mjs
 
