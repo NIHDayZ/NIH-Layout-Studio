@@ -13,7 +13,8 @@
     "test:layout-ids": "tsc src/parser/LayoutParser.ts src/model/WidgetCopyName.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --rootDir src --outDir .layout-parser-test-build && node --test tests/layout-widget-ids.test.mjs",
     "build:bc7-tests": "tsc src/project/Bc7Decoder.ts src/project/EddsDecoder.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --rootDir src --outDir .bc7-test-build",
     "test:fnt5": "tsc src/project/Fnt5Metadata.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --outDir .fnt5-test-build && node --test tests/fnt5-metadata.test.mjs",
-    "test:sdf-preview": "tsc src/project/SdfRasterMath.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --outDir .sdf-preview-test-build && node --test tests/sdf-preview.test.mjs"
+    "test:sdf-preview": "tsc src/project/SdfRasterMath.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --outDir .sdf-preview-test-build && node --test tests/sdf-preview.test.mjs",
+    "test:imageset": "tsc src/project/ImageSetVariants.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --outDir .imageset-test-build && node --test tests/imageset-variants.test.mjs"
   },
   "dependencies": {
     "react": "^19.1.1",
