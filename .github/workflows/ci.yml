@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: FNT5 MSDF median preview tests
+        run: node --test tests/fnt5-msdf-preview.test.mjs
+
       - name: FNT5 channel contact sheet tests
         run: node --test tests/fnt5-channel-sheet.test.mjs
 
