@@ -300,7 +300,18 @@ function ResolveControlTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverrid
 	return textStyle;
 }
 
-const experimentalFnt5Fit = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Fit") === "1";
+const experimentalFnt5FitRaw = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("experimentalFnt5Fit") : null;
+// "1" retains the original 0.8 diagnostic cap. Numeric ratios allow controlled Workbench comparisons.
+const experimentalFnt5FitRatio = (() => {
+	if (experimentalFnt5FitRaw === null || experimentalFnt5FitRaw === "0")
+		return null;
+	if (experimentalFnt5FitRaw === "1")
+		return 0.8;
+	const ratio = Number(experimentalFnt5FitRaw);
+	if (!Number.isFinite(ratio) || ratio < 0.5 || ratio > 1.2)
+		return null;
+	return ratio;
+})();
 const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
@@ -350,8 +361,8 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 			const value = Number(GetNodeProperty(node, name));
 			return Number.isFinite(value) && value > 0;
 		});
-		const fittedSize = experimentalFnt5Fit && sdfFont.fnt5PixelMetrics && !explicitTextSize
-			? Math.min(textStyle.fontSize, Math.max(1, rect.height * 0.8))
+		const fittedSize = experimentalFnt5FitRatio !== null && sdfFont.fnt5PixelMetrics && !explicitTextSize
+			? Math.min(textStyle.fontSize, Math.max(1, rect.height * experimentalFnt5FitRatio))
 			: textStyle.fontSize;
 		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={fittedSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetNodeProperty(node, "wrap") !== "0"} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
 	}
