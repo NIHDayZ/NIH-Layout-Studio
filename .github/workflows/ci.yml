@@ -12,6 +12,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Widget geometry diagnostic tests
+        run: node --test tests/widget-geometry-diagnostic.test.mjs
+
       - name: Checkout
         uses: actions/checkout@v4
 
