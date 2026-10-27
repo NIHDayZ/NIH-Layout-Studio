@@ -44,6 +44,12 @@ test("sidecar-less FNT5 parser handles non-RICH GLPS and pixel metrics",async()=
   assert.equal(signed.glyphs.get(66).bearingX,-3);
   assert.equal(signed.glyphs.get(66).bearingY,19);
   assert.equal(signed.glyphs.get(66).advance,15);
+  // A glyph cannot exceed its fixed-pitch atlas cell.
+  tcrd.writeUInt16LE(39,18);
+  const oversizedBody=Buffer.concat([chunk("HEAD",head),chunk("GLPS",glps),chunk("TCRD",tcrd)]);
+  const oversizedHeader=Buffer.alloc(12);
+  oversizedHeader.write("FORM");oversizedHeader.writeUInt32BE(oversizedBody.length+4,4);oversizedHeader.write("FNT5",8);
+  assert.equal(ParseStandaloneFnt5(Buffer.concat([oversizedHeader,oversizedBody]),"blob:test",1024,1024),null);
   assert.equal(ParseStandaloneFnt5(binary,"blob:test",50,50),null);
  }finally{rmSync(dir,{recursive:true,force:true});}
 });
