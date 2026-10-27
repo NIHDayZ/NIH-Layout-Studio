@@ -17,5 +17,5 @@ test("unclipped contact sheet uses median threshold and explicit nominal size",(
  const svg=unclippedFnt5Svg({width:4,height:4,rgba},entry,{pitch:2,nominalSize:24,sizes:[24,72]});
  assert.match(svg,/fill="#111"/);assert.match(svg,/fill="#fff"/);
  assert.match(svg,/24px/);assert.match(svg,/72px/);
- assert.throws(()=>unclippedFnt5Svg({width:4,height:4,rgba},entry,{pitch:5}),/Cell outside atlas/);
+ assert.throws(()=>unclippedFnt5Svg({width:4,height:4,rgba},entry,{pitch:5,nominalSize:24}),/Cell outside atlas/);
 });
