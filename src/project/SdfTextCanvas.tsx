@@ -85,7 +85,8 @@ function WrapLines(text: string, width: number, advance: (text: string) => numbe
     line = fragment;
    }
   }
-  result.push(line);
+  if (line || paragraph.length === 0 || result.length === 0)
+   result.push(line.trimEnd());
  }
  return result;
 }
