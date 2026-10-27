@@ -3,7 +3,7 @@ import {readFileSync,writeFileSync} from "node:fs";
 import {mkdtempSync,rmSync} from "node:fs";
 import {tmpdir} from "node:os";
 import {join,resolve} from "node:path";
-import {pathToFileURL} from "node:url";
+import {fileURLToPath,pathToFileURL} from "node:url";
 import {build} from "esbuild";
 import {inspectFnt5,inspectFsdf} from "./inspect-fnt5.mjs";
 import {glyphGeometryReport} from "./preview-fnt5-geometry.mjs";
@@ -13,7 +13,7 @@ export async function loadExistingEddsDecoder() {
  const dir=mkdtempSync(join(tmpdir(),"nih-edds-check-"));
  try {
   const outfile=join(dir,"decoder.mjs");
-  await build({entryPoints:[new URL("../src/project/EddsDecoder.ts",import.meta.url).pathname],outfile,bundle:true,platform:"node",format:"esm",target:"node20",logLevel:"silent"});
+  await build({entryPoints:[fileURLToPath(new URL("../src/project/EddsDecoder.ts",import.meta.url))],outfile,bundle:true,platform:"node",format:"esm",target:"node20",logLevel:"silent"});
   const module=await import(pathToFileURL(outfile).href);
   return module.DecodeEddsToPixels;
  } finally {
