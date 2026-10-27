@@ -336,7 +336,9 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 				fontPath: fontPath ?? null, route,
 				resolvedSdf: sdfFont?.fnt5Name ?? null,
 				resolvedBitmap: bitmapFont?.name ?? null,
-				fontOverride: fontOverride ?? null
+				fontOverride: fontOverride ?? null,
+				availableSdfFonts: workspaces.flatMap((ws, index) => ws ? Array.from(ws.sdfFonts.keys()).filter(key => !key.includes("/")).map(key => ({ workspace: index, name: key })) : []),
+				availableBitmapFonts: workspaces.flatMap((ws, index) => ws ? Array.from(ws.bitmapFonts.keys()).filter(key => !key.includes("/")).map(key => ({ workspace: index, name: key })) : [])
 			});
 		}
 	}
