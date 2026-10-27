@@ -1,7 +1,8 @@
+import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
-import { ResolveProjectBitmapFont, ResolveProjectFont, ResolveProjectImage, ResolveProjectWidgetStyle } from "../project/ProjectWorkspace";
+import { ResolveProjectBitmapFont, ResolveProjectSdfFont, ResolveProjectFont, ResolveProjectImage, ResolveProjectWidgetStyle } from "../project/ProjectWorkspace";
 import type { BitmapFontDefinition } from "../project/FntParser";
 import {
 	GetFlag,
@@ -309,6 +310,9 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 	const fontPath = explicitFont && explicitFont.trim() && explicitFont.trim() !== '""' ? explicitFont : styleFont;
 	const fontOverride = ResolveProjectFont(project, fontPath) ?? dependencyProjects.map((dependency) => ResolveProjectFont(dependency, fontPath)).find(Boolean) ?? ResolveProjectFont(vanillaProject, fontPath);
 	const textStyle = ResolveControlTextStyle(node, rect, fontOverride);
+	const sdfFont = ResolveProjectSdfFont(project, fontPath) ?? dependencyProjects.map((dependency) => ResolveProjectSdfFont(dependency, fontPath)).find(Boolean) ?? ResolveProjectSdfFont(vanillaProject, fontPath);
+	if (sdfFont)
+		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={textStyle.fontSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} />;
 	const bitmapFont = ResolveProjectBitmapFont(project, fontPath) ?? dependencyProjects.map((dependency) => ResolveProjectBitmapFont(dependency, fontPath)).find(Boolean) ?? ResolveProjectBitmapFont(vanillaProject, fontPath);
 	if (bitmapFont)
 		return RenderBitmapText(node, rect, bitmapFont, color, textStyle);
