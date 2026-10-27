@@ -458,8 +458,8 @@ function RenderStyleChrome(node: LayoutNode, rect: Rect, visualState: WidgetVisu
 	if (pieces.size === 0)
 		return null;
 
-	const maxWidth = (...keys: string[]) => Math.max(0, ...keys.map((key) => pieces.get(key)?.width ?? 0));
-	const maxHeight = (...keys: string[]) => Math.max(0, ...keys.map((key) => pieces.get(key)?.height ?? 0));
+	const maxWidth = (...keys: string[]) => Math.max(0, ...keys.map((key) => pieces.get(key)?.logicalWidth ?? pieces.get(key)?.width ?? 0));
+	const maxHeight = (...keys: string[]) => Math.max(0, ...keys.map((key) => pieces.get(key)?.logicalHeight ?? pieces.get(key)?.height ?? 0));
 	let left = maxWidth("lefttop", "left", "leftbottom");
 	let right = maxWidth("righttop", "right", "rightbottom");
 	let top = maxHeight("lefttop", "top", "righttop");
