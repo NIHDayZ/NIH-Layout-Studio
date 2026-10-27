@@ -22,13 +22,13 @@ export function selectFnt5Glyphs(font,text) {
 }
 export function unclippedFnt5Svg(decoded, entries,{pitch,sizes=[16,24,72]}={}) {
  const {width,height,rgba}=decoded;
- if(!Number.isInteger(width)||!Number.isInteger(height)||rgba.length!==width*height*4||!Number.isInteger(pitch)||pitch<1||pitch>256)throw Error("Invalid atlas or pitch");
+ if(!Number.isInteger(width)||!Number.isInteger(height)||rgba.length!==width*height*4||!Number.isInteger(pitch)||pitch<1||pitch>256||!Number.isFinite(nominalSize)||nominalSize<=0)throw Error("Invalid atlas or pitch");
  const columns=entries.length,unit=100,gap=20,rowHeight=340;
  const fullWidth=140+columns*(unit+gap),fullHeight=90+sizes.length*rowHeight;
  const out=['<svg xmlns="http://www.w3.org/2000/svg" width="'+fullWidth+'" height="'+fullHeight+'" viewBox="0 0 '+fullWidth+' '+fullHeight+'"><rect width="100%" height="100%" fill="#111827"/>'];
  for(let i=0;i<sizes.length;++i){
   const size=sizes[i];if(!Number.isFinite(size)||size<=0)throw Error("Invalid preview size");
-  const factor=size/24,display=Math.min(220,pitch*factor);
+  const factor=size/nominalSize,display=Math.min(220,pitch*factor);
   out.push('<text x="12" y="'+(100+i*rowHeight)+'" fill="white" font-size="16">'+size+'px</text>');
   for(let j=0;j<entries.length;++j){
    const {character,record}=entries[j],left=140+j*(unit+gap),top=70+i*rowHeight;
@@ -49,13 +49,13 @@ export function unclippedFnt5Svg(decoded, entries,{pitch,sizes=[16,24,72]}={}) {
  return out.join("")+'</svg>';
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
- const [,,fntFile,eddsFile,pitchArg,output]=process.argv;
- if(!fntFile||!eddsFile||!pitchArg||!output){console.error("Usage: node tools/fnt5-unclipped-preview.mjs <font.fnt> <font.edds> <cell-pitch> <output.svg>");process.exitCode=1;}
+ const [,,fntFile,eddsFile,pitchArg,nominalArg,output]=process.argv;
+ if(!fntFile||!eddsFile||!pitchArg||!nominalArg||!output){console.error("Usage: node tools/fnt5-unclipped-preview.mjs <font.fnt> <font.edds> <cell-pitch> <nominal-font-size> <output.svg>");process.exitCode=1;}
  else try{
   const font=inspectFnt5(readFileSync(fntFile)),bytes=readFileSync(eddsFile),decode=await loadExistingEddsDecoder();
   const decoded=decode(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));
   const entries=selectFnt5Glyphs(font,"ACTION 10 AB");
-  writeFileSync(output,unclippedFnt5Svg(decoded,entries,{pitch:Number(pitchArg)}));
+  writeFileSync(output,unclippedFnt5Svg(decoded,entries,{pitch:Number(pitchArg),nominalSize:Number(nominalArg)}));
   console.log(JSON.stringify({output,atlas:[decoded.width,decoded.height],glyphs:entries.map(e=>e.character),note:"Unclipped independent cells; no baseline, kerning, or widget clipping. Sizes are illustrative, not calibrated font metrics."},null,2));
  }catch(error){console.error(error);process.exitCode=1;}
 }
