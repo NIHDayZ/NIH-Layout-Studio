@@ -21,6 +21,8 @@ export interface ImageSetDefinition {
 	name: string;
 	path: string;
 	texturePath: string | null;
+	/** Available native atlas variants; mpix 0 is the reference-resolution atlas. */
+	textures?: Array<{ path: string; mpix: number }>;
 	refWidth: number;
 	refHeight: number;
 	images: Map<string, ImageSetImage>;
