@@ -35,6 +35,9 @@ jobs:
       - name: Workbench widget ID compatibility tests
         run: npm run test:layout-ids
 
+      - name: FNT5 metadata tests
+        run: npm run test:fnt5
+
       - name: Production build
         run: npm run build
 
