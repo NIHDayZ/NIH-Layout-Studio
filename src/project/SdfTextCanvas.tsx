@@ -19,6 +19,7 @@ const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
 const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Cells") === "1";
 const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedGlyphs = new Set<string>();
+const loggedWidgets = new Set<string>();
 const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
@@ -147,6 +148,13 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
   if (!canvas)
    return;
   let cancelled = false;
+  if (debugFnt5Sampling && loggedWidgets.size < 40) {
+   const key = (resource.fnt5Name ?? resource.metadata.fontFile) + ":" + text;
+   if (!loggedWidgets.has(key)) {
+    loggedWidgets.add(key);
+    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf });
+   }
+  }
   void LoadAtlas(resource).then((atlas) => {
    if (cancelled)
     return;
