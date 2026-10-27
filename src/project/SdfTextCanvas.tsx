@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
 import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
+import { MsdfAlpha } from "./SdfMsdfMath";
 
 export interface SdfFontResource {
  metadata: SdfFontMetadata;
@@ -12,6 +13,8 @@ interface CachedAtlas {
  glyphs: Map<number, HTMLCanvasElement>;
 }
 const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
+// Explicit opt-in via ?experimentalMsdf=1; production remains on legacy red-channel SDF.
+const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
  if (existing)
@@ -47,7 +50,9 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
   return null;
  const pixels = sourceCtx.getImageData(sourceX, sourceY, cell, cell);
  for (let p = 0; p < pixels.data.length; p += 4) {
-  const alpha = SdfSampleAlpha(pixels.data[p], resource.metadata.inverted);
+  const alpha = experimentalMsdf
+   ? MsdfAlpha(pixels.data[p], pixels.data[p + 1], pixels.data[p + 2], resource.metadata.inverted)
+   : SdfSampleAlpha(pixels.data[p], resource.metadata.inverted);
   pixels.data[p] = 255;
   pixels.data[p + 1] = 255;
   pixels.data[p + 2] = 255;
