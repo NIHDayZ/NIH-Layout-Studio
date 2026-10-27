@@ -465,7 +465,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 					const structure = InspectFnt5(bytes);
 					if (structure && structure.glyphRecordCount > 0) {
 						++fnt5Inspected;
-						const sidecar = files.find((candidate) => candidate.extension === ".fsdf" && FileStem(candidate.path) === FileStem(fontFile.path));
+						const sidecar = files.find((candidate) => candidate.extension === ".fsdf" && NormalizePath(candidate.path).toLowerCase() === NormalizePath(fontFile.path).replace(/\.fnt$/i, ".fsdf").toLowerCase());
 						if (sidecar) {
 							try {
 								const metadata = ParseFsdf(await sidecar.file.text());
