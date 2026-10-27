@@ -1270,3 +1270,22 @@ input[type="checkbox"] { accent-color: var(--nih-accent); }
 .project-row:hover, .tree-row:hover { background: #252c24; }
 .project-row.selected, .tree-row.selected { background: #30392e; color: var(--nih-text); }
 .image-resource-preview { border-color: var(--nih-border); background-color: #161a17; }
+
+/* Keep the properties heading visible while long HUD widget inspectors scroll. */
+.properties-panel {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+}
+.properties-panel > .panel-title {
+	flex: 0 0 auto;
+}
+.properties-panel-scroll {
+	flex: 1 1 auto;
+	min-height: 0;
+	min-width: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	overscroll-behavior: contain;
+	scrollbar-gutter: stable;
+}
