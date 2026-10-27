@@ -300,6 +300,8 @@ function ResolveControlTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverrid
 	return textStyle;
 }
 
+const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
+const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
 	const text = GetNodeProperty(node, "text") ?? "";
 	const resolvedStyle = ResolveWidgetStyle(node, project, dependencyProjects, vanillaProject);
@@ -323,6 +325,20 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 		sdfFont = ResolveProjectSdfFont(workspace, fontPath);
 		if (bitmapFont || sdfFont)
 			break;
+	}
+	if (debugTextResolution && text.trim() && loggedTextRoutes.size < 100) {
+		const route = sdfFont ? "SDF" : bitmapFont ? "FNT3 bitmap" : fontOverride ? "webfont" : "CSS fallback";
+		const key = node.id + ":" + route + ":" + text;
+		if (!loggedTextRoutes.has(key)) {
+			loggedTextRoutes.add(key);
+			console.info("[NIH Layout Studio][Text route]", {
+				widget: node.name, widgetId: node.id, text: text.slice(0, 100),
+				fontPath: fontPath ?? null, route,
+				resolvedSdf: sdfFont?.fnt5Name ?? null,
+				resolvedBitmap: bitmapFont?.name ?? null,
+				fontOverride: fontOverride ?? null
+			});
+		}
 	}
 	if (sdfFont)
 		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={textStyle.fontSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetNodeProperty(node, "wrap") !== "0"} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
