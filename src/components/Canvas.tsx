@@ -301,12 +301,12 @@ function ResolveControlTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverrid
 }
 
 const experimentalFnt5FitRaw = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("experimentalFnt5Fit") : null;
-// "1" retains the original 0.8 diagnostic cap. Numeric ratios allow controlled Workbench comparisons.
+// "1" uses the best-observed 0.9 Workbench comparison baseline. Numeric ratios remain available for diagnostics.
 const experimentalFnt5FitRatio = (() => {
 	if (experimentalFnt5FitRaw === null || experimentalFnt5FitRaw === "0")
 		return null;
 	if (experimentalFnt5FitRaw === "1")
-		return 0.8;
+		return 0.9;
 	const ratio = Number(experimentalFnt5FitRaw);
 	if (!Number.isFinite(ratio) || ratio < 0.5 || ratio > 1.2)
 		return null;
