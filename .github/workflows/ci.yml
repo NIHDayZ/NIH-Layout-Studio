@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: Opt-in MSDF renderer math tests
+        run: node --test tests/sdf-msdf-render.test.mjs
+
       - name: FNT5 MSDF median preview tests
         run: node --test tests/fnt5-msdf-preview.test.mjs
 
