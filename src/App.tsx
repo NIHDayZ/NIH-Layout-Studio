@@ -1,3 +1,4 @@
+import { MakeCopiedWidgetNameFromNames } from "./model/WidgetCopyName";
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent } from "react";
 import { Canvas, type CanvasDebugOptions } from "./components/Canvas";
 import { ProjectPanel } from "./components/ProjectPanel";
@@ -62,22 +63,7 @@ function CollectNodeNames(nodes: LayoutNode[], names = new Set<string>()): Set<s
 }
 
 function MakeCopiedWidgetName(nodes: LayoutNode[], name: string): string {
-	const match = name.match(/^"\{([0-9a-fA-F]+)\}"$/);
-	if (!match)
-		return MakeUniqueNodeName(nodes, `${name}_Copy`);
-	const names = CollectNodeNames(nodes);
-	const original = match[1];
-	const width = original.length;
-	const limit = 1n << BigInt(width * 4);
-	let next = (BigInt(`0x${original}`) + 1n) % limit;
-	const first = next;
-	do {
-		const candidate = `"{${next.toString(16).toUpperCase().padStart(width, "0")}}"`;
-		if (!names.has(candidate))
-			return candidate;
-		next = (next + 1n) % limit;
-	} while (next !== first);
-	throw new Error("No available widget identifiers");
+	return MakeCopiedWidgetNameFromNames(CollectNodeNames(nodes), name);
 }
 
 function MakeUniqueNodeName(nodes: LayoutNode[], baseName: string): string {
