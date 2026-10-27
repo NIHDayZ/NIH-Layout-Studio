@@ -137,7 +137,7 @@ export class LayoutParser {
 		};
 
 		let index = startIndex;
-		let opened = tokens[index].text.includes("{");
+		let opened = tokens[index].text.endsWith("{");
 		++index;
 
 		if (!opened && index < tokens.length && tokens[index].text === "{") {
@@ -317,7 +317,7 @@ export class LayoutParser {
 		if (!trimmed || trimmed === "{" || trimmed === "}" || trimmed.startsWith("//"))
 			return null;
 
-		const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)\s+([^\s{]+)\s*(?:\{)?$/);
+		const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)\s+("(?:\\.|[^"\\])*"|[^\s{]+)\s*(?:\{)?$/);
 		if (!match)
 			return null;
 
