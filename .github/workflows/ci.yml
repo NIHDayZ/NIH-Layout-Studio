@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: FNT5 channel contact sheet tests
+        run: node --test tests/fnt5-channel-sheet.test.mjs
+
       - name: FNT5 atlas CLI path tests
         run: node --test tests/fnt5-atlas-cli-path.test.mjs
 
