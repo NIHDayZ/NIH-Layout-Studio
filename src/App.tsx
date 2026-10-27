@@ -62,7 +62,7 @@ function CollectNodeNames(nodes: LayoutNode[], names = new Set<string>()): Set<s
 }
 
 function MakeCopiedWidgetName(nodes: LayoutNode[], name: string): string {
-	const match = name.match(/^"\\{([0-9a-fA-F]+)\\}"$/);
+	const match = name.match(/^"\{([0-9a-fA-F]+)\}"$/);
 	if (!match)
 		return MakeUniqueNodeName(nodes, `${name}_Copy`);
 	const names = CollectNodeNames(nodes);
