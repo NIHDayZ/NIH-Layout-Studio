@@ -24,6 +24,15 @@ test("selected widget diagnostic reports parent-local and absolute rectangles se
   assert.deepEqual(trace[1].absoluteBounds,{x:490,y:545,width:40,height:12});
   assert.equal(trace[1].hexactpos,true);
   assert.equal(trace[1].parentName,"Panel");
+  assert.deepEqual(trace[1].renderedAbsoluteBounds,trace[1].absoluteBounds);
   assert.deepEqual(TraceWidgetGeometry([parent],"missing",1920,1080),[]);
+  const spacer={id:"spacer",name:"Grid",type:"GridSpacerWidgetClass",properties:[property("position","100 200"),property("size","400 120"),property("hexactpos","1"),property("vexactpos","1"),property("hexactsize","1"),property("vexactsize","1")],children:[
+   {id:"first",name:"A",type:"PanelWidgetClass",properties:[property("position","0 15"),property("size","100 30"),property("hexactpos","1"),property("vexactpos","1"),property("hexactsize","1"),property("vexactsize","1")],children:[]},
+   {id:"second",name:"B",type:"PanelWidgetClass",properties:[property("position","0 60"),property("size","100 30"),property("hexactpos","1"),property("vexactpos","1"),property("hexactsize","1"),property("vexactsize","1")],children:[]}
+  ]};
+  const selected=TraceWidgetGeometry([spacer],"second",1920,1080);
+  assert.deepEqual(selected[1].absoluteBounds,{x:100,y:260,width:100,height:30});
+  assert.deepEqual(selected[1].renderedAbsoluteBounds,{x:100,y:230,width:100,height:30});
+  assert.deepEqual(selected[0].renderedAbsoluteBounds,selected[0].absoluteBounds);
  } finally {rmSync(dir,{recursive:true,force:true});}
 });
