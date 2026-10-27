@@ -1,3 +1,4 @@
+import { SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
 import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
 
@@ -48,26 +49,25 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    let baseY = vAlign === "center" ? (height - lines.length * lineHeight) / 2 : vAlign === "bottom" ? height - lines.length * lineHeight : 0;
    for (const line of lines) {
     const glyphs = Array.from(line).map((c) => resource.glyphs.get(c.codePointAt(0) ?? 0));
-    const lineWidth = glyphs.reduce((sum, g) => sum + (g ? g.advance / 1000 * fontSize : fontSize / 2), 0);
+    const lineWidth = glyphs.reduce((sum, g) => sum + (g ? SdfGlyphAdvance(g.advance, fontSize) : fontSize / 2), 0);
     let penX = hAlign === "center" ? (width - lineWidth) / 2 : hAlign === "right" ? width - lineWidth : 0;
     for (const glyph of glyphs) {
      if (!glyph) { penX += fontSize / 2; continue; }
      if (glyph.width > 0 && glyph.height > 0) {
       // SDF type 2 is stored as a grayscale distance field. Use a smooth
       // threshold at the center value, then tint the resulting glyph.
-      const cell = Math.ceil(meta.fontSize * meta.charScale);
+      const cell = SdfCellSize(meta.fontSize, meta.charScale);
       const sourceX = glyph.x;
       const sourceY = glyph.y;
       if (sourceX + cell <= source.width && sourceY + cell <= source.height) {
        const rgba = sourceCtx.getImageData(sourceX, sourceY, cell, cell);
        for (let p = 0; p < rgba.data.length; p += 4) {
         const distance = rgba.data[p];
-        const edge = meta.inverted ? 255 - distance : distance;
-        const alpha = Math.max(0, Math.min(1, (edge - 112) / 32));
+        const alpha = SdfSampleAlpha(distance, meta.inverted);
         rgba.data[p] = 255;
         rgba.data[p + 1] = 255;
         rgba.data[p + 2] = 255;
-        rgba.data[p + 3] = Math.round(alpha * 255);
+        rgba.data[p + 3] = alpha;
        }
        const glyphCanvas = document.createElement("canvas");
        glyphCanvas.width = cell;
@@ -80,7 +80,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
        context.drawImage(glyphCanvas, x, y, glyphWidth, glyphHeight);
       }
      }
-     penX += glyph.advance / 1000 * fontSize;
+     penX += SdfGlyphAdvance(glyph.advance, fontSize);
     }
     baseY += lineHeight;
    }
