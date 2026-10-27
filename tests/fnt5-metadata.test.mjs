@@ -8,6 +8,8 @@ test("Metron FSDF fields and character list", () => {
  assert.equal(parsed?.sdfType, 2);
  assert.equal(parsed?.charScale, 1.375);
  assert.deepEqual(parsed?.characters, [32, 33, 34, 35]);
+ const empty = ParseFsdf('SDFFontResourceClass {\n FontFile "MetronBook.ttf"\n FontSize 24\n FontSDFType 2\n FontIsInverted 0\n FontCharScale 1.375\n AtlasWidth 512\n AtlasHeight 256\n Characters { }\n}');
+ assert.deepEqual(empty?.characters, []);
  assert.equal(ParseFsdf("invalid"), null);
 });
 
