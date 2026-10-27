@@ -144,18 +144,17 @@ test("BC7 each mode decodes opaque white reference endpoints", () => {
 	}
 });
 
-test("BC7 modes 4/5 rotate alpha with red, green, or blue", () => {
+test("BC7 modes 4/5 rotate each RGB channel with alpha", () => {
 	for (const mode of [4, 5]) {
-		for (const [rotation, expected] of [
-			[0, [255, 0, 0, 0]],
-			[1, [0, 0, 0, 255]],
-			[2, [255, 0, 0, 0]],
-			[3, [255, 0, 0, 0]],
+		for (const [rotation, input, expected] of [
+			[0, [255, 0, 0, 0], [255, 0, 0, 0]],
+			[1, [255, 0, 0, 0], [0, 0, 0, 255]],
+			[2, [0, 255, 0, 0], [0, 0, 0, 255]],
+			[3, [0, 0, 255, 0], [0, 0, 0, 255]],
 		]) {
-			const rgba = decodeBC7(makeBc7SolidBlock(mode, [255, 0, 0, 0], rotation), 4, 4);
-			const actual = [...rgba.subarray(0, 4)];
-			if (rotation <= 1)
-				assert.deepEqual(actual, expected, `mode ${mode}, rotation ${rotation}`);
+			const rgba = decodeBC7(makeBc7SolidBlock(mode, input, rotation), 4, 4);
+			for (let pixel = 0; pixel < 16; ++pixel)
+				assert.deepEqual([...rgba.subarray(pixel * 4, pixel * 4 + 4)], expected, `mode ${mode}, rotation ${rotation}, pixel ${pixel}`);
 		}
 	}
 });
