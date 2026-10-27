@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: FNT5 experimental placement tests
+        run: node --test tests/fnt5-placement.test.mjs
+
       - name: FNT5 workspace sibling path tests
         run: node --test tests/fnt5-sibling-paths.test.mjs
 
