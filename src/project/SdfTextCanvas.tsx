@@ -19,6 +19,7 @@ interface CachedAtlas {
 const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
 // Explicit opt-in via ?experimentalMsdf=1; production remains on legacy red-channel SDF.
 const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Cells") === "1";
+const experimentalFnt5Placement = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Placement") === "1";
 const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedGlyphs = new Set<string>();
 const loggedWidgets = new Set<string>();
@@ -205,9 +206,20 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
      if (glyph.width > 0 && glyph.height > 0) {
       const sprite = RasterGlyph(resource, atlas, glyph);
       if (sprite) {
-       const x = penX + glyph.bearingX * scale;
-       const y = baseY + (meta.fontSize - glyph.bearingY) * scale;
-       ink.drawImage(sprite, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale);
+       // The standalone FNT5 cell includes distance-field padding. A provisional
+       // centering path keeps that padding around the nominal glyph bounds and
+       // scales the entire cell using the font's actual FNT5 nominal size.
+       if (experimentalFnt5Placement && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
+        const paddingX = Math.max(0, (resource.fnt5CellSize - glyph.width) / 2);
+        const paddingY = Math.max(0, (resource.fnt5CellSize - glyph.height) / 2);
+        const x = penX + (glyph.bearingX - paddingX) * scale;
+        const y = baseY + (meta.fontSize - glyph.bearingY - paddingY) * scale;
+        ink.drawImage(sprite, x, y, sprite.width * scale, sprite.height * scale);
+       } else {
+        const x = penX + glyph.bearingX * scale;
+        const y = baseY + (meta.fontSize - glyph.bearingY) * scale;
+        ink.drawImage(sprite, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale);
+       }
       }
      }
      penX += resource.fnt5PixelMetrics ? glyph.advance * scale : SdfGlyphAdvance(glyph.advance, fontSize);
