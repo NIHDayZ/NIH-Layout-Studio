@@ -49,3 +49,12 @@ test("already-pixel-sized generated mpix 1 atlas is not doubled",()=>{
  ]),"set:generated image:icon");
  assert.deepEqual([resolved?.x,resolved?.y,resolved?.width,resolved?.height],[8,16,16,16]);
 });
+
+test("XML imageset sprites remain absolute pixels rather than inferred-bound scaled",()=>{
+ const xml = '<imageset name="xmlgui" file="icons.png"><image name="test" pos="16 16" size="16 16" /></imageset>';
+ const set=ParseImageSetSource("xmlgui.imageset",xml);
+ const resolved=ResolveProjectImage(workspace(set,[
+  {path:"icons.png",url:"blob:xml",width:256,height:256}
+ ]),"set:xmlgui image:test");
+ assert.deepEqual([resolved?.url,resolved?.x,resolved?.y,resolved?.width,resolved?.height,resolved?.atlasWidth,resolved?.atlasHeight],["blob:xml",16,16,16,16,256,256]);
+});
