@@ -41,6 +41,9 @@ jobs:
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
 
+      - name: GLPS range-mapping tests
+        run: node --test tests/fnt5-glps-range-mapping.test.mjs
+
       - name: GLPS entry hypothesis tests
         run: node --test tests/fnt5-glps-entries.test.mjs
 
