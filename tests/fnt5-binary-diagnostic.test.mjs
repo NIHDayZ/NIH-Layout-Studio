@@ -42,3 +42,40 @@ test("FSDF glyph observations don't imply record mapping", () => {
  assert.equal(glyphs[1].character, "F");
  assert.throws(() => inspectFsdf(fields.replace("Advances { 639 559 }", "Advances { 639 }")), /lengths disagree/);
 });
+
+function updateFormLength(bytes) {
+ const result = Buffer.from(bytes);
+ result.writeUInt32BE(result.length - 8, 4);
+ return result;
+}
+test("rejects oversized chunk even with valid FORM length", () => {
+ const bytes = fixture();
+ bytes.writeUInt32BE(0xffffffff, 16);
+ assert.throws(() => inspectFnt5(bytes), /Chunk exceeds file bounds/);
+});
+test("rejects a partial chunk header with matching FORM length", () => {
+ const bytes = updateFormLength(Buffer.concat([fixture(), Buffer.from([1,2,3,4])]));
+ assert.throws(() => inspectFnt5(bytes), /Truncated chunk header/);
+});
+test("rejects TCRD records that do not fit 14 bytes", () => {
+ const head=chunk("HEAD",Buffer.alloc(4));
+ const glps=chunk("GLPS",Buffer.alloc(4));
+ const tcrd=chunk("TCRD",Buffer.alloc(12));
+ const form=Buffer.concat([Buffer.from("FORM"),Buffer.alloc(4),Buffer.from("FNT5"),head,glps,tcrd]);
+ form.writeUInt32BE(form.length-8,4);
+ assert.throws(()=>inspectFnt5(form),/non-14-byte TCRD/);
+});
+test("accepts valid padded odd-length chunk", () => {
+ const odd=chunk("META",Buffer.from([0x41]));
+ const original=fixture();
+ const bytes=updateFormLength(Buffer.concat([original.subarray(0,12),odd,original.subarray(12)]));
+ const result=inspectFnt5(bytes);
+ assert.equal(result.chunks[0].name,"META");
+ assert.equal(result.chunks[0].length,1);
+});
+test("rejects missing odd-length padding byte even with matching FORM length", () => {
+ const odd=chunk("META",Buffer.from([0x41]));
+ const original=fixture();
+ const bytes=updateFormLength(Buffer.concat([original.subarray(0,12),odd.subarray(0,-1),original.subarray(12)]));
+ assert.throws(()=>inspectFnt5(bytes),/Chunk exceeds file bounds|Truncated chunk header|Invalid IFF chunk padding|Missing required chunk/);
+});
