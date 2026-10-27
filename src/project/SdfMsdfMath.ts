@@ -11,3 +11,15 @@ export function MsdfAlpha(r: number, g: number, b: number, inverted: boolean, sm
  const smooth = normalized * normalized * (3 - 2 * normalized);
  return Math.round(smooth * 255);
 }
+
+/**
+ * Estimate an atlas-space transition width for an MSDF glyph displayed at a
+ * different scale. Kept opt-in until visually validated against Workbench.
+ * Clamps extreme minification to avoid invisible or fully blurred characters.
+ */
+export function MsdfScaledSmoothing(displaySize: number, nominalSize: number, baseline = 12): number {
+ if (!Number.isFinite(displaySize) || !Number.isFinite(nominalSize) || nominalSize <= 0 || displaySize <= 0)
+  return baseline;
+ const scale = displaySize / nominalSize;
+ return Math.max(2, Math.min(48, baseline / scale));
+}
