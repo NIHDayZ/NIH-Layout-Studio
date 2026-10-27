@@ -7,6 +7,7 @@ export interface SdfFontResource {
  metadata: SdfFontMetadata;
  glyphs: Map<number, SdfGlyphMetric>;
  atlasUrl: string;
+ fnt5Origins?: Map<number, { x: number; y: number }>;
 }
 interface CachedAtlas {
  source: HTMLCanvasElement;
@@ -14,6 +15,7 @@ interface CachedAtlas {
 }
 const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
 // Explicit opt-in via ?experimentalMsdf=1; production remains on legacy red-channel SDF.
+const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Cells") === "1";
 const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
@@ -41,8 +43,12 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  const cached = atlas.glyphs.get(glyph.codePoint);
  if (cached)
   return cached;
- const rect = SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
- if (!rect)
+ const origin = experimentalFnt5Cells ? resource.fnt5Origins?.get(glyph.codePoint) : undefined;
+ // Only the tested MetronBook24 atlas has a verified 38px grid pitch.
+ const rect = origin && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024
+  ? { left: origin.x, top: origin.y, size: 38, scale: 1 }
+  : SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
+ if (!rect || rect.left < 0 || rect.top < 0 || rect.left + rect.size > atlas.source.width || rect.top + rect.size > atlas.source.height)
   return null;
  const { left: sourceX, top: sourceY, size: cell } = rect;
  const sourceCtx = atlas.source.getContext("2d", { willReadFrequently: true });
