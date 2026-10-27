@@ -21,3 +21,18 @@ test("short GLPS chunks do not trigger out of bounds reads",()=>{
  assert.deepEqual(report.interpretations.offset0.firstU16,[513]);
  assert.equal(report.fsdfSamples.length,0);
 });
+
+test("successful codepoint and ASCII-offset hypotheses select distinct correct records", () => {
+ const rawRecords=Array.from({length:80},(_,index)=>[index+1000,index,0,0,0,0,index]);
+ const font={glpsHex:Buffer.alloc(8).toString("hex"),rawRecords};
+ const glyphs=["A","F","0","1"].map(character=>({character,codePoint:character.codePointAt(0),x:0,y:0,width:1,height:1}));
+ const report=probeMapping(font,glyphs);
+ for (const sample of report.fsdfSamples) {
+  assert.equal(sample.indexCodepoint.index,sample.codePoint);
+  assert.deepEqual(sample.indexCodepoint.raw,rawRecords[sample.codePoint]);
+  assert.equal(sample.indexAsciiFromSpace.index,sample.codePoint-32);
+  assert.deepEqual(sample.indexAsciiFromSpace.raw,rawRecords[sample.codePoint-32]);
+  assert.notDeepEqual(sample.indexCodepoint.raw,sample.indexAsciiFromSpace.raw);
+ }
+ assert.deepEqual(report.fsdfSamples.map(sample=>sample.character),["A","F","0","1"]);
+});
