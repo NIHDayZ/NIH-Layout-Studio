@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { LayoutParser } from "../.layout-parser-test-build/parser/LayoutParser.js";
+import { MakeCopiedWidgetNameFromNames } from "../.layout-parser-test-build/model/WidgetCopyName.js";
 
 const source = [
 	'FrameWidgetClass Root {',
@@ -39,4 +40,17 @@ test("serialization preserves quoted widget ID and friendly Name separately", ()
 test("accepts declaration brace on following line for ID-backed widgets", () => {
 	const document = new LayoutParser().Parse('TextWidgetClass "{00000000000000AA}"\n{\n Name "Label"\n visible 1\n}');
 	assert.equal(document.roots[0].properties.length, 2);
+});
+
+test("duplicate/paste generate valid unique IDs that survive a parse and save", () => {
+	const parser = new LayoutParser();
+	const original = '"{00000000E4E67D3A}"';
+	const existing = new Set([original, '"{00000000E4E67D3B}"']);
+	const copied = MakeCopiedWidgetNameFromNames(existing, original);
+	assert.equal(copied, '"{00000000E4E67D3C}"');
+	const editedSource = source.replace('RichTextWidgetClass "{00000000E4E67D3A}" {', `RichTextWidgetClass ${copied} {`);
+	const edited = parser.Parse(editedSource);
+	assert.equal(edited.roots[0].children[0].name, copied);
+	assert.equal(parser.Parse(parser.Serialize(edited)).roots[0].children[0].name, copied);
+	assert.equal(MakeCopiedWidgetNameFromNames(new Set(["Label_Copy"]), "Label"), "Label_Copy2");
 });
