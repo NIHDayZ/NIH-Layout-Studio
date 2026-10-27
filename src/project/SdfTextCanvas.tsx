@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
 import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
-import { MsdfAlpha, MsdfScaledSmoothing } from "./SdfMsdfMath";
+import { MsdfAlpha, MsdfAlphaWithBias, MsdfScaledSmoothing } from "./SdfMsdfMath";
 import { Fnt5Placement } from "./Fnt5Placement";
 
 export interface SdfFontResource {
@@ -38,6 +38,7 @@ function ResourceId(resource: SdfFontResource): number {
 }
 const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
 const experimentalMsdfSmoothing = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfSmoothing") === "1";
+const experimentalMsdfStroke = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfStroke") === "1";
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
  if (existing)
@@ -61,7 +62,7 @@ function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  return task;
 }
 function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGlyphMetric, displayedFontSize: number): HTMLCanvasElement | null {
- const cacheKey = experimentalMsdfSmoothing && experimentalMsdf ? `${glyph.codePoint}:${displayedFontSize}` : `${glyph.codePoint}`;
+ const cacheKey = experimentalMsdf && (experimentalMsdfSmoothing || experimentalMsdfStroke) ? `${glyph.codePoint}:${displayedFontSize}` : `${glyph.codePoint}`;
  const cached = atlas.glyphs.get(cacheKey);
  if (cached)
   return cached;
@@ -102,7 +103,9 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  const pixels = sourceCtx.getImageData(sourceX, sourceY, cell, cell);
  for (let p = 0; p < pixels.data.length; p += 4) {
   const alpha = experimentalMsdf
-   ? MsdfAlpha(pixels.data[p], pixels.data[p + 1], pixels.data[p + 2], resource.metadata.inverted, experimentalMsdfSmoothing ? MsdfScaledSmoothing(displayedFontSize, resource.metadata.fontSize) : 12)
+   ? experimentalMsdfStroke
+    ? MsdfAlphaWithBias(pixels.data[p], pixels.data[p + 1], pixels.data[p + 2], resource.metadata.inverted, experimentalMsdfSmoothing ? MsdfScaledSmoothing(displayedFontSize, resource.metadata.fontSize) : 12, 2)
+    : MsdfAlpha(pixels.data[p], pixels.data[p + 1], pixels.data[p + 2], resource.metadata.inverted, experimentalMsdfSmoothing ? MsdfScaledSmoothing(displayedFontSize, resource.metadata.fontSize) : 12)
    : SdfSampleAlpha(pixels.data[p], resource.metadata.inverted);
   pixels.data[p] = 255;
   pixels.data[p + 1] = 255;
