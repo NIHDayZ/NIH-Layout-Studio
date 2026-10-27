@@ -23,3 +23,16 @@ export function MsdfScaledSmoothing(displaySize: number, nominalSize: number, ba
  const scale = displaySize / nominalSize;
  return Math.max(2, Math.min(48, baseline / scale));
 }
+
+/**
+ * Optional atlas-distance threshold adjustment for small glyphs.
+ * Positive bias expands foreground strokes in either inversion mode.
+ * Applied before smoothing, so legacy sampling remains unchanged.
+ */
+export function MsdfAlphaWithBias(r: number, g: number, b: number, inverted: boolean, smoothing: number, bias: number): number {
+ const median = MsdfMedian(r, g, b);
+ const distance = (inverted ? 128 - median : median - 128) + (Number.isFinite(bias) ? Math.max(-8, Math.min(8, bias)) : 0);
+ const width = Number.isFinite(smoothing) && smoothing > 0 ? smoothing : 12;
+ const t = Math.max(0, Math.min(1, 0.5 + distance / width));
+ return Math.round((t * t * (3 - 2 * t)) * 255);
+}
