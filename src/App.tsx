@@ -61,6 +61,25 @@ function CollectNodeNames(nodes: LayoutNode[], names = new Set<string>()): Set<s
 	return names;
 }
 
+function MakeCopiedWidgetName(nodes: LayoutNode[], name: string): string {
+	const match = name.match(/^"\\{([0-9a-fA-F]+)\\}"$/);
+	if (!match)
+		return MakeUniqueNodeName(nodes, `${name}_Copy`);
+	const names = CollectNodeNames(nodes);
+	const original = match[1];
+	const width = original.length;
+	const limit = 1n << BigInt(width * 4);
+	let next = (BigInt(`0x${original}`) + 1n) % limit;
+	const first = next;
+	do {
+		const candidate = `"{${next.toString(16).toUpperCase().padStart(width, "0")}}"`;
+		if (!names.has(candidate))
+			return candidate;
+		next = (next + 1n) % limit;
+	} while (next !== first);
+	throw new Error("No available widget identifiers");
+}
+
 function MakeUniqueNodeName(nodes: LayoutNode[], baseName: string): string {
 	const names = CollectNodeNames(nodes);
 	if (!names.has(baseName))
@@ -1098,7 +1117,7 @@ export default function App() {
 	function PasteWidgetAsSibling() {
 		if (!copiedWidget || !selected)
 			return;
-		const name = MakeUniqueNodeName(document.roots, `${copiedWidget.name}_Copy`);
+		const name = MakeCopiedWidgetName(document.roots, copiedWidget.name);
 		const block = RenameSourceBlockRoot(copiedWidget.block, copiedWidget.type, copiedWidget.name, name);
 		const { eol, lines } = SplitSourceLines(source);
 		const range = FindNodeLineRange(source, selected);
@@ -1113,7 +1132,7 @@ export default function App() {
 	function PasteWidgetAsChild(target = selected) {
 		if (!copiedWidget || !target)
 			return;
-		const name = MakeUniqueNodeName(document.roots, `${copiedWidget.name}_Copy`);
+		const name = MakeCopiedWidgetName(document.roots, copiedWidget.name);
 		const block = RenameSourceBlockRoot(copiedWidget.block, copiedWidget.type, copiedWidget.name, name);
 		CommitStructuralEdit(InsertChildBlock(source, target, block), copiedWidget.type, name);
 	}
@@ -1272,10 +1291,7 @@ export default function App() {
 	function DuplicateSelected(node = selected) {
 		if (!node)
 			return;
-		let newName = `${node.name}_Copy`;
-		let suffix = 2;
-		while (FindNodeByTypeAndName(document.roots, node.type, newName))
-			newName = `${node.name}_Copy${suffix++}`;
+		const newName = MakeCopiedWidgetName(document.roots, node.name);
 		let nextSource = PatchDuplicateNode(source, node, newName);
 		try {
 			const parsed = parser.Parse(nextSource);
