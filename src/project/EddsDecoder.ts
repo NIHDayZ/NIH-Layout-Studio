@@ -1,3 +1,5 @@
+import { decodeBC7 } from "./Bc7Decoder";
+
 function ReadU32(view: DataView, offset: number) {
 	return view.getUint32(offset, true);
 }
@@ -345,6 +347,12 @@ function DecodeDds(bytes: Uint8Array) {
 			rgba = DecodeBc2(bytes.subarray(dataOffset), width, height);
 		else if (dxgiFormat === 77 || dxgiFormat === 78)
 			rgba = DecodeBc3(bytes.subarray(dataOffset), width, height);
+		else if (dxgiFormat === 98 || dxgiFormat === 99) {
+			const blocksRequired = Math.ceil(width / 4) * Math.ceil(height / 4) * 16;
+			if (bytes.length - dataOffset < blocksRequired)
+				throw new Error("Truncated BC7 texture data");
+			rgba = new Uint8ClampedArray(decodeBC7(bytes.subarray(dataOffset, dataOffset + blocksRequired), width, height));
+		}
 		else
 			throw new Error(`Unsupported DDS DXGI format ${dxgiFormat}`);
 	} else if (pixelFlags & 0x40) {
