@@ -701,9 +701,12 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 		const dimensions = selectedFile ? project.resourceDimensions.get(selectedFile.path) : undefined;
 		// Generated atlases may declare mpix 1 while already storing pixel-space
 		// coordinates. Prefer the actual decoded atlas dimensions over that hint.
-		const scale = dimensions && dimensions.width > 0 && dimensions.height > 0
-			? Math.min(dimensions.width / set.refWidth, dimensions.height / set.refHeight)
-			: Math.pow(2, selectedMpix);
+		// Native imagesets declare RefSize; XML imagesets only infer their bounds
+		// from sprite edges. Those inferred bounds are not an atlas scale.
+		const scale = !set.textures?.length ? 1
+			: dimensions && dimensions.width > 0 && dimensions.height > 0
+				? Math.min(dimensions.width / set.refWidth, dimensions.height / set.refHeight)
+				: Math.pow(2, selectedMpix);
 		const scaled = ScaleImageSetCoordinates(0, [image.x * scale, image.y * scale, image.width * scale, image.height * scale, set.refWidth * scale, set.refHeight * scale]);
 		if (!scaled)
 			return null;
