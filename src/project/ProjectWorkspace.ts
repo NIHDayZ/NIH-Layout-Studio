@@ -1,3 +1,4 @@
+import { ScaleImageSetCoordinates } from "./ImageSetVariants";
 import type { SdfFontResource } from "./SdfTextCanvas";
 import { InspectFnt5, ParseFsdf, ParseFsdfGlyphMetrics } from "./Fnt5Metadata";
 import type {
@@ -110,7 +111,7 @@ function ParseNativeImageSet(path: string, source: string): ImageSetDefinition |
 			continue;
 		const mpix = Number(ExtractProperty(textureBody, "mpix") ?? 0);
 		const candidate = ExtractProperty(textureBody, "path");
-		if (candidate && Number.isFinite(mpix) && mpix >= 0) {
+		if (candidate && Number.isInteger(mpix) && mpix >= 0 && mpix <= 8) {
 			const normalizedCandidate = StripGuid(Unquote(candidate));
 			textures.push({ path: normalizedCandidate, mpix });
 			if (mpix >= bestMpix) {
@@ -685,15 +686,17 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 			}
 			return null;
 		}
-		const pixelScale = Math.pow(2, selectedMpix);
+		const scaled = ScaleImageSetCoordinates(selectedMpix, [image.x, image.y, image.width, image.height, set.refWidth, set.refHeight]);
+		if (!scaled)
+			return null;
 		return {
 			url: atlasUrl,
-			x: image.x * pixelScale,
-			y: image.y * pixelScale,
-			width: image.width * pixelScale,
-			height: image.height * pixelScale,
-			atlasWidth: set.refWidth * pixelScale,
-			atlasHeight: set.refHeight * pixelScale
+			x: scaled[0],
+			y: scaled[1],
+			width: scaled[2],
+			height: scaled[3],
+			atlasWidth: scaled[4],
+			atlasHeight: scaled[5]
 		};
 	}
 	const direct = FindFile(project.files, unquoted);
