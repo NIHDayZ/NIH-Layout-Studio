@@ -29,6 +29,9 @@ jobs:
       - name: BC7 decoder regression tests
         run: npm run test:bc7
 
+      - name: Independent BC7 pixel reference
+        run: npm run test:bc7:reference
+
       - name: Production build
         run: npm run build
 
