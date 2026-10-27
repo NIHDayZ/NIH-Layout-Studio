@@ -170,7 +170,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    const key = ResourceId(resource) + ":" + text;
    if (!loggedWidgets.has(key)) {
     loggedWidgets.add(key);
-    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, resourceId: ResourceId(resource), text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf });
+    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, resourceId: ResourceId(resource), text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf, placementMode: experimentalFnt5CellLayout ? "cell" : experimentalFnt5Placement ? "bearing" : "legacy" });
    }
   }
   void LoadAtlas(resource).then((atlas) => {
