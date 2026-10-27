@@ -44,3 +44,14 @@ test("actual MetronBook24 observed header shape gives 62 eight-byte candidates",
  assert.equal(report.uniformCandidate.entries.length,62);
  assert.equal(report.uniformCandidate.coverageBytes,496);
 });
+
+test("all 62 candidate entries remain available for diagnostics",()=>{
+ const bytes=Buffer.alloc(512);
+ bytes.write("RICH",0,"utf16le");
+ bytes.writeUInt32LE(504,8);
+ bytes.writeUInt32LE(62,12);
+ for(let i=0;i<62;++i)bytes.writeUInt32LE(i,16+i*8);
+ const report=analyzeGlpsEntries({glpsHex:bytes.toString("hex"),rawRecords:Array.from({length:504},()=>[])});
+ assert.equal(report.uniformCandidate.entries.length,62);
+ assert.deepEqual(report.uniformCandidate.entries[61].u32,[61,0]);
+});
