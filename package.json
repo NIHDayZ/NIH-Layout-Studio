@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty false",
-    "test:bc7": "node --experimental-transform-types --test tests/bc7.test.mjs"
+    "test:bc7": "tsc src/project/Bc7Decoder.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --rootDir src --outDir .bc7-test-build && node --test tests/bc7.test.mjs"
   },
   "dependencies": {
     "react": "^19.1.1",
