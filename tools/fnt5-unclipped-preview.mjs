@@ -20,7 +20,7 @@ export function selectFnt5Glyphs(font,text) {
  if(index!==count)throw Error("Invalid GLPS record total");
  return Array.from(text).map(character=>({character,record:font.rawRecords[lookup.get(character.codePointAt(0))]??null}));
 }
-export function unclippedFnt5Svg(decoded, entries,{pitch,sizes=[16,24,72]}={}) {
+export function unclippedFnt5Svg(decoded, entries,{pitch,nominalSize=24,sizes=[16,24,72]}={}) {
  const {width,height,rgba}=decoded;
  if(!Number.isInteger(width)||!Number.isInteger(height)||rgba.length!==width*height*4||!Number.isInteger(pitch)||pitch<1||pitch>256||!Number.isFinite(nominalSize)||nominalSize<=0)throw Error("Invalid atlas or pitch");
  const columns=entries.length,unit=100,gap=20,rowHeight=340;
