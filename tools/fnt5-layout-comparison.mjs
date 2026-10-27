@@ -12,7 +12,8 @@ export function layoutFnt5Entries(entries, pitch, nominalSize, targetSize, mode)
  let pen=0;
  return entries.map(({character,record})=>{
   if(!record){const x=pen;pen+=nominalSize*0.5*scale;return {character,record:null,x,y:0,size:pitch*scale};}
-  const [,,,,widthOffset,bearingY,advance]=record;
+  const toSigned16=(value)=>value>=0x8000?value-0x10000:value;
+  const widthOffset=toSigned16(record[4]),bearingY=toSigned16(record[5]),advance=record[6];
   const width=record[2],height=record[3];
   const padX=Math.max(0,(pitch-width)/2),padY=Math.max(0,(pitch-height)/2);
   const x=pen+(mode==="bearing"?widthOffset-padX:0)*scale;
