@@ -17,6 +17,8 @@ interface CachedAtlas {
 const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
 // Explicit opt-in via ?experimentalMsdf=1; production remains on legacy red-channel SDF.
 const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Cells") === "1";
+const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
+const loggedGlyphs = new Set<string>();
 const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
@@ -46,9 +48,29 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
   return cached;
  const origin = experimentalFnt5Cells ? resource.fnt5Origins?.get(glyph.codePoint) : undefined;
  // Only the tested MetronBook24 atlas has a verified 38px grid pitch.
- const rect = origin && resource.fnt5Name?.toLowerCase() === "sdf_metronbook24" && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024
+ const usesTcrd = Boolean(origin && resource.fnt5Name?.toLowerCase() === "sdf_metronbook24" && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024);
+ const rect = usesTcrd
   ? { left: origin.x, top: origin.y, size: 38, scale: 1 }
   : SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
+ if (debugFnt5Sampling && loggedGlyphs.size < 120) {
+  const key = (resource.fnt5Name ?? resource.metadata.fontFile) + ":" + glyph.codePoint + ":" + experimentalFnt5Cells + ":" + experimentalMsdf;
+  if (!loggedGlyphs.has(key)) {
+   loggedGlyphs.add(key);
+   console.info("[NIH Layout Studio][FNT5 sampling]", {
+    font: resource.fnt5Name ?? resource.metadata.fontFile,
+    codePoint: glyph.codePoint,
+    character: String.fromCodePoint(glyph.codePoint),
+    atlas: [atlas.source.width, atlas.source.height],
+    referenceAtlas: [resource.metadata.atlasWidth, resource.metadata.atlasHeight],
+    fontSize: resource.metadata.fontSize,
+    fnt5OriginsCount: resource.fnt5Origins?.size ?? 0,
+    origin: origin ?? null,
+    selected: usesTcrd ? "TCRD" : "FSDF fallback",
+    rectangle: rect,
+    msdf: experimentalMsdf
+   });
+  }
+ }
  if (!rect || rect.left < 0 || rect.top < 0 || rect.left + rect.size > atlas.source.width || rect.top + rect.size > atlas.source.height)
   return null;
  const { left: sourceX, top: sourceY, size: cell } = rect;
