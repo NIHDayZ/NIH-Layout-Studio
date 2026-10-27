@@ -351,7 +351,7 @@ function DecodeDds(bytes: Uint8Array) {
 			const blocksRequired = Math.ceil(width / 4) * Math.ceil(height / 4) * 16;
 			if (bytes.length - dataOffset < blocksRequired)
 				throw new Error("Truncated BC7 texture data");
-			rgba = new Uint8ClampedArray(decodeBC7(bytes.subarray(dataOffset, dataOffset + blocksRequired), width, height));
+			rgba = new Uint8ClampedArray(decodeBC7(bytes.subarray(dataOffset, dataOffset + blocksRequired), width, height).buffer);
 		}
 		else
 			throw new Error(`Unsupported DDS DXGI format ${dxgiFormat}`);
