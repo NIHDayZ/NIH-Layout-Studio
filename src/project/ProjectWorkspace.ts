@@ -718,8 +718,8 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 			y: scaled[1],
 			width: scaled[2],
 			height: scaled[3],
-			atlasWidth: scaled[4],
-			atlasHeight: scaled[5]
+			atlasWidth: !set.textures?.length && dimensions ? dimensions.width : scaled[4],
+			atlasHeight: !set.textures?.length && dimensions ? dimensions.height : scaled[5]
 		};
 	}
 	const direct = FindFile(project.files, unquoted);
