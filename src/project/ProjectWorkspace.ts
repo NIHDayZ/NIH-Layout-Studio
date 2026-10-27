@@ -426,6 +426,16 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 			resourceObjectUrls.set(file.path, url);
 	}
 
+	// PNG sources are often editor-generated atlases: inspect IHDR without decoding pixels.
+	for (const file of files.filter((candidate) => candidate.extension === ".png")) {
+		try {
+			const header = new Uint8Array(await file.file.slice(0, 24).arrayBuffer());
+			if (header.length === 24 && header[0] === 137 && header[1] === 80 && header[2] === 78 && header[3] === 71) {
+				const view = new DataView(header.buffer);
+				resourceDimensions.set(file.path, { width: view.getUint32(16, false), height: view.getUint32(20, false) });
+			}
+		} catch { /* Corrupt source image: let the existing renderer fall back. */ }
+	}
 	MarkStage("TGA decoding");
 	const eddsFiles = files.filter((candidate) => candidate.extension === ".edds");
 	let decodedTextureCount = 0;
@@ -564,7 +574,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 		totalMilliseconds,
 		stages: timingStages
 	});
-	return { name, files, filesByPath, imageSets, imageSetAliases, widgetStyles, fontFamilies, bitmapFonts, sdfFonts, fontObjectUrls, resourceObjectUrls, eddsDecoded, eddsFailed };
+	return { name, files, filesByPath, imageSets, imageSetAliases, widgetStyles, fontFamilies, bitmapFonts, sdfFonts, fontObjectUrls, resourceObjectUrls, resourceDimensions, eddsDecoded, eddsFailed };
 }
 
 export function DisposeProjectWorkspace(project: ProjectWorkspaceModel | null) {
@@ -663,6 +673,7 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 			: set.texturePath ? [{ path: set.texturePath, mpix: 0 }] : [];
 		let atlasUrl: string | null = null;
 		let selectedMpix = 0;
+		let selectedFile: ProjectFile | undefined;
 		for (const variant of variants) {
 			const source = FindAtlasSource(project.files, variant.path);
 			const resolvedSource = source ? GetResourceObjectUrl(project, source) : null;
@@ -673,6 +684,7 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 				continue;
 			atlasUrl = candidateUrl;
 			selectedMpix = variant.mpix;
+			selectedFile = source ?? cooked;
 			break;
 		}
 		if (!atlasUrl) {
@@ -686,11 +698,19 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 			}
 			return null;
 		}
-		const scaled = ScaleImageSetCoordinates(selectedMpix, [image.x, image.y, image.width, image.height, set.refWidth, set.refHeight]);
+		const dimensions = selectedFile ? project.resourceDimensions.get(selectedFile.path) : undefined;
+		// Generated atlases may declare mpix 1 while already storing pixel-space
+		// coordinates. Prefer the actual decoded atlas dimensions over that hint.
+		const scale = dimensions && dimensions.width > 0 && dimensions.height > 0
+			? Math.min(dimensions.width / set.refWidth, dimensions.height / set.refHeight)
+			: Math.pow(2, selectedMpix);
+		const scaled = ScaleImageSetCoordinates(0, [image.x * scale, image.y * scale, image.width * scale, image.height * scale, set.refWidth * scale, set.refHeight * scale]);
 		if (!scaled)
 			return null;
 		return {
 			url: atlasUrl,
+			logicalWidth: image.width,
+			logicalHeight: image.height,
 			x: scaled[0],
 			y: scaled[1],
 			width: scaled[2],
