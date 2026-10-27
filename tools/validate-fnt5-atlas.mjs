@@ -13,7 +13,7 @@ export async function loadExistingEddsDecoder() {
  const dir=mkdtempSync(join(tmpdir(),"nih-edds-check-"));
  try {
   const outfile=join(dir,"decoder.mjs");
-  await build({entryPoints:[resolve("src/project/EddsDecoder.ts")],outfile,bundle:true,platform:"node",format:"esm",target:"node20",logLevel:"silent"});
+  await build({entryPoints:[new URL("../src/project/EddsDecoder.ts",import.meta.url).pathname],outfile,bundle:true,platform:"node",format:"esm",target:"node20",logLevel:"silent"});
   const module=await import(pathToFileURL(outfile).href);
   return module.DecodeEddsToPixels;
  } finally {
