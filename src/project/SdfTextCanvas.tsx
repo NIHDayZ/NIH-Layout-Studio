@@ -22,6 +22,7 @@ const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
 const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Cells") === "1";
 const experimentalFnt5Placement = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Placement") === "1";
 const experimentalFnt5CellLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Layout") === "cell";
+const debugFnt5Clip = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Clip") === "1";
 const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedGlyphs = new Set<string>();
 const loggedWidgets = new Set<string>();
@@ -179,8 +180,9 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    const context = canvas.getContext("2d");
    if (!context)
     return;
-   const pixelWidth = Math.max(1, Math.ceil(width));
-   const pixelHeight = Math.max(1, Math.ceil(height));
+   const clipPadding = debugFnt5Clip && resource.fnt5PixelMetrics ? Math.min(256, Math.max(80, Math.ceil(fontSize * 1.5))) : 0;
+   const pixelWidth = Math.max(1, Math.ceil(width) + clipPadding * 2);
+   const pixelHeight = Math.max(1, Math.ceil(height) + clipPadding * 2);
    canvas.width = pixelWidth;
    canvas.height = pixelHeight;
    const meta = resource.metadata;
@@ -200,6 +202,8 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    const ink = layer.getContext("2d");
    if (!ink)
     return;
+   if (clipPadding)
+    ink.translate(clipPadding, clipPadding);
    for (const line of lines) {
     let penX = hAlign === "center" ? (width - advance(line)) / 2 : hAlign === "right" ? width - advance(line) : 0;
     for (const character of Array.from(line)) {
@@ -230,6 +234,8 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
     }
     baseY += lineHeight;
    }
+   if (clipPadding)
+    ink.setTransform(1, 0, 0, 1, 0, 0);
    ink.globalCompositeOperation = "source-in";
    ink.fillStyle = color;
    ink.fillRect(0, 0, pixelWidth, pixelHeight);
@@ -247,8 +253,21 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    } else {
     context.drawImage(layer, 0, 0);
    }
+   if (clipPadding) {
+    context.strokeStyle = "#38bdf8";
+    context.lineWidth = 1;
+    context.setLineDash([4, 3]);
+    context.strokeRect(clipPadding + 0.5, clipPadding + 0.5, Math.max(0, width - 1), Math.max(0, height - 1));
+    context.setLineDash([]);
+    context.fillStyle = "#f59e0b";
+    context.fillRect(clipPadding, clipPadding + baseY - lines.length * lineHeight, Math.max(1, width), 1);
+   }
   }).catch((error) => { if (!cancelled) console.warn("[NIH Layout Studio] SDF preview unavailable", error); });
   return () => { cancelled = true; };
  }, [resource, text, color, fontSize, width, height, hAlign, vAlign, wrap, shadowSize, shadowOffsetX, shadowOffsetY, shadowColor]);
+ if (debugFnt5Clip && resource.fnt5PixelMetrics) {
+  const margin = Math.min(256, Math.max(80, Math.ceil(fontSize * 1.5)));
+  return <span style={{ display: "block", position: "relative", width, height, overflow: "visible", pointerEvents: "none" }}><canvas className="widget-text" ref={canvasRef} style={{ position: "absolute", left: -margin, top: -margin, width: Math.ceil(width) + margin * 2, height: Math.ceil(height) + margin * 2, maxWidth: "none" }} /></span>;
+ }
  return <canvas className="widget-text" ref={canvasRef} style={{ width, height, display: "block" }} />;
 }
