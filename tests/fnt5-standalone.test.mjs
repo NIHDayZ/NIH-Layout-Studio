@@ -33,6 +33,17 @@ test("sidecar-less FNT5 parser handles non-RICH GLPS and pixel metrics",async()=
   assert.deepEqual(parsed.fnt5Origins.get(65),{x:1,y:1});
   assert.deepEqual(parsed.fnt5Origins.get(66),{x:39,y:1});
   assert.equal(parsed.glyphs.get(66).advance,15);
+  // TCRD metrics are in native pixel units; bearings are signed.
+  tcrd.writeInt16LE(-3,22);
+  tcrd.writeInt16LE(19,24);
+  const signedBody=Buffer.concat([chunk("HEAD",head),chunk("GLPS",glps),chunk("TCRD",tcrd)]);
+  const signedHdr=Buffer.alloc(12);
+  signedHdr.write("FORM");signedHdr.writeUInt32BE(signedBody.length+4,4);signedHdr.write("FNT5",8);
+  const signed=ParseStandaloneFnt5(Buffer.concat([signedHdr,signedBody]),"blob:test",1024,1024);
+  assert.ok(signed);
+  assert.equal(signed.glyphs.get(66).bearingX,-3);
+  assert.equal(signed.glyphs.get(66).bearingY,19);
+  assert.equal(signed.glyphs.get(66).advance,15);
   assert.equal(ParseStandaloneFnt5(binary,"blob:test",50,50),null);
  }finally{rmSync(dir,{recursive:true,force:true});}
 });
