@@ -594,8 +594,21 @@ function BuildWorkspaceFontOptions(workspace: ProjectWorkspaceModel | null, sour
 
 	for (const font of new Set(workspace.bitmapFonts.values())) {
 		const relative = NormalizeRelative(font.path);
-		const display = font.name || relative.split("/").pop() || relative;
+		const filename = relative.split("/").pop() ?? relative;
+		const name = font.name || filename;
+		const display = `${name} — ${font.nominalSize}px (${filename})`;
 		AddOption(font.path, display);
+	}
+
+	// Distinguish SDF variants by their actual resource basename and nominal
+	// size; never change the serialized resource reference in the layout.
+	for (const [path, font] of workspace.sdfFonts) {
+		if (!path.includes("/"))
+			continue;
+		const relative = NormalizeRelative(path);
+		const filename = relative.split("/").pop() ?? relative;
+		const display = `${filename} — ${font.metadata.fontSize}px (SDF)`;
+		AddOption(path, display);
 	}
 
 	for (const file of workspace.files) {
