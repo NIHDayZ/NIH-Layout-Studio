@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
-import { SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
+import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
 
 export interface SdfFontResource {
  metadata: SdfFontMetadata;
@@ -38,17 +38,10 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  const cached = atlas.glyphs.get(glyph.codePoint);
  if (cached)
   return cached;
- const reference = resource.metadata;
- const logicalCell = SdfCellSize(reference.fontSize, reference.charScale);
- // Cooked EDDS may contain a uniformly upscaled, square-padded atlas.
- // The reference FSDF dimensions describe the occupied glyph region, not necessarily
- // the final DDS canvas height. Determine pixel scale from atlas width.
- const scale = atlas.source.width / reference.atlasWidth;
- const cell = Math.round(logicalCell * scale);
- const sourceX = Math.round(glyph.x * scale);
- const sourceY = Math.round(glyph.y * scale);
- if (!Number.isFinite(scale) || scale <= 0 || cell <= 0 || sourceX < 0 || sourceY < 0 || sourceX + cell > atlas.source.width || sourceY + cell > atlas.source.height)
+ const rect = SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
+ if (!rect)
   return null;
+ const { left: sourceX, top: sourceY, size: cell } = rect;
  const sourceCtx = atlas.source.getContext("2d", { willReadFrequently: true });
  if (!sourceCtx)
   return null;
