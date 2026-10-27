@@ -1967,8 +1967,10 @@ export default function App() {
 
 				<aside className="panel properties-panel">
 					<div className="panel-title">PROPERTIES</div>
-					<PropertyInspector node={selected} onRename={RenameNode} onPropertyChange={UpdateProperty} onAddProperty={UpdateProperty}
+					<div className="properties-panel-scroll">
+						<PropertyInspector node={selected} onRename={RenameNode} onPropertyChange={UpdateProperty} onAddProperty={UpdateProperty}
 						onDeleteProperty={DeleteProperty} fontOptions={fontOptions} imageSetOptions={imageSetOptions} styleOptions={styleOptions} />
+					</div>
 				</aside>
 			</main>
 			{contextMenu && (() => {
