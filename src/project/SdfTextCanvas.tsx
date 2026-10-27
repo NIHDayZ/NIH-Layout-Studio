@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
 import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
-import { MsdfAlpha } from "./SdfMsdfMath";
+import { MsdfAlpha, MsdfScaledSmoothing } from "./SdfMsdfMath";
 import { Fnt5Placement } from "./Fnt5Placement";
 
 export interface SdfFontResource {
@@ -15,7 +15,7 @@ export interface SdfFontResource {
 }
 interface CachedAtlas {
  source: HTMLCanvasElement;
- glyphs: Map<number, HTMLCanvasElement>;
+ glyphs: Map<string, HTMLCanvasElement>;
 }
 const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
 // Explicit opt-in via ?experimentalMsdf=1; production remains on legacy red-channel SDF.
@@ -37,6 +37,7 @@ function ResourceId(resource: SdfFontResource): number {
  return id;
 }
 const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
+const experimentalMsdfSmoothing = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfSmoothing") === "1";
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
  if (existing)
@@ -59,8 +60,9 @@ function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  void task.catch(() => { if (atlases.get(resource) === task) atlases.delete(resource); });
  return task;
 }
-function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGlyphMetric): HTMLCanvasElement | null {
- const cached = atlas.glyphs.get(glyph.codePoint);
+function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGlyphMetric, displayedFontSize: number): HTMLCanvasElement | null {
+ const cacheKey = experimentalMsdfSmoothing && experimentalMsdf ? `${glyph.codePoint}:${displayedFontSize}` : `${glyph.codePoint}`;
+ const cached = atlas.glyphs.get(cacheKey);
  if (cached)
   return cached;
  const origin = experimentalFnt5Cells ? resource.fnt5Origins?.get(glyph.codePoint) : undefined;
@@ -100,7 +102,7 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  const pixels = sourceCtx.getImageData(sourceX, sourceY, cell, cell);
  for (let p = 0; p < pixels.data.length; p += 4) {
   const alpha = experimentalMsdf
-   ? MsdfAlpha(pixels.data[p], pixels.data[p + 1], pixels.data[p + 2], resource.metadata.inverted)
+   ? MsdfAlpha(pixels.data[p], pixels.data[p + 1], pixels.data[p + 2], resource.metadata.inverted, experimentalMsdfSmoothing ? MsdfScaledSmoothing(displayedFontSize, resource.metadata.fontSize) : 12)
    : SdfSampleAlpha(pixels.data[p], resource.metadata.inverted);
   pixels.data[p] = 255;
   pixels.data[p + 1] = 255;
@@ -111,7 +113,7 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  canvas.width = cell;
  canvas.height = cell;
  canvas.getContext("2d")?.putImageData(pixels, 0, 0);
- atlas.glyphs.set(glyph.codePoint, canvas);
+ atlas.glyphs.set(cacheKey, canvas);
  return canvas;
 }
 function WrapLines(text: string, width: number, advance: (text: string) => number, enabled: boolean): string[] {
@@ -211,7 +213,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
      const glyph = resource.glyphs.get(character.codePointAt(0) ?? 0);
      if (!glyph) { penX += fontSize / 2; continue; }
      if (glyph.width > 0 && glyph.height > 0) {
-      const sprite = RasterGlyph(resource, atlas, glyph);
+      const sprite = RasterGlyph(resource, atlas, glyph, fontSize);
       if (sprite) {
        // The standalone FNT5 cell includes distance-field padding. A provisional
        // centering path keeps that padding around the nominal glyph bounds and
