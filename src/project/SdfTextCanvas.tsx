@@ -64,6 +64,7 @@ function WrapLines(text: string, width: number, advance: (text: string) => numbe
   return text.split("\n");
  const result: string[] = [];
  for (const paragraph of text.split("\n")) {
+  const paragraphStart = result.length;
   let line = "";
   for (const token of paragraph.match(/\s+|\S+/g) ?? []) {
    if (line && advance(line + token) > width) {
@@ -85,7 +86,7 @@ function WrapLines(text: string, width: number, advance: (text: string) => numbe
     line = fragment;
    }
   }
-  if (line || paragraph.length === 0 || result.length === 0)
+  if (line || result.length === paragraphStart)
    result.push(line.trimEnd());
  }
  return result;
