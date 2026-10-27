@@ -1,4 +1,4 @@
-import { decodeBC7 } from "./Bc7Decoder";
+import { decodeBC7 } from "./Bc7Decoder.js";
 
 function ReadU32(view: DataView, offset: number) {
 	return view.getUint32(offset, true);
