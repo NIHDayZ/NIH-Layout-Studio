@@ -9,6 +9,8 @@ export interface SdfFontResource {
  atlasUrl: string;
  fnt5Origins?: Map<number, { x: number; y: number }>;
  fnt5Name?: string;
+ fnt5CellSize?: number;
+ fnt5PixelMetrics?: boolean;
 }
 interface CachedAtlas {
  source: HTMLCanvasElement;
@@ -60,7 +62,9 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  const origin = experimentalFnt5Cells ? resource.fnt5Origins?.get(glyph.codePoint) : undefined;
  // Only the tested MetronBook24 atlas has a verified 38px grid pitch.
  const usesTcrd = !!(origin && resource.fnt5Name?.toLowerCase() === "sdf_metronbook24" && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024);
- const rect = usesTcrd
+ const rect = resource.fnt5PixelMetrics && resource.fnt5CellSize && resource.fnt5Origins?.has(glyph.codePoint)
+  ? { left: resource.fnt5Origins.get(glyph.codePoint)!.x, top: resource.fnt5Origins.get(glyph.codePoint)!.y, size: resource.fnt5CellSize, scale: 1 }
+  : usesTcrd
   ? { left: origin.x, top: origin.y, size: 38, scale: 1 }
   : SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
  if (debugFnt5Sampling && loggedGlyphs.size < 120) {
@@ -181,7 +185,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    const atlasScale = atlas.source.width / meta.atlasWidth;
    const advance = (value: string) => Array.from(value).reduce((sum, letter) => {
     const glyph = resource.glyphs.get(letter.codePointAt(0) ?? 0);
-    return sum + (glyph ? SdfGlyphAdvance(glyph.advance, fontSize) : fontSize / 2);
+    return sum + (glyph ? (resource.fnt5PixelMetrics ? glyph.advance * scale : SdfGlyphAdvance(glyph.advance, fontSize)) : fontSize / 2);
    }, 0);
    const lines = WrapLines(text, width, advance, wrap);
    const lineHeight = fontSize * 1.25;
@@ -206,7 +210,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
        ink.drawImage(sprite, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale);
       }
      }
-     penX += SdfGlyphAdvance(glyph.advance, fontSize);
+     penX += resource.fnt5PixelMetrics ? glyph.advance * scale : SdfGlyphAdvance(glyph.advance, fontSize);
     }
     baseY += lineHeight;
    }
