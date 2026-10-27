@@ -101,6 +101,7 @@ function ParseNativeImageSet(path: string, source: string): ImageSetDefinition |
 	const textureBlocks = [...body.matchAll(/ImageSetTextureClass(?:\s+[\w".-]+)?\s*\{/gi)];
 	let texturePath: string | null = null;
 	let bestMpix = -Infinity;
+	const textures: Array<{ path: string; mpix: number }> = [];
 	for (const match of textureBlocks) {
 		if (match.index === undefined)
 			continue;
@@ -109,9 +110,13 @@ function ParseNativeImageSet(path: string, source: string): ImageSetDefinition |
 			continue;
 		const mpix = Number(ExtractProperty(textureBody, "mpix") ?? 0);
 		const candidate = ExtractProperty(textureBody, "path");
-		if (candidate && mpix >= bestMpix) {
-			bestMpix = mpix;
-			texturePath = StripGuid(Unquote(candidate));
+		if (candidate && Number.isFinite(mpix) && mpix >= 0) {
+			const normalizedCandidate = StripGuid(Unquote(candidate));
+			textures.push({ path: normalizedCandidate, mpix });
+			if (mpix >= bestMpix) {
+				bestMpix = mpix;
+				texturePath = normalizedCandidate;
+			}
 		}
 	}
 	const images = new Map<string, ImageSetImage>();
@@ -127,7 +132,7 @@ function ParseNativeImageSet(path: string, source: string): ImageSetDefinition |
 		const flags = ParseImageSetFlags(ExtractProperty(imageBody, "Flags"));
 		images.set(imageName.toLowerCase(), { name: imageName, x, y, width, height, flags });
 	}
-	return { name, path, texturePath, refWidth, refHeight, images };
+	return { name, path, texturePath, textures, refWidth, refHeight, images };
 }
 
 function ParseXmlImageSet(path: string, source: string): ImageSetDefinition | null {
@@ -650,14 +655,24 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 		const image = set.images.get(requestedImage);
 		if (!image)
 			return null;
-		if (!set.texturePath)
-			return null;
-		const atlas = FindAtlasSource(project.files, set.texturePath);
-		let atlasUrl: string | null = atlas ? GetResourceObjectUrl(project, atlas) : null;
-		if (!atlasUrl) {
-			const cookedAtlas = FindFile(project.files, set.texturePath);
-			if (cookedAtlas?.extension === ".edds")
-				atlasUrl = project.resourceObjectUrls.get(cookedAtlas.path) ?? null;
+		// Prefer reference-resolution assets for exact ImageSetDefClass coordinates.
+		// Higher-mpix variants are a fallback only if reference atlas is unavailable.
+		const variants = set.textures?.length
+			? [...set.textures].sort((a, b) => a.mpix - b.mpix)
+			: set.texturePath ? [{ path: set.texturePath, mpix: 0 }] : [];
+		let atlasUrl: string | null = null;
+		let selectedMpix = 0;
+		for (const variant of variants) {
+			const source = FindAtlasSource(project.files, variant.path);
+			const resolvedSource = source ? GetResourceObjectUrl(project, source) : null;
+			const cooked = FindFile(project.files, variant.path);
+			const cookedUrl = cooked?.extension === ".edds" ? project.resourceObjectUrls.get(cooked.path) : undefined;
+			const candidateUrl = resolvedSource ?? cookedUrl ?? null;
+			if (!candidateUrl)
+				continue;
+			atlasUrl = candidateUrl;
+			selectedMpix = variant.mpix;
+			break;
 		}
 		if (!atlasUrl) {
 			const directByImageName = project.files.filter((candidate) =>
@@ -670,14 +685,15 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 			}
 			return null;
 		}
+		const pixelScale = Math.pow(2, selectedMpix);
 		return {
 			url: atlasUrl,
-			x: image.x,
-			y: image.y,
-			width: image.width,
-			height: image.height,
-			atlasWidth: set.refWidth,
-			atlasHeight: set.refHeight
+			x: image.x * pixelScale,
+			y: image.y * pixelScale,
+			width: image.width * pixelScale,
+			height: image.height * pixelScale,
+			atlasWidth: set.refWidth * pixelScale,
+			atlasHeight: set.refHeight * pixelScale
 		};
 	}
 	const direct = FindFile(project.files, unquoted);
