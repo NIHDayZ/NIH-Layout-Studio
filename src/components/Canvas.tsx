@@ -346,7 +346,7 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 	if (sdfFont) {
 		// Diagnostic only: compare nominal-size inference against a font size
 		// that fits the widget. Explicit author-provided sizes remain untouched.
-		const explicitTextSize = ["exact text size", "fontsize", "font size"].some((name) => {
+		const explicitTextSize = ["exact text size", "exact size", "fontsize", "font size"].some((name) => {
 			const value = Number(GetNodeProperty(node, name));
 			return Number.isFinite(value) && value > 0;
 		});
