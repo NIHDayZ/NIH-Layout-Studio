@@ -50,7 +50,7 @@ function TreeNode({ node, selected, selectedIds, onSelect, onReparent, onMove, o
 					title="Ctrl-click for multi-select. Drag onto another widget to reparent."
 				>
 					<span className="tree-type">{node.type.replace(/Class$/, "")}</span>
-					<span className="tree-name">{node.name}</span>
+					<span className="tree-name" title={node.name}>{/^"\\{[0-9a-fA-F]+\\}"$/.test(node.name) ? (node.properties.find((property) => property.name.toLowerCase() === "name")?.value || node.name) : node.name}</span>
 				</button>
 				<div className="tree-row-actions">
 					<button
