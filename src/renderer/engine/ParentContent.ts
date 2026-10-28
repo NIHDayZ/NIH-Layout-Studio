@@ -1,4 +1,6 @@
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
+import type { GeometryRect } from "./GeometryCore.js";
+import { MeasureContentBounds } from "./ContentBounds.js";
 import { ResolveAuthoredRect } from "./WidgetGeometry.js";
 
 /**
@@ -51,7 +53,8 @@ function IsOrdinaryContainer(node: MeasuredLayoutNode): boolean {
  *
  * This is not a native Workbench container sizing implementation. In
  * particular, it does not infer padding, invisible-child behavior,
- * scroll extents, or layout manager allocations. A managed child with\n * fixed authored height contributes only its outer box, not its contents.
+ * scroll extents, or layout manager allocations. A managed child with
+ * fixed authored height contributes only its outer box, not its contents.
  */
 export function ResolveBoundedParentHeight(
 	parent: MeasuredLayoutNode,
@@ -72,7 +75,9 @@ export function ResolveBoundedParentHeight(
 	if (depth >= 64)
 		return Failed("parent-height-dependency", parent.node.id);
 
-	let bottom = 0;
+	// Parent-specific dependency/eligibility checks stay here. Only the
+	// finite rectangle envelope is shared with other layout families.
+	const boxes: GeometryRect[] = [];
 	for (const child of parent.children) {
 		const authored = child.authored;
 		if (!authored.visible)
@@ -121,14 +126,22 @@ export function ResolveBoundedParentHeight(
 		const extent = authoredRect.y + height;
 		if (!Number.isFinite(extent))
 			return Failed("invalid-child-geometry", child.node.id);
-		bottom = Math.max(bottom, extent);
+		boxes.push({ x: authoredRect.x, y: authoredRect.y,
+			width: authoredRect.width, height });
 	}
-	if (!Number.isFinite(bottom) || bottom <= 0)
+	// This prototype anchors parent height at y=0. A negative left edge
+	// does not enlarge vertical content, and a zero-height child is permitted
+	// only here (Scroll viewport diagnostics still reject zero-area children).
+	const bounds = MeasureContentBounds(boxes, { allowZeroHeight: true });
+	if (!bounds)
+		return Failed("invalid-child-geometry", parent.node.id);
+	const bottom = Math.max(0, bounds.bottom);
+	if (bottom <= 0)
 		return Failed("empty-content", parent.node.id);
 	return {
 		result: {
 			height: bottom,
-			contributingChildren: parent.children.length,
+			contributingChildren: bounds.childCount,
 			evidence: "bounded-child-extent-prototype"
 		},
 		failure: null,
