@@ -1,4 +1,3 @@
-import type { ResolvedImageResource } from "../../project/ProjectTypes.js";
 import type { GeometryWidget } from "./WidgetGeometry.js";
 import type { IntrinsicMeasurement } from "./IntrinsicMeasurements.js";
 
@@ -7,9 +6,15 @@ import type { IntrinsicMeasurement } from "./IntrinsicMeasurements.js";
  * Imageset entries expose logicalWidth/logicalHeight; a direct URL with
  * atlasWidth=atlasHeight=1 does NOT have known intrinsic dimensions.
  */
+/** Structural subset of the existing ResolvedImageResource contract. */
+export interface LogicalImageResource {
+	logicalWidth?: number;
+	logicalHeight?: number;
+}
+
 export type ImageResourceResolver = (
 	reference: string
-) => Pick<ResolvedImageResource, "logicalWidth" | "logicalHeight"> | null;
+) => LogicalImageResource | null;
 
 export function CreateImageIntrinsicProvider(
 	resolve: ImageResourceResolver
