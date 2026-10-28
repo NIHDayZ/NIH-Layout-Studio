@@ -1,6 +1,6 @@
 # Native loader syntax isolation — 12 separate DayZ resources
 
-**Status:** Source fixtures and client diagnostic are committed but **have not been compiled or run in DayZ**. The previous v1/v2 and 14-case native property matrix data are preserved separately.
+**Status:** The isolated syntax probe **compiled and ran in DayZ on 2026-10-28**. All 12 independent resources loaded and all 24 native creation/update observations were captured. The previous v1/v2 and 14-case native property matrix data remain preserved separately. See [native findings](2026-10-28-property-syntax-native-results.md).
 
 ## Why isolate the resources?
 
@@ -129,11 +129,11 @@ After a successful run, the source log can be validated with:
 npm run extract:workbench-property-syntax -- $latest.FullName syntax-native.json
 ```
 
-If one invalid trailing-property resource crashes or blocks the
-native loader, retain the client error log and do not infer results
-for the unexecuted cases. The test mod has **not yet been DayZ
-compiled** after these changes; passing GitHub CI validates only
-TypeScript/Node tests and the production web bundle.
+The completed run loaded every independent resource without a reported
+syntax-probe error. For future test modifications, retain client error
+logs rather than inferring results for unexecuted cases. GitHub CI
+validates the source fixtures and extractor; native execution evidence
+is recorded separately.
 
 ## Actual native results — 2026-10-28
 
