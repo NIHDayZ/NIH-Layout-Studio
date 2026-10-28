@@ -444,6 +444,10 @@ function ModulatedImageSprite({
 			canvas.width = pixelWidth;
 			canvas.height = pixelHeight;
 			context.clearRect(0, 0, pixelWidth, pixelHeight);
+			// A one-texel imageset center is a solid fill, not a miniature
+			// image to interpolate. Bilinear sampling can bleed neighboring
+			// atlas pixels into large stretched ButtonWidget backgrounds.
+			context.imageSmoothingEnabled = !(resolved.width === 1 && resolved.height === 1);
 			if (resolved.atlasWidth === 1 && resolved.atlasHeight === 1)
 				context.drawImage(image, 0, 0, pixelWidth, pixelHeight);
 			else
