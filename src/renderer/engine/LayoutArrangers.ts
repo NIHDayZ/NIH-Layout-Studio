@@ -3,6 +3,7 @@ import { PlanConstrainedGrid } from "./ConstrainedGrid.js";
 import { MeasureFixedWrapContent, PlanFixedWrap, type FixedWrapContentPlan } from "./FixedWrap.js";
 import { MeasureAuthoredScrollViewport, type AuthoredScrollViewport } from "./ScrollViewport.js";
 import { ResolveAuthoredRect } from "./WidgetGeometry.js";
+import { EstimateUnscaledScrollViewport, type UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
 
 /**
@@ -19,6 +20,8 @@ export interface ArrangementOptions {
 	scrollViewportDiagnostics?: boolean;
 	/** Native-derived MAX extent candidate only, assumes zero offset and unadjusted viewport. */
 	scrollNativeExtentDiagnostics?: boolean;
+	/** Prototype unscaled scrollbar reservation and child viewport, never live Scroll clipping. */
+	scrollScrollbarViewportDiagnostics?: boolean;
 	/**
 	 * Prototype only: consume a supplied independent intrinsic dimension for
 	 * leaf ImageWidget/TextWidget size-to-content. No native parity asserted.
@@ -159,6 +162,24 @@ export function ProbeScrollViewport(
 	const rects = parent.children.map((child) =>
 		ResolveAuthoredRect(child.authored, { width: rect.width, height: rect.height }));
 	return MeasureAuthoredScrollViewport(rect, rects);
+}
+
+/**
+ * Independent from authored child-overhang and content-extent inspection:
+ * the compiled native branch reserves space for scrollbars in the child
+ * viewport before it measures descendants.
+ */
+export function ProbeUnscaledScrollViewport(
+	parent: MeasuredLayoutNode,
+	rect: GeometryRect,
+	unitScale: number,
+	options: ArrangementOptions = {}
+): UnscaledScrollViewportCandidate | null {
+	if (!options.scrollScrollbarViewportDiagnostics || parent.strategy.kind !== "scroll"
+		|| parent.unresolvedContentWidth || parent.unresolvedContentHeight
+		|| !parent.nativeScroll)
+		return null;
+	return EstimateUnscaledScrollViewport(rect, parent.nativeScroll, unitScale);
 }
 
 type StrategyPlanner = (node: MeasuredLayoutNode, rect: GeometryRect) => ChildArrangement | null;

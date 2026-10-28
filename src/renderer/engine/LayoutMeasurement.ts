@@ -3,6 +3,7 @@ import { DecodeAuthoredGeometry, MeasureAuthoredSize, type AuthoredGeometry, typ
 import { ResolveChildLayoutStrategy, type ChildLayoutStrategy } from "./WidgetStrategies.js";
 import { DecodeNativeGridSettings, type NativeGridSettings } from "./ConstrainedGrid.js";
 import { DecodeNativeWrapSettings, type NativeWrapSettings } from "./FixedWrap.js";
+import { DecodeNativeScrollSettings, type NativeScrollSettings } from "./ScrollSettings.js";
 import { ResolveIntrinsicMeasurement, type IntrinsicMeasurementProviders, type ResolvedIntrinsicMeasurement } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextPreparer, PreparedTextFlow } from "./ConstrainedText.js";
 
@@ -22,6 +23,8 @@ export interface MeasuredLayoutNode {
 	readonly nativeGrid: NativeGridSettings | null;
 	/** Wrap-only spacing and alignment, decoded once. */
 	readonly nativeWrap: NativeWrapSettings | null;
+	/** Native scroll bar toggles decoded only for ScrollWidget. */
+	readonly nativeScroll: NativeScrollSettings | null;
 	readonly measurement: MeasuredWidget;
 	/** Optional external resource measurements, never calculated from the widget rectangle. */
 	readonly intrinsic: ResolvedIntrinsicMeasurement | null;
@@ -73,6 +76,7 @@ export function MeasureLayoutTree(
 		const strategy = ResolveChildLayoutStrategy(node.type);
 		const nativeGrid = strategy.kind === "grid" ? DecodeNativeGridSettings(node.properties) : null;
 		const nativeWrap = strategy.kind === "wrap" ? DecodeNativeWrapSettings(node.properties) : null;
+		const nativeScroll = strategy.kind === "scroll" ? DecodeNativeScrollSettings(node.properties) : null;
 		const intrinsic = options.intrinsics && (authored.sizeToContentWidth || authored.sizeToContentHeight)
 			? ResolveIntrinsicMeasurement(node, options.intrinsics) : null;
 		const textFlow = options.constrainedText && node.type.trim().toLowerCase() === "textwidgetclass"
@@ -91,6 +95,7 @@ export function MeasureLayoutTree(
 			strategy,
 			nativeGrid,
 			nativeWrap,
+			nativeScroll,
 			measurement: MeasureAuthoredSize(authored),
 			intrinsic,
 			textFlow,

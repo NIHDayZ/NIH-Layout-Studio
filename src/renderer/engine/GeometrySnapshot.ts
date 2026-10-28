@@ -1,7 +1,8 @@
 import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type LayoutConstraints, type MeasuredWidget } from "./GeometryCore.js";
 import { ResolveAuthoredRect, ResolveAuthoredRectWithSize, type GeometryWidget } from "./WidgetGeometry.js";
 import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
-import { PlanManagedChildren, ProbeWrapContentHeight, ProbeScrollViewport, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
+import { PlanManagedChildren, ProbeWrapContentHeight, ProbeScrollViewport, ProbeUnscaledScrollViewport, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
+import type { UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
 import { EstimateNativeScrollExtent, type AuthoredScrollViewport, type NativeScrollExtentCandidate } from "./ScrollViewport.js";
 import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
@@ -67,6 +68,8 @@ export interface AuthoredGeometrySnapshot {
 	scrollViewports: ReadonlyMap<string, AuthoredScrollViewport>;
 	/** Native-derived max extents ONLY; no scroll offset or scrollbar geometry. */
 	scrollExtentCandidates: ReadonlyMap<string, NativeScrollExtentCandidate>;
+	/** Unscaled native scrollbar reservation candidates. Does not modify real clipping or scroll offsets. */
+	scrollAdjustedViewports: ReadonlyMap<string, UnscaledScrollViewportCandidate>;
 	rootRect: GeometryRect;
 }
 
@@ -94,6 +97,7 @@ export function ArrangeMeasuredGeometry(
 	const appliedWrapContent: AppliedWrapContent[] = [];
 	const scrollViewports = new Map<string, AuthoredScrollViewport>();
 	const scrollExtentCandidates = new Map<string, NativeScrollExtentCandidate>();
+	const scrollAdjustedViewports = new Map<string, UnscaledScrollViewportCandidate>();
 	// Only the current arrangement pass owns these width-dependent metrics.
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
@@ -257,6 +261,12 @@ export function ArrangeMeasuredGeometry(
 			}
 			const wantsScrollInspection = (options.scrollViewportDiagnostics || options.scrollNativeExtentDiagnostics)
 				&& strategy.kind === "scroll";
+			if (strategy.kind === "scroll" && options.scrollScrollbarViewportDiagnostics
+				&& !scrollAdjustedViewports.has(node.id)) {
+				const adjusted = ProbeUnscaledScrollViewport(prepared, absoluteRect, constraints.dpiScale, options);
+				if (adjusted)
+					scrollAdjustedViewports.set(node.id, adjusted);
+			}
 			const viewportDiagnostic = wantsScrollInspection
 				? ProbeScrollViewport(prepared, absoluteRect, {
 					...options, scrollViewportDiagnostics: true
@@ -264,7 +274,10 @@ export function ArrangeMeasuredGeometry(
 			if (viewportDiagnostic) {
 				if (options.scrollViewportDiagnostics && !scrollViewports.has(node.id))
 					scrollViewports.set(node.id, viewportDiagnostic);
-				if (options.scrollNativeExtentDiagnostics && !scrollExtentCandidates.has(node.id)) {
+				if (options.scrollNativeExtentDiagnostics && !scrollExtentCandidates.has(node.id)
+					// The max-extent candidate assumes no scrollbar reservations.
+					&& prepared.nativeScroll && !prepared.nativeScroll.horizontal
+					&& !prepared.nativeScroll.vertical && !prepared.nativeScroll.verticalLeft) {
 					const candidate = EstimateNativeScrollExtent(viewportDiagnostic);
 					if (candidate)
 						scrollExtentCandidates.set(node.id, candidate);
@@ -298,7 +311,7 @@ export function ArrangeMeasuredGeometry(
 		dpiScale
 	};
 	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, rootRect: { ...rootRect } };
 }
 
 /**

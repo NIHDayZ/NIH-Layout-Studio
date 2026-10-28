@@ -186,3 +186,82 @@ test("content-sized Scroll cannot reuse its authored viewport as a native extent
  assert.equal(result.scrollExtentCandidates.size,0);
  assert.ok(result.issues.some(x=>x.code==="unresolved-size-to-content"));
 });
+
+
+test("native reflected Scrollbar names decode once, preserve first property, and refuse ambiguous flags", async()=>{
+ const { DecodeNativeScrollSettings } = await import("../.geometry-engine-test-build/ScrollSettings.js");
+ assert.deepEqual(DecodeNativeScrollSettings([]),{horizontal:false,vertical:false,verticalLeft:false});
+ const settings=[
+  {name:"Scrollbar H",value:"1"},
+  {name:"Scrollbar V",value:"1"},
+  {name:"Scrollbar V Left",value:"1"},
+  {name:"SCROLLBAR H",value:"0"}
+ ];
+ assert.deepEqual(DecodeNativeScrollSettings(settings),{horizontal:true,vertical:true,verticalLeft:true});
+ for(const bad of ["yes","false","2","-1"]) {
+  assert.equal(DecodeNativeScrollSettings([{name:"Scrollbar H",value:bad}]),null);
+ }
+});
+
+test("unscaled native Scroll viewport reserves ten units per enabled scrollbar", async()=>{
+ const { EstimateUnscaledScrollViewport } = await import("../.geometry-engine-test-build/ScrollSettings.js");
+ const s={horizontal:true,vertical:true,verticalLeft:true};
+ assert.deepEqual(EstimateUnscaledScrollViewport(Rect(100,60),s,1),{
+  childViewport:{x:10,y:0,width:90,height:50},
+  scrollbarThickness:10,
+  horizontalScrollbar:true,
+  verticalScrollbar:true,
+  verticalScrollbarLeft:true,
+  evidence:"native-derived-unscaled-scroll-viewport",
+  assumptions:"zero-offset-no-dpi-scaling"
+ });
+ const right=EstimateUnscaledScrollViewport(Rect(100,60),{...s,verticalLeft:false},1);
+ assert.deepEqual(right.childViewport,{x:0,y:0,width:90,height:50});
+ const none=EstimateUnscaledScrollViewport(Rect(100,60),{
+  horizontal:false,vertical:false,verticalLeft:true
+ },1);
+ assert.deepEqual(none.childViewport,{x:0,y:0,width:100,height:60});
+ assert.equal(none.verticalScrollbarLeft,false);
+ assert.equal(EstimateUnscaledScrollViewport(Rect(10,60),s,1),null);
+ assert.equal(EstimateUnscaledScrollViewport(Rect(100,60),s,1.25),null);
+});
+
+test("scrollbar viewport opt-in does not affect geometry, clipping, or native max extents",()=>{
+ const scroll=Scroll([Child("a",0,0,150,90)],[
+  ["Scrollbar H","1"],["Scrollbar V","1"],["Scrollbar V Left","1"]
+ ]);
+ const prepared=MeasureLayoutTree([scroll]);
+ assert.deepEqual(prepared.roots[0].nativeScroll,{
+  horizontal:true,vertical:true,verticalLeft:true
+ });
+ const base=ArrangeMeasuredGeometry(prepared,Rect(500,300));
+ const enabled=ArrangeMeasuredGeometry(prepared,Rect(500,300),1,{
+  scrollScrollbarViewportDiagnostics:true,
+  scrollNativeExtentDiagnostics:true,
+  scrollViewportDiagnostics:true
+ });
+ assert.equal(base.scrollAdjustedViewports.size,0);
+ assert.equal(enabled.scrollAdjustedViewports.get("scroll").childViewport.width,90);
+ assert.equal(enabled.scrollAdjustedViewports.get("scroll").childViewport.height,50);
+ assert.equal(enabled.scrollAdjustedViewports.get("scroll").childViewport.x,10);
+ assert.equal(enabled.scrollExtentCandidates.size,0);
+ assert.equal(enabled.scrollViewports.size,1);
+ assert.deepEqual(enabled.entries,base.entries);
+ assert.deepEqual(enabled.issues,base.issues);
+});
+
+test("unknown scroll toggles and scaled viewports remain diagnostic-only and unsupported",()=>{
+ const scroll=Scroll([Child("a",0,0,20,20)],[["Scrollbar V","nonsense"]]);
+ const prepared=MeasureLayoutTree([scroll]);
+ assert.equal(prepared.roots[0].nativeScroll,null);
+ const bad=ArrangeMeasuredGeometry(prepared,Rect(500,300),1,{
+  scrollScrollbarViewportDiagnostics:true,scrollNativeExtentDiagnostics:true
+ });
+ assert.equal(bad.scrollAdjustedViewports.size,0);
+ assert.equal(bad.scrollExtentCandidates.size,0);
+ const valid=MeasureLayoutTree([Scroll([Child("a",0,0,20,20)],[["Scrollbar V","1"]])]);
+ const scaled=ArrangeMeasuredGeometry(valid,Rect(500,300),2,{
+  scrollScrollbarViewportDiagnostics:true
+ });
+ assert.equal(scaled.scrollAdjustedViewports.size,0);
+});
