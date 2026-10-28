@@ -14,9 +14,25 @@ $sourceFiles = @(
 	@{ Source = (Join-Path $PSScriptRoot 'config.cpp'); Relative = 'config.cpp' },
 	@{ Source = (Join-Path $PSScriptRoot 'NIH_ContentSizingRuntime.c'); Relative = 'Scripts\5_Mission\NIH_ContentSizingRuntime.c' },
 	@{ Source = (Join-Path $PSScriptRoot 'NIH_PropertyMatrixRuntime.c'); Relative = 'Scripts\5_Mission\NIH_PropertyMatrixRuntime.c' },
+	@{ Source = (Join-Path $PSScriptRoot 'NIH_PropertySyntaxRuntime.c'); Relative = 'Scripts\5_Mission\NIH_PropertySyntaxRuntime.c' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_ContentSizing_Parity.layout'); Relative = 'gui\layouts\NIH_ContentSizing_Parity.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_ContentProperty_Matrix.layout'); Relative = 'gui\layouts\NIH_ContentProperty_Matrix.layout' }
 )
+
+# Stage each isolated case as its own native layout resource. Every
+# unsupported/unknown property is confined to one CreateWidgets call.
+$syntaxFolder = Join-Path $fixtureRoot 'syntax-matrix'
+$syntaxLayouts = @(Get-ChildItem -LiteralPath $syntaxFolder -Filter '*.layout' -File |
+	Sort-Object Name)
+if ($syntaxLayouts.Count -ne 12) {
+	throw "Expected 12 isolated syntax layouts, found $($syntaxLayouts.Count)"
+}
+foreach ($syntaxLayout in $syntaxLayouts) {
+	$sourceFiles += @{
+		Source = $syntaxLayout.FullName
+		Relative = (Join-Path 'gui\layouts\syntax-matrix' $syntaxLayout.Name)
+	}
+}
 
 foreach ($entry in $sourceFiles) {
 	if (-not (Test-Path -LiteralPath $entry.Source -PathType Leaf)) {
