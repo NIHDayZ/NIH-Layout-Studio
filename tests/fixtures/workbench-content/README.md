@@ -166,10 +166,11 @@ An independent [12-resource parser experiment](PROPERTY-SYNTAX.md)
 now probes unknown attribute names and attribute order **around**
 the child block on Frame and Panel. It deliberately uses separate
 `CreateWidgets` calls to avoid contaminating the previous native
-14-case property matrix. No new native evidence has been collected
-for these cases; the earlier v1/v2/property-matrix captures are
-preserved unchanged. Web CI validates only syntax input integrity
-and the log extractor, not DayZ's C++ loader.
+14-case property matrix. The experiment subsequently **completed in DayZ**, and 24 native
+getter observations are preserved separately. The earlier v1/v2 and
+14-case property-matrix captures remain unchanged. Web CI checks
+source-input integrity and replays the actual native log; it cannot
+inspect DayZ's C++ loader internals.
 
 ## Verified native parser-order finding — 2026-10-28
 
