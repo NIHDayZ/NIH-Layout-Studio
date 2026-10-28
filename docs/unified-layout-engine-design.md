@@ -540,3 +540,28 @@ No C++ parser implementation or reasons for token recovery are
 exposed by these getters. Shared extent arithmetic must remain
 separate from native parser eligibility; do not suppress parsed
 children or mutate serialization to reproduce the anomaly.
+
+## M2.2 independent native property syntax isolation (2026-10-28)
+
+The tested native Frame/Panel hierarchy loses children when certain
+sizing properties appear, **including when the flag is 0**, while a
+known `clipchildren=1` property and the no-attribute control do not.
+These are independently observed hierarchy results, not a C++
+tokenizer recovery.
+
+The new forensic matrix isolates **12 resource files**, one test
+parent and two identical nested children each. It separately compares:
+property absent, `Size To Content V=0` before and after children,
+deliberately unknown `NIH_ProbeUnknown=0` before and after, and
+a recognized `clipchildren=1` before and after (Frame), with
+matching baseline, sizing and unknown-attribute cases for Panel.
+One `CreateWidgets` call per resource avoids cross-case parser
+contamination. The disposable client script captures both
+after-creation and after-update native parent/child existence and
+dimensions; a failed resource load is explicitly recorded.
+
+The protocol is [PROPERTY-SYNTAX.md](../tests/fixtures/workbench-content/PROPERTY-SYNTAX.md)
+and the strict extractor is `scripts/extract-workbench-property-syntax.mjs`.
+**This stage has not run in DayZ**; results must not be inserted into
+the unified runtime engine until independently captured and validated.
+Production Canvas and serialization remain unchanged.
