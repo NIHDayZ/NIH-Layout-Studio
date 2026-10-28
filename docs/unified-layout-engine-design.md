@@ -376,3 +376,14 @@ Native inspection additionally recovered reflection property names `Scrollbar H`
 `ArrangeMeasuredGeometry(prepared, rootRect, 1, {scrollScrollbarViewportDiagnostics:true})` now reports an **unscaled child viewport candidate** per eligible ScrollWidget in `scrollAdjustedViewports`. When scrollbars are enabled, native measurement reserves 10 units for each applicable scrollbar; a left-side vertical bar shifts the child origin right 10 units. This does not change child coordinates, canvas scrolling, native clipping or persistence. When scale is not 1, content-sized Scroll widgets, or ambiguous scrollbar flags are encountered, the candidate remains absent. The source reflects the unit-scale **hypothesis**, not a verified mapping of Workbench's internal scaling mode to the editor DPI field.
 
 Importantly, a Scroll widget with an active scrollbar no longer produces the older unadjusted maximum-extent candidate: that candidate requires all scrollbar flags disabled. This prevents two diagnostic models with conflicting viewport assumptions from being applied simultaneously. Native scroll offsets, clipping boundaries, scrollbar draw dimensions and scroll range remain unimplemented pending Workbench parity fixtures.
+
+
+## M3 Scroll property-setter proof and explicit native-scale helper
+
+The pinned Workbench property's **loader-to-field mapping** is now directly established in the compiled code, rather than inferred only from reflection strings: `Scrollbar H` → `+0x188`, `Scrollbar V` → `+0x189` and `Scrollbar V Left` → `+0x18C`. The new static verifier `scripts/verify-workbench-scroll.mjs` checks these writes and the matching measurement reads without launching or committing Workbench.
+
+A separate native branch scales the scrollbar thickness by `contextC4 / contextCC` using single-precision arithmetic. `EstimateContextScaledScrollViewport(container, settings, { numerator, denominator })` reproduces **only this known arithmetic**, with explicit native-context integer inputs, sharing the same rectangle-reservation calculation as the existing unscaled diagnostic. It is deliberately *not* hooked up to `dpiScale`: the correspondence of these native context fields to any Studio/browser setting is not proven.
+
+Run `npm run test:geometry-engine` for the pure arithmetic and synthetic PE tests. With a legitimately installed **matching** Workbench executable, `npm run verify:workbench-scroll -- "C:\\Path\\To\\WorkbenchApp.exe"` verifies the native research pin; other binary versions are correctly rejected. No executable, extracted binary asset or copyrighted layout is included in the repo.
+
+**Native parity remains unverified:** scroll offset state, child eligibility, native clipping and scrollbar sizing under real Workbench scale contexts. Until independent reference observations are captured, default Canvas geometry and all opt-in Scroll diagnostics remain unchanged.
