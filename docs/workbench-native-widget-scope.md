@@ -117,6 +117,35 @@ The pinned WorkbenchApp.exe includes the exact authored property names **`Scroll
 
 The ScrollWidget measurement routine `0x1408E0460` has branches consistent with these names and dimensions: `[widget+0x189]` reserves horizontal viewport width (vertical scrollbar), `[widget+0x188]` reserves vertical viewport height (horizontal scrollbar), and `[widget+0x18C]` additionally shifts the child origin to the right when the vertical scrollbar occupies the left side. The unscaled path at `0x1408E04F3` loads float constant **10.0** from `0x141F1DCE0`. An alternate branch at `0x1408E04C8–0x1408E04F0` scales that constant by parent context values under a widget bit flag. These observations support an **unscaled diagnostic candidate**, not a universal 10px assertion under all Workbench conditions.
 
-`ScrollSettings.ts` adds first-property-wins decoding for the three reflected scrollbar names, refusing invalid boolean representations. It exposes an independent `EstimateUnscaledScrollViewport` that reserves 10 units of height for `Scrollbar H`, 10 units of width for `Scrollbar V`, and applies a 10-unit rightward child-origin shift when both `Scrollbar V` and `Scrollbar V Left` are enabled. It requires an explicit unit-scale assumption; it does not set scroll position, remove authored children, calculate DPI-adjusted scrollbar thickness, or claim native clipping parity. The exact property-setter mapping to byte offsets is **supported by reflection ordering and branch effects but has not been directly traced through setters**.
+`ScrollSettings.ts` adds first-property-wins decoding for the three reflected scrollbar names, refusing invalid boolean representations. It exposes an independent `EstimateUnscaledScrollViewport` that reserves 10 units of height for `Scrollbar H`, 10 units of width for `Scrollbar V`, and applies a 10-unit rightward child-origin shift when both `Scrollbar V` and `Scrollbar V Left` are enabled. It requires an explicit unit-scale assumption; it does not set scroll position, remove authored children, calculate DPI-adjusted scrollbar thickness, or claim native clipping parity. The property-loader mappings have now been **directly traced**: native `0x1408DEDD0` loads the three property identifiers in reflection order and writes their boolean values to `+0x188`, `+0x189`, and `+0x18C` at `0x1408DEE23`, `0x1408DEE43`, and `0x1408DEE60`, respectively.
 
 When scrollbar settings are enabled, the older `scrollNativeExtentDiagnostics` candidate is now suppressed because its stated `unadjusted-viewport` assumption no longer holds. The independent `scrollScrollbarViewportDiagnostics` option writes only to `scrollAdjustedViewports`, leaving actual layout and clipping unchanged.
+
+
+## Direct Scroll property-loader verification and native scale inputs (fifth inspection)
+
+The **same user-provided pinned executable**, SHA-256 `8fa4c688f28cb1214bb339aa93b451c4208a692a69ece8001d0f0ad0dd9fba85`, was re-examined at `0x1408DEDD0–0x1408DEE84`. The loader reads three property identifiers at `0x1461541FC`, `0x146154200` and `0x146154204` and writes their values to:
+
+| Authored reflection name | Native property-loader write | Scroll measurement guard |
+|---|---|---|
+| `Scrollbar H` | `0x1408DEE23` → byte `+0x188` | `0x1408E0527` |
+| `Scrollbar V` | `0x1408DEE43` → byte `+0x189` | `0x1408E04FB` |
+| `Scrollbar V Left` | `0x1408DEE60` → byte `+0x18C` | `0x1408E0504` |
+
+This **closes the previous loader-to-field mapping gap** in the pinned binary. It does not establish whether other Workbench builds use identical offsets. The loader also reads an earlier property identifier at `0x1461541D8` into byte `+0x159`; its user-facing name and filtering semantics remain unproven.
+
+The scrollbar scaling branch at `0x1408E04C8–0x1408E04F0` reads an integer at native context `+0xC4`, a positive divisor at `+0xCC`, converts the operands to single-precision floats, divides, and multiplies by the same 10-unit constant used by the unscaled path. It is enabled by bit 29 in Widget flags at `+0xA8`. Thus the **arithmetic** can be represented as `float32(10 × float32(float32(contextC4) / float32(contextCC)))`, but the meaning of those context fields relative to root resolution, monitor scale and Studio zoom is still unknown.
+
+`ScrollSettings.ts` now shares one rectangle-reservation calculation between `EstimateUnscaledScrollViewport` and `EstimateContextScaledScrollViewport`. The latter accepts the **actual native integer numerator and denominator explicitly**, with range checks and single-precision arithmetic. It is not automatically connected to canvas DPI or the layout snapshot, because doing so would invent the missing context mapping.
+
+### Reproducible evidence check
+
+`scripts/verify-workbench-scroll.mjs` is a read-only static PE verifier. It checks the **pinned SHA-256**, the exact property-loader instructions, measurement-guard opcodes, context-scale field accesses, reflection strings and a RIP-relative 10.0 constant. It never executes the Windows binary.
+
+```powershell
+npm run verify:workbench-scroll -- "C:\\Path\\To\\WorkbenchApp.exe"
+```
+
+The script has synthetic PE parser tests in CI; the full pinned-binary check was run against the user-provided Workbench binary in the research environment. The executable is not part of the repository.
+
+**Still missing for pixel parity:** observed Workbench child rectangles at multiple root resolutions, scrollbar modes and DPI settings; native scroll offset setters and direction; `+0x159` eligibility semantics; and the actual child clipping policy. These must be measured before enabling ScrollWidget runtime placement.
