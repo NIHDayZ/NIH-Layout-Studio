@@ -1,4 +1,4 @@
-import type { GeometryRect } from "./GeometryCore.js";
+import type { GeometryRect, MeasuredWidget } from "./GeometryCore.js";
 
 /** Minimal structural widget shape accepted by layout parsing and test fixtures. */
 export interface GeometryProperty {
@@ -100,6 +100,27 @@ function ResolveAxis(position: number, size: number, parentSize: number, exactPo
 	if (normalized === "center")
 		return offset - size * 0.5;
 	return offset;
+}
+
+/**
+ * Conservative authored-size measurement. Exact sizes provide preferred
+ * dimensions; relative sizes remain dependent on the parent and contribute
+ * no intrinsic width/height. The zero minimums intentionally do NOT claim
+ * native text/image intrinsic sizes or fixed-grid minimum constraints.
+ *
+ * This is a first measurement step, not content-based Size To Content.
+ */
+export function MeasureAuthoredSize(geometry: AuthoredGeometry): MeasuredWidget {
+	const preferredWidth = geometry.exactSizeX ? Math.max(0, geometry.sizeX) : 0;
+	const preferredHeight = geometry.exactSizeY ? Math.max(0, geometry.sizeY) : 0;
+	return {
+		minWidth: 0,
+		minHeight: 0,
+		preferredWidth,
+		preferredHeight,
+		dependsOnParentWidth: !geometry.exactSizeX,
+		dependsOnParentHeight: !geometry.exactSizeY
+	};
 }
 
 /** Parent-local rectangle; parent x/y are intentionally ignored. */
