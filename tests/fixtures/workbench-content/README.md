@@ -138,3 +138,24 @@ existing complete/partial v2 extractor and native JSON are unaffected.
 This third matrix is **source-verified only**, not compiled or observed
 in DayZ. See [the protocol and evidence boundaries](PROPERTY-MATRIX.md).
 
+
+## v3 property matrix — native evidence collected, 2026-10-28
+
+The user ran the 14-case isolated property matrix in a DayZ client
+with **all three phases complete**. Each Frame/Panel parent carrying
+a tested `Size To Content` property had **zero native children** even
+when the property was explicitly `0`; the no-property and
+`clipchildren=1` controls kept their descendants. WrapSpacer
+with `Size To Content V=0` also kept children at height 20, while
+`V=1` kept both children and changed screen height to 28.
+
+The result was already present at the **after-create** phase and
+did not change after native Update or root resize. The actual
+native C++ property parser remains unobserved; this is a native
+widget-tree diagnostic, not a recovered parser implementation.
+
+See [native property matrix results](2026-10-28-property-matrix-native-results.md),
+[original getter log](capture.property-matrix.native.2026-10-28.log),
+and [structured capture](capture.property-matrix.native.2026-10-28.json).
+The new regression re-parses the native log, compares all 42 case
+records, and preserves the missing children without inventing geometry.
