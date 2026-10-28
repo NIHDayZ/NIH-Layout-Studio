@@ -58,8 +58,8 @@ $null = Get-Command git -ErrorAction Stop
 $null = Get-Command node -ErrorAction Stop
 $null = Get-Command npm.cmd -ErrorAction Stop
 
-$branch = Invoke-Tool 'git' @('-C', $repoRoot, 'branch', '--show-current')
-$commit = Invoke-Tool 'git' @('-C', $repoRoot, 'rev-parse', 'HEAD')
+$branch = Invoke-Tool -Command 'git' -Arguments @('-C', $repoRoot, 'branch', '--show-current')
+$commit = Invoke-Tool -Command 'git' -Arguments @('-C', $repoRoot, 'rev-parse', 'HEAD')
 if ($branch -ne 'feature/unified-layout-engine') {
 	throw "Expected feature/unified-layout-engine; current branch is '$branch'. No files changed."
 }
@@ -133,8 +133,8 @@ $manifest = @{
 	branch = $branch
 	commit = $commit
 	gitWorktreeClean = ($dirtyLines.Count -eq 0)
-	node = Invoke-Tool 'node' @('--version')
-	npm = Invoke-Tool 'npm.cmd' @('--version')
+	node = Invoke-Tool -Command 'node' -Arguments @('--version')
+	npm = Invoke-Tool -Command 'npm.cmd' -Arguments @('--version')
 	os = [Environment]::OSVersion.VersionString
 	fixtures = $fixtureDetails
 	representativeLayouts = $realLayoutDetails
