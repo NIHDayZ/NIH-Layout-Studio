@@ -313,6 +313,7 @@ const experimentalFnt5FitRatio = (() => {
 	return ratio;
 })();
 const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
+const debugHudGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugHudGeometry") === "1";
 const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
 	const text = GetNodeProperty(node, "text") ?? "";
@@ -790,6 +791,8 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 
 	return (
 		<div
+			data-layout-node-id={node.id}
+			data-layout-node-name={node.name}
 			className={`canvas-widget ${kind.isFrame ? "frame-widget" : ""} ${kind.isPanel ? "panel-widget" : ""} ${kind.isText ? "text-widget" : ""} ${kind.isButton ? "button-widget" : ""} ${kind.isImage ? "image-widget" : ""} ${kind.isSpacer ? "spacer-widget" : ""} ${kind.isScroll ? "scroll-widget" : ""} ${isSelected ? "editor-selected" : ""}`}
 			style={style}
 			onPointerDown={(event) => BeginGeometryDrag(event, "move")}
@@ -815,9 +818,42 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 
 export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChange, width, height, zoom, debug, project, dependencyProjects, vanillaProject, snapEnabled, snapSize, showGrid, onContextMenu }: CanvasProps) {
 	const root: Rect = { x: 0, y: 0, width, height };
+	const canvasRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (!debugHudGeometry || !canvasRef.current)
+			return;
+		const element = canvasRef.current;
+		const rootBounds = element.getBoundingClientRect();
+		const scaleX = rootBounds.width / Math.max(1, width);
+		const scaleY = rootBounds.height / Math.max(1, height);
+		const records = Array.from(element.querySelectorAll<HTMLElement>("[data-layout-node-id]"))
+			.filter((node) => node.classList.contains("text-widget") || node.classList.contains("image-widget"))
+			.slice(0, 160)
+			.map((node) => {
+				const bounds = node.getBoundingClientRect();
+				const text = node.querySelector(".widget-text")?.textContent ?? "";
+				return {
+					id: node.dataset.layoutNodeId,
+					name: node.dataset.layoutNodeName,
+					kind: node.classList.contains("text-widget") ? "text" : "image",
+					text: text.slice(0, 80),
+					rect: {
+						x: Number(((bounds.left - rootBounds.left) / scaleX).toFixed(2)),
+						y: Number(((bounds.top - rootBounds.top) / scaleY).toFixed(2)),
+						width: Number((bounds.width / scaleX).toFixed(2)),
+						height: Number((bounds.height / scaleY).toFixed(2))
+					}
+				};
+			});
+		console.info("[NIH Layout Studio][HUD geometry] " + JSON.stringify({
+			root: { width, height }, screenRoot: { width: rootBounds.width, height: rootBounds.height },
+			scale: { x: scaleX, y: scaleY }, captured: records.length, records
+		}));
+	}, [nodes, width, height, zoom, project, dependencyProjects, vanillaProject]);
+
 	return (
 		<div className="canvas-shell">
-			<div className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}) }} onMouseDown={() => undefined}>
+			<div ref={canvasRef} className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}) }} onMouseDown={() => undefined}>
 				{nodes.map((node, index) => (
 					<RenderNode
 						key={`${node.name}-${index}`}
