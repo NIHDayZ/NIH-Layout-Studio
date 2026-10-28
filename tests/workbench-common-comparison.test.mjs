@@ -93,8 +93,10 @@ test("malformed comparison inputs fail closed instead of inventing native rectan
 	const bad=PopulateSyntheticFixture();
 	bad.tolerance=-1;
 	assert.throws(()=>CompareCommonGeometryCaptures({schemaVersion:1,cases:[bad]},roots),/tolerance/);
-	const managed=[{id:"a",name:"grid",type:"GridSpacerWidgetClass",properties:[],children:[
-		{id:"b",name:"button",type:"ButtonWidgetClass",properties:[],children:[]}
+	const managed=[{id:"root",name:"root",type:"FrameWidgetClass",properties:[],children:[
+		{id:"grid",name:"grid",type:"GridSpacerWidgetClass",properties:[],children:[
+			{id:"button",name:"button",type:"ButtonWidgetClass",properties:[],children:[]}
+		]}
 	]}];
 	assert.throws(()=>CompareCommonGeometryCaptures(template,managed),/managed\/content-sized/);
 });
