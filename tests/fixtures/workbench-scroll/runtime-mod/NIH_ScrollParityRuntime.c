@@ -8,7 +8,7 @@
  * This logs native API observations; it does not fabricate child viewports,
  * derive native DPI-context integers, or assert geometry parity.
  */
-class NIH_LayoutScrollRuntimeProbe {
+class NIHLayoutScrollRuntimeProbe {
 	protected Widget m_Root;
 
 	void Start() {
@@ -111,18 +111,18 @@ class NIH_LayoutScrollRuntimeProbe {
 }
 
 modded class MissionGameplay {
-	protected ref NIH_LayoutScrollRuntimeProbe m_NIH_LayoutScrollProbe;
+	protected ref NIHLayoutScrollRuntimeProbe m_NIH_LayoutScrollProbe;
 
 	override void OnInit() {
 		super.OnInit();
 		if (g_Game.IsDedicatedServer())
 			return;
 
-		m_NIH_LayoutScrollProbe = new NIH_LayoutScrollRuntimeProbe();
-		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(m_NIH_LayoutScrollRuntimeProbeStart, 250, false);
+		m_NIH_LayoutScrollProbe = new NIHLayoutScrollRuntimeProbe();
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(m_NIHLayoutScrollRuntimeProbeStart, 250, false);
 	}
 
-	protected void m_NIH_LayoutScrollRuntimeProbeStart() {
+	protected void m_NIHLayoutScrollRuntimeProbeStart() {
 		if (m_NIH_LayoutScrollProbe)
 			m_NIH_LayoutScrollProbe.Start();
 	}
