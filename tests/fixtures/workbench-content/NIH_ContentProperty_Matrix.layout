@@ -1,4 +1,3 @@
-// Isolated native parser/property matrix; never change previous v1/v2 fixtures.
 FrameWidgetClass NIHPropertyParity {
 	position 0 0
 	size 1 1
