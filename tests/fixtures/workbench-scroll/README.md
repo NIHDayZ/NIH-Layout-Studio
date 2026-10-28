@@ -15,6 +15,28 @@ The supplied DayZ GUI archive also includes Bohemia's larger existing example:
 combined-axis ScrollWidgets; it provides independent context but should not
 be copied into the public repository.
 
+## Current Workbench capture status (October 28, 2026)
+
+**Static capture completed.** See `2026-10-28-static-capture.md` and
+`capture.visual.2026-10-28.json` for the user-supplied screenshots'
+observations. All four panels load. Scrollbars appear on the expected sides,
+and the lower overhang buttons are visibly partly obscured. The `ScrollLeft`
+properties confirm `Clipchildren` and `Ignore invisible` checked.
+
+The Layout Editor does **not** offer a usable interactive scroll test here, so
+the prior capture steps below are now a reference procedure, **not another
+request to repeat this Workbench test**. No more static Workbench screenshots
+are needed for this fixture.
+
+Crucially, `ScrollLeft` shows its widget `Scaled` box enabled even though
+the top toolbar has Root DPI scaling disabled. The relation of these UI controls
+to the native scrollbar thickness scaling path is unresolved. The unscaled
+`10`-unit math in the numeric comparator remains a **hypothesis**.
+
+**Next validation environment:** running DayZ UI, where scrollbar dragging,
+wheel movement, and runtime clip behavior can be tested. The engine has no
+runtime ScrollWidget implementation enabled yet.
+
 ## Capture procedure on Windows
 
 1. Copy `NIH_Scroll_Parity.layout` to a directory that Workbench can browse,
