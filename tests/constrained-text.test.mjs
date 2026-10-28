@@ -151,3 +151,21 @@ test("untrusted or incomplete font metrics cannot activate a constrained text re
   assert.equal(result.issues[0].code,"unresolved-size-to-content");
  }
 });
+
+test("malformed or stale-for-width custom text measurements cannot alter geometry",()=>{
+ const invalid=[
+  {height:Infinity,lineCount:1,widthUsed:50,evidence:"sdf-preview-flow"},
+  {height:-12,lineCount:1,widthUsed:50,evidence:"sdf-preview-flow"},
+  {height:12,lineCount:1,widthUsed:500,evidence:"sdf-preview-flow"},
+  {height:12,lineCount:0,widthUsed:50,evidence:"sdf-preview-flow"}
+ ];
+ for(const result of invalid) {
+  const tree=MeasureLayoutTree([makeText()],{
+   constrainedText:()=>({evidence:"sdf-preview-flow",measure:()=>result})
+  });
+  const snapshot=ArrangeMeasuredGeometry(tree,Root(100),1,{constrainedTextPreview:true});
+  assert.deepEqual(snapshot.appliedConstrainedText,[]);
+  assert.equal(snapshot.byId.get("label").localRect.height,40);
+  assert.equal(snapshot.issues[0].code,"unresolved-size-to-content");
+ }
+});
