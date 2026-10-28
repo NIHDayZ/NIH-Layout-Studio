@@ -48,3 +48,38 @@ export function MeasureAuthoredScrollViewport(
 		evidence: "authored-direct-child-bounds"
 	};
 }
+
+/**
+ * Native-derived extent CANDIDATE from the same authored direct-child bounds.
+ *
+ * ScrollWidget virtual slot 14 at 0x1408E0C70 initializes the extents at
+ * [widget+0x180/+0x184] to the widget width/height, then maxes them against
+ * each arranged child's right/bottom relative to the child context origin.
+ *
+ * This reproduces that final max only under a ZERO-SCROLL-OFFSET and
+ * UNADJUSTED-VIEWPORT hypothesis. Native scrollbar reservations, positioning
+ * transforms and visibility policy are not implemented or inferred here.
+ */
+export interface NativeScrollExtentCandidate {
+	width: number;
+	height: number;
+	evidence: "native-derived-scroll-extent-prototype";
+	assumptions: "zero-offset-unadjusted-viewport";
+}
+
+export function EstimateNativeScrollExtent(
+	inspection: AuthoredScrollViewport
+): NativeScrollExtentCandidate | null {
+	const { viewport, directChildBounds } = inspection;
+	const right = directChildBounds.x + directChildBounds.width;
+	const bottom = directChildBounds.y + directChildBounds.height;
+	if (![viewport.width, viewport.height, right, bottom].every(Number.isFinite)
+		|| viewport.width <= 0 || viewport.height <= 0)
+		return null;
+	return {
+		width: Math.max(viewport.width, right),
+		height: Math.max(viewport.height, bottom),
+		evidence: "native-derived-scroll-extent-prototype",
+		assumptions: "zero-offset-unadjusted-viewport"
+	};
+}
