@@ -57,6 +57,11 @@ export function VerifyScrollEvidence(buffer) {
 		return buffer.subarray(offset, offset + size);
 	};
 	const signatures = [
+		["Ignore invisible defaults enabled", 0x1408DEDFC, "b0 01"],
+		["Ignore invisible loader writes +0x159", 0x1408DEE03, "88 87 59 01 00 00"],
+		["Grid child filtering reads shared +0x159", 0x1408DFCF0, "44 38 a7 59 01 00 00"],
+		["Wrap child filtering reads shared +0x159", 0x1408E0762, "80 be 59 01 00 00 00"],
+		["Scroll child filtering reads shared +0x159", 0x1408E0540, "80 be 59 01 00 00 00"],
 		["Scrollbar H property-loader write +0x188", 0x1408DEE23, "88 87 88 01 00 00"],
 		["Scrollbar V property-loader write +0x189", 0x1408DEE43, "88 87 89 01 00 00"],
 		["Scrollbar V Left property-loader write +0x18C", 0x1408DEE60, "88 87 8c 01 00 00"],
@@ -80,6 +85,9 @@ export function VerifyScrollEvidence(buffer) {
 	if (target !== 0x141F1DCE0 || thickness !== 10)
 		throw new Error("Native scrollbar constant changed");
 	const reflection = buffer.toString("ascii", 0x206EF40, 0x206EFF0);
+	const visibilityReflection = buffer.toString("ascii", 0x206EEB0, 0x206EEF0);
+	if (!visibilityReflection.includes("Ignore invisible" + "\\0"))
+		throw new Error("Shared Ignore invisible reflection name missing");
 	const names = ["Scrollbar H", "Scrollbar V", "Scrollbar V Left"];
 	for (const name of names) {
 		if (!reflection.includes(name + "\0"))
