@@ -31,19 +31,28 @@ test("imageset logical size is consumed without confusing it with atlas pixel di
  }});
 });
 
-test("missing imageset dimensions and direct texture URL do not invent one-pixel intrinsic images",()=>{
+test("unresolved images can fall back but resolved images without size cannot borrow another image's geometry",()=>{
  const image=CreateImageIntrinsicProvider(()=>({logicalWidth:undefined,logicalHeight:undefined}));
  assert.equal(ResolveIntrinsicMeasurement(node("direct","ImageWidgetClass",[["image0","direct.png"]]),{image}),null);
+ const queried=[];
  const fallback=CreateImageIntrinsicProvider((ref)=>{
+  queried.push(ref);
+  if(ref==="unresolved.png")return null;
   if(ref==="bad.png")return {logicalWidth:0,logicalHeight:NaN};
   if(ref==="good.png")return {logicalWidth:33,logicalHeight:20};
   return null;
  });
- const result=ResolveIntrinsicMeasurement(node("icon","ImageWidgetClass",[
+ const successful=ResolveIntrinsicMeasurement(node("icon","ImageWidgetClass",[
+  ["image0","unresolved.png"],["imageTexture","good.png"]
+ ]),{image:fallback});
+ assert.deepEqual([successful.measurement.width,successful.measurement.height],[33,20]);
+ assert.deepEqual(queried,["unresolved.png","good.png"]);
+ queried.length=0;
+ const rejected=ResolveIntrinsicMeasurement(node("icon","ImageWidgetClass",[
   ["image0","bad.png"],["imageTexture","good.png"]
  ]),{image:fallback});
- assert.equal(result.measurement.width,33);
- assert.equal(result.measurement.height,20);
+ assert.equal(rejected,null);
+ assert.deepEqual(queried,["bad.png"]);
 });
 
 test("only exact supported text/image classes invoke intrinsic providers",()=>{
@@ -153,4 +162,20 @@ test("unrelated managed layouts never become content measurement strategies",()=
  const snapshot=ArrangeMeasuredGeometry(prepared,root,1,{providedIntrinsicContent:true});
  assert.equal(snapshot.appliedIntrinsics.length,0);
  assert.deepEqual(snapshot.issues.map(x=>x.code),["unresolved-size-to-content","unresolved-layout-strategy"]);
+});
+
+test("providers are not invoked for leaf widgets without size-to-content flags",()=>{
+ let calls=0;
+ const plain=node("plain","ImageWidgetClass",[["image0","set:dayz image:plain"]]);
+ const dynamic=node("dynamic","ImageWidgetClass",[
+  ["image0","set:dayz image:dynamic"],["Size To Content H","1"]
+ ]);
+ const provider=()=>{++calls;return {
+  width:16,height:16,evidence:"imageset-logical",
+  widthIndependent:true,heightIndependent:true
+ };};
+ const measured=MeasureLayoutTree([plain,dynamic],{intrinsics:{image:provider}});
+ assert.equal(calls,1);
+ assert.equal(measured.roots[0].intrinsic,null);
+ assert.equal(measured.roots[1].intrinsic?.measurement.width,16);
 });
