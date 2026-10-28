@@ -8,6 +8,11 @@ import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
  */
 export interface ArrangementOptions {
 	constrainedGrid?: boolean;
+	/**
+	 * Prototype only: consume a supplied independent intrinsic dimension for
+	 * leaf ImageWidget/TextWidget size-to-content. No native parity asserted.
+	 */
+	providedIntrinsicContent?: boolean;
 }
 
 export interface AppliedLayoutStrategy {
