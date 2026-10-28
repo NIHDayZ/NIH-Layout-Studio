@@ -96,3 +96,21 @@ npm run extract:workbench-property-matrix -- $latest.FullName property-matrix-na
 The new parser refuses incomplete/unknown cases and does not infer
 any missing child sizes. Capture the **complete** client log so we can
 also inspect unrelated native script compilation or widget resource errors.
+
+### v4 isolated native syntax probe
+
+The same disposable PBO now includes **12 separate** `syntax-matrix/*.layout`
+resources and `NIH_PropertySyntaxRuntime.c`. The cases isolate the
+ordinary Frame/Panel property grammar: `Size To Content V 0` versus
+a deliberately unknown property and known `clipchildren 1`,
+placed **before or after the child block**. Each is created separately
+and logged with `[NIH_LayoutStudio][SyntaxProbe]`, so a malformed
+case cannot consume sibling definitions within another test file.
+
+The probe runs after the existing content and property matrix
+captures, logs an after-create and post-update record per case,
+and does not modify any production mod. Its new extractor is
+`npm run extract:workbench-property-syntax -- $latest.FullName syntax-native.json`.
+The syntax tests **have not yet compiled or run inside DayZ**.
+
+Full protocol: [PROPERTY-SYNTAX.md](../PROPERTY-SYNTAX.md).
