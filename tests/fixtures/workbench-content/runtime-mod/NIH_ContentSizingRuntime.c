@@ -66,7 +66,48 @@ class NIHContentSizingRuntimeProbe {
 		m_Root.Update();
 		Print("[NIH_LayoutStudio][ContentProbe] BEGIN " + phase);
 		CaptureNode(m_Root, phase);
+		// Verify native lookup independently of sibling traversal. This is
+		// test-only forensic instrumentation, NOT a widget-specific engine path.
+		CheckLookup(phase, "FrameChildTop");
+		CheckLookup(phase, "FrameChildBottom");
+		CheckLookup(phase, "PanelChild");
+		CheckLookup(phase, "VisibleChild");
+		CheckLookup(phase, "HiddenChild");
+		CheckLookup(phase, "FixedFrameTop");
+		CheckLookup(phase, "FixedFrameBottom");
+		CheckLookup(phase, "UpperFrameTop");
+		CheckLookup(phase, "UpperFrameBottom");
+		CheckLookup(phase, "WrapItemOne");
+		CheckLookup(phase, "WrapItemTwo");
+		CheckChildren(phase, "FrameContentHeight");
+		CheckChildren(phase, "PanelContentBoth");
+		CheckChildren(phase, "FrameContentHidden");
+		CheckChildren(phase, "FrameFixedControl");
+		CheckChildren(phase, "FrameContentUpper");
+		CheckChildren(phase, "WrapContentUpper");
 		Print("[NIH_LayoutStudio][ContentProbe] END " + phase);
+	}
+
+	protected void CheckLookup(string phase, string name) {
+		int found = 0;
+		if (m_Root.FindAnyWidget(name))
+			found = 1;
+		Print(string.Format("[NIH_LayoutStudio][ContentProbe] phase=%1 lookup=%2 found=%3",
+			phase, name, found));
+	}
+
+	protected void CheckChildren(string phase, string name) {
+		Widget parent = m_Root.FindAnyWidget(name);
+		int count = 0;
+		if (parent) {
+			Widget child = parent.GetChildren();
+			while (child) {
+				++count;
+				child = child.GetSibling();
+			}
+		}
+		Print(string.Format("[NIH_LayoutStudio][ContentProbe] phase=%1 parent=%2 childCount=%3",
+			phase, name, count));
 	}
 
 	protected void CaptureNode(Widget widget, string phase) {
