@@ -184,5 +184,83 @@ FrameWidgetClass NIHContentParity {
 				}
 			}
 		}
+		FrameWidgetClass FrameFixedControl {
+			position 500 350
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass FixedFrameTop {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass FixedFrameBottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass FrameContentUpper {
+			position 310 265
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass UpperFrameTop {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass UpperFrameBottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		WrapSpacerWidgetClass WrapContentUpper {
+			position 310 350
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 1
+			Padding 0
+			Margin 0
+			content_halign left
+			content_valign top
+			{
+				PanelWidgetClass WrapItemOne {
+					size 60 24
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass WrapItemTwo {
+					size 90 28
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
 	}
 }
