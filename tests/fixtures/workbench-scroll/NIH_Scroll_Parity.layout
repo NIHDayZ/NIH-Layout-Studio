@@ -1,0 +1,182 @@
+FrameWidgetClass NIHScrollParity {
+ position 0 0
+ size 1120 460
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  ButtonWidgetClass Label_ScrollNone {
+   position 20 24
+   size 240 40
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style MenuDefault
+   text "ScrollNone"
+  }
+  ScrollWidgetClass ScrollNone {
+   position 20 78
+   size 240 180
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   "Scrollbar H" 0
+   "Scrollbar V" 0
+   "Scrollbar V Left" 0
+   {
+    ButtonWidgetClass ScrollNone_Origin {
+     position 0 0
+     size 170 48
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style MenuDefault
+     text "ORIGIN"
+    }
+    ButtonWidgetClass ScrollNone_Overhang {
+     position 185 150
+     size 110 70
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style MenuDefault
+     text "OVERHANG"
+    }
+   }
+  }
+  ButtonWidgetClass Label_ScrollVertical {
+   position 300 24
+   size 240 40
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style MenuDefault
+   text "ScrollVertical"
+  }
+  ScrollWidgetClass ScrollVertical {
+   position 300 78
+   size 240 180
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   "Scrollbar H" 0
+   "Scrollbar V" 1
+   "Scrollbar V Left" 0
+   {
+    ButtonWidgetClass ScrollVertical_Origin {
+     position 0 0
+     size 170 48
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style MenuDefault
+     text "ORIGIN"
+    }
+    ButtonWidgetClass ScrollVertical_Overhang {
+     position 185 150
+     size 110 70
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style MenuDefault
+     text "OVERHANG"
+    }
+   }
+  }
+  ButtonWidgetClass Label_ScrollBoth {
+   position 580 24
+   size 240 40
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style MenuDefault
+   text "ScrollBoth"
+  }
+  ScrollWidgetClass ScrollBoth {
+   position 580 78
+   size 240 180
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   "Scrollbar H" 1
+   "Scrollbar V" 1
+   "Scrollbar V Left" 0
+   {
+    ButtonWidgetClass ScrollBoth_Origin {
+     position 0 0
+     size 170 48
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style MenuDefault
+     text "ORIGIN"
+    }
+    ButtonWidgetClass ScrollBoth_Overhang {
+     position 185 150
+     size 110 70
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style MenuDefault
+     text "OVERHANG"
+    }
+   }
+  }
+  ButtonWidgetClass Label_ScrollLeft {
+   position 860 24
+   size 240 40
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   style MenuDefault
+   text "ScrollLeft"
+  }
+  ScrollWidgetClass ScrollLeft {
+   position 860 78
+   size 240 180
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   "Scrollbar H" 1
+   "Scrollbar V" 1
+   "Scrollbar V Left" 1
+   {
+    ButtonWidgetClass ScrollLeft_Origin {
+     position 0 0
+     size 170 48
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style MenuDefault
+     text "ORIGIN"
+    }
+    ButtonWidgetClass ScrollLeft_Overhang {
+     position 185 150
+     size 110 70
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style MenuDefault
+     text "OVERHANG"
+    }
+   }
+  }
+ }
+}
