@@ -32,10 +32,11 @@ test("safe Frame control exports byte-identical source without review",async ({p
 	const source=await OpenFixture(page,"FrameBase");
 	await page.getByRole("button",{name:/^PROBLEMS/}).click();
 	await expect(page.locator(".native-compatibility-entry")).toHaveCount(0);
+	const downloadPromise=page.waitForEvent("download");
 	await OpenExportAs(page);
+	const download=await downloadPromise;
 	await expect(page.getByRole("dialog",{name:"Native compatibility review"})).toHaveCount(0);
-	// Opening Export As immediately triggers the browser download.
-	const _ = source;
+	expect((await readFile(await download.path())).toString("utf8")).toBe(source);
 });
 
 test("native child-loss warning is visible and Cancel prevents export, Continue preserves original bytes",async ({page})=>{
