@@ -27,9 +27,9 @@ Get-ChildItem $output -Filter "*.pbo" | Select-Object Name,Length,LastWriteTime
 
 Expected packed test-only file:
 `P:\Mods\@NIH_ContentSizingProbe\addons\NIH_ContentSizingProbe.pbo`.
-Use `-Overwrite` when updating the **existing disposable v1 test folder**
-to v2, as you already successfully prepared and packed the first version.
-The script only replaces the three files staged for this standalone probe;
+Use `-Overwrite` when updating your existing **disposable** test folder.
+For the v3 property matrix the script replaces **five** files: the config,
+two client EnScript files, and two separate `.layout` resources;
 it does not create/sign/install the PBO. Check the Builder log again before
 testing. No production mod is touched.
 
@@ -39,7 +39,7 @@ Load `@NIH_ContentSizingProbe` on the **client** and local **test
 server** as required by your existing local startup configuration.
 Remove the earlier Scroll and CommonGeometry probe mods. Enter gameplay.
 
-The v2 harness creates a single root layout with **27 authored widgets**
+The existing v2 harness still creates its original **27-widget** root
 and captures four delayed states: initial text, short mutated text, restored
 text, and a smaller runtime root viewport. It also checks independently
 whether expected nested children can be found by name and how many direct
@@ -67,10 +67,32 @@ DayZ client build, screen resolution and HUD/UI scale separately when
 available; this harness does not capture them.
 
 `npm run extract:workbench-content -- "<client-script.log>" capture.json`
-will reject incomplete phases and malformed getters. The updated **v2 runtime mod has NOT been DayZ-compiled/tested yet**.
-The original v1 did compile and run, but captured only 13/18 widget records.
-v2 adds direct lookup and fixed/Wrap content controls. If the script compiler reports
+will reject incomplete phases and malformed getters. The **v1 and v2 runtime harnesses compiled and ran in DayZ**. The v2
+native log recorded 20/27 created widgets and validated class-dependent
+behavior with direct lookups. This new **v3 property-matrix addition has
+NOT been DayZ-compiled/tested yet**; it runs independently after the v2
+four-phase capture, logging a separate `[NIH_LayoutStudio][PropertyProbe]`
+prefix. See [the controlled property matrix](../PROPERTY-MATRIX.md).
+If the script compiler reports
 an invalid signature or unknown layout property, preserve the exact error
 and correct the harness before treating any result as native evidence.
 
 See [fixture design](../README.md).
+
+### v3 property matrix extraction
+
+The test mod now creates a second, independent layout after the
+original content-sizing phases. Its three phases (`after-create`,
+`post-update`, `after-resize`) use the separate
+`[NIH_LayoutStudio][PropertyProbe]` prefix and examine 14 matched
+Frame/Panel/Wrap parents.
+
+```powershell
+Select-String -Path $latest.FullName -SimpleMatch "[NIH_LayoutStudio][PropertyProbe]" |
+    ForEach-Object { $_.Line }
+npm run extract:workbench-property-matrix -- $latest.FullName property-matrix-native.json
+```
+
+The new parser refuses incomplete/unknown cases and does not infer
+any missing child sizes. Capture the **complete** client log so we can
+also inspect unrelated native script compilation or widget resource errors.
