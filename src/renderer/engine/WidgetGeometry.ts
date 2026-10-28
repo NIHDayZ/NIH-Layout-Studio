@@ -128,16 +128,29 @@ export function MeasureAuthoredSize(geometry: AuthoredGeometry): MeasuredWidget 
 	};
 }
 
+/**
+ * One alignment implementation for authored sizes and for a separately
+ * measured content size. Alignment must be re-evaluated when size changes,
+ * especially with right_ref and center_ref positioning.
+ */
+export function ResolveAuthoredRectWithSize(
+	geometry: AuthoredGeometry,
+	parent: Pick<GeometryRect, "width" | "height">,
+	size: Pick<GeometryRect, "width" | "height">
+): GeometryRect {
+	return {
+		x: ResolveAxis(geometry.positionX, size.width, parent.width, geometry.exactPositionX, geometry.hAlign),
+		y: ResolveAxis(geometry.positionY, size.height, parent.height, geometry.exactPositionY, geometry.vAlign),
+		width: size.width,
+		height: size.height
+	};
+}
+
 /** Parent-local rectangle; parent x/y are intentionally ignored. */
 export function ResolveAuthoredRect(geometry: AuthoredGeometry, parent: Pick<GeometryRect, "width" | "height">): GeometryRect {
 	const width = geometry.exactSizeX ? geometry.sizeX : parent.width * geometry.sizeX;
 	const height = geometry.exactSizeY ? geometry.sizeY : parent.height * geometry.sizeY;
-	return {
-		x: ResolveAxis(geometry.positionX, width, parent.width, geometry.exactPositionX, geometry.hAlign),
-		y: ResolveAxis(geometry.positionY, height, parent.height, geometry.exactPositionY, geometry.vAlign),
-		width,
-		height
-	};
+	return ResolveAuthoredRectWithSize(geometry, parent, { width, height });
 }
 
 function InvertAxis(start: number, size: number, parentSize: number, exact: boolean, align: string): number {
