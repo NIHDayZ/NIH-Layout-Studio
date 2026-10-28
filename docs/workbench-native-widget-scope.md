@@ -63,3 +63,22 @@ The `WidgetFlags` declaration also documents exact/relative position and size, s
 5. Establish explicit fallback and placeholder policies for runtime-driven map, inventory, HTML, video and 3D preview widgets.
 
 No proprietary binary or extracted source file is committed. This inventory is a **discovery baseline**; it does not assert equivalence to native C++ or universal WidgetClass coverage.
+
+
+## Native Text/Image measurement override boundary (second pass)
+
+Verified MSVC RTTI complete-object-locators and virtual tables in the **same pinned** `WorkbenchApp.exe` used for the spacer research. Relevant primary vtables and virtual slot 13 (0-based index) are:
+
+| Class | Primary vtable VA | Slot 13 |
+|---|---|---|
+| `enf::Widget` | `0x142066648` | `0x1408BCE70` |
+| `enf::ImageWidget` | `0x142064418` | `0x1408BCE70` |
+| `enf::TextWidget` | `0x14205CC88` | `0x140898520` |
+| `enf::MultilineTextWidget` | `0x14205D100` | `0x140898520` |
+| `enf::RichTextWidget` | `0x14205DCC0` | `0x140898520` |
+
+The text-specific `0x140898520` routine **first calls the shared base `0x1408BCE70`**, calls a virtual text-related method at vtable offset `+0xF8`, reads width/height from `[widget+0x90/+0x94]` and a second pair from `[widget+0xD0/+0xD4]`, then calls `0x1408B8940` with those pairs and the measurement context. It updates the widget position floats at `[widget+0x88/+0x8C]` using the resulting vector. The visible instructions do not by themselves identify whether this adjusts a text baseline, glyph bounds, or another alignment reference.
+
+**Conclusions supported by compiled code:** TextWidget has an additional measurement/geometry override; ImageWidget currently shares the base Widget routine in that slot. Therefore the common measurement pipeline should dispatch type-specific intrinsic providers for text versus images rather than equate their behavior. **Still unknown:** exact native text shaping, line wrapping, font fallback, glyph scale, ImageWidget's content-size semantics outside this slot, and the role of style-derived sizes.
+
+This is a method-attribution boundary only, **not** a complete C++ source recovery or proof that native ImageWidget uses logical imageset dimensions for its final rectangle. The new TypeScript resource provider remains explicitly opt-in, separate from the production renderer.
