@@ -38,7 +38,9 @@ export function CreateImageIntrinsicProvider(
 			const height = resource.logicalHeight;
 			if (typeof width !== "number" || !Number.isFinite(width) || width <= 0
 				|| typeof height !== "number" || !Number.isFinite(height) || height <= 0)
-				continue;
+				// Canvas stops at the first resolvable image. Its missing metadata
+				// cannot be replaced with dimensions from a different candidate.
+				return null;
 			return {
 				width,
 				height,
