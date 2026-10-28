@@ -804,11 +804,16 @@ export default function App() {
 		function OnKeyDown(event: KeyboardEvent) {
 			if (pendingLayoutOutput)
 				return;
+			// Save must work even when the user is editing the SOURCE textarea.
+			if (event.ctrlKey && event.key.toLowerCase() === "s") {
+				event.preventDefault();
+				RequestLayoutOutput("save");
+				return;
+			}
 			const target = event.target as HTMLElement | null;
 			if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT"))
 				return;
-			if (event.ctrlKey && event.key.toLowerCase() === "s") { event.preventDefault(); RequestLayoutOutput("save"); }
-			else if (event.ctrlKey && event.key.toLowerCase() === "z") { event.preventDefault(); Undo(); }
+			if (event.ctrlKey && event.key.toLowerCase() === "z") { event.preventDefault(); Undo(); }
 			else if (event.ctrlKey && event.key.toLowerCase() === "y") { event.preventDefault(); Redo(); }
 			else if (event.ctrlKey && event.key.toLowerCase() === "c" && selected) { event.preventDefault(); CopySelected(); }
 			else if (event.ctrlKey && event.key.toLowerCase() === "v" && selected && copiedWidget) { event.preventDefault(); PasteWidgetAsSibling(); }
