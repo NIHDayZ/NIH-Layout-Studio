@@ -50,6 +50,9 @@ test("native child-loss warning is visible and Cancel prevents export, Continue 
 	await expect(review).toBeVisible();
 	await review.getByRole("button",{name:"Cancel"}).click();
 	await expect(review).toHaveCount(0);
+	// The PROBLEMS tab is still selected. Return to SOURCE before inspecting
+	// its textarea; this does not edit or refresh the underlying layout.
+	await page.getByRole("button",{name:"SOURCE",exact:true}).click();
 	await expect(page.locator(".source-pane textarea")).toHaveValue(source);
 	await OpenExportAs(page);
 	const saved=await ConfirmDownload(page,"Continue Export");
