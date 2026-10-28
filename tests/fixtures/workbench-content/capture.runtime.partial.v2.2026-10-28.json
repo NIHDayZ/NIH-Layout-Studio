@@ -1,0 +1,1643 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-dayz-client-content-getters-incomplete",
+  "sourceLayout": "tests/fixtures/workbench-content/NIH_ContentSizing_Parity.layout",
+  "sourceLog": "script_2026-10-28_14-11-45.log",
+  "captureDate": "2026-10-28",
+  "provenance": {
+    "method": "DayZ client MissionGameplay script native getter capture",
+    "gameVersionDefine": "DAYZ_1_30",
+    "nativeClientBuild": null,
+    "source": "user-uploaded complete client script log",
+    "notes": "Only ContentProbe records retained; user identifiers and other mod log entries omitted. Captures are independent DayZ native getters and explicitly incomplete."
+  },
+  "status": "incomplete-native-capture",
+  "expectedWidgetCount": 27,
+  "observedWidgetCount": 20,
+  "missingWidgetNames": [
+    "FrameChildTop",
+    "FrameChildBottom",
+    "PanelChild",
+    "VisibleChild",
+    "HiddenChild",
+    "UpperFrameTop",
+    "UpperFrameBottom"
+  ],
+  "notes": "Full BEGIN/END phases, 20/27 native nodes every phase, all 11 direct lookups and all six parent child counts. Root/context, pixel text getters, outer Frame/Panel/Wrap geometry as recorded. Do not use as full native parity reference. A zero child count is evidence of absent runtime child nodes in this fixture, NOT general proof of why layout loading failed.",
+  "requests": [
+    "viewport=1120,460",
+    "sampleText=X",
+    "sampleText=TEST 0123456789",
+    "viewport=720,460"
+  ],
+  "cases": [
+    {
+      "phase": "baseline-1120x460",
+      "widgets": {
+        "NIHContentParity": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1120,
+            "height": 460
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0.583333,
+            "height": 0.425926
+          },
+          "flags": 536870927,
+          "selfVisible": true
+        },
+        "TextFixed": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "localRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextH": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 75,
+            "width": 128,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 75,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextV": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 185,
+            "width": 128,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 185,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToContentBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextLongNarrow": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 235,
+            "height": 16
+          }
+        },
+        "ImageFixed": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentBoth": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentWide": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHeight": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "PanelContentBoth": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHidden": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameFixedControl": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FixedFrameTop": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 504,
+            "y": 356,
+            "width": 60,
+            "height": 24
+          },
+          "localRect": {
+            "x": 4,
+            "y": 6,
+            "width": 60,
+            "height": 24
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FixedFrameBottom": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 510,
+            "y": 395,
+            "width": 90,
+            "height": 28
+          },
+          "localRect": {
+            "x": 10,
+            "y": 45,
+            "width": 90,
+            "height": 28
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentUpper": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 310,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "WrapContentUpper": {
+          "type": "WrapSpacerWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 350,
+            "width": 190,
+            "height": 28
+          },
+          "localRect": {
+            "x": 310,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "flags": -1610612673,
+          "selfVisible": true
+        },
+        "WrapItemOne": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 350,
+            "width": 60,
+            "height": 24
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          },
+          "flags": 536870963,
+          "selfVisible": true
+        },
+        "WrapItemTwo": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 370,
+            "y": 350,
+            "width": 90,
+            "height": 28
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 28
+          },
+          "flags": 536870963,
+          "selfVisible": true
+        }
+      },
+      "lookups": {
+        "FrameChildTop": false,
+        "FrameChildBottom": false,
+        "PanelChild": false,
+        "VisibleChild": false,
+        "HiddenChild": false,
+        "FixedFrameTop": true,
+        "FixedFrameBottom": true,
+        "UpperFrameTop": false,
+        "UpperFrameBottom": false,
+        "WrapItemOne": true,
+        "WrapItemTwo": true
+      },
+      "parentChildCounts": {
+        "FrameContentHeight": 0,
+        "PanelContentBoth": 0,
+        "FrameContentHidden": 0,
+        "FrameFixedControl": 2,
+        "FrameContentUpper": 0,
+        "WrapContentUpper": 2
+      },
+      "complete": true,
+      "observedWidgetCount": 20,
+      "expectedWidgetCount": 27,
+      "missingWidgetNames": [
+        "FrameChildTop",
+        "FrameChildBottom",
+        "PanelChild",
+        "VisibleChild",
+        "HiddenChild",
+        "UpperFrameTop",
+        "UpperFrameBottom"
+      ]
+    },
+    {
+      "phase": "short-text-1120x460",
+      "widgets": {
+        "NIHContentParity": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1120,
+            "height": 460
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0.583333,
+            "height": 0.425926
+          },
+          "flags": 536870927,
+          "selfVisible": true
+        },
+        "TextFixed": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "localRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextToTextH": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 75,
+            "width": 9,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 75,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextToTextV": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextToTextBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 185,
+            "width": 9,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 185,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextToContentBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextLongNarrow": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 235,
+            "height": 16
+          }
+        },
+        "ImageFixed": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentBoth": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentWide": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHeight": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "PanelContentBoth": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHidden": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameFixedControl": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FixedFrameTop": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 504,
+            "y": 356,
+            "width": 60,
+            "height": 24
+          },
+          "localRect": {
+            "x": 4,
+            "y": 6,
+            "width": 60,
+            "height": 24
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FixedFrameBottom": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 510,
+            "y": 395,
+            "width": 90,
+            "height": 28
+          },
+          "localRect": {
+            "x": 10,
+            "y": 45,
+            "width": 90,
+            "height": 28
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentUpper": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 310,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "WrapContentUpper": {
+          "type": "WrapSpacerWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 350,
+            "width": 190,
+            "height": 28
+          },
+          "localRect": {
+            "x": 310,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "flags": -1610612673,
+          "selfVisible": true
+        },
+        "WrapItemOne": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 350,
+            "width": 60,
+            "height": 24
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          },
+          "flags": 536870963,
+          "selfVisible": true
+        },
+        "WrapItemTwo": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 370,
+            "y": 350,
+            "width": 90,
+            "height": 28
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 28
+          },
+          "flags": 536870963,
+          "selfVisible": true
+        }
+      },
+      "lookups": {
+        "FrameChildTop": false,
+        "FrameChildBottom": false,
+        "PanelChild": false,
+        "VisibleChild": false,
+        "HiddenChild": false,
+        "FixedFrameTop": true,
+        "FixedFrameBottom": true,
+        "UpperFrameTop": false,
+        "UpperFrameBottom": false,
+        "WrapItemOne": true,
+        "WrapItemTwo": true
+      },
+      "parentChildCounts": {
+        "FrameContentHeight": 0,
+        "PanelContentBoth": 0,
+        "FrameContentHidden": 0,
+        "FrameFixedControl": 2,
+        "FrameContentUpper": 0,
+        "WrapContentUpper": 2
+      },
+      "complete": true,
+      "observedWidgetCount": 20,
+      "expectedWidgetCount": 27,
+      "missingWidgetNames": [
+        "FrameChildTop",
+        "FrameChildBottom",
+        "PanelChild",
+        "VisibleChild",
+        "HiddenChild",
+        "UpperFrameTop",
+        "UpperFrameBottom"
+      ]
+    },
+    {
+      "phase": "restored-1120x460",
+      "widgets": {
+        "NIHContentParity": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1120,
+            "height": 460
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0.583333,
+            "height": 0.425926
+          },
+          "flags": 536870927,
+          "selfVisible": true
+        },
+        "TextFixed": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "localRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextH": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 75,
+            "width": 128,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 75,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextV": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 185,
+            "width": 128,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 185,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToContentBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextLongNarrow": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 235,
+            "height": 16
+          }
+        },
+        "ImageFixed": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentBoth": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentWide": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHeight": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "PanelContentBoth": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHidden": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameFixedControl": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FixedFrameTop": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 504,
+            "y": 356,
+            "width": 60,
+            "height": 24
+          },
+          "localRect": {
+            "x": 4,
+            "y": 6,
+            "width": 60,
+            "height": 24
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FixedFrameBottom": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 510,
+            "y": 395,
+            "width": 90,
+            "height": 28
+          },
+          "localRect": {
+            "x": 10,
+            "y": 45,
+            "width": 90,
+            "height": 28
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentUpper": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 310,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "WrapContentUpper": {
+          "type": "WrapSpacerWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 350,
+            "width": 190,
+            "height": 28
+          },
+          "localRect": {
+            "x": 310,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "flags": -1610612673,
+          "selfVisible": true
+        },
+        "WrapItemOne": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 350,
+            "width": 60,
+            "height": 24
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          },
+          "flags": 536870963,
+          "selfVisible": true
+        },
+        "WrapItemTwo": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 370,
+            "y": 350,
+            "width": 90,
+            "height": 28
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 28
+          },
+          "flags": 536870963,
+          "selfVisible": true
+        }
+      },
+      "lookups": {
+        "FrameChildTop": false,
+        "FrameChildBottom": false,
+        "PanelChild": false,
+        "VisibleChild": false,
+        "HiddenChild": false,
+        "FixedFrameTop": true,
+        "FixedFrameBottom": true,
+        "UpperFrameTop": false,
+        "UpperFrameBottom": false,
+        "WrapItemOne": true,
+        "WrapItemTwo": true
+      },
+      "parentChildCounts": {
+        "FrameContentHeight": 0,
+        "PanelContentBoth": 0,
+        "FrameContentHidden": 0,
+        "FrameFixedControl": 2,
+        "FrameContentUpper": 0,
+        "WrapContentUpper": 2
+      },
+      "complete": true,
+      "observedWidgetCount": 20,
+      "expectedWidgetCount": 27,
+      "missingWidgetNames": [
+        "FrameChildTop",
+        "FrameChildBottom",
+        "PanelChild",
+        "VisibleChild",
+        "HiddenChild",
+        "UpperFrameTop",
+        "UpperFrameBottom"
+      ]
+    },
+    {
+      "phase": "baseline-720x460",
+      "widgets": {
+        "NIHContentParity": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 0,
+            "y": 0,
+            "width": 720,
+            "height": 460
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0.375,
+            "height": 0.425926
+          },
+          "flags": 536870927,
+          "selfVisible": true
+        },
+        "TextFixed": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "localRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextH": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 75,
+            "width": 128,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 75,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextV": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 185,
+            "width": 128,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 185,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToContentBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextLongNarrow": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "width": 235,
+            "height": 16
+          }
+        },
+        "ImageFixed": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentBoth": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentWide": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHeight": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "PanelContentBoth": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHidden": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameFixedControl": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FixedFrameTop": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 504,
+            "y": 356,
+            "width": 60,
+            "height": 24
+          },
+          "localRect": {
+            "x": 4,
+            "y": 6,
+            "width": 60,
+            "height": 24
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FixedFrameBottom": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 510,
+            "y": 395,
+            "width": 90,
+            "height": 28
+          },
+          "localRect": {
+            "x": 10,
+            "y": 45,
+            "width": 90,
+            "height": 28
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentUpper": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 310,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "WrapContentUpper": {
+          "type": "WrapSpacerWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 350,
+            "width": 190,
+            "height": 28
+          },
+          "localRect": {
+            "x": 310,
+            "y": 350,
+            "width": 190,
+            "height": 20
+          },
+          "flags": -1610612673,
+          "selfVisible": true
+        },
+        "WrapItemOne": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 310,
+            "y": 350,
+            "width": 60,
+            "height": 24
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          },
+          "flags": 536870963,
+          "selfVisible": true
+        },
+        "WrapItemTwo": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 370,
+            "y": 350,
+            "width": 90,
+            "height": 28
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 90,
+            "height": 28
+          },
+          "flags": 536870963,
+          "selfVisible": true
+        }
+      },
+      "lookups": {
+        "FrameChildTop": false,
+        "FrameChildBottom": false,
+        "PanelChild": false,
+        "VisibleChild": false,
+        "HiddenChild": false,
+        "FixedFrameTop": true,
+        "FixedFrameBottom": true,
+        "UpperFrameTop": false,
+        "UpperFrameBottom": false,
+        "WrapItemOne": true,
+        "WrapItemTwo": true
+      },
+      "parentChildCounts": {
+        "FrameContentHeight": 0,
+        "PanelContentBoth": 0,
+        "FrameContentHidden": 0,
+        "FrameFixedControl": 2,
+        "FrameContentUpper": 0,
+        "WrapContentUpper": 2
+      },
+      "complete": true,
+      "observedWidgetCount": 20,
+      "expectedWidgetCount": 27,
+      "missingWidgetNames": [
+        "FrameChildTop",
+        "FrameChildBottom",
+        "PanelChild",
+        "VisibleChild",
+        "HiddenChild",
+        "UpperFrameTop",
+        "UpperFrameBottom"
+      ]
+    }
+  ]
+}
