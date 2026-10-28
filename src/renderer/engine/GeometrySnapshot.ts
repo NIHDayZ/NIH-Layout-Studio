@@ -1,8 +1,8 @@
-import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type MeasuredWidget } from "./GeometryCore.js";
-import { DecodeAuthoredGeometry, MeasureAuthoredSize, ResolveAuthoredRect, type GeometryWidget } from "./WidgetGeometry.js";
-import { ResolveChildLayoutStrategy } from "./WidgetStrategies.js";
+import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type LayoutConstraints, type MeasuredWidget } from "./GeometryCore.js";
+import { ResolveAuthoredRect, type GeometryWidget } from "./WidgetGeometry.js";
+import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
 
-export type GeometryIssueCode = "unresolved-layout-strategy" | "duplicate-widget-id";
+export type GeometryIssueCode = "unresolved-layout-strategy" | "unresolved-size-to-content" | "duplicate-widget-id";
 
 export interface GeometryIssue {
 	code: GeometryIssueCode;
@@ -18,23 +18,23 @@ export interface AuthoredGeometrySnapshot {
 	 */
 	entries: readonly ArrangedWidget[];
 	byId: ReadonlyMap<string, ArrangedWidget>;
-	/** Conservative authored-size hints; content and managed containers still need measurement. */
+	/** Conservative authored-size hints; native content extents are unresolved. */
 	measuredById: ReadonlyMap<string, MeasuredWidget>;
 	issues: readonly GeometryIssue[];
 	rootRect: GeometryRect;
 }
 
 /**
- * Read-only hierarchy diagnostic for ordinary authored widget geometry.
- * Pure and deterministic: no DOM, React, font loading, or asset resolution.
+ * Phase 2: top-down arrangement of authored coordinates from prepared
+ * measurements. Native container layout is deliberately NOT applied.
  *
- * This snapshot deliberately DOES NOT position children using native
- * GridSpacer, WrapSpacer, ScrollWidget or other layout manager semantics.
- * Callers must inspect issues before treating rectangles as render-ready.
+ * The measurement tree already contains decoded geometry properties; no
+ * per-widget property rescans or new intrinsic measurements occur here.
  */
-export function BuildAuthoredGeometrySnapshot(
-	roots: readonly GeometryWidget[],
-	rootRect: GeometryRect
+export function ArrangeMeasuredGeometry(
+	measured: MeasuredLayoutTree,
+	rootRect: GeometryRect,
+	dpiScale = 1
 ): AuthoredGeometrySnapshot {
 	const entries: ArrangedWidget[] = [];
 	const byId = new Map<string, ArrangedWidget>();
@@ -42,18 +42,19 @@ export function BuildAuthoredGeometrySnapshot(
 	const issues: GeometryIssue[] = [];
 
 	function Visit(
-		nodes: readonly GeometryWidget[],
+		nodes: readonly MeasuredLayoutNode[],
 		parentRect: GeometryRect,
+		constraints: LayoutConstraints,
 		parentId: string | null,
 		inheritedClip: GeometryRect | null,
 		parentVisible: boolean
 	): void {
-		for (const node of nodes) {
-			if (!node.type.toLowerCase().includes("widgetclass"))
-				continue;
-
-			const authored = DecodeAuthoredGeometry(node);
-			const localRect = ResolveAuthoredRect(authored, parentRect);
+		for (const prepared of nodes) {
+			const { node, authored, strategy } = prepared;
+			const localRect = ResolveAuthoredRect(authored, {
+				width: constraints.availableWidth,
+				height: constraints.availableHeight
+			});
 			const absoluteRect = TranslateRect(localRect, parentRect);
 			const arranged: ArrangedWidget = {
 				id: node.id,
@@ -64,6 +65,7 @@ export function BuildAuthoredGeometrySnapshot(
 				visible: parentVisible && authored.visible,
 				sortOrder: authored.sortOrder
 			};
+
 			entries.push(arranged);
 			if (byId.has(node.id)) {
 				issues.push({
@@ -74,11 +76,22 @@ export function BuildAuthoredGeometrySnapshot(
 				});
 			} else {
 				byId.set(node.id, arranged);
-				measuredById.set(node.id, MeasureAuthoredSize(authored));
+				measuredById.set(node.id, prepared.measurement);
 			}
 
-			const strategy = ResolveChildLayoutStrategy(node.type);
-			if (node.children.length > 0 && strategy.requiresArrangement) {
+			if (prepared.unresolvedContentWidth || prepared.unresolvedContentHeight) {
+				const axes = [
+					prepared.unresolvedContentWidth ? "horizontal" : "",
+					prepared.unresolvedContentHeight ? "vertical" : ""
+				].filter(Boolean).join(" and ");
+				issues.push({
+					code: "unresolved-size-to-content",
+					id: node.id,
+					type: node.type,
+					detail: `Native ${axes} size-to-content has not been measured; this rectangle uses authored size only.`
+				});
+			}
+			if (prepared.children.length > 0 && strategy.requiresArrangement) {
 				issues.push({
 					code: "unresolved-layout-strategy",
 					id: node.id,
@@ -88,18 +101,31 @@ export function BuildAuthoredGeometrySnapshot(
 			}
 
 			const clip = ResolveChildClip(inheritedClip, absoluteRect, authored.clipChildren);
-			Visit(node.children, absoluteRect, node.id, clip, arranged.visible);
+			const childConstraints = ChildConstraints({
+				availableWidth: absoluteRect.width,
+				availableHeight: absoluteRect.height
+			}, constraints.dpiScale);
+			Visit(prepared.children, absoluteRect, childConstraints, node.id, clip, arranged.visible);
 		}
 	}
 
-	// The editor root is a clipping viewport; nested widgets use absolute
-	// coordinates in that root's coordinate system.
-	Visit(roots, rootRect, null, { ...rootRect }, true);
-	return {
-		entries,
-		byId,
-		measuredById,
-		issues,
-		rootRect: { ...rootRect }
+	const rootConstraints: LayoutConstraints = {
+		availableWidth: rootRect.width,
+		availableHeight: rootRect.height,
+		dpiScale
 	};
+	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true);
+	return { entries, byId, measuredById, issues, rootRect: { ...rootRect } };
+}
+
+/**
+ * Diagnostic convenience entry point. Builds one bottom-up measurement tree,
+ * then arranges the authored geometry top-down. For a future renderer,
+ * reuse a prepared measurement tree instead of reparsing it for every view.
+ */
+export function BuildAuthoredGeometrySnapshot(
+	roots: readonly GeometryWidget[],
+	rootRect: GeometryRect
+): AuthoredGeometrySnapshot {
+	return ArrangeMeasuredGeometry(MeasureLayoutTree(roots), rootRect);
 }
