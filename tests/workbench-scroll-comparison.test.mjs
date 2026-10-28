@@ -89,3 +89,29 @@ test("synthetic placeholder observations are never counted as native passes",()=
  const report=CompareWorkbenchScrollFixtures({schemaVersion:1,cases:[item]});
  assert.deepEqual(report.summary,{pass:0,fail:0,pending:0,synthetic:1});
 });
+
+test("user-observed Workbench static visual evidence remains separate from numeric golden tests",()=>{
+ const visual=JSON.parse(readFileSync(
+  new URL("./fixtures/workbench-scroll/capture.visual.2026-10-28.json",import.meta.url),"utf8"
+ ));
+ assert.equal(visual.captureKind,"visual-only");
+ assert.equal(visual.interactiveScrollTested,false);
+ assert.equal(visual.numericViewportObserved,false);
+ assert.deepEqual(visual.root,{width:1120,height:460,editorZoomPercent:46,rootDpiScaling:false});
+ assert.equal(visual.scrollLeftSelectedProperties.scaled,true);
+ assert.equal(visual.scrollLeftSelectedProperties.clipChildren,true);
+ assert.equal(visual.scrollLeftSelectedProperties.ignoreInvisible,true);
+ assert.deepEqual(visual.cases.map(c=>c.id),template.cases.map(c=>c.id));
+ for(let index=0;index<template.cases.length;++index) {
+  const authored=template.cases[index];
+  const observed=visual.cases[index];
+  assert.equal(observed.horizontalScrollbarVisible,authored.settings.horizontal);
+  assert.equal(observed.verticalScrollbarVisible,authored.settings.vertical);
+  assert.equal(observed.originVisible,true);
+  assert.equal(authored.observed,null,"Static screenshot must not be promoted into native viewport numbers");
+ }
+ assert.equal(visual.cases[3].verticalScrollbarSide,"left");
+ assert.deepEqual(CompareWorkbenchScrollFixtures(template).summary,{
+  pass:0,fail:0,pending:4,synthetic:0
+ });
+});
