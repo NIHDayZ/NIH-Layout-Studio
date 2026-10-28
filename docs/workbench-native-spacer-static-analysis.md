@@ -110,3 +110,14 @@ Only the constrained grid arithmetic has been ported. Wrap and size-to-content b
 For the horizontal alignment mode byte `[wrap+0x168]`: mode `1` uses the far edge as reference (end/right); mode `2` distributes leftover space by half (center). The remaining default path uses the starting edge. For the vertical mode byte `[wrap+0x169]`, branches at `0x1408E10CE–0x1408E1136` adjust Y using the available height and the measured content height; modes `1` and `2` represent different end/center handling. The native wrap measurement method at `0x1408E0670` calculates required content extent before the arrangement pass.
 
 **Next implementation step:** a pure `WrapSpacer` measurement-and-flow planner with line formation, maximum line height, horizontal line alignment, container-level vertical alignment, visibility filtering and size-to-content handling; compare it against the shipped `spacertest.layout`. The exact order in which Workbench updates child intrinsic dimensions before measuring lines is still under analysis. Do not connect this prototype to default rendering until this is checked.
+
+
+## Shared dimension negotiation in compiled measurement routines (fifth pass)
+
+Re-inspected the pinned `WorkbenchApp.exe` with static `objdump` disassembly to clarify the separation between measurement and arrangement.
+
+- At image VA `0x1408E05D0` (the base `SpacerWidget` vtable measurement method), the method invokes shared helper `0x1408BCE70` with the current widget and a measurement/context pointer.
+- It then conditionally copies an input width from `[context+0x8]` into `[widget+0x90]`, and an input height from `[context+0xC]` into `[widget+0x94]`. These copies occur only when respective byte fields at `[relatedObject+0x16A]` and `[relatedObject+0x16B]` equal zero. The related object is obtained from a pointer at `[widget+0x58]`, not assumed to be identical to the current widget.
+- The grid measurement routine `0x1408DFAE0` calls this shared spacer routine near `0x1408DFB66`, *then* reads edge insets/gaps and row/column counts. The wrap measurement routine `0x1408E0670` also calls the shared routine before its own child processing.
+
+**What this proves:** common dimension negotiation precedes container-specific measurement in these native code paths. **What it does not prove:** the mapping of byte offsets `+0x16A/+0x16B` to authored `Size To Content H/V`, nor a general rule that those dimensions must be copied for all widgets. That requires tracing the property setters and call context. The new M2 TypeScript pipeline therefore records unresolved native content sizing instead of using these flags speculatively.
