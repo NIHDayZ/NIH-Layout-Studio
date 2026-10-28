@@ -2,6 +2,7 @@ import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
 import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../renderer/GridLayout";
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
+import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
@@ -211,20 +212,6 @@ function BuildWidgetStyle(node: LayoutNode, rect: Rect, selected: boolean, debug
 	return style;
 }
 
-function MeasureBitmapLine(font: BitmapFontDefinition, text: string, scale: number) {
-	let width = 0;
-	let previous = -1;
-	for (const character of Array.from(text)) {
-		const codePoint = character.codePointAt(0) ?? 0;
-		if (previous >= 0)
-			width += (font.kerning.get(`${previous}:${codePoint}`) ?? 0) * scale;
-		const glyph = font.glyphs.get(codePoint);
-		width += (glyph?.advance ?? font.nominalSize * 0.5) * scale;
-		previous = codePoint;
-	}
-	return width;
-}
-
 function RenderBitmapText(node: LayoutNode, rect: Rect, font: BitmapFontDefinition, color: string, textStyle = ResolveControlTextStyle(node, rect)) {
 	const text = GetNodeProperty(node, "text") ?? "";
 	const scale = Math.max(0.05, textStyle.fontSize / Math.max(1, font.nominalSize));
@@ -240,7 +227,7 @@ function RenderBitmapText(node: LayoutNode, rect: Rect, font: BitmapFontDefiniti
 	const glyphNodes = [];
 	for (let lineIndex = 0; lineIndex < lines.length; ++lineIndex) {
 		const line = lines[lineIndex];
-		const lineWidth = MeasureBitmapLine(font, line, scale);
+		const lineWidth = MeasureBitmapAdvance(font, line, scale, "renderer-fallback") ?? 0;
 		let cursorX = textStyle.hAlign === "center" ? (rect.width - lineWidth) * 0.5 : textStyle.hAlign === "right" ? rect.width - lineWidth : 0;
 		let previous = -1;
 		for (const [characterIndex, character] of Array.from(line).entries()) {
