@@ -1,7 +1,8 @@
 import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type LayoutConstraints, type MeasuredWidget } from "./GeometryCore.js";
-import { ResolveAuthoredRect, type GeometryWidget } from "./WidgetGeometry.js";
+import { ResolveAuthoredRect, ResolveAuthoredRectWithSize, type GeometryWidget } from "./WidgetGeometry.js";
 import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
 import { PlanManagedChildren, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
+import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 export type { ArrangementOptions, AppliedLayoutStrategy } from "./LayoutArrangers.js";
 
 export type GeometryIssueCode = "unresolved-layout-strategy" | "unresolved-size-to-content" | "duplicate-widget-id";
@@ -11,6 +12,13 @@ export interface GeometryIssue {
 	id: string;
 	type: string;
 	detail: string;
+}
+
+export interface AppliedIntrinsicContent {
+	id: string;
+	family: IntrinsicFamily;
+	evidence: IntrinsicEvidence;
+	axes: readonly ("horizontal" | "vertical")[];
 }
 
 export interface AuthoredGeometrySnapshot {
@@ -25,6 +33,7 @@ export interface AuthoredGeometrySnapshot {
 	issues: readonly GeometryIssue[];
 	/** Only actually applied native-derived strategy prototypes, not unimplemented types. */
 	appliedStrategies: readonly AppliedLayoutStrategy[];
+	appliedIntrinsics: readonly AppliedIntrinsicContent[];
 	rootRect: GeometryRect;
 }
 
@@ -46,6 +55,7 @@ export function ArrangeMeasuredGeometry(
 	const measuredById = new Map<string, MeasuredWidget>();
 	const issues: GeometryIssue[] = [];
 	const appliedStrategies: AppliedLayoutStrategy[] = [];
+	const appliedIntrinsics: AppliedIntrinsicContent[] = [];
 
 	function Visit(
 		nodes: readonly MeasuredLayoutNode[],
@@ -59,10 +69,38 @@ export function ArrangeMeasuredGeometry(
 		for (let index = 0; index < nodes.length; ++index) {
 			const prepared = nodes[index];
 			const { node, authored, strategy } = prepared;
-			const localRect = allocatedRects?.[index] ?? ResolveAuthoredRect(authored, {
+			const parentSize = {
 				width: constraints.availableWidth,
 				height: constraints.availableHeight
-			});
+			};
+			const authoredRect = ResolveAuthoredRect(authored, parentSize);
+			const intrinsic = prepared.intrinsic?.measurement;
+			const applyContent = options.providedIntrinsicContent === true && intrinsic !== undefined
+				&& prepared.children.length === 0 && !allocatedRects;
+			const useWidth = applyContent && authored.sizeToContentWidth && intrinsic?.width !== undefined;
+			const useHeight = applyContent && authored.sizeToContentHeight && intrinsic?.height !== undefined;
+			const resolvedSize = {
+				width: useWidth ? intrinsic.width! : authoredRect.width,
+				height: useHeight ? intrinsic.height! : authoredRect.height
+			};
+			const localRect = allocatedRects?.[index] ?? (
+				useWidth || useHeight
+					? ResolveAuthoredRectWithSize(authored, parentSize, resolvedSize)
+					: authoredRect
+			);
+			if (useWidth || useHeight) {
+				const axes: ("horizontal" | "vertical")[] = [];
+				if (useWidth)
+					axes.push("horizontal");
+				if (useHeight)
+					axes.push("vertical");
+				appliedIntrinsics.push({
+					id: node.id,
+					family: prepared.intrinsic!.family,
+					evidence: intrinsic!.evidence,
+					axes
+				});
+			}
 			const absoluteRect = TranslateRect(localRect, parentRect);
 			const arranged: ArrangedWidget = {
 				id: node.id,
@@ -87,16 +125,16 @@ export function ArrangeMeasuredGeometry(
 				measuredById.set(node.id, prepared.measurement);
 			}
 
-			if (prepared.unresolvedContentWidth || prepared.unresolvedContentHeight) {
+			if ((prepared.unresolvedContentWidth && !useWidth) || (prepared.unresolvedContentHeight && !useHeight)) {
 				const axes = [
-					prepared.unresolvedContentWidth ? "horizontal" : "",
-					prepared.unresolvedContentHeight ? "vertical" : ""
+					prepared.unresolvedContentWidth && !useWidth ? "horizontal" : "",
+					prepared.unresolvedContentHeight && !useHeight ? "vertical" : ""
 				].filter(Boolean).join(" and ");
 				issues.push({
 					code: "unresolved-size-to-content",
 					id: node.id,
 					type: node.type,
-					detail: `Native ${axes} size-to-content has not been measured; this rectangle uses authored size only.`
+					detail: `Native ${axes} size-to-content has not been measured; unresolved axes use authored size.`
 				});
 			}
 			const layoutPlan = PlanManagedChildren(prepared, absoluteRect, options);
@@ -127,7 +165,7 @@ export function ArrangeMeasuredGeometry(
 		dpiScale
 	};
 	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
-	return { entries, byId, measuredById, issues, appliedStrategies, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, rootRect: { ...rootRect } };
 }
 
 /**
