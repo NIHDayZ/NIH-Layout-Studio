@@ -14,6 +14,10 @@ const template = JSON.parse(readFileSync(
 	new URL("./fixtures/workbench-common/capture.template.json", import.meta.url),
 	"utf8"
 ));
+const runtime = JSON.parse(readFileSync(
+	new URL("./fixtures/workbench-common/capture.runtime.2026-10-28.json", import.meta.url),
+	"utf8"
+));
 function Copy(value) {
 	return JSON.parse(JSON.stringify(value));
 }
@@ -31,7 +35,7 @@ function PopulateSyntheticFixture(caseId="mock") {
 	return {
 		id:caseId, viewport, observed,
 		provenance:{
-			captureMethod:"unit-test-double",nativeBuild:"mock",evidenceFile:"not-a-native-file",
+			captureMethod:"dayz-client-script-getters",nativeBuild:"unit-test-fixture-01",evidenceFile:"not-a-native-file",
 			viewportSource:"test-only"
 		},tolerance:0.5
 	};
@@ -99,4 +103,64 @@ test("malformed comparison inputs fail closed instead of inventing native rectan
 		]}
 	]}];
 	assert.throws(()=>CompareCommonGeometryCaptures(template,managed),/managed\/content-sized/);
+});
+
+test("unit-test-double capture never counts as independently observed native PASS",()=>{
+	const item=PopulateSyntheticFixture();
+	item.provenance.captureMethod="unit-test-double";
+	const report=CompareCommonGeometryCaptures({schemaVersion:1,cases:[item]},roots);
+	assert.deepEqual(report.summary,{pass:0,fail:0,pending:0,synthetic:1});
+});
+
+test("actual October 28 DayZ client getter rectangles match both root sizes but require client-build provenance",()=>{
+	const report=CompareCommonGeometryCaptures(runtime,roots);
+	assert.deepEqual(report.summary,{pass:0,fail:0,pending:2,synthetic:0});
+	assert.deepEqual(report.reports.map(item=>item.matched),[16,16]);
+	assert.ok(report.reports.every(item=>item.errors.length===1 &&
+		/client build identifier was not captured/i.test(item.errors[0])));
+	assert.deepEqual(runtime.cases.map(item=>item.id),["viewport-1120x460","viewport-1440x900"]);
+	assert.equal(runtime.rootName,"NIHCommonParity");
+	assert.ok(runtime.cases.every(item=>item.provenance.nativeBuild===null));
+});
+
+test("native getter captures confirm local authored geometry and inherited visibility across five classes",()=>{
+	const names=new Map();
+	function Collect(nodes) {
+		for (const node of nodes) {
+			names.set(node.name,node);
+			Collect(node.children);
+		}
+	}
+	Collect(roots[0].children);
+	assert.equal(names.size,16);
+	let maxCoordinateDelta=0;
+	const property=(node,key,fallback)=>{
+		const raw=node.properties.find(p=>p.name.toLowerCase()===key)?.value;
+		return raw===undefined?fallback:raw;
+	};
+	for (const item of runtime.cases) {
+		const snap=ArrangeMeasuredGeometry(MeasureLayoutTree(roots[0].children),item.viewport);
+		assert.deepEqual(Object.keys(item.observed),[...names.keys()]);
+		for (const [name,node] of names) {
+			const arranged=snap.byId.get(node.id);
+			const nativeRect=item.observed[name];
+			for(const key of ["x","y","width","height"]) {
+				const difference=Math.abs(arranged.absoluteRect[key]-nativeRect[key]);
+				maxCoordinateDelta=Math.max(maxCoordinateDelta,difference);
+				assert.ok(difference<0.000001,item.id+"/"+name+"/"+key+": "+difference);
+			}
+			assert.equal(arranged.visible,item.observedVisibility[name].hierarchy,
+				"hierarchical native visibility for "+name);
+			const local=item.observedLocal[name];
+			const pos=property(node,"position","0 0").split(/\s+/).map(Number);
+			const size=property(node,"size","1 1").split(/\s+/).map(Number);
+			assert.deepEqual([local.x,local.y,local.width,local.height],
+				[pos[0],pos[1],size[0],size[1]],"native local getters for "+name);
+		}
+	}
+	assert.ok(maxCoordinateDelta<0.000001);
+	assert.deepEqual(runtime.cases.map(c=>c.observedVisibility.Panel_Hidden),
+		[{self:false,hierarchy:false},{self:false,hierarchy:false}]);
+	assert.deepEqual(runtime.cases.map(c=>c.observedVisibility.Text_HiddenDescendant),
+		[{self:true,hierarchy:false},{self:true,hierarchy:false}]);
 });
