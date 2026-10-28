@@ -83,7 +83,10 @@ export function ArrangeMeasuredGeometry(
 				width: constraints.availableWidth,
 				height: constraints.availableHeight
 			};
-			const authoredRect = ResolveAuthoredRect(authored, parentSize);
+			// A layout strategy has already assigned this cell; avoid resolving
+			// unused authored coordinates for managed children.
+			const strategyRect = allocatedRects?.[index];
+			const authoredRect = strategyRect ?? ResolveAuthoredRect(authored, parentSize);
 			// A wrapped text height depends on this specific arranged width.
 			// Never infer width from wrapped height or apply to grid-allocated slots.
 			const proposedText = options.constrainedTextPreview && !allocatedRects && prepared.textFlow
@@ -107,7 +110,7 @@ export function ArrangeMeasuredGeometry(
 				height: useConstrainedHeight ? constrainedText!.height
 					: useIntrinsicHeight ? intrinsic!.height! : authoredRect.height
 			};
-			const localRect = allocatedRects?.[index] ?? (
+			const localRect = strategyRect ?? (
 				useWidth || useHeight
 					? ResolveAuthoredRectWithSize(authored, parentSize, resolvedSize)
 					: authoredRect
