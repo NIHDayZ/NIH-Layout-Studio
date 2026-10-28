@@ -36,6 +36,12 @@ export interface ArrangementOptions {
 	/** Prototype only: derive ordinary Frame/Panel height from acyclic child extents. */
 	boundedParentContent?: boolean;
 	/**
+	 * O(n), read-only envelopes of each parent's arranged direct children.
+	 * All children count, including hidden and authored manager fallbacks.
+	 * These bounds do NOT resize parents or simulate native sizing policy.
+	 */
+	directChildBoundsDiagnostics?: boolean;
+	/**
 	 * Common authored visibility and ancestor-clip intersection diagnostics.
 	 * Read-only, class-agnostic, and NOT a native scissor/painting strategy.
 	 */
