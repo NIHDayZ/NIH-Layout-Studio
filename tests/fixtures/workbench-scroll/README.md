@@ -93,9 +93,13 @@ the actual child viewport and child context, e.g. from a supported runtime
 widget inspection tool. Each populated case must carry its actual build
 version, capture method, and evidence file path.
 
-The four template cases describe authored dimensions and scrollbar flags
-only. Their initial offsets are a **zero-offset hypothesis**; change them if
-native runtime observations show otherwise.
+The four template cases describe authored dimensions, scrollbar flags
+and hypothetical zero offsets for the **viewport comparator**. Their actual
+initial zero offsets are now independently confirmed in the DayZ client
+runtime getter capture, but the comparator still has no measured child
+viewport/context rectangles or scale-branch provenance. Do not copy the
+getter-only observations into `observed.childViewport` or
+`observed.childContext`.
 
 Run comparisons after installing project dependencies and building the
 geometry test modules:
