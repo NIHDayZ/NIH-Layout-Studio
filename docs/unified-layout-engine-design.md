@@ -424,3 +424,54 @@ const projected = result.scrollChildContextCandidates.get("scroll-widget-id");
 The candidate records `native-derived-scroll-child-origin` evidence and `explicit-native-offsets-no-clipping` assumptions. Missing/invalid offset samples, unsupported DPI context, and unrelated widget classes produce no candidate; they do **not** fall back to guessed offsets. The map is allocated per snapshot, and no sample is stored in or written to the layout itself. Production Canvas geometry, clipping and normal scroll interaction are unchanged. `tests/scroll-offset.test.mjs` now runs under `npm run test:geometry-engine`, covering pure geometry and snapshot isolation.
 
 **Still required for actual native parity:** measured ScrollWidget content, viewport and offset values from the same Workbench runtime configuration; identification of inherited/native clipping rules; scrollbar visibility and layout flag interactions; and native runtime setter semantics. Until then these are comparison instruments, not an enabled native layout strategy.
+
+
+## M2 common direct-child content envelope (2026-10-28)
+
+The previous Frame/Panel bounded-height diagnostic and Scroll direct-child
+inspection each performed their own child-edge bounding calculations. Those
+pure arithmetic operations are now consolidated into
+`src/renderer/engine/ContentBounds.ts`:
+
+- `MeasureContentBounds(rects, options)` computes finite, non-mutating
+  `left/top/right/bottom/width/height/childCount` for an already positioned
+  set of **direct child** rectangles in one traversal. Fractional and negative
+  origins are preserved. Empty, nonfinite, negative-sized, and overflowing
+  envelopes are rejected, never partially measured.
+- **ScrollWidget** still requires strictly positive child widths and heights
+  and retains its own visibility, native extent and scrollbar uncertainty.
+  Only the duplicate axis min/max aggregation was replaced.
+- **Frame/Panel** bounded content-height still requires acyclic top-anchored
+  children with independent widths and fixed or externally measured heights.
+  This path explicitly permits a zero-height child and derives final height
+  from `max(0, bounds.bottom)`. Managed layout, hidden child and unresolved
+  relative-height cases retain their conservative failure diagnostics.
+- **WrapSpacer** retains native-derived line packing and its width-dependent
+  line-height algorithm. The shared bounds helper is checked against its
+  arranged line rectangles in tests; it does not replace Wrap's specialized
+  packing or pretend to establish native vertical sizing.
+
+For cross-widget diagnostics, `ArrangeMeasuredGeometry` accepts opt-in
+`{ directChildBoundsDiagnostics: true }` and returns
+`snapshot.directChildBoundsCandidates`. This is an O(total widgets)
+**post-arrangement** pass over the already computed local rectangles. It
+includes every direct child, including hidden children and fallback authored
+positions for unsupported layout managers; the result is **not** a native
+content-size policy or final measured parent size. Duplicate IDs disable
+the candidate pass rather than guessing parent associations. The default
+pass does not incur this allocation/traversal.
+
+The native-backed regression reconstructs immediate-child envelopes from the
+independently captured 32 DayZ screen rectangles across the 1120×460 and
+1440×900 root sizes. The candidate bounds agree under floating-point
+tolerance, but the DayZ native getter capture did **not** provide Frame/Panel
+content-width/height or clipping/scissor bounds. The computation is a reusable
+mathematical primitive, **not proof** that every widget family uses the same
+native inclusion rules or size-to-content policy.
+
+Relevant tests:
+`tests/shared-content-bounds.test.mjs`,
+`tests/direct-child-bounds.test.mjs`, alongside the existing Frame/Panel,
+Scroll and Wrap regressions. Production Canvas rendering, authored property
+serialization, native DPI controls and final native content negotiation have
+not changed.
