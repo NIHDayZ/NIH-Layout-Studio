@@ -88,7 +88,7 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
     fontSize: resource.metadata.fontSize,
     fnt5OriginsCount: resource.fnt5Origins?.size ?? 0,
     origin: origin ?? null,
-    selected: usesTcrd ? "TCRD" : "FSDF fallback",
+    selected: resource.fnt5PixelMetrics && resource.fnt5CellSize && resource.fnt5Origins?.has(glyph.codePoint) ? "Standalone FNT5 cell" : usesTcrd ? "TCRD" : "FSDF fallback",
     rectangle: rect,
     msdf: experimentalMsdf
    });
