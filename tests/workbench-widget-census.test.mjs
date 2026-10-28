@@ -14,12 +14,18 @@ function ExamplePbo() {
 		Entry("layouts\\example.layout", `FrameWidgetClass Root {
 			{
 				GridSpacerWidgetClass Grid {
-					{ ButtonWidgetClass Button1 {} ButtonWidgetClass Button2 {} }
+					{
+						ButtonWidgetClass Button1 {}
+						ButtonWidgetClass Button2 {}
+					}
 				}
 			}
 		}`),
 		Entry("layouts\\other.layout", `FrameWidgetClass Other {
-			{ ButtonWidgetClass Button3 {} ImageWidgetClass Icon {} }
+			{
+				ButtonWidgetClass Button3 {}
+				ImageWidgetClass Icon {}
+			}
 		}`),
 		Entry("fonts\\unrelated.txt", "ButtonWidgetClass Ignored {}")
 	];
