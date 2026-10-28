@@ -215,3 +215,22 @@ This optional preview ONLY applies provider measurements to a leaf `ImageWidgetC
 This is a **structural integration test of a supplied resource size**, not evidence that Workbench always sizes Image/Text widgets to raw logical sprite or font metrics. Native scaling, imageset styles, crop flags, kerning/shaping, empty text, wrapping, SDF/FNT3 size tiers, resource fallback and editor zoom still require independent Workbench verification. In particular, a `TextWidgetClass` metric provider is accepted only when the caller knows its dimensions are parent-constraint independent; don't guess a value from CSS fontSize or the authored widget height.
 
 The unchanged default snapshot and unchanged Canvas rendering protect current user layouts. Test coverage is in `tests/intrinsic-measurements.test.mjs`, including absence of provider, resource dimensions, partial axes, evidence tracking, alignment, and subclass isolation.
+
+
+## Text metrics and width-dependent flow consolidation (M2/M3 research)
+
+The new `TextLineMetrics.ts` consumes **existing parsed font metrics**, without introducing browser, CSS, or fallback font approximations:
+
+- **FNT3:** glyph advances and pair kerning, scaled by an explicitly resolved display font size versus nominal size; a single-line measurement also reports the parser's line height. Unknown glyphs are **rejected** for intrinsic measurement rather than inventing their advance.
+- **FSDF/FNT5:** single-line horizontal advance from the parsed resource's declared unit mode: reference FSDF advances in 1/1000 em, versus standalone FNT5 pixel metrics scaled by nominal font size. **Height is not provided**, because glyph cell size does not establish native content line height. Missing glyphs, invalid metrics, and multiline input are rejected.
+- `CreateSingleLineTextIntrinsicProvider` requires the caller to supply the *actual resolved* font and font display size. It does not infer those from an authored widget rect or a CSS font. For `TextWidgetClass` only, any accepted dimensions still flow through the same **explicit opt-in** `providedIntrinsicContent` strategy and record their metric provenance.
+
+The existing production FNT3 renderer now calls shared `MeasureBitmapAdvance(..., "renderer-fallback")` for its line widths. That mode intentionally preserves the renderer's existing half-nominal-width fallback on missing glyphs and pair-kerning arithmetic. The stricter intrinsic-measurement mode **does not** take this fallback. A frozen reference algorithm in `tests/text-line-metrics.test.mjs` verifies width behavior for representative strings, scales, Unicode and kerning.
+
+The old SDF preview line-breaking function is now `WrapPreviewText` in `TextFlow.ts`, shared by the `SdfTextCanvas.tsx` renderer and pure preview measurement diagnostics. Its existing token/whitespace and oversized-identifier behavior is unchanged. `MeasurePreviewFlow` explicitly takes **available width**, and therefore its resulting height is **parent-constraint-dependent**, not an intrinsic size that can be used to resolve `Size To Content V` independently. Keep it out of native content-size strategy selection until Workbench constraint negotiation is recovered.
+
+### Remaining native text and layout uncertainty
+
+This cleanup proves consistency with NIH Studio's **current renderer**; it does not prove Workbench-equivalent text shaping, vertical baseline/ink alignment, ligatures, bidi scripts, font fallback, wrapping policy, scaling, or parent-child content extents. The native RTTI/vtable research documents the confirmed text-specific measurement override, but the full native glyph and alignment rules remain unresolved. In particular, neither the preview line-height multiplier nor the renderer's missing-glyph fallback should be asserted as Workbench native behavior.
+
+The code remains pure and decoupled from rendering resources; the current canvas still paints all glyphs as before. Run `npm run test:geometry-engine` to check the consolidated metric and preview-flow suites, plus `npm run build` for integration. Do not enable native content sizing globally from this checkpoint.
