@@ -86,8 +86,14 @@ export function ArrangeMeasuredGeometry(
 			const authoredRect = ResolveAuthoredRect(authored, parentSize);
 			// A wrapped text height depends on this specific arranged width.
 			// Never infer width from wrapped height or apply to grid-allocated slots.
-			const constrainedText = options.constrainedTextPreview && !allocatedRects && prepared.textFlow
+			const proposedText = options.constrainedTextPreview && !allocatedRects && prepared.textFlow
 				? prepared.textFlow.measure(authoredRect.width) : null;
+			// Even a custom preparer must not inject invalid or stale-for-width
+			// geometry into the shared hierarchy snapshot.
+			const constrainedText = proposedText && Number.isFinite(proposedText.height)
+				&& proposedText.height > 0 && Number.isInteger(proposedText.lineCount)
+				&& proposedText.lineCount > 0 && proposedText.widthUsed === authoredRect.width
+				&& proposedText.evidence === "sdf-preview-flow" ? proposedText : null;
 			const useConstrainedHeight = constrainedText !== null && constrainedText !== undefined;
 			const intrinsic = prepared.intrinsic?.measurement;
 			const applyContent = options.providedIntrinsicContent === true && intrinsic !== undefined
