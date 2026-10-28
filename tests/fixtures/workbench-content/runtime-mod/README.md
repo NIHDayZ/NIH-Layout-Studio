@@ -12,7 +12,7 @@ From `Z:\GitHub\NIH-Layout-Studio` on branch
 
 ```powershell
 git pull --ff-only
-.\tests\fixtures\workbench-content\runtime-mod\Prepare-ContentProbe.ps1
+.\tests\fixtures\workbench-content\runtime-mod\Prepare-ContentProbe.ps1 -Overwrite
 
 $builder = "D:\SteamLibrary\steamapps\common\DayZ Tools\Bin\AddonBuilder\AddonBuilder.exe"
 $source = "P:\NIH_ContentSizingProbe"
@@ -27,8 +27,11 @@ Get-ChildItem $output -Filter "*.pbo" | Select-Object Name,Length,LastWriteTime
 
 Expected packed test-only file:
 `P:\Mods\@NIH_ContentSizingProbe\addons\NIH_ContentSizingProbe.pbo`.
-The preparation script guards against overwrites unless `-Overwrite`
-is explicitly supplied and does not create/sign/install the PBO.
+Use `-Overwrite` when updating the **existing disposable v1 test folder**
+to v2, as you already successfully prepared and packed the first version.
+The script only replaces the three files staged for this standalone probe;
+it does not create/sign/install the PBO. Check the Builder log again before
+testing. No production mod is touched.
 
 ## Run and collect
 
@@ -36,9 +39,11 @@ Load `@NIH_ContentSizingProbe` on the **client** and local **test
 server** as required by your existing local startup configuration.
 Remove the earlier Scroll and CommonGeometry probe mods. Enter gameplay.
 
-The harness creates a single root layout and captures four delayed
-states: initial text, short mutated text, restored text, and a smaller
-runtime root viewport. Native `TextWidget.GetTextSize(out int,out int)`
+The v2 harness creates a single root layout with **27 authored widgets**
+and captures four delayed states: initial text, short mutated text, restored
+text, and a smaller runtime root viewport. It also checks independently
+whether expected nested children can be found by name and how many direct
+children each content-sized parent reports. Native `TextWidget.GetTextSize(out int,out int)`
 returns pixel dimensions, while `GetScreenSize` returns widget bounds.
 The output distinguishes these and records all widget types generically.
 The exact imageset source pixel size, painted text glyph bounds, and native
@@ -62,8 +67,9 @@ DayZ client build, screen resolution and HUD/UI scale separately when
 available; this harness does not capture them.
 
 `npm run extract:workbench-content -- "<client-script.log>" capture.json`
-will reject incomplete phases and malformed getters. The new runtime mod
-has **NOT** been DayZ-compiled/tested yet; if the script compiler reports
+will reject incomplete phases and malformed getters. The updated **v2 runtime mod has NOT been DayZ-compiled/tested yet**.
+The original v1 did compile and run, but captured only 13/18 widget records.
+v2 adds direct lookup and fixed/Wrap content controls. If the script compiler reports
 an invalid signature or unknown layout property, preserve the exact error
 and correct the harness before treating any result as native evidence.
 
