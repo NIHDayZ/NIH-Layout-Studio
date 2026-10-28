@@ -60,21 +60,21 @@ test("native child-loss warning is visible and Cancel prevents export, Continue 
 	expect(saved.download.suggestedFilename()).toBe("FrameContentBefore0.layout");
 });
 
-test("after-child serialization risk is explained; source-preserving export keeps attribute after children",async ({page})=>{
+test("native-safe after-child property exports without a warning or reordering",async ({page})=>{
 	const source=await OpenFixture(page,"FrameContentAfter0");
 	await page.getByRole("button",{name:/^PROBLEMS/}).click();
-	const warning=page.locator(".native-compatibility-entry");
-	await expect(warning).toContainText("canonical serializer writes properties before children");
-	await expect(warning).toContainText("Direct Save/Export of the current source preserves its order");
+	await expect(page.locator(".native-compatibility-entry")).toHaveCount(0);
+	const downloadPromise=page.waitForEvent("download");
 	await OpenExportAs(page);
-	const saved=await ConfirmDownload(page,"Continue Export");
-	const exported=saved.bytes.toString("utf8");
+	const download=await downloadPromise;
+	await expect(page.getByRole("dialog",{name:"Native compatibility review"})).toHaveCount(0);
+	const exported=(await readFile(await download.path())).toString("utf8");
 	expect(exported).toBe(source);
 	expect(exported.indexOf("FrameContentAfter0_Bottom")).toBeLessThan(exported.indexOf('"Size To Content V" 0'));
 });
 
 test("live source edits clear obsolete warnings without refreshing Canvas, and clean export remains byte-identical",async ({page})=>{
-	const original=await OpenFixture(page,"FrameContentAfter0");
+	const original=await OpenFixture(page,"FrameContentBefore0");
 	await page.getByRole("button",{name:/^PROBLEMS/}).click();
 	await expect(page.locator(".native-compatibility-entry")).toHaveCount(1);
 	await page.getByRole("button",{name:"SOURCE",exact:true}).click();
