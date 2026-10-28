@@ -149,3 +149,22 @@ npm run verify:workbench-scroll -- "C:\\Path\\To\\WorkbenchApp.exe"
 The script has synthetic PE parser tests in CI; the full pinned-binary check was run against the user-provided Workbench binary in the research environment. The executable is not part of the repository.
 
 **Still missing for pixel parity:** observed Workbench child rectangles at multiple root resolutions, scrollbar modes and DPI settings; native scroll offset setters and direction; `+0x159` eligibility semantics; and the actual child clipping policy. These must be measured before enabling ScrollWidget runtime placement.
+
+
+## Shared managed child visibility — directly recovered native branch
+
+The same pinned `WorkbenchApp.exe` includes the authored reflection name **`Ignore invisible`** at file offset `0x206EED8` (description: “Spacing ignores invisible widgets”). The loader at `0x1408DEDD0` reads property ID at `0x1461541D8` and writes to **widget byte `+0x159`** at `0x1408DEE03`. If the authored property is absent, `0x1408DEDFC` explicitly loads the **default value 1**.
+
+The relevant native widget traversal paths all test this same byte:
+
+| Container | Native code site | Behavior |
+|---|---|---|
+| GridSpacer | `0x1408DFCF0` and later loops | Skips noneligible children if `Ignore invisible` is enabled |
+| WrapSpacer | `0x1408E0762` and later loops | Skips noneligible children if enabled |
+| ScrollWidget | `0x1408E0540` and `0x1408E058E` | Skips noneligible children if enabled |
+
+The native calls use helper `0x1408BB070` to test eligibility. This establishes the **common filtering decision** but does **not** fully establish how that helper treats inherited visibility, detached controls, or nonvisual widgets. Our diagnostic engine presently uses authored child visibility only, with separate unresolved native-layout diagnostics.
+
+**Implementation:** `ManagedVisibility.ts` decodes the boolean once on the prepared parent, defaulting to true, and returns selected original document indices. Grid/Wrap allocate geometry for those indices; ineligible widgets retain their authored fallback rectangle but remain invisible. Scroll direct-child bounds use the same eligible indices. With `Ignore invisible=0`, hidden children can participate in measurement/slot allocation (still do not render). An unknown authored flag refuses the strategy. This centralizes the behavior for three native families rather than copying visibility hacks per widget.
+
+The research verifier `scripts/verify-workbench-scroll.mjs` now pins the default-loading instruction, shared `+0x159` write, and the Grid/Wrap/Scroll read sites. Those signatures were checked against the uploaded executable with the expected SHA-256. This is **static instruction-level evidence**, not Workbench pixel-parity verification.

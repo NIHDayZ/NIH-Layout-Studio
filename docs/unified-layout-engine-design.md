@@ -387,3 +387,15 @@ A separate native branch scales the scrollbar thickness by `contextC4 / contextC
 Run `npm run test:geometry-engine` for the pure arithmetic and synthetic PE tests. With a legitimately installed **matching** Workbench executable, `npm run verify:workbench-scroll -- "C:\\Path\\To\\WorkbenchApp.exe"` verifies the native research pin; other binary versions are correctly rejected. No executable, extracted binary asset or copyrighted layout is included in the repo.
 
 **Native parity remains unverified:** scroll offset state, child eligibility, native clipping and scrollbar sizing under real Workbench scale contexts. Until independent reference observations are captured, default Canvas geometry and all opt-in Scroll diagnostics remain unchanged.
+
+
+## M3 shared Ignore invisible child eligibility
+
+Static native research established a common `Ignore invisible` property and default of `1` for the managed GridSpacer, WrapSpacer and ScrollWidget paths. `ManagedVisibility.ts` is now the single eligibility decoder and index selector, operating on each widget's prepared child list. The corresponding native code uses byte `+0x159` and calls an eligibility helper before visiting children.
+
+- With `Ignore invisible=1` (native default), an invisible immediate child does not consume grid or wrap slots and does not contribute to Scroll direct-child authored bounds.
+- With `Ignore invisible=0`, invisible children remain in the native layout candidate calculation but retain their original hidden rendering state.
+- With an invalid flag value, no speculative native arrangement or Scroll extent diagnostic is applied.
+- The shared geometry walker continues to retain **all** widgets in their original order. The strategy-specific plan is scattered back into original child-index positions; filtered-out children fall back to authored geometry without changing serialized layout.
+
+`tests/managed-visibility.test.mjs` exercises decoding, stable indices, sparse slot allocation, the three widget families and invalid-value isolation. Native eligibility helper semantics, parent-inherited visibility and pixel parity still need comparison against Workbench fixtures. The production Canvas is unchanged.
