@@ -19,14 +19,15 @@ function Warnings(name) {
 	return InspectNativePropertyCompatibility(roots);
 }
 
-test("Problems UI shows evidence-backed source-order risk and actual widget name, not a fabricated C++ error",()=>{
+test("the information component describes native-safe trailing placement without claiming an export regression",()=>{
 	const warnings=Warnings("FrameContentAfter0");
 	assert.equal(warnings.length,1);
 	const markup=renderToStaticMarkup(createElement(NativeCompatibilityWarnings,{warnings}));
 	assert.ok(markup.includes("FrameContentAfter0"),markup);
 	assert.ok(markup.includes("Size To Content V"),markup);
-	assert.ok(markup.includes("canonical serializer writes properties before children"),markup);
-	assert.ok(markup.includes("Direct Save/Export of the current source preserves its order"),markup);
+	assert.ok(markup.includes("canonical serializer now preserves recorded group order"),markup);
+	assert.ok(markup.includes("not a C++ parser guarantee"),markup);
+	assert.ok(markup.includes("native-compatibility-entry info"),markup);
 	assert.ok(markup.includes("DayZ native client fixture"),markup);
 	assert.ok(!markup.includes("undefined"),markup);
 	assert.ok(!markup.includes("Delete children"),markup);
