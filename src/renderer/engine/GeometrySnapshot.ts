@@ -3,6 +3,7 @@ import { ResolveAuthoredRect, ResolveAuthoredRectWithSize, type GeometryWidget }
 import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
 import { PlanManagedChildren, ProbeWrapContentHeight, ProbeScrollViewport, ProbeUnscaledScrollViewport, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
 import type { UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
+import { ProjectNativeScrollChildContext, type NativeScrollChildContext } from "./ScrollOffset.js";
 import { EstimateNativeScrollExtent, type AuthoredScrollViewport, type NativeScrollExtentCandidate } from "./ScrollViewport.js";
 import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
@@ -70,6 +71,8 @@ export interface AuthoredGeometrySnapshot {
 	scrollExtentCandidates: ReadonlyMap<string, NativeScrollExtentCandidate>;
 	/** Unscaled native scrollbar reservation candidates. Does not modify real clipping or scroll offsets. */
 	scrollAdjustedViewports: ReadonlyMap<string, UnscaledScrollViewportCandidate>;
+	/** Projected child contexts from explicit scrollbar viewport and offset inputs; not applied. */
+	scrollChildContextCandidates: ReadonlyMap<string, NativeScrollChildContext>;
 	rootRect: GeometryRect;
 }
 
@@ -98,6 +101,7 @@ export function ArrangeMeasuredGeometry(
 	const scrollViewports = new Map<string, AuthoredScrollViewport>();
 	const scrollExtentCandidates = new Map<string, NativeScrollExtentCandidate>();
 	const scrollAdjustedViewports = new Map<string, UnscaledScrollViewportCandidate>();
+	const scrollChildContextCandidates = new Map<string, NativeScrollChildContext>();
 	// Only the current arrangement pass owns these width-dependent metrics.
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
@@ -264,8 +268,15 @@ export function ArrangeMeasuredGeometry(
 			if (strategy.kind === "scroll" && options.scrollScrollbarViewportDiagnostics
 				&& !scrollAdjustedViewports.has(node.id)) {
 				const adjusted = ProbeUnscaledScrollViewport(prepared, absoluteRect, constraints.dpiScale, options);
-				if (adjusted)
+				if (adjusted) {
 					scrollAdjustedViewports.set(node.id, adjusted);
+					const offsets = options.scrollOffsetSamples?.get(node.id);
+					if (offsets && !scrollChildContextCandidates.has(node.id)) {
+						const candidate = ProjectNativeScrollChildContext(adjusted.childViewport, offsets);
+						if (candidate)
+							scrollChildContextCandidates.set(node.id, candidate);
+					}
+				}
 			}
 			const viewportDiagnostic = wantsScrollInspection
 				? ProbeScrollViewport(prepared, absoluteRect, {
@@ -311,7 +322,7 @@ export function ArrangeMeasuredGeometry(
 		dpiScale
 	};
 	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, rootRect: { ...rootRect } };
 }
 
 /**
