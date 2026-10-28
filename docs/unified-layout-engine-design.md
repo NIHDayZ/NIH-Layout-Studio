@@ -265,3 +265,33 @@ const snapshot = ArrangeMeasuredGeometry(
 `tests/constrained-text.test.mjs` verifies narrow/wide viewport heights, bottom reference realignment, unsupported horizontal feedback, missing font glyphs, zero width, parent/child and grid boundaries, optional mode isolation, source preparation reuse, precedence relative to independent metric sources, and stale/malformed measurement rejection.
 
 This is diagnostic infrastructure only: **no live Canvas layout switch, no new editor URL flag, and no changes to native saved layout geometry**. Workbench parity for text wrapping and size-to-content parents still requires direct comparison fixtures and deeper native tracing. Avoid resource caches until explicit invalidation on document/font changes is designed.
+
+
+## M2 bounded parent content negotiation (prototype)
+
+The draft branch introduces `ParentContent.ts`, a **strictly bounded, acyclic, vertical-only** child-extent negotiation prototype. It accepts prepared geometry and a final available width; it does not resolve a parent's width from its children's wrapped heights. Its only allowed parent classes at this stage are ordinary `FrameWidgetClass` and `PanelWidgetClass` with `Size To Content V=1` and `Size To Content H=0`.
+
+Given `MeasureLayoutTree` results, opt in explicitly:
+
+```ts
+const prepared = MeasureLayoutTree(roots, {
+  constrainedText: optionalResolvedSdfPreparer,
+  intrinsics: optionalFontAndImageProviders
+});
+const snapshot = ArrangeMeasuredGeometry(
+  prepared,
+  { x: 0, y: 0, width: 1280, height: 720 },
+  1,
+  { boundedParentContent: true, constrainedTextPreview: true }
+);
+```
+
+The solver measures each direct child's vertical bottom extent and takes the maximum. A contributing child must be visible, top-referenced, with an exact vertical position, and with either a fixed exact height or a resolvable vertical size-to-content measurement. Relative horizontal child width is permitted because the parent's **width is already fixed by its own authored constraints**. A nested ordinary Frame/Panel may recursively resolve its own vertical size from children, subject to the same rules and a depth limit. No cross-frame cache is introduced.
+
+**Explicitly refused:** bottom/center child alignment, parent-relative vertical position or height, unresolved content-size axes, horizontal content sizing, hidden children, empty content, and managed child layouts (Grid, Wrap, Scroll, etc.). A refused prototype leaves the authored height unchanged and emits both `unresolved-parent-content-dependency` with a specific reason/cause node and the existing `unresolved-size-to-content` issue. Applied parent extents appear in `appliedParentContent` with `bounded-child-extent-prototype` evidence.
+
+The arrangement pass now uses a **pass-local WeakMap** to reuse validated text measurements between parent height negotiation and the child's own placement. This saves redundant font/line-break computation without assuming document or resource cache invalidation. Width-dependent measurements are validated for finite positive height, line count, and exact requested width before affecting any geometry.
+
+**Evidence boundary:** this is a conservative diagnostic model of an acyclic dependency graph, not recovered native Workbench size-to-content behavior. It does not yet establish native inset inclusion, sibling visibility policies, child-bounding-box semantics, or the engine's iterative update scheduling. The previously recovered native TextWidget and SpacerWidget update paths demonstrate why separating measurement and arrangement is necessary, but do not prove the solver's extent formula. Workbench reference snapshots across Frame/Panel, Text, nested containers and size-to-content flags are required before enabling this in the actual Canvas.
+
+`tests/parent-content.test.mjs` covers nested width-dependent measurements, rejection of cyclic vertical dependencies, optional source requirements, unsupported widgets and managed containers, and reuse of text measurements. All existing engine and renderer regression suites remain active.
