@@ -22,7 +22,10 @@ export const EXPECTED_CONTENT_WIDGETS = [
 	"ImageFixed", "ImageContentBoth", "ImageContentWide",
 	"FrameContentHeight", "FrameChildTop", "FrameChildBottom",
 	"PanelContentBoth", "PanelChild",
-	"FrameContentHidden", "VisibleChild", "HiddenChild"
+	"FrameContentHidden", "VisibleChild", "HiddenChild",
+	"FrameFixedControl", "FixedFrameTop", "FixedFrameBottom",
+	"FrameContentUpper", "UpperFrameTop", "UpperFrameBottom",
+	"WrapContentUpper", "WrapItemOne", "WrapItemTwo"
 ].sort();
 
 function ReadNumbers(raw, count, context) {
@@ -38,7 +41,7 @@ function Rect(raw, context) {
 }
 
 function Case(phase) {
-	return { phase, complete: false, widgets: {}, requests: [] };
+	return { phase, complete: false, widgets: {}, lookups: {}, parentChildCounts: {}, requests: [] };
 }
 
 function RejectDuplicate(widget, key, phase, name) {
@@ -95,6 +98,29 @@ export function ParseNativeContentProbe(log, sourceName = "unrecorded-log") {
 			current = null;
 			continue;
 		}
+		let match = /^phase=(\S+) lookup=(\S+) found=([01])$/.exec(data);
+		if (match) {
+			const [, phase, name, present] = match;
+			if (!current || current.phase !== phase)
+				throw new Error("Native lookup outside active phase: " + phase + "/" + name);
+			if (current.lookups[name] !== undefined)
+				throw new Error("Duplicate native lookup: " + phase + "/" + name);
+			current.lookups[name] = present === "1";
+			continue;
+		}
+		match = /^phase=(\S+) parent=(\S+) childCount=(\d+)$/.exec(data);
+		if (match) {
+			const [, phase, name, count] = match;
+			if (!current || current.phase !== phase)
+				throw new Error("Native child count outside active phase: " + phase + "/" + name);
+			if (current.parentChildCounts[name] !== undefined)
+				throw new Error("Duplicate native child count: " + phase + "/" + name);
+			const value = Number(count);
+			if (!Number.isSafeInteger(value))
+				throw new Error("Invalid child count: " + phase + "/" + name);
+			current.parentChildCounts[name] = value;
+			continue;
+		}
 		const sample = /^phase=(\S+) name=(\S+) (.*)$/.exec(data);
 		if (!sample)
 			throw new Error("Unknown native ContentProbe record: " + data);
@@ -106,7 +132,7 @@ export function ParseNativeContentProbe(log, sourceName = "unrecorded-log") {
 			widget = {};
 			current.widgets[name] = widget;
 		}
-		let match = /^type=(\S+) screenRect=(\S+)$/.exec(payload);
+		match = /^type=(\S+) screenRect=(\S+)$/.exec(payload);
 		if (match) {
 			RejectDuplicate(widget, "screenRect", phase, name);
 			widget.type = match[1];
