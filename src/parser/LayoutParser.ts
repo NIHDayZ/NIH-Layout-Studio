@@ -68,7 +68,8 @@ export class LayoutParser {
 		return { roots, source };
 	}
 
-	AnalyzeFormatting(source: string): LayoutProblem[] {
+	/** Optionally reuse a previously parsed copy of the same source text. */
+	AnalyzeFormatting(source: string, parsedDocument?: LayoutDocument): LayoutProblem[] {
 		const problems: LayoutProblem[] = [];
 		const lines = source.replace(/\r\n/g, "\n").split("\n");
 		for (let i = 0; i < lines.length; ++i) {
@@ -82,7 +83,7 @@ export class LayoutParser {
 			}
 		}
 
-		const document = this.Parse(source);
+		const document = parsedDocument ?? this.Parse(source);
 		const walk = (nodes: LayoutNode[]) => {
 			for (const node of nodes) {
 				const seen = new Map<string, LayoutProperty>();
