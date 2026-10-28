@@ -16,6 +16,11 @@ export interface FixedWrapPlan {
 	usedHeight: number;
 }
 
+/** Candidate vertical size for fixed-child Wrap under an already resolved width. */
+export interface FixedWrapContentPlan extends FixedWrapPlan {
+	requiredHeight: number;
+}
+
 /** Do not interpret a malformed or unknown native enum as its default. */
 function ReadAlign(
 	properties: readonly { name: string; value: string }[],
@@ -57,22 +62,20 @@ export function DecodeNativeWrapSettings(
  *
  * Refuse overflow and unknown layout modes instead of inventing a result.
  */
-export function PlanFixedWrap(
+export function MeasureFixedWrapContent(
 	children: readonly Pick<GeometryRect, "width" | "height">[],
-	container: Pick<GeometryRect, "width" | "height">,
+	resolvedWidth: number,
 	settings: NativeWrapSettings
-): FixedWrapPlan | null {
+): FixedWrapContentPlan | null {
 	const { padding, margin, horizontalAlign, verticalAlign } = settings;
 	if (horizontalAlign === null || verticalAlign !== 0)
 		return null;
-	if (!Number.isFinite(container.width) || !Number.isFinite(container.height)
-		|| container.width <= 0 || container.height <= 0
+	if (!Number.isFinite(resolvedWidth) || resolvedWidth <= 0
 		|| !Number.isFinite(padding) || padding < 0 || !Number.isFinite(margin) || margin < 0
 		|| children.length === 0)
 		return null;
-	const availableWidth = container.width - 2 * padding;
-	const availableHeight = container.height - 2 * padding;
-	if (availableWidth <= 0 || availableHeight <= 0)
+	const availableWidth = resolvedWidth - 2 * padding;
+	if (availableWidth <= 0)
 		return null;
 
 	interface Line { indices: number[]; width: number; height: number }
@@ -98,7 +101,8 @@ export function PlanFixedWrap(
 
 	const usedHeight = lines.reduce((sum, line) => sum + line.height, 0)
 		+ margin * Math.max(0, lines.length - 1);
-	if (!Number.isFinite(usedHeight) || usedHeight > availableHeight)
+	const requiredHeight = usedHeight + 2 * padding;
+	if (!Number.isFinite(requiredHeight) || requiredHeight <= 0)
 		return null;
 
 	const result: GeometryRect[] = new Array(children.length);
@@ -114,5 +118,21 @@ export function PlanFixedWrap(
 		}
 		y += line.height + margin;
 	}
-	return { rects: result, lineCount: lines.length, usedHeight };
+	return { rects: result, lineCount: lines.length, usedHeight, requiredHeight };
+}
+
+/**
+ * Fixed-height Wrap uses exactly the same measured line packing, but may
+ * only apply it when the measured content fits inside the authored height.
+ */
+export function PlanFixedWrap(
+	children: readonly Pick<GeometryRect, "width" | "height">[],
+	container: Pick<GeometryRect, "width" | "height">,
+	settings: NativeWrapSettings
+): FixedWrapPlan | null {
+	const measured = MeasureFixedWrapContent(children, container.width, settings);
+	if (!measured || !Number.isFinite(container.height) || container.height <= 0
+		|| measured.requiredHeight > container.height)
+		return null;
+	return { rects: measured.rects, lineCount: measured.lineCount, usedHeight: measured.usedHeight };
 }
