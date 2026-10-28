@@ -64,7 +64,8 @@ export function MeasureLayoutTree(
 		const authored = DecodeAuthoredGeometry(node);
 		const strategy = ResolveChildLayoutStrategy(node.type);
 		const nativeGrid = strategy.kind === "grid" ? DecodeNativeGridSettings(node.properties) : null;
-		const intrinsic = options.intrinsics ? ResolveIntrinsicMeasurement(node, options.intrinsics) : null;
+		const intrinsic = options.intrinsics && (authored.sizeToContentWidth || authored.sizeToContentHeight)
+			? ResolveIntrinsicMeasurement(node, options.intrinsics) : null;
 		const unresolvedContentWidth = authored.sizeToContentWidth;
 		const unresolvedContentHeight = authored.sizeToContentHeight;
 		++nodeCount;
