@@ -17,6 +17,8 @@ export interface ArrangementOptions {
 	wrapContentHeight?: boolean;
 	/** Authored-only viewport diagnostics; does not simulate native scrolling. */
 	scrollViewportDiagnostics?: boolean;
+	/** Native-derived MAX extent candidate only, assumes zero offset and unadjusted viewport. */
+	scrollNativeExtentDiagnostics?: boolean;
 	/**
 	 * Prototype only: consume a supplied independent intrinsic dimension for
 	 * leaf ImageWidget/TextWidget size-to-content. No native parity asserted.
