@@ -134,3 +134,29 @@ native loader, retain the client error log and do not infer results
 for the unexecuted cases. The test mod has **not yet been DayZ
 compiled** after these changes; passing GitHub CI validates only
 TypeScript/Node tests and the production web bundle.
+
+## Actual native results — 2026-10-28
+
+**Completed in DayZ.** All twelve independent files returned a root
+and parent, and all 24 creation/update getter cases were captured.
+
+A Frame or Panel with either `"Size To Content V" 0` or an
+arbitrary `"NIH_ProbeUnknown" 0` **before** its child block
+constructed **0 of 2** children. With that same attribute
+**after** the child block, **2 of 2** children were present.
+A Frame with known `clipchildren 1` retained **2 of 2**
+children in either order. All results were already observable
+immediately after `CreateWidgets` and stayed unchanged after
+`Update`. Every parent remained 190×20.
+
+This supports a **generic native loader unknown-property / child-block
+parse-order mechanism** for these Frame/Panel fixtures—not an
+intrinsic sizing algorithm. The exact C++ skip/stop logic is not
+directly visible. Do not move unsupported properties after
+children as a production workaround without determining export
+syntax compatibility and side effects.
+
+See [native syntax findings](2026-10-28-property-syntax-native-results.md),
+[original filtered native log](capture.property-syntax.native.2026-10-28.log),
+and [structured capture](capture.property-syntax.native.2026-10-28.json).
+New regressions reconstruct all 24 observations independently.
