@@ -716,7 +716,10 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 					direction, gap, position: GetNodeProperty(child, "position") ?? null,
 					halign: GetNodeProperty(child, "halign") ?? null,
 					valign: GetNodeProperty(child, "valign") ?? null,
-					childParent, natural, applied: childRect
+					parentProperties: Object.fromEntries(node.properties.map((property) => [property.name, property.value])),
+					childIndex: index, siblingCount: node.children.length,
+					childParent, natural, applied: childRect,
+					overflowsParent: childRect.x < 0 || childRect.y < 0 || childRect.x + childRect.width > childParent.width || childRect.y + childRect.height > childParent.height
 				}));
 			}
 		}
