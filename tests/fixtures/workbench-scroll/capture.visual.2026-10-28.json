@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "visual-only",
+  "date": "2026-10-28",
+  "source": "user-provided Workbench screenshots in conversation (not committed)",
+  "fullEditorImage": "image(20261028-182208).png",
+  "propertyImages": [
+    "image(20261028-182313).png",
+    "image(20261028-182322).png",
+    "image(20261028-182335).png",
+    "image(20261028-182342).png"
+  ],
+  "workbenchVersionFromStatusBar": "1.30.164200.56",
+  "root": {
+    "width": 1120,
+    "height": 460,
+    "editorZoomPercent": 46,
+    "rootDpiScaling": false
+  },
+  "scrollLeftSelectedProperties": {
+    "x": 860,
+    "y": 78,
+    "width": 240,
+    "height": 180,
+    "scaled": true,
+    "clipChildren": true,
+    "ignoreInvisible": true,
+    "horizontalScrollbar": true,
+    "verticalScrollbar": true,
+    "verticalScrollbarLeft": true
+  },
+  "interactiveScrollTested": false,
+  "interactiveScrollLimitation": "Workbench editor does not provide usable interactive scrolling for this fixture",
+  "numericViewportObserved": false,
+  "cases": [
+    {
+      "id": "ScrollNone",
+      "originVisible": true,
+      "overhangPartiallyVisible": true,
+      "horizontalScrollbarVisible": false,
+      "verticalScrollbarVisible": false,
+      "verticalScrollbarSide": "none"
+    },
+    {
+      "id": "ScrollVertical",
+      "originVisible": true,
+      "overhangPartiallyVisible": true,
+      "horizontalScrollbarVisible": false,
+      "verticalScrollbarVisible": true,
+      "verticalScrollbarSide": "right"
+    },
+    {
+      "id": "ScrollBoth",
+      "originVisible": true,
+      "overhangPartiallyVisible": true,
+      "horizontalScrollbarVisible": true,
+      "verticalScrollbarVisible": true,
+      "verticalScrollbarSide": "right"
+    },
+    {
+      "id": "ScrollLeft",
+      "originVisible": true,
+      "overhangPartiallyVisible": true,
+      "horizontalScrollbarVisible": true,
+      "verticalScrollbarVisible": true,
+      "verticalScrollbarSide": "left"
+    }
+  ],
+  "caveat": "These are UI observations, not measured native child viewport rectangles, scroll offsets, or clip bounds. Visual scrollbar presence is not numerical parity."
+}
