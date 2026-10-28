@@ -93,8 +93,8 @@ test("overflow beyond native grid slots remains unsupported and is not discarded
  assert.equal(snap.byId.get("item4").localRect.width,12);
 });
 
-test("hidden child disables prototype until native visibility filtering is established",()=>{
- const grid=make("grid","GridSpacerWidgetClass",[...fixed(100,100)],[
+test("unknown Ignore invisible flag disables prototype instead of guessing eligibility",()=>{
+ const grid=make("grid","GridSpacerWidgetClass",[...fixed(100,100),["Ignore invisible","unknown"]],[
   make("visible","PanelWidgetClass",fixed(10,10)),
   make("hidden","ImageWidgetClass",[...fixed(15,15),["visible","0"]])
  ]);
