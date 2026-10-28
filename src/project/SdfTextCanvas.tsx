@@ -47,7 +47,7 @@ function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, char
  if (loggedPlacements.has(key))
   return;
  loggedPlacements.add(key);
- console.info("[NIH Layout Studio][FNT5 placement]", {
+ const details = {
   font: resource.fnt5Name ?? resource.metadata.fontFile,
   character, codePoint: glyph.codePoint, mode,
   nominalFontSize: resource.metadata.fontSize, requestedFontSize,
@@ -57,7 +57,8 @@ function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, char
   widgetRect: { x: 0, y: 0, width: widgetWidth, height: widgetHeight },
   outsideWidget: drawX < 0 || drawY < 0 || drawX + drawWidth > widgetWidth || drawY + drawHeight > widgetHeight,
   debugExpandedCanvas: clipPadding > 0
- });
+ };
+ console.info("[NIH Layout Studio][FNT5 placement] " + JSON.stringify(details));
 }
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
@@ -70,7 +71,7 @@ function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
    const source = document.createElement("canvas");
    source.width = image.naturalWidth;
    source.height = image.naturalHeight;
-   const ctx = source.getContext("2d");
+   const ctx = source.getContext("2d", { willReadFrequently: true });
    if (!ctx) { reject(new Error("SDF canvas context unavailable")); return; }
    ctx.drawImage(image, 0, 0);
    resolve({ source, glyphs: new Map() });
