@@ -96,10 +96,31 @@ Pure strategy functions should be testable in Node without DOM, React, EDDS, or 
 | M5 Visual/control parity | Style state, text/image/color, common controls | Stable per-class Workbench reference snapshots |
 | M6 Specialized widgets | Map/HTML/3D/video coverage with explicit support status | Dedicated native reference fixtures or honest placeholders |
 
-Only turn off the current experimental URL flags after the new engine passes representative tests. PR #45 remains unmerged while the architecture and native rules are investigated.
+Only turn off the current experimental URL flags after the new engine passes representative tests. PR #45 was merged as a validated checkpoint; the shared engine is now developed in draft PR #47.
 
 ## Reference datasets and reproducibility
 
 Use a **local** Workbench install for golden images and geometry notes. Keep proprietary PBO/EDDS/executable assets out of the repository. Commit manually generated fixtures with explicit original property values and expected coordinates where licensing permits, or store only numerical measurements and hashes. The `scripts/audit-workbench-widgets.mjs` tool can repeat the class inventory when DayZ Tools changes.
 
 Prioritize wide coverage from bundled vanilla examples and additional mod layouts, not the order in which a mismatch was first noticed.
+
+
+## M1 progress in draft PR #47 (authored geometry, not native arrangement)
+
+The first pure modules live in `src/renderer/engine/`:
+
+- `GeometryCore.ts`: rectangle translation, intersections, inherited clipping, and common result contracts.
+- `WidgetGeometry.ts`: one-pass case-insensitive property decoding, independent exact/relative axes, plain and `*_ref` anchor positions, and inverse encoding for the editor. These formulas intentionally reproduce `LayoutMath.ts` before attempting to replace it.
+- `GeometrySnapshot.ts`: depth-first, read-only authored-coordinate snapshots with parent-local and absolute rectangles, inherited visibility, effective ancestor clip and stable document order. Includes explicit diagnostics for duplicate widget IDs and layout-manager children whose native arrangement is not yet implemented.
+
+`npm run test:geometry-engine` compiles these modules, independently bundles the **existing** `LayoutMath.ts` as an oracle, then checks base primitives, 2,304 alignment/resolution combinations, 80 authoring round-trips, and nested hierarchy cases. This is a **compatibility regression against our existing renderer**, not proof of complete Workbench parity.
+
+The new authored-coordinate snapshot must never be used to replace live GridSpacer, WrapSpacer, ScrollWidget, ContentWidget or embedded-layout positions. Those classes are intentionally marked as requiring native measurement/arrangement strategies. Only when shared semantics have been independently validated against representative Workbench screens should snapshot geometry be integrated into `Canvas.tsx`.
+
+### M1 follow-up acceptance criteria
+
+1. Compare the new snapshot against existing `TraceWidgetGeometry` for plain nested Frame, Panel, Text, Image and Button cases.
+2. Compare anchor modes at several root resolutions and document exact authoring properties and numeric outcomes.
+3. Confirm baseline snapshot passes through visible/hidden and nested clipping hierarchies.
+4. Extend to native-verified aspect, scaling and safezone rules only when evidence exists.
+5. Avoid any production renderer switch or flag removal until these gates pass.
