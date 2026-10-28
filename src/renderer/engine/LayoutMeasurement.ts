@@ -7,6 +7,7 @@ import { DecodeNativeIgnoreInvisible } from "./ManagedVisibility.js";
 import { DecodeNativeScrollSettings, type NativeScrollSettings } from "./ScrollSettings.js";
 import { ResolveIntrinsicMeasurement, type IntrinsicMeasurementProviders, type ResolvedIntrinsicMeasurement } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextPreparer, PreparedTextFlow } from "./ConstrainedText.js";
+import { DecodeContentSizingRequests, type ContentSizingRequests } from "./ContentSizingRequests.js";
 
 /**
  * A prepared layout node with geometry properties decoded exactly once.
@@ -19,6 +20,8 @@ import type { ConstrainedTextPreparer, PreparedTextFlow } from "./ConstrainedTex
 export interface MeasuredLayoutNode {
 	readonly node: GeometryWidget;
 	readonly authored: AuthoredGeometry;
+	/** Passive authored sizing intent: size-to-text and size-to-content remain distinct. */
+	readonly contentSizing: ContentSizingRequests;
 	readonly strategy: ChildLayoutStrategy;
 	/** Grid-only native settings decoded once; absent for other widget classes. */
 	readonly nativeGrid: NativeGridSettings | null;
@@ -76,6 +79,7 @@ export function MeasureLayoutTree(
 				children.push(measured);
 		}
 		const authored = DecodeAuthoredGeometry(node);
+		const contentSizing = DecodeContentSizingRequests(node.properties);
 		const strategy = ResolveChildLayoutStrategy(node.type);
 		const nativeGrid = strategy.kind === "grid" ? DecodeNativeGridSettings(node.properties) : null;
 		const nativeWrap = strategy.kind === "wrap" ? DecodeNativeWrapSettings(node.properties) : null;
@@ -97,6 +101,7 @@ export function MeasureLayoutTree(
 		return {
 			node,
 			authored,
+			contentSizing,
 			strategy,
 			nativeGrid,
 			nativeWrap,
