@@ -1,6 +1,8 @@
 import type { GeometryRect } from "./GeometryCore.js";
 import { PlanConstrainedGrid } from "./ConstrainedGrid.js";
 import { MeasureFixedWrapContent, PlanFixedWrap, type FixedWrapContentPlan } from "./FixedWrap.js";
+import { MeasureAuthoredScrollViewport, type AuthoredScrollViewport } from "./ScrollViewport.js";
+import { ResolveAuthoredRect } from "./WidgetGeometry.js";
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
 
 /**
@@ -13,6 +15,8 @@ export interface ArrangementOptions {
 	fixedWrap?: boolean;
 	/** Prototype: resolve vertical Wrap size from fixed child lines at a known width. Requires fixedWrap. */
 	wrapContentHeight?: boolean;
+	/** Authored-only viewport diagnostics; does not simulate native scrolling. */
+	scrollViewportDiagnostics?: boolean;
 	/**
 	 * Prototype only: consume a supplied independent intrinsic dimension for
 	 * leaf ImageWidget/TextWidget size-to-content. No native parity asserted.
@@ -129,6 +133,30 @@ function ArrangeFixedWrap(
 			mode: "fixed-wrap-prototype"
 		}
 	};
+}
+
+/**
+ * Read-only ScrollWidget viewport diagnostic. Only exact, visible, direct
+ * child bounds are measured; we never infer native scrollbars/offsets.
+ * This does NOT fulfill the ScrollWidget arrangement strategy.
+ */
+export function ProbeScrollViewport(
+	parent: MeasuredLayoutNode,
+	rect: GeometryRect,
+	options: ArrangementOptions = {}
+): AuthoredScrollViewport | null {
+	if (!options.scrollViewportDiagnostics || parent.strategy.kind !== "scroll"
+		|| parent.unresolvedContentWidth || parent.unresolvedContentHeight
+		|| !parent.children.every((child) =>
+			child.authored.visible && !child.strategy.requiresArrangement
+			&& child.authored.exactPositionX && child.authored.exactPositionY
+			&& child.authored.exactSizeX && child.authored.exactSizeY
+			&& !child.authored.sizeToContentWidth && !child.authored.sizeToContentHeight
+		))
+		return null;
+	const rects = parent.children.map((child) =>
+		ResolveAuthoredRect(child.authored, { width: rect.width, height: rect.height }));
+	return MeasureAuthoredScrollViewport(rect, rects);
 }
 
 type StrategyPlanner = (node: MeasuredLayoutNode, rect: GeometryRect) => ChildArrangement | null;
