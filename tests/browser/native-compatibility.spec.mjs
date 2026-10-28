@@ -98,3 +98,20 @@ test("Ctrl+S works with SOURCE textarea focused and goes through the warning rev
 	const saved=await ConfirmDownload(page,"Continue Export");
 	expect(saved.bytes.toString("utf8")).toBe(source);
 });
+
+
+test("format normalization and native compatibility warnings remain independent in the PROBLEMS tab",async ({page})=>{
+	const original=await OpenFixture(page,"FrameContentBefore0");
+	await page.locator(".source-pane textarea").fill(original.replace("size 190 20","size 190 20 visible 1"));
+	await page.getByRole("button",{name:/^PROBLEMS/}).click();
+	await expect(page.locator(".problem-row.format")).toHaveCount(1);
+	await expect(page.locator(".native-compatibility-entry.warning")).toHaveCount(1);
+	await page.getByRole("button",{name:"Normalize All"}).click();
+	await expect(page.locator(".problem-row.format")).toHaveCount(0);
+	await expect(page.locator(".native-compatibility-entry.warning")).toHaveCount(1);
+	await page.getByRole("button",{name:"SOURCE",exact:true}).click();
+	const normalized=await page.locator(".source-pane textarea").inputValue();
+	expect(normalized).toContain('"Size To Content V" 0');
+	expect(normalized).toContain("size 190 20");
+	expect(normalized).toContain("visible 1");
+});
