@@ -1,8 +1,13 @@
 # Common native widget geometry comparison (M1/M2 cross-family gate)
 
-**Status:** The authored-geometry compatibility regression has passed in
-GitHub CI. Independent native observations for this new fixture have **not**
-been collected. Both entries in `capture.template.json` are PENDING.
+**Status (2026-10-28):** The authored-geometry compatibility regression passed
+and a separate DayZ client probe captured 32 actual descendant screen
+rectangles across both root sizes. **All 32 match** shared authored geometry
+with zero numeric delta. See
+[2026-10-28-runtime-capture.md](2026-10-28-runtime-capture.md)
+and [capture.runtime.2026-10-28.json](capture.runtime.2026-10-28.json).
+The native client build was not captured, so the stricter version-pinned
+comparator still reports **2 PENDING**, each with 16/16 numeric matches.
 
 ## Purpose
 
@@ -37,9 +42,11 @@ getters, at explicitly requested **1120×460** and **1440×900** root screen
 sizes. It does not collect clipping/scissor bounds, binary scale context,
 glyph/image intrinsic bounds or user interaction.
 
-Capture the client logs and the actual client build; the test harness has
-**not been compiled or executed in DayZ yet**. The existing completed
-ScrollWidget runtime capture is independent and remains valid.
+The probe has now **compiled and run successfully in DayZ**. The user supplied
+filtered native getter output from `script_2026-10-28_12-25-16.log`.
+The client build and complete unfiltered log were not included, so those
+fields are not invented. The earlier ScrollWidget runtime capture remains
+independent and valid.
 
 ## Numeric comparison contract
 
@@ -62,10 +69,11 @@ A root rectangle inferred from Studio's predicted output is not
 independent evidence. The captured root sizes alone do not prove which
 native DPI scale branch was used.
 
-The comparator reports `PENDING` for missing observations or the parent
-viewport, `FAIL` for mismatched/invalid rectangles, `PASS` for all
-matched rectangles with a complete evidence record, and `SYNTHETIC` for
-explicitly synthetic samples. Provenance is user-supplied and not
+The comparator reports `PENDING` for missing observations, the root
+viewport, **or an unknown client build** (even with 16/16 numeric matches),
+`FAIL` for mismatched/invalid rectangles, `PASS` for all matched
+rectangles with a complete versioned evidence record, and `SYNTHETIC`
+for explicitly synthetic or unit-test-double samples. Provenance is user-supplied and not
 cryptographically authenticated. The test suite's mock passes are **only
 comparator unit tests**, never native measurements.
 
@@ -75,8 +83,16 @@ After `npm run test:geometry-engine`:
 npm run compare:workbench-common -- tests/fixtures/workbench-common/capture.template.json --allow-pending
 ```
 
-The output should remain **2 PENDING**, with no native PASS claims.
-Leave all `observed` fields null until actual DayZ client results exist.
+The untouched template remains **2 PENDING**. The **separate** recorded
+runtime capture is compared as follows:
+
+```powershell
+npm run compare:workbench-common -- tests/fixtures/workbench-common/capture.runtime.2026-10-28.json --allow-pending
+```
+
+It reports `PENDING (16/16)` twice: real observed geometry was fully
+compared, but the native client build was not recorded. A real mismatch
+still produces a `FAIL` instead of being hidden by missing provenance.
 
 ## Next gate before production Canvas integration
 
