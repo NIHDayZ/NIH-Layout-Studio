@@ -15,7 +15,10 @@ import { MeasureLayoutTree } from "../.geometry-engine-test-build/LayoutMeasurem
 import { ArrangeMeasuredGeometry } from "../.geometry-engine-test-build/GeometrySnapshot.js";
 
 const RECT_FIELDS = ["x", "y", "width", "height"];
-const EVIDENCE_FIELDS = ["captureMethod", "nativeBuild", "evidenceFile", "viewportSource"];
+// Native build is required to certify a version-pinned PASS, but geometry
+// differences must still be checked when the runtime log lacks that metadata.
+const EVIDENCE_FIELDS = ["captureMethod", "evidenceFile", "viewportSource"];
+const SYNTHETIC_METHODS = new Set(["synthetic", "unit-test-double"]);
 
 function ValidRect(rect) {
 	return rect && typeof rect === "object" && !Array.isArray(rect)
@@ -76,10 +79,16 @@ export function CompareCommonGeometryCaptures(data, roots) {
 		if (!item.provenance || EVIDENCE_FIELDS.some(field =>
 			typeof item.provenance[field] !== "string" || !item.provenance[field].trim()))
 			throw new Error("Observed geometry lacks native capture provenance: " + item.id);
-		if (item.provenance.captureMethod === "synthetic") {
+		if (SYNTHETIC_METHODS.has(item.provenance.captureMethod)) {
 			reports.push({id:item.id, status:"synthetic", matched:0, total:named.size, errors:[]});
 			continue;
 		}
+		// Never infer the DayZ client build from the Addon Builder version or
+		// accept a placeholder as native build provenance. Missing versions
+		// downgrade matching geometry to PENDING, not PASS.
+		const nativeBuild = item.provenance.nativeBuild;
+		const buildKnown = typeof nativeBuild === "string" && nativeBuild.trim().length > 0
+			&& !/^(unknown|unrecorded|not[ _-]?captured|pending|mock|test[- _]?only)$/i.test(nativeBuild.trim());
 		if (!ValidRect(item.viewport)) {
 			reports.push({id:item.id, status:"pending", matched:0, total:named.size,
 				errors:["Native fixture root screen rectangle was not independently measured"]});
@@ -118,9 +127,13 @@ export function CompareCommonGeometryCaptures(data, roots) {
 			if (!named.has(name))
 				errors.push("Unrecognized native widget name: " + name);
 		}
-		const status = errors.length ? "fail" : missing ? "pending" : "pass";
+		// Preserve useful numeric evidence even if build provenance is missing.
+		// A real mismatch always FAILS, including on an unversioned capture.
+		const status = errors.length ? "fail" : missing || !buildKnown ? "pending" : "pass";
 		if (missing && !errors.length)
 			errors.push(missing + " widgets lack independently measured screen rectangles");
+		if (!buildKnown && !errors.length)
+			errors.push("Native DayZ client build identifier was not captured; numeric geometry matched but parity is not version-pinned");
 		reports.push({id:item.id, status, matched, total:named.size, errors});
 	}
 	return {
