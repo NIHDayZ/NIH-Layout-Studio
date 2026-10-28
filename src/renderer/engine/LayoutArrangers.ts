@@ -15,6 +15,8 @@ export interface ArrangementOptions {
 	providedIntrinsicContent?: boolean;
 	/** Preview only: use measured text height AFTER its authored width is resolved. */
 	constrainedTextPreview?: boolean;
+	/** Prototype only: derive ordinary Frame/Panel height from acyclic child extents. */
+	boundedParentContent?: boolean;
 }
 
 export interface AppliedLayoutStrategy {
