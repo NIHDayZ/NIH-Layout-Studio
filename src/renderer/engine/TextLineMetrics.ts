@@ -46,7 +46,7 @@ export function MeasureBitmapAdvance(
 		width += advance * scale;
 		previous = codePoint;
 	}
-	return Number.isFinite(width) && width >= 0 ? width : null;
+	return Number.isFinite(width) && (missing === "renderer-fallback" || width >= 0) ? width : null;
 }
 
 /** FNT3 single-line metrics, not native Workbench Size To Content rules. */
