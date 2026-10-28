@@ -399,3 +399,28 @@ Static native research established a common `Ignore invisible` property and defa
 - The shared geometry walker continues to retain **all** widgets in their original order. The strategy-specific plan is scattered back into original child-index positions; filtered-out children fall back to authored geometry without changing serialized layout.
 
 `tests/managed-visibility.test.mjs` exercises decoding, stable indices, sparse slot allocation, the three widget families and invalid-value isolation. Native eligibility helper semantics, parent-inherited visibility and pixel parity still need comparison against Workbench fixtures. The production Canvas is unchanged.
+
+
+## M3 explicit Scroll offset comparison (diagnostic-only)
+
+`ScrollOffset.ts` contains two independent native-derived **read-only** functions, neither of which infers state from authored `.layout` files:
+
+- `ProjectNativeScrollChildContext(viewport, {horizontal, vertical})` subtracts the explicitly provided native fields at widget offsets `+0x178/+0x17C` from the Scroll child-context origin. The viewport must be resolved separately. No child widget is relocated or clipped.
+- `MeasureNativeScrollNormalizedPosition(inputs)` uses the native content extent `+0x180/+0x184`, widget size `+0x90/+0x94`, enabled scrollbar flags and independently known scrollbar thickness to calculate H/V range and normalized position. It rejects negative/invalid ranges; it does **not** reproduce setter clamp behavior.
+
+To compare the first function in an engine snapshot, the caller must provide an explicit `scrollOffsetSamples` map **and** opt into `scrollScrollbarViewportDiagnostics` at the independently justified unscaled viewport:
+
+```ts
+const offsets = new Map([
+  ["scroll-widget-id", { horizontal: 17, vertical: 23 }]
+]);
+const result = ArrangeMeasuredGeometry(prepared, root, 1, {
+  scrollScrollbarViewportDiagnostics: true,
+  scrollOffsetSamples: offsets
+});
+const projected = result.scrollChildContextCandidates.get("scroll-widget-id");
+```
+
+The candidate records `native-derived-scroll-child-origin` evidence and `explicit-native-offsets-no-clipping` assumptions. Missing/invalid offset samples, unsupported DPI context, and unrelated widget classes produce no candidate; they do **not** fall back to guessed offsets. The map is allocated per snapshot, and no sample is stored in or written to the layout itself. Production Canvas geometry, clipping and normal scroll interaction are unchanged. `tests/scroll-offset.test.mjs` now runs under `npm run test:geometry-engine`, covering pure geometry and snapshot isolation.
+
+**Still required for actual native parity:** measured ScrollWidget content, viewport and offset values from the same Workbench runtime configuration; identification of inherited/native clipping rules; scrollbar visibility and layout flag interactions; and native runtime setter semantics. Until then these are comparison instruments, not an enabled native layout strategy.
