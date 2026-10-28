@@ -86,7 +86,7 @@ test("image and Frame/Panel outer rectangles stayed authored in this incomplete 
 			assert.deepEqual(widget.screenRect,widget.localRect,name+"/"+phase.phase);
 		}
 	}
-	assert.deepEqual(small.widgets.NIHContentParity.screenRect,
+	assert.deepEqual(small.NIHContentParity.screenRect,
 		{x:0,y:0,width:720,height:460});
 	assert.equal(small.widgets.NIHContentParity.localRect.width,0.375);
 	assert.equal(original.NIHContentParity.localRect.width,0.583333);
