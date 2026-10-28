@@ -82,3 +82,17 @@ The text-specific `0x140898520` routine **first calls the shared base `0x1408BCE
 **Conclusions supported by compiled code:** TextWidget has an additional measurement/geometry override; ImageWidget currently shares the base Widget routine in that slot. Therefore the common measurement pipeline should dispatch type-specific intrinsic providers for text versus images rather than equate their behavior. **Still unknown:** exact native text shaping, line wrapping, font fallback, glyph scale, ImageWidget's content-size semantics outside this slot, and the role of style-derived sizes.
 
 This is a method-attribution boundary only, **not** a complete C++ source recovery or proof that native ImageWidget uses logical imageset dimensions for its final rectangle. The new TypeScript resource provider remains explicitly opt-in, separate from the production renderer.
+
+
+## TextWidget size renegotiation: independent gates (third pass)
+
+The same pinned `WorkbenchApp.exe` (SHA-256 `8fa4c688f28cb1214bb339aa93b451c4208a692a69ece8001d0f0ad0dd9fba85`) provides an additional concrete distinction between text measurement and size-to-content feedback:
+
+- The primary `enf::TextWidget` vtable at `0x14205CC88` has virtual slot **31** at `0x140885530`. This is distinct from its virtual slot 13 measurement override at `0x140898520`.
+- `0x140885536` checks byte `[widget+0x151]` and `0x140885544` checks `[widget+0x152]` before triggering a text geometry helper (`0x1408931F0`) and a virtual call at vtable offset `+0x120`.
+- When byte `[widget+0x151]` is nonzero, the method compares and updates **width** at `[widget+0x90]` from the returned integer size at `0x14088557C–0x140885594`.
+- When byte `[widget+0x152]` is nonzero, it also checks **bit 23** in the widget flags at `[widget+0xA8]` before comparing and updating **height** at `[widget+0x94]` (see `0x1408855A5–0x1408855E1`). It returns a change indicator and does not blindly overwrite both axes.
+
+**Evidence boundary:** width and height have distinct native guards, and the text size can be revised after resource-dependent calculation. The byte-to-authored-property mapping, the meaning of flag bit 23, exact text shaping/line wrapping, and the recursive parent feedback schedule are **not** established by these instructions. Do not assert that native height is always the preview's `fontSize * 1.25` or that these native flags are equivalent to GridSpacer's content flags at other offsets.
+
+The new width-constrained text diagnostic prototype evaluates height **after width arrangement**, refuses horizontal content sizing feedback and managed-container slot overrides, and records its source as `sdf-preview-flow`. This separation follows the measured/arranged distinction supported by the native trace without treating the preview algorithm as recovered Workbench behavior.
