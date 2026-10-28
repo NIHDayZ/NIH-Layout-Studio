@@ -124,3 +124,15 @@ The new authored-coordinate snapshot must never be used to replace live GridSpac
 3. Confirm baseline snapshot passes through visible/hidden and nested clipping hierarchies.
 4. Extend to native-verified aspect, scaling and safezone rules only when evidence exists.
 5. Avoid any production renderer switch or flag removal until these gates pass.
+
+## M1 consolidation and conservative measurement boundary
+
+The live `LayoutMath.ResolveRect` and `RectToLayoutGeometry` functions now delegate to `DecodeAuthoredGeometry`, `ResolveAuthoredRect` and `EncodeAuthoredRect` in the shared engine. The existing public APIs and source round-tripping remain intact, while the duplicate forward/inverse alignment math has been removed from `LayoutMath.ts`. Text/style utilities remain there until their native rendering dependencies are independently audited.
+
+The geometry regression oracle was **frozen from the pre-delegation implementation** in `tests/reference/legacy-widget-geometry.mjs` so the 2,304 alignment comparisons and 80 editor round-trips are not tautologies. Production does not import the legacy reference. The new property decoder scans each widget's authored properties once per decode and preserves first-property-wins behavior; it intentionally does not cache by mutable object identity. Before introducing caching, measure real large-layout workloads and establish explicit source-change invalidation.
+
+`WidgetStrategies.ts` centralizes dispatch by **exact widget class identity**. Grid and Wrap are labeled as having native-disassembly evidence; Spacer/Scroll are based on public APIs; Content/embedded/SmartPanel classifications are layout observations. This registry identifies where specialized child arrangement is required, but does not supply an unverified substitute algorithm. It replaces the loose container substring heuristics in `GeometrySnapshot.ts`.
+
+`MeasureAuthoredSize` now contributes **preferred dimensions only for exact-size axes**, returning zero for parent-relative intrinsic size and conservative zero minimums. It explicitly does not compute native text glyph bounds, imageset intrinsic dimensions, or Grid/Wrap/Scroll/Content size-to-content. The read-only snapshot exposes `measuredById` alongside authored positions to support future measure/arrange passes. Never confuse that measurement hint with native content measurement or a completed final layout.
+
+**Next gate:** native evidence for shared content measurement, child constraint negotiation and size-to-content. Only then introduce a container-specific `measure`/`arrange` strategy implementation. Keep experimental grid behavior and current production canvas rendering unchanged until the new engine is validated against Workbench for multiple widget families.
