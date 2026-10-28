@@ -35,6 +35,11 @@ export interface ArrangementOptions {
 	constrainedTextPreview?: boolean;
 	/** Prototype only: derive ordinary Frame/Panel height from acyclic child extents. */
 	boundedParentContent?: boolean;
+	/**
+	 * Common authored visibility and ancestor-clip intersection diagnostics.
+	 * Read-only, class-agnostic, and NOT a native scissor/painting strategy.
+	 */
+	authoredVisibilityDiagnostics?: boolean;
 }
 
 export interface AppliedLayoutStrategy {
