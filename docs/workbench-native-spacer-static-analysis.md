@@ -101,3 +101,12 @@ At native property loader `0x1408DED50`, a missing **Columns** value leads to im
 Embedded class-property metadata near RVA `0x206ED40` distinguishes `Padding` (description **Outer margin**) from `Margin` (description **Padding between elements**). Thus the editor's new constrained-grid path maps `Padding` to the two edge insets and `Margin` to spacing between cells. The binary's exact propagation of DPI scaling and content-alignment flags still requires separate validation.
 
 Only the constrained grid arithmetic has been ported. Wrap and size-to-content behavior remains incomplete.
+
+
+## WrapSpacer arrangement trace (fourth pass)
+
+`WrapSpacerWidget` virtual slot 14 resolves to `0x1408E0E80`. The routine reads the available parent width, subtracts twice the outer `Padding`-like inset, and iterates children via their sibling links. At `0x1408E0FD0–0x1408E0FE9`, a nonempty line is checked against remaining available width plus the next child's width. When the line would overflow, it finalizes that line and starts another, advancing by the maximum line height and inter-element spacing. This is a **true flow/wrap algorithm**, not preservation of authored child X/Y positions.
+
+For the horizontal alignment mode byte `[wrap+0x168]`: mode `1` uses the far edge as reference (end/right); mode `2` distributes leftover space by half (center). The remaining default path uses the starting edge. For the vertical mode byte `[wrap+0x169]`, branches at `0x1408E10CE–0x1408E1136` adjust Y using the available height and the measured content height; modes `1` and `2` represent different end/center handling. The native wrap measurement method at `0x1408E0670` calculates required content extent before the arrangement pass.
+
+**Next implementation step:** a pure `WrapSpacer` measurement-and-flow planner with line formation, maximum line height, horizontal line alignment, container-level vertical alignment, visibility filtering and size-to-content handling; compare it against the shipped `spacertest.layout`. The exact order in which Workbench updates child intrinsic dimensions before measuring lines is still under analysis. Do not connect this prototype to default rendering until this is checked.
