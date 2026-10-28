@@ -136,3 +136,26 @@ The geometry regression oracle was **frozen from the pre-delegation implementati
 `MeasureAuthoredSize` now contributes **preferred dimensions only for exact-size axes**, returning zero for parent-relative intrinsic size and conservative zero minimums. It explicitly does not compute native text glyph bounds, imageset intrinsic dimensions, or Grid/Wrap/Scroll/Content size-to-content. The read-only snapshot exposes `measuredById` alongside authored positions to support future measure/arrange passes. Never confuse that measurement hint with native content measurement or a completed final layout.
 
 **Next gate:** native evidence for shared content measurement, child constraint negotiation and size-to-content. Only then introduce a container-specific `measure`/`arrange` strategy implementation. Keep experimental grid behavior and current production canvas rendering unchanged until the new engine is validated against Workbench for multiple widget families.
+
+
+## M2 start — two-pass measurement and constrained authored geometry
+
+The draft branch adds `src/renderer/engine/LayoutMeasurement.ts` and refactors `GeometrySnapshot.ts` to expose separate entry points:
+
+```ts
+const measured = MeasureLayoutTree(document.roots); // child-first
+const first = ArrangeMeasuredGeometry(measured, { x: 0, y: 0, width: 1920, height: 1080 });
+const second = ArrangeMeasuredGeometry(measured, { x: 0, y: 0, width: 1280, height: 720 });
+```
+
+This ensures each widget's authored geometry is decoded once when building the reusable measured tree, rather than re-reading each property during every placement pass. The prepared tree holds the existing `MeasuredWidget` authored-size hints, the exact per-widget strategy classification, and flags identifying content-sizing requests. Its descendants are measured before their parent; the result keeps original document order for deterministic placement.
+
+Arrangement consumes parent width/height constraints top-down, maintaining inherited visibility and clipping. It does not silently infer a text/image intrinsic size, modify a relative axis to feed parent content sizing, or manufacture native Grid/Wrap/Scroll coordinates. A new `unresolved-size-to-content` diagnostic explicitly names the requested axes. The original one-call `BuildAuthoredGeometrySnapshot` remains a compatibility convenience wrapper over the two passes.
+
+**Performance caveat:** this architectural separation is about eliminating duplicate geometry computations when a measured tree is reused, not a demonstrated FPS increase. The live React Canvas has **not** been switched over. No cross-frame caching or guessed invalidation has been introduced.
+
+**New validation:** `tests/layout-measurement.test.mjs` checks nested fixed and relative dimensions, top-down root constraints at multiple resolutions, measurement reuse, hidden descendants, managed-container diagnostics, content sizing uncertainty and nonwidget filtering. The existing canvas/editor geometry parity tests remain in place.
+
+The pinned Workbench disassembly supports a real distinction: shared spacer dimension negotiation at `0x1408E05D0` is called before the Grid and Wrap measurement routines process their specialized children. That does **not** yet establish how exact/relative content size should be determined for Text, Image, Scroll, or every other control. Widget-specific measurement handlers must be added only when their semantics have independent evidence.
+
+**Next validation gate:** trace authored flags to compiled measurement setters, and define a constrained strategy interface that accepts the shared measured tree and emits child rectangles with explicit evidence/confidence. Until that is verified, this remains a read-only authored-geometry pipeline.
