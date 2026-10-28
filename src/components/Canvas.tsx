@@ -1,5 +1,5 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
-import { PlanConstrainedGrid, PlanGrid } from "../renderer/GridLayout";
+import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../renderer/GridLayout";
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
@@ -717,8 +717,7 @@ function GetGridPlan(node: LayoutNode, childParent: Rect) {
 	if (experimentalNativeConstrainedGrid && !GetFlag(node, "Size To Content H") && !GetFlag(node, "Size To Content V")) {
 		// Verified GridSpacerWidget property-load routine at image VA
 		// 0x1408DED50 defaults both Rows and Columns independently to 3.
-		const columns = configuredColumns > 0 ? Math.floor(configuredColumns) : 3;
-		const rows = configuredRows > 0 ? Math.floor(configuredRows) : 3;
+		const { columns, rows } = ResolveNativeGridCounts(configuredColumns, configuredRows);
 		return PlanConstrainedGrid(children.length, columns, rows,
 			{ width: childParent.width, height: childParent.height }, GetSpacerGap(node), GetNumber(node, "Padding", 0));
 	}
