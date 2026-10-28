@@ -1,0 +1,1093 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-dayz-client-content-getters-incomplete",
+  "source": "user provided filtered PowerShell Select-String client script log",
+  "sourceLog": "script_2026-10-28_13-33-15.log",
+  "recordedAt": "2026-10-28",
+  "gameClientBuild": null,
+  "inspectionStatus": "partial-valid-native-observations-not-full-fixture",
+  "expectedWidgetCount": 18,
+  "observedWidgetCount": 13,
+  "missingWidgets": [
+    "FrameChildTop",
+    "FrameChildBottom",
+    "PanelChild",
+    "VisibleChild",
+    "HiddenChild"
+  ],
+  "notes": "Observed screenRect, localRect, GetTextSize, flags and visibility are transcribed from real DayZ client output. Five authored descendants of content-sized Frame/Panel parents were absent from recursive GetChildren/GetSibling traversal in all four phases. No claim that native tree lacks these widgets until FindAnyWidget direct lookup is captured. Do not infer content-sized container child rules, image intrinsic sizes, DPI, or clipping. Text pixel dimensions are stored as width/height only; x=y=0 placeholder is a representation detail.",
+  "phases": [
+    {
+      "phase": "baseline-1120x460",
+      "complete": true,
+      "observedWidgetCount": 13,
+      "rootScreenSize": [
+        1120,
+        460
+      ],
+      "widgets": {
+        "NIHContentParity": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1120,
+            "height": 460
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0.583333,
+            "height": 0.425926
+          },
+          "flags": 536870927,
+          "selfVisible": true
+        },
+        "TextFixed": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "localRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextH": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 75,
+            "width": 128,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 75,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextV": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 185,
+            "width": 128,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 185,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToContentBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextLongNarrow": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 235,
+            "height": 16
+          }
+        },
+        "ImageFixed": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentBoth": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentWide": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHeight": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "PanelContentBoth": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHidden": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        }
+      }
+    },
+    {
+      "phase": "short-text-1120x460",
+      "complete": true,
+      "observedWidgetCount": 13,
+      "rootScreenSize": [
+        1120,
+        460
+      ],
+      "widgets": {
+        "NIHContentParity": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1120,
+            "height": 460
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0.583333,
+            "height": 0.425926
+          },
+          "flags": 536870927,
+          "selfVisible": true
+        },
+        "TextFixed": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "localRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextToTextH": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 75,
+            "width": 9,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 75,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextToTextV": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextToTextBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 185,
+            "width": 9,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 185,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextToContentBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 9,
+            "height": 16
+          }
+        },
+        "TextLongNarrow": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 235,
+            "height": 16
+          }
+        },
+        "ImageFixed": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentBoth": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentWide": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHeight": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "PanelContentBoth": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHidden": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        }
+      }
+    },
+    {
+      "phase": "restored-1120x460",
+      "complete": true,
+      "observedWidgetCount": 13,
+      "rootScreenSize": [
+        1120,
+        460
+      ],
+      "widgets": {
+        "NIHContentParity": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 0,
+            "y": 0,
+            "width": 1120,
+            "height": 460
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0.583333,
+            "height": 0.425926
+          },
+          "flags": 536870927,
+          "selfVisible": true
+        },
+        "TextFixed": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "localRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextH": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 75,
+            "width": 128,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 75,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextV": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 185,
+            "width": 128,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 185,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToContentBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextLongNarrow": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 235,
+            "height": 16
+          }
+        },
+        "ImageFixed": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentBoth": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentWide": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHeight": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "PanelContentBoth": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHidden": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        }
+      }
+    },
+    {
+      "phase": "baseline-720x460",
+      "complete": true,
+      "observedWidgetCount": 13,
+      "rootScreenSize": [
+        720,
+        460
+      ],
+      "widgets": {
+        "NIHContentParity": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 0,
+            "y": 0,
+            "width": 720,
+            "height": 460
+          },
+          "localRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0.375,
+            "height": 0.425926
+          },
+          "flags": 536870927,
+          "selfVisible": true
+        },
+        "TextFixed": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "localRect": {
+            "x": 20,
+            "y": 20,
+            "width": 220,
+            "height": 40
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextH": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 75,
+            "width": 128,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 75,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextV": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 130,
+            "width": 180,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToTextBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 185,
+            "width": 128,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 185,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextToContentBoth": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "localRect": {
+            "x": 20,
+            "y": 240,
+            "width": 220,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 128,
+            "height": 16
+          }
+        },
+        "TextLongNarrow": {
+          "type": "TextWidget",
+          "screenRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 16
+          },
+          "localRect": {
+            "x": 20,
+            "y": 295,
+            "width": 140,
+            "height": 36
+          },
+          "flags": 545259583,
+          "selfVisible": true,
+          "textPixels": {
+            "x": 0,
+            "y": 0,
+            "width": 235,
+            "height": 16
+          }
+        },
+        "ImageFixed": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 20,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentBoth": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 95,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "ImageContentWide": {
+          "type": "ImageWidget",
+          "screenRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "localRect": {
+            "x": 330,
+            "y": 170,
+            "width": 90,
+            "height": 55
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHeight": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 20,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "PanelContentBoth": {
+          "type": "PanelWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 150,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        },
+        "FrameContentHidden": {
+          "type": "FrameWidget",
+          "screenRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "localRect": {
+            "x": 500,
+            "y": 265,
+            "width": 190,
+            "height": 20
+          },
+          "flags": 536870975,
+          "selfVisible": true
+        }
+      }
+    }
+  ]
+}
