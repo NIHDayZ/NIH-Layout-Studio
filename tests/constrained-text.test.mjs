@@ -53,7 +53,9 @@ test("vertical alignment is re-resolved when constrained height changes",()=>{
 });
 
 test("missing glyphs and invalid width refuse results without fallback approximations",()=>{
- const missing=makeText([["text","ab"]]);
+ const missing=Node("label","TextWidgetClass",[
+  ["text","ab"],["size","0.5 40"],["vexactsize","1"],["Size To Content V","1"]
+ ]);
  const tree=MeasureLayoutTree([missing],{
   constrainedText:CreateSdfPreviewTextPreparer(()=>previewSource)
  });
