@@ -72,6 +72,24 @@ native-equivalent from these captures.
 3. **Browser/environment coverage:** Chromium tests pass their supported fixtures, but Windows/local resource paths, real Workbench zoom, rendering quality, scroll interactions and large project assets still need targeted manual visual acceptance.
 4. **Review surface:** Do not merge directly without inspecting the eight modified production files, the opt-in boundaries, the source-order fallback and the scope of test-only assets. The hundreds of branch commits favor a reviewed **squash merge** after approval, not a blind merge.
 
+## Windows acceptance bundle prepared
+
+The manual acceptance gate has a non-destructive local helper:
+[`scripts/Prepare-Pr47Acceptance.ps1`](../scripts/Prepare-Pr47Acceptance.ps1)
+and [the scoped acceptance procedure](pr47-windows-acceptance.md).
+It generates a versioned report under Windows TEMP, hashes six
+unchanged test layouts, records actual environment/build details
+and—only when explicitly requested—runs the existing npm checks.
+
+It **does not** run DayZ/Workbench, collect screenshots, alter
+source layouts, install dependencies or mark any local case
+PASS by itself. Manual review of same-root-viewport geometry,
+the already evidenced static Scroll case, real font/imageset
+rendering and source edit/export/reload remains **PENDING**.
+The previous Workbench scrolling interaction must not be
+repeated as a required gate because that editor did not expose
+reliable scrolling during its original test.
+
 ## Recommendation
 
 Retain PR #47 as **draft** until final main CI, Dependency Review
