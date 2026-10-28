@@ -17,6 +17,8 @@ function MakeSample({missingPhase=false,missingText=false,duplicate=false,hasErr
 				type="TextWidget";
 			else if (name.startsWith("Image"))
 				type="ImageWidget";
+			else if (name.startsWith("Wrap"))
+				type="WrapSpacerWidget";
 			let rect="0,0,100,40";
 			if (name==="NIHContentParity")
 				rect="0,0,1120,460";
@@ -45,8 +47,8 @@ test("native content parser preserves independent widget and text pixel getters 
 	assert.equal(parsed.status,"captured-unversioned-not-native-parity");
 	assert.deepEqual(parsed.cases.map(item=>item.phase),EXPECTED_CONTENT_PHASES);
 	assert.equal(parsed.cases.length,4);
-	assert.equal(EXPECTED_CONTENT_WIDGETS.length,18);
-	assert.equal(Object.keys(parsed.cases[0].widgets).length,18);
+	assert.equal(EXPECTED_CONTENT_WIDGETS.length,27);
+	assert.equal(Object.keys(parsed.cases[0].widgets).length,27);
 	assert.equal(parsed.cases[0].widgets.TextFixed.textPixels.width,112);
 	assert.equal(parsed.cases[0].widgets.TextFixed.textPixels.height,16);
 	assert.deepEqual(parsed.cases[0].widgets.TextFixed.screenRect,{x:20,y:20,width:220,height:40});
@@ -86,4 +88,19 @@ test("out-of-order, unclosed and mixed-phase records are not silently accepted",
 	assert.throws(()=>ParseNativeContentProbe(good.replace(
 		"END baseline-720x460",""
 	)),/Unclosed native content capture/);
+});
+
+test("native lookup and child-count diagnostic records survive a complete source capture",()=>{
+	const log=MakeSample().replace("13:04:01 SCRIPT : "+prefix+" END baseline-1120x460",
+		"13:04:01 SCRIPT : "+prefix+" phase=baseline-1120x460 lookup=FrameChildTop found=0\n"+
+		"13:04:01 SCRIPT : "+prefix+" phase=baseline-1120x460 parent=FrameContentHeight childCount=0\n"+
+		"13:04:01 SCRIPT : "+prefix+" END baseline-1120x460");
+	const parsed=ParseNativeContentProbe(log);
+	assert.equal(parsed.cases[0].lookups.FrameChildTop,false);
+	assert.equal(parsed.cases[0].parentChildCounts.FrameContentHeight,0);
+	assert.deepEqual(parsed.cases[1].lookups,{});
+	assert.throws(()=>ParseNativeContentProbe(log.replace(
+		"parent=FrameContentHeight childCount=0",
+		"parent=FrameContentHeight childCount=-1"
+	)),/Unknown native ContentProbe record/);
 });
