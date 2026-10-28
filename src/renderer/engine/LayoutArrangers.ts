@@ -1,6 +1,6 @@
 import type { GeometryRect } from "./GeometryCore.js";
 import { PlanConstrainedGrid } from "./ConstrainedGrid.js";
-import { PlanFixedWrap } from "./FixedWrap.js";
+import { MeasureFixedWrapContent, PlanFixedWrap, type FixedWrapContentPlan } from "./FixedWrap.js";
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
 
 /**
@@ -11,6 +11,8 @@ export interface ArrangementOptions {
 	constrainedGrid?: boolean;
 	/** Native-derived fixed-child WrapSpacer only; no content-sized axes. */
 	fixedWrap?: boolean;
+	/** Prototype: resolve vertical Wrap size from fixed child lines at a known width. Requires fixedWrap. */
+	wrapContentHeight?: boolean;
 	/**
 	 * Prototype only: consume a supplied independent intrinsic dimension for
 	 * leaf ImageWidget/TextWidget size-to-content. No native parity asserted.
@@ -72,24 +74,50 @@ function ArrangeConstrainedGrid(
  * Refuse any child with a size-to-content request or a relative axis: that
  * would require intrinsic negotiation not yet recovered from Workbench.
  */
+function ReadFixedWrapChildren(
+	parent: MeasuredLayoutNode
+): readonly Pick<GeometryRect, "width" | "height">[] | null {
+	if (!parent.nativeWrap || parent.unresolvedContentWidth
+		|| !parent.children.every((child) =>
+			child.authored.visible && child.authored.exactSizeX && child.authored.exactSizeY
+			&& !child.authored.sizeToContentWidth && !child.authored.sizeToContentHeight
+			&& Number.isFinite(child.authored.sizeX) && child.authored.sizeX > 0
+			&& Number.isFinite(child.authored.sizeY) && child.authored.sizeY > 0
+		))
+		return null;
+	return parent.children.map((child) => ({
+		width: child.authored.sizeX,
+		height: child.authored.sizeY
+	}));
+}
+
+/**
+ * Pure width-dependent height candidate. This does not mutate the parent.
+ * The content-sized parent must have an independently resolved horizontal
+ * dimension and the same fixed-child constraints as the Wrap arranger.
+ */
+export function ProbeWrapContentHeight(
+	parent: MeasuredLayoutNode,
+	resolvedWidth: number,
+	options: ArrangementOptions = {}
+): FixedWrapContentPlan | null {
+	if (!options.fixedWrap || !options.wrapContentHeight
+		|| parent.strategy.kind !== "wrap"
+		|| parent.unresolvedContentWidth || !parent.unresolvedContentHeight)
+		return null;
+	const sizes = ReadFixedWrapChildren(parent);
+	return sizes && parent.nativeWrap
+		? MeasureFixedWrapContent(sizes, resolvedWidth, parent.nativeWrap) : null;
+}
+
 function ArrangeFixedWrap(
 	parent: MeasuredLayoutNode,
 	rect: GeometryRect
 ): ChildArrangement | null {
-	const wrap = parent.nativeWrap;
-	if (!wrap || parent.unresolvedContentWidth || parent.unresolvedContentHeight)
+	const sizes = ReadFixedWrapChildren(parent);
+	if (!sizes || !parent.nativeWrap || parent.unresolvedContentHeight)
 		return null;
-	if (!parent.children.every((child) =>
-		child.authored.visible && child.authored.exactSizeX && child.authored.exactSizeY
-		&& !child.authored.sizeToContentWidth && !child.authored.sizeToContentHeight
-		&& Number.isFinite(child.authored.sizeX) && child.authored.sizeX > 0
-		&& Number.isFinite(child.authored.sizeY) && child.authored.sizeY > 0
-	))
-		return null;
-	const plan = PlanFixedWrap(parent.children.map((child) => ({
-		width: child.authored.sizeX,
-		height: child.authored.sizeY
-	})), rect, wrap);
+	const plan = PlanFixedWrap(sizes, rect, parent.nativeWrap);
 	if (!plan)
 		return null;
 	return {
@@ -119,7 +147,8 @@ const IMPLEMENTED_STRATEGIES: Partial<Record<MeasuredLayoutNode["strategy"]["kin
 export function PlanManagedChildren(
 	parent: MeasuredLayoutNode,
 	containerRect: GeometryRect,
-	options: ArrangementOptions = {}
+	options: ArrangementOptions = {},
+	measuredWrapContent: FixedWrapContentPlan | null = null
 ): ChildArrangement | null {
 	if (!parent.strategy.requiresArrangement || parent.children.length === 0)
 		return null;
@@ -127,6 +156,18 @@ export function PlanManagedChildren(
 		return null;
 	if (parent.strategy.kind === "wrap" && !options.fixedWrap)
 		return null;
+	if (parent.strategy.kind === "wrap" && parent.unresolvedContentHeight) {
+		if (!options.wrapContentHeight || !measuredWrapContent
+			|| Math.abs(measuredWrapContent.requiredHeight - containerRect.height) > 0.000001)
+			return null;
+		return {
+			rects: measuredWrapContent.rects,
+			applied: {
+				id: parent.node.id, kind: "wrap", evidence: "native-disassembly",
+				mode: "fixed-wrap-prototype"
+			}
+		};
+	}
 	const handler = IMPLEMENTED_STRATEGIES[parent.strategy.kind];
 	return handler?.(parent, containerRect) ?? null;
 }
