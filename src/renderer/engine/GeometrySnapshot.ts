@@ -1,5 +1,5 @@
-import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect } from "./GeometryCore.js";
-import { DecodeAuthoredGeometry, ResolveAuthoredRect, type GeometryWidget } from "./WidgetGeometry.js";
+import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type MeasuredWidget } from "./GeometryCore.js";
+import { DecodeAuthoredGeometry, MeasureAuthoredSize, ResolveAuthoredRect, type GeometryWidget } from "./WidgetGeometry.js";
 import { ResolveChildLayoutStrategy } from "./WidgetStrategies.js";
 
 export type GeometryIssueCode = "unresolved-layout-strategy" | "duplicate-widget-id";
@@ -18,6 +18,8 @@ export interface AuthoredGeometrySnapshot {
 	 */
 	entries: readonly ArrangedWidget[];
 	byId: ReadonlyMap<string, ArrangedWidget>;
+	/** Conservative authored-size hints; content and managed containers still need measurement. */
+	measuredById: ReadonlyMap<string, MeasuredWidget>;
 	issues: readonly GeometryIssue[];
 	rootRect: GeometryRect;
 }
@@ -36,6 +38,7 @@ export function BuildAuthoredGeometrySnapshot(
 ): AuthoredGeometrySnapshot {
 	const entries: ArrangedWidget[] = [];
 	const byId = new Map<string, ArrangedWidget>();
+	const measuredById = new Map<string, MeasuredWidget>();
 	const issues: GeometryIssue[] = [];
 
 	function Visit(
@@ -71,6 +74,7 @@ export function BuildAuthoredGeometrySnapshot(
 				});
 			} else {
 				byId.set(node.id, arranged);
+				measuredById.set(node.id, MeasureAuthoredSize(authored));
 			}
 
 			const strategy = ResolveChildLayoutStrategy(node.type);
@@ -94,6 +98,7 @@ export function BuildAuthoredGeometrySnapshot(
 	return {
 		entries,
 		byId,
+		measuredById,
 		issues,
 		rootRect: { ...rootRect }
 	};
