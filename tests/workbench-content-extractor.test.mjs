@@ -104,3 +104,39 @@ test("native lookup and child-count diagnostic records survive a complete source
 		"parent=FrameContentHeight childCount=-1"
 	)),/Unknown native ContentProbe record/);
 });
+
+test("explicit partial mode preserves real missing widget names without weakening the strict default",()=>{
+	const missing=MakeSample().split("\n")
+		.filter(line=>!line.includes("name=FrameChildTop ") && !line.includes("name=FrameChildBottom "))
+		.join("\n");
+	assert.throws(()=>ParseNativeContentProbe(missing),/Missing or extra fixture widget records/);
+	const capture=ParseNativeContentProbe(missing,"script-test.log",{allowPartial:true});
+	assert.equal(capture.status,"incomplete-native-capture");
+	assert.equal(capture.nativeClientBuild,null);
+	assert.equal(capture.expectedWidgetCount,27);
+	assert.equal(capture.observedWidgetCount,25);
+	assert.deepEqual(capture.missingWidgetNames,["FrameChildBottom","FrameChildTop"]);
+	assert.equal(capture.cases.length,4);
+	for(const item of capture.cases) {
+		assert.equal(item.complete,true);
+		assert.equal(item.observedWidgetCount,25);
+		assert.deepEqual(item.missingWidgetNames,["FrameChildBottom","FrameChildTop"]);
+		assert.equal(item.widgets.TextFixed.textPixels.width,112);
+	}
+});
+
+test("partial capture cannot hide inconsistent per-phase rosters, unknown widget names or incomplete getter records",()=>{
+	const full=MakeSample();
+	const oneMissing=full.split("\n").filter(line=>
+		!(line.includes("phase=short-text-1120x460 name=FrameChildTop "))
+	).join("\n");
+	assert.throws(()=>ParseNativeContentProbe(oneMissing,"bad",{allowPartial:true}),
+		/Inconsistent native widget roster/);
+	const unknown=full.replace("name=FrameChildTop ","name=UnknownChild ");
+	assert.throws(()=>ParseNativeContentProbe(unknown,"bad",{allowPartial:true}),
+		/Unknown fixture widget records|Inconsistent native widget roster/);
+	const noPixels=full.replace("phase=baseline-1120x460 name=TextFixed textPixels=112,16",
+		"phase=baseline-1120x460 name=TextFixed textPixels=NaN,16");
+	assert.throws(()=>ParseNativeContentProbe(noPixels,"bad",{allowPartial:true}),
+		/Malformed native getter/);
+});
