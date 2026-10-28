@@ -27,8 +27,11 @@ using DayZ Tools Addon Builder, then load the matching client/server test
 mod in a local session. Do not replace or modify the established Scroll
 test PBO and do not install this on a production server.
 
-The source is not included in Node/TypeScript CI; **a successful web CI
-does not prove that the EnScript source compiles or runs**.
+The source is not included in Node/TypeScript CI, but this exact harness
+**has now compiled and run successfully in DayZ** on October 28, 2026.
+See [native findings](../2026-10-28-runtime-capture.md). Future EnScript
+changes still require an independent client test; web CI alone cannot
+validate the DayZ script.
 
 ## Behavior
 
@@ -71,9 +74,10 @@ No screenshot pixel/clip parity is inferred from the logs.
 
 ## Evidence mapping and limitations
 
-`capture.template.json` has two intentionally null observations. Once
-native data is collected, create a separate dated capture JSON and preserve
-the template. The comparator requires the independently observed **test root widget**
+`capture.template.json` preserves the original empty comparison slots.
+An independently populated [dated runtime capture](../capture.runtime.2026-10-28.json)
+now contains all descendant observations, with `nativeBuild:null` because
+the client build identifier was absent from the submitted log. The comparator requires the independently observed **test root widget**
 screen rectangle as `viewport`, plus screen rectangles for all **16
 descendants**. The probe logs the root's rectangle directly through native
 `GetScreenPos/GetScreenSize`; the root is deliberately not counted as an
@@ -90,7 +94,11 @@ npm run test:geometry-engine
 npm run compare:workbench-common -- tests/fixtures/workbench-common/capture.template.json --allow-pending
 ```
 
-Two `PENDING` results are expected until native data exists.
+Two `PENDING` results remain expected for the original template. The
+dated runtime capture also returns `2 PENDING`, despite **16/16 numeric
+matches in each case**, solely because its client build is unrecorded.
+This gate prevents unversioned measurements from being silently promoted
+to native parity PASS.
 The comparison checks common geometry only; it does not establish native
 text measurement, imaging, clipping/scissor, rotation, safe-zone, scaling
 branch, UI styling or interaction.
