@@ -159,3 +159,14 @@ See [native property matrix results](2026-10-28-property-matrix-native-results.m
 and [structured capture](capture.property-matrix.native.2026-10-28.json).
 The new regression re-parses the native log, compares all 42 case
 records, and preserves the missing children without inventing geometry.
+
+## v4 native syntax isolation — test source prepared
+
+An independent [12-resource parser experiment](PROPERTY-SYNTAX.md)
+now probes unknown attribute names and attribute order **around**
+the child block on Frame and Panel. It deliberately uses separate
+`CreateWidgets` calls to avoid contaminating the previous native
+14-case property matrix. No new native evidence has been collected
+for these cases; the earlier v1/v2/property-matrix captures are
+preserved unchanged. Web CI validates only syntax input integrity
+and the log extractor, not DayZ's C++ loader.
