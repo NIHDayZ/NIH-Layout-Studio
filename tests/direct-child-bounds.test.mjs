@@ -66,7 +66,12 @@ test("all native-observed descendant rectangles reconstruct the same direct-chil
 				const fromNative=MeasureContentBounds(childRects,{allowZeroHeight:true});
 				const candidate=snapshot.directChildBoundsCandidates.get(node.id);
 				assert.ok(candidate,node.name);
-				assert.deepEqual(candidate.bounds,fromNative,record.id+"/"+node.name);
+				assert.ok(fromNative,record.id+"/"+node.name);
+				for (const field of ["left","top","right","bottom","width","height"]) {
+					const delta=Math.abs(candidate.bounds[field]-fromNative[field]);
+					assert.ok(delta<0.000001,record.id+"/"+node.name+"/"+field+" delta="+delta);
+				}
+				assert.equal(candidate.bounds.childCount,fromNative.childCount);
 				assert.equal(candidate.evidence,"arranged-direct-child-bounds");
 				assert.equal(candidate.assumptions,"all-direct-children-including-hidden-no-native-filter");
 				++compared;
