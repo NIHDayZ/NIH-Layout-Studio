@@ -1,21 +1,10 @@
 import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type LayoutConstraints, type MeasuredWidget } from "./GeometryCore.js";
 import { ResolveAuthoredRect, type GeometryWidget } from "./WidgetGeometry.js";
 import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
-import { PlanConstrainedGrid } from "./ConstrainedGrid.js";
+import { PlanManagedChildren, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
+export type { ArrangementOptions, AppliedLayoutStrategy } from "./LayoutArrangers.js";
 
 export type GeometryIssueCode = "unresolved-layout-strategy" | "unresolved-size-to-content" | "duplicate-widget-id";
-
-/** Explicitly opt in to native-derived, constrained GridSpacer prototypes. */
-export interface ArrangementOptions {
-	constrainedGrid?: boolean;
-}
-
-export interface AppliedLayoutStrategy {
-	id: string;
-	kind: "grid";
-	evidence: "native-disassembly";
-	mode: "constrained-grid-prototype";
-}
 
 export interface GeometryIssue {
 	code: GeometryIssueCode;
@@ -110,29 +99,10 @@ export function ArrangeMeasuredGeometry(
 					detail: `Native ${axes} size-to-content has not been measured; this rectangle uses authored size only.`
 				});
 			}
-			let childSlots: readonly GeometryRect[] | null = null;
-			if (options.constrainedGrid && strategy.kind === "grid" && prepared.nativeGrid && prepared.children.length > 0) {
-				const grid = prepared.nativeGrid;
-				// The native routine covers fixed-cell allocation. Overflow, visibility
-				// filtering and content-sized parent axes remain unverified and must
-				// fall back to authored rectangles instead of inventing behavior.
-				const supported = !prepared.unresolvedContentWidth && !prepared.unresolvedContentHeight
-					&& prepared.children.length <= grid.columns * grid.rows
-					&& prepared.children.every((child) => child.authored.visible)
-					&& Number.isFinite(absoluteRect.width) && absoluteRect.width >= 0
-					&& Number.isFinite(absoluteRect.height) && absoluteRect.height >= 0;
-				if (supported) {
-					childSlots = PlanConstrainedGrid(
-						prepared.children.length, grid.columns, grid.rows,
-						{ width: absoluteRect.width, height: absoluteRect.height },
-						grid.margin, grid.padding
-					).rects;
-					appliedStrategies.push({
-						id: node.id, kind: "grid", evidence: "native-disassembly",
-						mode: "constrained-grid-prototype"
-					});
-				}
-			}
+			const layoutPlan = PlanManagedChildren(prepared, absoluteRect, options);
+			const childSlots = layoutPlan?.rects ?? null;
+			if (layoutPlan)
+				appliedStrategies.push(layoutPlan.applied);
 			if (prepared.children.length > 0 && strategy.requiresArrangement && !childSlots) {
 				issues.push({
 					code: "unresolved-layout-strategy",
