@@ -295,3 +295,29 @@ The arrangement pass now uses a **pass-local WeakMap** to reuse validated text m
 **Evidence boundary:** this is a conservative diagnostic model of an acyclic dependency graph, not recovered native Workbench size-to-content behavior. It does not yet establish native inset inclusion, sibling visibility policies, child-bounding-box semantics, or the engine's iterative update scheduling. The previously recovered native TextWidget and SpacerWidget update paths demonstrate why separating measurement and arrangement is necessary, but do not prove the solver's extent formula. Workbench reference snapshots across Frame/Panel, Text, nested containers and size-to-content flags are required before enabling this in the actual Canvas.
 
 `tests/parent-content.test.mjs` covers nested width-dependent measurements, rejection of cyclic vertical dependencies, optional source requirements, unsupported widgets and managed containers, and reuse of text measurements. All existing engine and renderer regression suites remain active.
+
+
+## M3 managed container boundaries: opaque extents and native-derived fixed Wrap
+
+Two distinct behaviors are now separated, rather than forcing a whole native Grid/Wrap/Scroll implementation into the parent size-to-content solver:
+
+1. **Parent sizing of an opaque managed child:** a GridSpacer, WrapSpacer, ScrollWidget or other managed child with an exact authored outer height and no content-sizing flags can contribute **only that outer rectangle** to an ordinary Frame/Panel parent's bounded vertical extent. This uses shared authored geometry and does **not** use the managed child's still-unresolved internal child positions. A managed child requesting content height/width, a relative vertical size, hidden state, or unresolved parent-dependent position remains an explicit failure. Its own `unresolved-layout-strategy` diagnostic remains.
+2. **Native-derived fixed Wrap layout prototype:** `FixedWrap.ts` implements only the pinned Workbench `WrapSpacerWidget` arrangement trace (`0x1408E0E80`): children advance across a line; the next child starts a new line if it exceeds the inner available width; each line advances Y by its maximum child height and the inter-element gap; horizontal mode 0 aligns start, mode 1 end, mode 2 center. The shared `SpacerSettings.ts` decoder owns the confirmed `Padding=2` outer inset and `Margin=2` inter-child gap defaults for Grid and Wrap, eliminating duplicate property parsing. `ConstrainedGrid.ts` reuses the same settings decoder.
+
+Explicit diagnostic opt-in:
+
+```ts
+const measured = MeasureLayoutTree(roots);
+const snapshot = ArrangeMeasuredGeometry(
+  measured,
+  { x: 0, y: 0, width: 1920, height: 1080 },
+  1,
+  { boundedParentContent: true, fixedWrap: true }
+);
+```
+
+The fixed Wrap strategy is dispatched in `LayoutArrangers.ts` and does not add per-type branches to the shared snapshot walker. It **requires** a fixed-rectangle Wrap parent, all immediate children visible with positive exact authored widths and heights, and an overflow-free result. Non-start `content_valign`, unknown alignment modes, content-sized Wrap axes, content-sized children, relative child dimensions, oversized children, and content exceeding the available parent height are refused with the existing `unresolved-layout-strategy` diagnostic. It does **not** claim native child vertical alignment, visibility filtering, style/opacity, DPI scaling, overflow clipping or parent-size feedback; those remain open native-parity research tasks.
+
+`tests/fixed-wrap.test.mjs` covers shared spacing defaults, exact class boundaries, line packing and max line heights, per-line horizontal alignment, inherited rectangle coordinates, parent extent negotiation, unknown native modes, invalid child metrics, and cross-widget isolation. `tests/parent-content.test.mjs` separately checks opaque fixed-height Grid/Wrap/Scroll contribution versus unresolved managed content sizing.
+
+**Important distinction:** the new Wrap line flow matches the high-level behavior recovered from compiled instructions, but **pixel-perfect Workbench equivalence has not been established**. The runtime canvas and saved layout source remain unchanged; only diagnostic, explicitly selected prototype strategies are affected. The next research boundary is native visibility filtering, dynamic text/image measurement inside managed containers, full vertical alignment, and ScrollWidget content/viewport calculations.
