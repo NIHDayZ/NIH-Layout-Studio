@@ -1,0 +1,50 @@
+15:14:09.814 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] BEGIN
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameBase rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameBase screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameBase rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameBase screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameContentBefore0 rootPresent=1 parentPresent=1 childCount=0 topFound=0 bottomFound=0
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameContentBefore0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameContentBefore0 rootPresent=1 parentPresent=1 childCount=0 topFound=0 bottomFound=0
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameContentBefore0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameContentAfter0 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameContentAfter0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameContentAfter0 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameContentAfter0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameUnknownBefore0 rootPresent=1 parentPresent=1 childCount=0 topFound=0 bottomFound=0
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameUnknownBefore0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameUnknownBefore0 rootPresent=1 parentPresent=1 childCount=0 topFound=0 bottomFound=0
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameUnknownBefore0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameUnknownAfter0 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameUnknownAfter0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameUnknownAfter0 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameUnknownAfter0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameClipBefore1 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameClipBefore1 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameClipBefore1 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameClipBefore1 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameClipAfter1 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=FrameClipAfter1 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameClipAfter1 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=FrameClipAfter1 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelBase rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelBase screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelBase rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelBase screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelContentBefore0 rootPresent=1 parentPresent=1 childCount=0 topFound=0 bottomFound=0
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelContentBefore0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelContentBefore0 rootPresent=1 parentPresent=1 childCount=0 topFound=0 bottomFound=0
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelContentBefore0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelContentAfter0 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelContentAfter0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelContentAfter0 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelContentAfter0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelUnknownBefore0 rootPresent=1 parentPresent=1 childCount=0 topFound=0 bottomFound=0
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelUnknownBefore0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelUnknownBefore0 rootPresent=1 parentPresent=1 childCount=0 topFound=0 bottomFound=0
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelUnknownBefore0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelUnknownAfter0 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=after-create case=PanelUnknownAfter0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelUnknownAfter0 rootPresent=1 parentPresent=1 childCount=2 topFound=1 bottomFound=1
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] phase=post-update case=PanelUnknownAfter0 screenSize=190,20 localSize=190,20
+15:14:09.815 SCRIPT       : [NIH_LayoutStudio][SyntaxProbe] END
