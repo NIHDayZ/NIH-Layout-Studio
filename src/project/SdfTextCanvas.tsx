@@ -26,6 +26,7 @@ const debugFnt5Clip = typeof window !== "undefined" && new URLSearchParams(windo
 const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedGlyphs = new Set<string>();
 const loggedWidgets = new Set<string>();
+const loggedPlacements = new Set<string>();
 const resourceIds = new WeakMap<SdfFontResource, number>();
 let nextResourceId = 1;
 function ResourceId(resource: SdfFontResource): number {
@@ -39,6 +40,25 @@ function ResourceId(resource: SdfFontResource): number {
 const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
 const experimentalMsdfSmoothing = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfSmoothing") === "1";
 const experimentalMsdfStroke = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfStroke") === "1";
+function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, character: string, mode: string, requestedFontSize: number, penX: number, baseY: number, drawX: number, drawY: number, drawWidth: number, drawHeight: number, widgetWidth: number, widgetHeight: number, clipPadding: number) {
+ if (!debugFnt5Sampling || loggedPlacements.size >= 120)
+  return;
+ const key = JSON.stringify([ResourceId(resource), glyph.codePoint, mode, requestedFontSize, widgetWidth, widgetHeight]);
+ if (loggedPlacements.has(key))
+  return;
+ loggedPlacements.add(key);
+ console.info("[NIH Layout Studio][FNT5 placement]", {
+  font: resource.fnt5Name ?? resource.metadata.fontFile,
+  character, codePoint: glyph.codePoint, mode,
+  nominalFontSize: resource.metadata.fontSize, requestedFontSize,
+  metric: { width: glyph.width, height: glyph.height, bearingX: glyph.bearingX, bearingY: glyph.bearingY, advance: glyph.advance },
+  penX, baseY,
+  drawRect: { x: drawX, y: drawY, width: drawWidth, height: drawHeight },
+  widgetRect: { x: 0, y: 0, width: widgetWidth, height: widgetHeight },
+  outsideWidget: drawX < 0 || drawY < 0 || drawX + drawWidth > widgetWidth || drawY + drawHeight > widgetHeight,
+  debugExpandedCanvas: clipPadding > 0
+ });
+}
 function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  const existing = atlases.get(resource);
  if (existing)
@@ -225,14 +245,18 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
         // Diagnostic: align the entire reconstructed glyph cell at the line origin.
         // Keep the existing advance, wrapping and widget clipping unchanged.
         ink.drawImage(sprite, penX, baseY, resource.fnt5CellSize * scale, resource.fnt5CellSize * scale);
+        LogFnt5Placement(resource, glyph, character, "cell", fontSize, penX, baseY, penX, baseY, resource.fnt5CellSize * scale, resource.fnt5CellSize * scale, width, height, clipPadding);
        } else if (experimentalFnt5Placement && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
         const placement = Fnt5Placement(resource.fnt5CellSize, glyph.width, glyph.height, glyph.bearingX, glyph.bearingY, meta.fontSize, fontSize, penX, baseY);
-        if (placement)
+        if (placement) {
          ink.drawImage(sprite, placement.x, placement.y, placement.size, placement.size);
+         LogFnt5Placement(resource, glyph, character, "bearing", fontSize, penX, baseY, placement.x, placement.y, placement.size, placement.size, width, height, clipPadding);
+        }
        } else {
         const x = penX + glyph.bearingX * scale;
         const y = baseY + (meta.fontSize - glyph.bearingY) * scale;
         ink.drawImage(sprite, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale);
+        LogFnt5Placement(resource, glyph, character, "legacy", fontSize, penX, baseY, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale, width, height, clipPadding);
        }
       }
      }
