@@ -622,14 +622,12 @@ native geometry measurement, painting, and the Studio serializer:
   `mixed-or-unavailable`, not "before" by guess.
 - `InspectNativePropertyCompatibility(roots)` produces warnings for
   **native-observed child-block loss** when a demonstrated-risk property
-  appears **before all children**, and for **serialization-order risk**
-  when it appears **after all children**. The latter is significant:
-  the current `LayoutParser.SerializeNode` writes **all properties
-  before the children block**, even if the original file placed an
-  unsupported attribute afterwards and native DayZ had retained both
-  children. A Studio export therefore **could change native loader
-  behavior** while leaving the high-level tree otherwise intact.
-  We only diagnose this; the serializer is unchanged.
+  appears **before all children**. For an after-child property,
+  missing source-group provenance still carries a serialization-order
+  warning; with verified group provenance, M2.6 now preserves that
+  position and reports it as informational instead of a risk.
+  This is generic ordering metadata, not an inferred widget layout
+  algorithm.
 - `mixed-native-property-order` is informational when line provenance
   is missing or child placement is mixed. An optional
   `{includeUnverified:true}` emits **informational** notices for
@@ -702,13 +700,48 @@ the export dialog. In addition to the native fixture tests,
 `tests/native-compatibility-ui.test.mjs` renders the component
 using React SSR to ensure the warning text, action buttons and
 accessibility roles exist. The production TypeScript/Vite build
-validates the App-level wiring, but browser interactions in a live
-DayZ/Workbench instance have **not** been independently validated
-for this increment.
+validates the App-level wiring, and five Chromium UI smoke tests have validated real
+browser warning/export interactions. Those browser tests do not
+execute DayZ Workbench.
 
-Because `LayoutParser.SerializeNode` may reorder a syntactically
-valid "unsupported property after children" file into a
-native-problematic "property before children" file, a future
-serializer order-preservation design remains a separate,
-explicitly approved change—not an automatic warning remediation.
+M2.6 now implements a limited source-group ordering fix for
+canonical serialization. Full source trivia preservation and
+unverified structural-edit edge cases remain future work.
 PR #47 remains draft and unmerged.
+
+
+## M2.6 source-group-aware canonical serialization (2026-10-28)
+
+The parser records the original child-group opening line and parent
+identity per parsed direct child as optional `LayoutNode.sourceGroupLine`
+and `sourceGroupParentId`. The canonical serializer interleaves
+properties and known child groups by original source line, rather
+than always moving all properties before the children. This
+generic parser metadata is not a per-widget geometry strategy.
+
+New or reparented children without trustworthy original group
+coordinates join a known existing group when possible. Synthetic
+nodes without source provenance keep the original
+properties-before-children fallback. Neither case guarantees
+arbitrary newly authored layout syntax is native-safe; neither
+causes automatic property stripping or child deletion.
+
+A verified hazardous property **before** a child group still
+produces a native warning. A property **after** a known,
+source-backed child group is now informational, because canonical
+serialization retains the tested ordering. Actual native
+C++ parser behavior outside the captured fixtures remains unknown.
+
+Native syntax fixture regression tests validate all twelve
+Frame/Panel cases plus multiple child groups, interleaved
+properties, CRLF input, newly authored children and reparented
+children. Existing geometry regressions and browser tests remain
+gates for this change.
+
+**Limitations:** Canonical serialization still formats source; it
+does not preserve comments, whitespace or original bytes.
+Unchanged direct Save/Export preserves the original source.
+This increment does not claim full source-token fidelity
+or general Workbench C++ parser recovery.
+See `docs/native-property-order-preservation-design.md` for
+the remaining design work.
