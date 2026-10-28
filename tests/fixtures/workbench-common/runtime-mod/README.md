@@ -73,11 +73,15 @@ No screenshot pixel/clip parity is inferred from the logs.
 
 `capture.template.json` has two intentionally null observations. Once
 native data is collected, create a separate dated capture JSON and preserve
-the template. The comparator requires an independently reported parent
-viewport in screen coordinates, as well as all widget screen rectangles.
-The probe logs the actual root rectangle, but **does not log the parent
-workspace rectangle**: that must be measured independently or left null.
-Do not invent a matching parent rect from the expected Studio geometry.
+the template. The comparator requires the independently observed **test root widget**
+screen rectangle as `viewport`, plus screen rectangles for all **16
+descendants**. The probe logs the root's rectangle directly through native
+`GetScreenPos/GetScreenSize`; the root is deliberately not counted as an
+authored-geometry prediction because `SetScreenSize` overrides its relative
+layout dimensions at runtime. No physical parent-workspace rectangle is
+required for this constrained descendant comparison. Do not infer the root
+rectangle from the expected Studio geometry or assume the requested size was
+the size actually reported by the native getter.
 
 Use:
 
