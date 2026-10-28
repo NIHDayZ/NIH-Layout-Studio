@@ -24,8 +24,10 @@ test("all four Workbench capture cases are PENDING, never invented passing golde
 
 test("mock observations demonstrate comparator pass/fail math, not native validation",()=>{
  const item=Copy(template.cases[3]);
+ item.nativeScale={mode:"unscaled"};
  item.provenance={
-  captureMethod:"unit-test-double",workbenchBuild:"mock-only",evidenceFile:"not-a-real-capture"
+  captureMethod:"unit-test-double",workbenchBuild:"mock-only",evidenceFile:"not-a-real-capture",
+  scaleBranchSource:"mock-only",offsetSource:"mock-only"
  };
  item.observed={
   childViewport:{x:10,y:0,width:230,height:170},
@@ -41,7 +43,11 @@ test("mock observations demonstrate comparator pass/fail math, not native valida
 
 test("out-of-tolerance errors fail; within-tolerance differences pass",()=>{
  const item=Copy(template.cases[1]);
- item.provenance={captureMethod:"test-double",workbenchBuild:"mock-only",evidenceFile:"not-a-real-capture"};
+ item.nativeScale={mode:"unscaled"};
+ item.provenance={
+  captureMethod:"test-double",workbenchBuild:"mock-only",evidenceFile:"not-a-real-capture",
+  scaleBranchSource:"mock-only",offsetSource:"mock-only"
+ };
  item.observed={
   childViewport:{x:0.2,y:0,width:229.7,height:180},
   childContext:{x:0,y:0.3,width:230,height:180}
@@ -114,4 +120,59 @@ test("user-observed Workbench static visual evidence remains separate from numer
  assert.deepEqual(CompareWorkbenchScrollFixtures(template).summary,{
   pass:0,fail:0,pending:4,synthetic:0
  });
+});
+
+test("unverified native scale never counts numeric observations as a parity pass",()=>{
+ const item=Copy(template.cases[3]);
+ item.observed={
+  childViewport:{x:10,y:0,width:230,height:170},
+  childContext:{x:10,y:0,width:230,height:170}
+ };
+ item.provenance={
+  captureMethod:"runtime-telemetry",workbenchBuild:"test-only",evidenceFile:"mock"
+ };
+ const report=CompareWorkbenchScrollFixtures({schemaVersion:1,cases:[item]});
+ assert.deepEqual(report.summary,{pass:0,fail:0,pending:1,synthetic:0});
+ assert.equal(report.results[0].predictionBasis,"unverified-unscaled-hypothesis");
+ assert.match(report.results[0].errors[0],/scale branch/);
+});
+
+test("explicit context-scaled native values are used instead of fixed 10-unit reservations",()=>{
+ const item=Copy(template.cases[3]);
+ item.nativeScale={mode:"context-scaled",numerator:125,denominator:100};
+ item.provenance={
+  captureMethod:"test-double",workbenchBuild:"mock-only",evidenceFile:"mock-only",
+  scaleBranchSource:"mock-only",offsetSource:"mock-only"
+ };
+ item.observed={
+  childViewport:{x:12.5,y:0,width:227.5,height:167.5},
+  childContext:{x:12.5,y:0,width:227.5,height:167.5}
+ };
+ const pass=CompareWorkbenchScrollFixtures({schemaVersion:1,cases:[item]});
+ assert.equal(pass.summary.pass,1);
+ assert.equal(pass.results[0].predictionBasis,"reported-native-context-fields");
+ item.observed.childViewport.x=10;
+ const fail=CompareWorkbenchScrollFixtures({schemaVersion:1,cases:[item]});
+ assert.equal(fail.summary.fail,1);
+});
+
+test("native scale inputs and their capture sources must be valid",()=>{
+ const item=Copy(template.cases[0]);
+ item.nativeScale={mode:"context-scaled",numerator:0,denominator:10};
+ assert.throws(()=>CompareWorkbenchScrollFixtures({schemaVersion:1,cases:[item]}),
+  /Unusable diagnostic inputs/);
+ item.nativeScale={mode:"wrong"};
+ assert.throws(()=>CompareWorkbenchScrollFixtures({schemaVersion:1,cases:[item]}),
+  /Unknown nativeScale mode/);
+ item.nativeScale={mode:"unscaled",numerator:1};
+ assert.throws(()=>CompareWorkbenchScrollFixtures({schemaVersion:1,cases:[item]}),
+  /Unexpected unscaled/);
+ item.nativeScale={mode:"unscaled"};
+ item.observed={
+  childViewport:{x:0,y:0,width:240,height:180},
+  childContext:{x:0,y:0,width:240,height:180}
+ };
+ item.provenance={captureMethod:"telemetry",workbenchBuild:"test",evidenceFile:"test"};
+ assert.throws(()=>CompareWorkbenchScrollFixtures({schemaVersion:1,cases:[item]}),
+  /native scale\/offset input provenance/);
 });
