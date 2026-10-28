@@ -694,8 +694,16 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 		let childRect = natural;
 		if (direction === "column") {
 			const height = natural.height > 0 ? natural.height : childParent.height;
-			childRect = { x: natural.x, y: cursor, width: natural.width, height };
-			cursor += height + gap;
+			const valign = (GetNodeProperty(child, "valign") ?? "").toLowerCase();
+			// Explicit edge-referenced children (e.g. HUD ItemActions anchored to the
+			// bottom of a WrapSpacer) retain their resolved anchor. A top-down spacer
+			// cursor would otherwise relocate the whole group to the upper-left.
+			if (valign === "bottom_ref") {
+				childRect = natural;
+			} else {
+				childRect = { x: natural.x, y: cursor, width: natural.width, height };
+				cursor += height + gap;
+			}
 		} else {
 			const width = natural.width > 0 ? natural.width : childParent.width;
 			childRect = { x: cursor, y: natural.y, width, height: natural.height };
