@@ -8,6 +8,7 @@ import { DecodeNativeScrollSettings, type NativeScrollSettings } from "./ScrollS
 import { ResolveIntrinsicMeasurement, type IntrinsicMeasurementProviders, type ResolvedIntrinsicMeasurement } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextPreparer, PreparedTextFlow } from "./ConstrainedText.js";
 import { DecodeContentSizingRequests, type ContentSizingRequests } from "./ContentSizingRequests.js";
+import { InspectNativePropertyCompatibility, type NativeCompatibilityDiagnostic } from "./NativePropertyCompatibility.js";
 
 /**
  * A prepared layout node with geometry properties decoded exactly once.
@@ -46,6 +47,8 @@ export interface MeasuredLayoutTree {
 	readonly nodeCount: number;
 	readonly unresolvedContentSizeCount: number;
 	readonly managedContainerCount: number;
+	/** Opt-in read-only native loader compatibility evidence; not a geometry filter. */
+	readonly nativePropertyDiagnostics: readonly NativeCompatibilityDiagnostic[];
 }
 
 /**
@@ -59,6 +62,8 @@ export interface MeasurementOptions {
 	intrinsics?: IntrinsicMeasurementProviders;
 	/** Optional preview-only text measurement; not native Workbench. */
 	constrainedText?: ConstrainedTextPreparer;
+	/** Passive source-order diagnostics; does not change geometry or native flags. */
+	nativePropertyDiagnostics?: boolean;
 }
 
 export function MeasureLayoutTree(
@@ -127,7 +132,9 @@ export function MeasureLayoutTree(
 		roots: measuredRoots,
 		nodeCount,
 		unresolvedContentSizeCount,
-		managedContainerCount
+		managedContainerCount,
+		nativePropertyDiagnostics: options.nativePropertyDiagnostics
+			? InspectNativePropertyCompatibility(roots) : []
 	};
 }
 
