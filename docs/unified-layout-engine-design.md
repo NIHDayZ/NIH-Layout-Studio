@@ -321,3 +321,37 @@ The fixed Wrap strategy is dispatched in `LayoutArrangers.ts` and does not add p
 `tests/fixed-wrap.test.mjs` covers shared spacing defaults, exact class boundaries, line packing and max line heights, per-line horizontal alignment, inherited rectangle coordinates, parent extent negotiation, unknown native modes, invalid child metrics, and cross-widget isolation. `tests/parent-content.test.mjs` separately checks opaque fixed-height Grid/Wrap/Scroll contribution versus unresolved managed content sizing.
 
 **Important distinction:** the new Wrap line flow matches the high-level behavior recovered from compiled instructions, but **pixel-perfect Workbench equivalence has not been established**. The runtime canvas and saved layout source remain unchanged; only diagnostic, explicitly selected prototype strategies are affected. The next research boundary is native visibility filtering, dynamic text/image measurement inside managed containers, full vertical alignment, and ScrollWidget content/viewport calculations.
+
+
+## M3 Wrap vertical content measurement and authored Scroll viewport diagnostics
+
+The current draft adds two diagnostic capabilities while preserving the shared two-pass geometry engine and the **unmodified production Canvas**.
+
+**WrapSpacer vertical Size To Content:** `FixedWrap.ts` exposes `MeasureFixedWrapContent(children, resolvedWidth, settings)`. It uses the **same** native-derived line-packing logic as the existing `PlanFixedWrap` but reports the required outer height separately from the available height: the sum of line maximum heights plus inter-line `Margin` and two outer `Padding` insets. `PlanFixedWrap` now delegates to this shared calculation, refusing a fixed-height container if the content would not fit. This eliminates duplicate Wrap arithmetic.
+
+`LayoutArrangers.ts` permits `ProbeWrapContentHeight` for a prepared `WrapSpacerWidgetClass` only with **both** `fixedWrap:true` and `wrapContentHeight:true`, a resolved independent width, `Size To Content V=1` and `Size To Content H=0`, visible immediate children with positive exact widths/heights, and start vertical alignment. Unsupported alignments, hidden or content-sized children, unresolvable metrics and invalid dimensions are refused. The measured plan carries both child rects and height into `GeometrySnapshot.ts` **without a second line-packing pass**. `appliedWrapContent` records the measured required height, line count and `native-derived-wrap-lines` evidence.
+
+```ts
+const prepared = MeasureLayoutTree(roots);
+const wrapDiagnostic = ArrangeMeasuredGeometry(
+  prepared, { x: 0, y: 0, width: 1280, height: 720 }, 1,
+  { fixedWrap: true, wrapContentHeight: true }
+);
+```
+
+This is **not** a claim of complete native Wrap measurement. It is a controlled extrapolation from the pinned Workbench line-formation algorithm. The exact native resizing triggers, child update order, DPI rules, visibility filtering, vertical content alignment and wrap interaction with other content-sized parents still require Workbench comparison fixtures. An ordinary Frame/Panel parent with a Wrap child that requests its own content height is deliberately **not** treated as a fixed opaque extent by `ParentContent.ts`; that dependency still reports an unresolved issue.
+
+**ScrollWidget viewport boundary:** `ScrollViewport.ts` exposes a strictly read-only `MeasureAuthoredScrollViewport` that compares the **outer authored viewport** to a union of eligible immediate **authored child rectangles**. The resulting `scrollViewports` map reports viewport dimensions, direct-child bounds, and overhang on each edge with `authored-direct-child-bounds` evidence. This is available only via `{ scrollViewportDiagnostics: true }`. It requires finite, positive authored rectangles with exact child position/size, visible children, and no unresolved managed or content-sizing requirements.
+
+This Scroll result is **not** a native content size, scrolling range, scroll offset, clipping flag, scroll-bar width, or proof of Workbench ScrollWidget behavior. It does not modify child positions, inherited clipping, the underlying renderer, or saved `.layout` geometry. The separate `unresolved-layout-strategy` diagnostic remains until native Scroll viewport/content and scrollbar methods are recovered.
+
+```ts
+const scrollDiagnostic = ArrangeMeasuredGeometry(
+  prepared, { x: 0, y: 0, width: 1280, height: 720 }, 1,
+  { scrollViewportDiagnostics: true }
+);
+```
+
+`tests/wrap-content.test.mjs` verifies single-source line arithmetic, nested constraints and reflow across multiple widths, anchor realignment, independent feature gates and strict fallback. `tests/scroll-viewport.test.mjs` verifies authored direct-child overhang, negative coordinates, nested viewports, unsupported content/visibility/managed cases and unchanged default geometry. Both suites run under `npm run test:geometry-engine`.
+
+**Native parity gate:** keep all three opt-in strategies (`fixedWrap`, `wrapContentHeight`, `scrollViewportDiagnostics`) disabled in the live canvas. Compare geometry to Workbench for at least two container dimensions, multiple child sizes and alignment modes before upgrading any of these from diagnostic hypotheses.
