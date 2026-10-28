@@ -21,6 +21,14 @@ export interface AppliedIntrinsicContent {
 	axes: readonly ("horizontal" | "vertical")[];
 }
 
+export interface AppliedConstrainedText {
+	id: string;
+	evidence: "sdf-preview-flow";
+	widthUsed: number;
+	lineCount: number;
+	axis: "vertical";
+}
+
 export interface AuthoredGeometrySnapshot {
 	/**
 	 * Pre-order geometry in document order. These are authored-coordinate
@@ -34,6 +42,7 @@ export interface AuthoredGeometrySnapshot {
 	/** Only actually applied native-derived strategy prototypes, not unimplemented types. */
 	appliedStrategies: readonly AppliedLayoutStrategy[];
 	appliedIntrinsics: readonly AppliedIntrinsicContent[];
+	appliedConstrainedText: readonly AppliedConstrainedText[];
 	rootRect: GeometryRect;
 }
 
@@ -56,6 +65,7 @@ export function ArrangeMeasuredGeometry(
 	const issues: GeometryIssue[] = [];
 	const appliedStrategies: AppliedLayoutStrategy[] = [];
 	const appliedIntrinsics: AppliedIntrinsicContent[] = [];
+	const appliedConstrainedText: AppliedConstrainedText[] = [];
 
 	function Visit(
 		nodes: readonly MeasuredLayoutNode[],
@@ -74,25 +84,42 @@ export function ArrangeMeasuredGeometry(
 				height: constraints.availableHeight
 			};
 			const authoredRect = ResolveAuthoredRect(authored, parentSize);
+			// A wrapped text height depends on this specific arranged width.
+			// Never infer width from wrapped height or apply to grid-allocated slots.
+			const constrainedText = options.constrainedTextPreview && !allocatedRects && prepared.textFlow
+				? prepared.textFlow.measure(authoredRect.width) : null;
+			const useConstrainedHeight = constrainedText !== null && constrainedText !== undefined;
 			const intrinsic = prepared.intrinsic?.measurement;
 			const applyContent = options.providedIntrinsicContent === true && intrinsic !== undefined
 				&& prepared.children.length === 0 && !allocatedRects;
 			const useWidth = applyContent && authored.sizeToContentWidth && intrinsic?.width !== undefined;
-			const useHeight = applyContent && authored.sizeToContentHeight && intrinsic?.height !== undefined;
+			const useIntrinsicHeight = !useConstrainedHeight && applyContent
+				&& authored.sizeToContentHeight && intrinsic?.height !== undefined;
+			const useHeight = useConstrainedHeight || useIntrinsicHeight;
 			const resolvedSize = {
 				width: useWidth ? intrinsic.width! : authoredRect.width,
-				height: useHeight ? intrinsic.height! : authoredRect.height
+				height: useConstrainedHeight ? constrainedText!.height
+					: useIntrinsicHeight ? intrinsic!.height! : authoredRect.height
 			};
 			const localRect = allocatedRects?.[index] ?? (
 				useWidth || useHeight
 					? ResolveAuthoredRectWithSize(authored, parentSize, resolvedSize)
 					: authoredRect
 			);
-			if (useWidth || useHeight) {
+			if (useConstrainedHeight) {
+				appliedConstrainedText.push({
+					id: node.id,
+					evidence: constrainedText!.evidence,
+					widthUsed: constrainedText!.widthUsed,
+					lineCount: constrainedText!.lineCount,
+					axis: "vertical"
+				});
+			}
+			if (useWidth || useIntrinsicHeight) {
 				const axes: ("horizontal" | "vertical")[] = [];
 				if (useWidth)
 					axes.push("horizontal");
-				if (useHeight)
+				if (useIntrinsicHeight)
 					axes.push("vertical");
 				appliedIntrinsics.push({
 					id: node.id,
@@ -165,7 +192,7 @@ export function ArrangeMeasuredGeometry(
 		dpiScale
 	};
 	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, rootRect: { ...rootRect } };
 }
 
 /**
