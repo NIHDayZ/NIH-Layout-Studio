@@ -14,6 +14,9 @@ test("all four Workbench capture cases are PENDING, never invented passing golde
  assert.deepEqual(report.results.map(x=>x.id),[
   "ScrollNone","ScrollVertical","ScrollBoth","ScrollLeft"
  ]);
+ assert.ok(template.cases.every(item=>item.nativeScale===null),
+  "Do not promote static Workbench zoom into native scaling evidence");
+ assert.ok(report.results.every(item=>item.predictionBasis==="unverified-unscaled-hypothesis"));
  assert.deepEqual(report.results.map(x=>x.predicted.childViewport),[
   {x:0,y:0,width:240,height:180},
   {x:0,y:0,width:230,height:180},
