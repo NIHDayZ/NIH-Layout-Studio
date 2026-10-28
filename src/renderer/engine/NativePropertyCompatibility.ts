@@ -25,6 +25,7 @@ export type NativePropertySourceOrder =
 export type NativeCompatibilityCode =
 	| "observed-native-child-loss-risk"
 	| "serialization-order-risk"
+	| "observed-native-safe-after-children"
 	| "mixed-native-property-order"
 	| "unverified-native-property";
 
@@ -60,6 +61,7 @@ interface SourceWidget {
 	readonly name: string;
 	readonly type: string;
 	readonly line?: number;
+	readonly sourceGroupLine?: number;
 	readonly properties: readonly SourceProperty[];
 	readonly children: readonly SourceWidget[];
 }
@@ -124,12 +126,11 @@ export function InspectNativePropertySourceOrder(
 }
 
 /**
- * In the supplied LayoutParser.SerializeNode implementation, all properties
- * are written before the child group. An after-all-children property is
- * therefore a serialization-order risk for the experimentally hazardous
- * class/property pairs, even though the source runtime retained children.
- *
- * Neither inspection nor diagnostics mutate authored nodes or geometry.
+ * Canonical serialization now respects known child-group source lines.
+ * A trailing property is observed safe in the tested fixture if all
+ * direct child groups have source provenance. Without that provenance,
+ * serialization may still fall back to properties first.
+ * Neither inspection nor diagnostics mutate source or geometry.
  */
 export function InspectNativePropertyCompatibility(
 	roots: readonly GeometryWidget[],
@@ -153,9 +154,19 @@ export function InspectNativePropertyCompatibility(
 					severity = "warning";
 					detail = "In the tested DayZ client, this class/property pair before the child group left the parent present but children absent, including when the value was 0. The exact C++ parser cause is unknown.";
 				} else if (sourceOrder === "after-all-children") {
-					code = "serialization-order-risk";
-					severity = "warning";
-					detail = "Native DayZ retained children with this property after the child group. Studio's canonical serializer writes properties before children during some structural edits, which may alter native loading. Direct Save/Export of the current source preserves its order; this diagnostic changes nothing.";
+					const allGroupsKnown = source.children.every((child) =>
+						child.sourceGroupLine !== undefined &&
+						Number.isSafeInteger(child.sourceGroupLine) &&
+						child.sourceGroupLine > 0
+					);
+					if (allGroupsKnown) {
+						code = "observed-native-safe-after-children";
+						detail = "In the tested DayZ client, this property after the child group retained the children. Studio's canonical serializer now preserves recorded group order. This is an observed syntax result, not a C++ parser guarantee.";
+					} else {
+						code = "serialization-order-risk";
+						severity = "warning";
+						detail = "DayZ retained children with this property after the child group, but source group provenance is missing. Canonical serialization may reflow property order. Direct Save/Export preserves the current source.";
+					}
 				} else {
 					code = "mixed-native-property-order";
 					detail = "Native tests differ before versus after the child group, but source order here is mixed or unavailable. Do not predict child existence.";
