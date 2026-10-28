@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { DecodeAuthoredGeometry, ResolveAuthoredRect, EncodeAuthoredRect } from "../.geometry-engine-test-build/WidgetGeometry.js";
 import { ResolveRect, RectToLayoutGeometry } from "../.geometry-engine-test-build/LayoutMath.js";
+import { LegacyResolveRect, LegacyEncodeRect } from "./reference/legacy-widget-geometry.mjs";
 
 function Widget(properties) {
  return { id:"one", type:"PanelWidgetClass", name:"one", properties:properties.map(([name,value])=>({name,value})), children:[] };
@@ -44,7 +45,9 @@ test("geometry engine matches legacy ResolveRect for exact/relative/plain/refere
       ["hexactsize",exactSize?"1":"0"],["vexactsize",exactSize?"1":"0"]
      ];
      const node=Widget(props), parent={x:117,y:-15,width,height};
-     assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(node),parent),ResolveRect(node,parent));
+     const baseline=LegacyResolveRect(node,parent);
+     assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(node),parent),baseline);
+     assert.deepEqual(ResolveRect(node,parent),baseline);
      ++compared;
     }
    }
@@ -67,8 +70,9 @@ test("geometry engine round-trips legacy widget editor geometry across anchor an
   const geometry=DecodeAuthoredGeometry(node);
   const rectangle=ResolveAuthoredRect(geometry,parent);
   const encoded=EncodeAuthoredRect(geometry,parent,rectangle);
-  const baseline=RectToLayoutGeometry(node,parent,rectangle);
+  const baseline=LegacyEncodeRect(node,parent,rectangle);
   assert.deepEqual(encoded,baseline);
+  assert.deepEqual(RectToLayoutGeometry(node,parent,rectangle),baseline);
   const roundTrip=ResolveAuthoredRect(DecodeAuthoredGeometry(Widget([
    ...props.filter(([name])=>name!=="position"&&name!=="size"),
    ["position",encoded.position],["size",encoded.size]
