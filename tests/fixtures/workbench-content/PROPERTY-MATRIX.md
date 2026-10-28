@@ -113,3 +113,22 @@ files. Leave previous v2 source and native evidence untouched.
 The v3 additions have **not been EnScript-compiled in DayZ**, so retain
 any compile or resource error in the complete client script log.
 No production code uses this matrix.
+
+## Native result, 2026-10-28 — property PRESENCE matters
+
+The completed DayZ client matrix captured **14 native parents**
+immediately after creation, after an update and after root resize.
+The **presence** of `Size To Content V` on ordinary Frame/Panel
+correlated with **zero native descendants even when explicitly set
+to 0**. Similar no-child outcomes appeared for H=1 and Frame's
+`Size To Text V=1`. Ordinary Frame with no flag or `clipchildren=1`
+and Panel with no flag retained both children.
+
+WrapSpacer with no flag or V=0 retained two children at authored
+height 20; V=1 retained two and measured native height **28**.
+This distinction occurred *immediately after CreateWidgets*,
+not during subsequent layout updates.
+
+Read [the actual native findings](2026-10-28-property-matrix-native-results.md).
+Native C++ parser token handling is still unproven; do not turn
+a parse-time correlation into a universal child-deletion policy.
