@@ -62,16 +62,23 @@ export interface UnscaledScrollViewportCandidate {
 	assumptions: "zero-offset-no-dpi-scaling";
 }
 
-export function EstimateUnscaledScrollViewport(
+interface ScrollViewportDimensions {
+	childViewport: GeometryRect;
+	horizontalScrollbar: boolean;
+	verticalScrollbar: boolean;
+	verticalScrollbarLeft: boolean;
+}
+
+/** One geometry calculation shared by native-derived scale and unscaled modes. */
+function ReserveNativeScrollbarSpace(
 	container: Pick<GeometryRect, "width" | "height">,
 	settings: NativeScrollSettings,
-	unitScale: number
-): UnscaledScrollViewportCandidate | null {
-	if (unitScale !== 1 || !Number.isFinite(container.width)
-		|| !Number.isFinite(container.height)
-		|| container.width <= 0 || container.height <= 0)
+	thickness: number
+): ScrollViewportDimensions | null {
+	if (!Number.isFinite(container.width) || !Number.isFinite(container.height)
+		|| container.width <= 0 || container.height <= 0
+		|| !Number.isFinite(thickness) || thickness <= 0)
 		return null;
-	const thickness = 10;
 	const width = container.width - (settings.vertical ? thickness : 0);
 	const height = container.height - (settings.horizontal ? thickness : 0);
 	if (width <= 0 || height <= 0)
@@ -79,15 +86,74 @@ export function EstimateUnscaledScrollViewport(
 	return {
 		childViewport: {
 			x: settings.vertical && settings.verticalLeft ? thickness : 0,
-			y: 0,
-			width,
-			height
+			y: 0, width, height
 		},
-		scrollbarThickness: 10,
 		horizontalScrollbar: settings.horizontal,
 		verticalScrollbar: settings.vertical,
-		verticalScrollbarLeft: settings.vertical && settings.verticalLeft,
+		verticalScrollbarLeft: settings.vertical && settings.verticalLeft
+	};
+}
+
+export function EstimateUnscaledScrollViewport(
+	container: Pick<GeometryRect, "width" | "height">,
+	settings: NativeScrollSettings,
+	unitScale: number
+): UnscaledScrollViewportCandidate | null {
+	if (unitScale !== 1)
+		return null;
+	const dimensions = ReserveNativeScrollbarSpace(container, settings, 10);
+	if (!dimensions)
+		return null;
+	return {
+		...dimensions,
+		scrollbarThickness: 10,
 		evidence: "native-derived-unscaled-scroll-viewport",
 		assumptions: "zero-offset-no-dpi-scaling"
+	};
+}
+
+/**
+ * The compiled scale branch reads a SIGNED int32 context value at +0xC4
+ * and a positive unsigned integer denominator at +0xCC, then computes:
+ *
+ *  thickness = 10 * float32(numerator) / float32(denominator)
+ *
+ * The exact relationship of these fields to canvas DPI and Workbench
+ * display resolution is not recovered; the caller must provide the native
+ * context fields, never simply pass an inferred UI zoom level.
+ */
+export interface NativeScrollbarScaleContext {
+	numerator: number;
+	denominator: number;
+}
+
+export interface ContextScaledScrollViewportCandidate extends ScrollViewportDimensions {
+	scrollbarThickness: number;
+	evidence: "native-derived-context-scaled-scroll-viewport";
+	assumptions: "explicit-native-context-zero-offset";
+}
+
+export function EstimateContextScaledScrollViewport(
+	container: Pick<GeometryRect, "width" | "height">,
+	settings: NativeScrollSettings,
+	context: NativeScrollbarScaleContext
+): ContextScaledScrollViewportCandidate | null {
+	if (!Number.isInteger(context.numerator) || context.numerator <= 0
+		|| context.numerator > 0x7fffffff
+		|| !Number.isInteger(context.denominator) || context.denominator <= 0
+		|| context.denominator > 0xffffffff)
+		return null;
+
+	// Match SSE single-precision conversions, division, and multiplication.
+	const ratio = Math.fround(Math.fround(context.numerator) / Math.fround(context.denominator));
+	const thickness = Math.fround(ratio * Math.fround(10));
+	const dimensions = ReserveNativeScrollbarSpace(container, settings, thickness);
+	if (!dimensions)
+		return null;
+	return {
+		...dimensions,
+		scrollbarThickness: thickness,
+		evidence: "native-derived-context-scaled-scroll-viewport",
+		assumptions: "explicit-native-context-zero-offset"
 	};
 }
