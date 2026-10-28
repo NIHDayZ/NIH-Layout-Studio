@@ -90,3 +90,35 @@ test("constraints keep independent pixel dimensions and do not secretly apply DP
  assert.deepEqual(ChildConstraints({availableWidth:0,availableHeight:0},1),
   {availableWidth:0,availableHeight:0,dpiScale:1});
 });
+
+
+test("arranging a prepared tree at multiple resolutions never rereads authored properties",()=>{
+ let propertyNameReads=0;
+ let propertyValueReads=0;
+ const observed=(name,value)=>({
+  get name() { ++propertyNameReads; return name; },
+  get value() { ++propertyValueReads; return value; }
+ });
+ const child=Node("button","ButtonWidgetClass",[
+  ["position","0.5 0.25"],["size","1 1"]
+ ]);
+ const grid={
+  id:"grid",name:"grid",type:"GridSpacerWidgetClass",
+  properties:[
+   observed("size","300 200"),observed("hexactsize","1"),observed("vexactsize","1"),
+   observed("Columns","1"),observed("Rows","1"),observed("Padding","2"),observed("Margin","2")
+  ],
+  children:[child]
+ };
+ const measured=MeasureLayoutTree([grid]);
+ assert.ok(propertyNameReads>0);
+ assert.ok(propertyValueReads>0);
+ const nameReadsAfterMeasure=propertyNameReads;
+ const valueReadsAfterMeasure=propertyValueReads;
+ const first=ArrangeMeasuredGeometry(measured,rootRect,1,{constrainedGrid:true});
+ const second=ArrangeMeasuredGeometry(measured,{x:0,y:0,width:1920,height:1080},1,{constrainedGrid:true});
+ assert.equal(propertyNameReads,nameReadsAfterMeasure);
+ assert.equal(propertyValueReads,valueReadsAfterMeasure);
+ assert.equal(first.appliedStrategies.length,1);
+ assert.equal(second.appliedStrategies.length,1);
+});
