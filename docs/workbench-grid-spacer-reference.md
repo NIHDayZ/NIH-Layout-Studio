@@ -43,3 +43,11 @@ The shipped `gui/fonts/MetronBook.xml` font generator lists 12, 14, 16, 22, 28, 
 The Workbench comparison screenshot's editor canvas is approximately RGB(130,130,130). `experimentalWorkbenchBackdrop=1` changes **only the Studio canvas preview** to that neutral gray, allowing transparent sprite compositing to be compared against the same backing color. This must not be confused with the color of the game's live HUD or a layout's actual background. The default preview stays unchanged.
 
 Use these presentation flags together with `experimentalGridLayout=1` to compare styled buttons at matched root resolution and zoom. The Workbench background and Metron sizing are experimental diagnostics, not established engine parity.
+
+## ImageSet mipx / Workbench button-color comparison
+
+Workbench `ButtonWidget` color `255,255,255,255` is neutral white modulation. This does **not** force a white fill: the widget style's sprite texture supplies the visible background color.
+
+In the bundled `dayz_gui` atlas, the two declared texture variants differ at the `menuButtonCenter` sample: reference `mpix 0` is black, while the `@2x` `mpix 1` sprite is approximately RGB(41,44,41). The Workbench screenshot shows approximately RGB(42,42,42) in button interiors. This suggests an atlas-variant mismatch, not a reason to replace the authored widget color.
+
+The default image resolver still prefers the reference-resolution (mpix 0) atlas. To compare the high-resolution resource, enable `experimentalImageSetMpix=1`. If the requested variant is unavailable, resolution falls back to the original order. This flag affects ImageSet texture selection **across the preview**, so check other icons and layouts before treating it as a native selection rule. `experimentalWorkbenchBackdrop=1` is only for the editor preview background. Do not introduce a hardcoded button tint or modify the layout's neutral-white modulation to compensate for a texture mismatch.
