@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-common-geometry-pending",
+  "sourceLayout": "tests/fixtures/workbench-common/NIH_Common_Geometry_Parity.layout",
+  "notes": "Source-authored fixture, NOT native viewport evidence. Real DayZ/Workbench screen rectangles and actual parent workspace bounds must be captured independently; no predictions may be populated as observed.",
+  "cases": [
+    {
+      "id": "viewport-1120x460",
+      "viewport": null,
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    },
+    {
+      "id": "viewport-1440x900",
+      "viewport": null,
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    }
+  ]
+}
