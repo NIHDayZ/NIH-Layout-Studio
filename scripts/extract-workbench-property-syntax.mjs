@@ -37,6 +37,8 @@ export function ParseNativePropertySyntax(log, sourceLog="unrecorded-client.log"
 		if(index<0)
 			continue;
 		const payload=line.slice(index+PREFIX.length).trim();
+		if(!payload)
+			continue;
 		if(payload.startsWith("ERROR:"))
 			throw new Error("Native syntax probe error: "+payload);
 		if(payload==="BEGIN") {
