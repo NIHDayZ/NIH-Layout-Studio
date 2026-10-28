@@ -1,8 +1,21 @@
 import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type LayoutConstraints, type MeasuredWidget } from "./GeometryCore.js";
 import { ResolveAuthoredRect, type GeometryWidget } from "./WidgetGeometry.js";
 import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
+import { PlanConstrainedGrid } from "./ConstrainedGrid.js";
 
 export type GeometryIssueCode = "unresolved-layout-strategy" | "unresolved-size-to-content" | "duplicate-widget-id";
+
+/** Explicitly opt in to native-derived, constrained GridSpacer prototypes. */
+export interface ArrangementOptions {
+	constrainedGrid?: boolean;
+}
+
+export interface AppliedLayoutStrategy {
+	id: string;
+	kind: "grid";
+	evidence: "native-disassembly";
+	mode: "constrained-grid-prototype";
+}
 
 export interface GeometryIssue {
 	code: GeometryIssueCode;
@@ -21,6 +34,8 @@ export interface AuthoredGeometrySnapshot {
 	/** Conservative authored-size hints; native content extents are unresolved. */
 	measuredById: ReadonlyMap<string, MeasuredWidget>;
 	issues: readonly GeometryIssue[];
+	/** Only actually applied native-derived strategy prototypes, not unimplemented types. */
+	appliedStrategies: readonly AppliedLayoutStrategy[];
 	rootRect: GeometryRect;
 }
 
@@ -34,12 +49,14 @@ export interface AuthoredGeometrySnapshot {
 export function ArrangeMeasuredGeometry(
 	measured: MeasuredLayoutTree,
 	rootRect: GeometryRect,
-	dpiScale = 1
+	dpiScale = 1,
+	options: ArrangementOptions = {}
 ): AuthoredGeometrySnapshot {
 	const entries: ArrangedWidget[] = [];
 	const byId = new Map<string, ArrangedWidget>();
 	const measuredById = new Map<string, MeasuredWidget>();
 	const issues: GeometryIssue[] = [];
+	const appliedStrategies: AppliedLayoutStrategy[] = [];
 
 	function Visit(
 		nodes: readonly MeasuredLayoutNode[],
@@ -47,11 +64,13 @@ export function ArrangeMeasuredGeometry(
 		constraints: LayoutConstraints,
 		parentId: string | null,
 		inheritedClip: GeometryRect | null,
-		parentVisible: boolean
+		parentVisible: boolean,
+		allocatedRects: readonly GeometryRect[] | null
 	): void {
-		for (const prepared of nodes) {
+		for (let index = 0; index < nodes.length; ++index) {
+			const prepared = nodes[index];
 			const { node, authored, strategy } = prepared;
-			const localRect = ResolveAuthoredRect(authored, {
+			const localRect = allocatedRects?.[index] ?? ResolveAuthoredRect(authored, {
 				width: constraints.availableWidth,
 				height: constraints.availableHeight
 			});
@@ -91,7 +110,30 @@ export function ArrangeMeasuredGeometry(
 					detail: `Native ${axes} size-to-content has not been measured; this rectangle uses authored size only.`
 				});
 			}
-			if (prepared.children.length > 0 && strategy.requiresArrangement) {
+			let childSlots: readonly GeometryRect[] | null = null;
+			if (options.constrainedGrid && strategy.kind === "grid" && prepared.nativeGrid && prepared.children.length > 0) {
+				const grid = prepared.nativeGrid;
+				// The native routine covers fixed-cell allocation. Overflow, visibility
+				// filtering and content-sized parent axes remain unverified and must
+				// fall back to authored rectangles instead of inventing behavior.
+				const supported = !prepared.unresolvedContentWidth && !prepared.unresolvedContentHeight
+					&& prepared.children.length <= grid.columns * grid.rows
+					&& prepared.children.every((child) => child.authored.visible)
+					&& Number.isFinite(absoluteRect.width) && absoluteRect.width >= 0
+					&& Number.isFinite(absoluteRect.height) && absoluteRect.height >= 0;
+				if (supported) {
+					childSlots = PlanConstrainedGrid(
+						prepared.children.length, grid.columns, grid.rows,
+						{ width: absoluteRect.width, height: absoluteRect.height },
+						grid.margin, grid.padding
+					).rects;
+					appliedStrategies.push({
+						id: node.id, kind: "grid", evidence: "native-disassembly",
+						mode: "constrained-grid-prototype"
+					});
+				}
+			}
+			if (prepared.children.length > 0 && strategy.requiresArrangement && !childSlots) {
 				issues.push({
 					code: "unresolved-layout-strategy",
 					id: node.id,
@@ -105,7 +147,7 @@ export function ArrangeMeasuredGeometry(
 				availableWidth: absoluteRect.width,
 				availableHeight: absoluteRect.height
 			}, constraints.dpiScale);
-			Visit(prepared.children, absoluteRect, childConstraints, node.id, clip, arranged.visible);
+			Visit(prepared.children, absoluteRect, childConstraints, node.id, clip, arranged.visible, childSlots);
 		}
 	}
 
@@ -114,8 +156,8 @@ export function ArrangeMeasuredGeometry(
 		availableHeight: rootRect.height,
 		dpiScale
 	};
-	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true);
-	return { entries, byId, measuredById, issues, rootRect: { ...rootRect } };
+	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
+	return { entries, byId, measuredById, issues, appliedStrategies, rootRect: { ...rootRect } };
 }
 
 /**
