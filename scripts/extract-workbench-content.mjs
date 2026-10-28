@@ -54,7 +54,8 @@ function RejectDuplicate(widget, key, phase, name) {
  * Every phase needs paired BEGIN/END and each widget a native screen and
  * local record; text widgets additionally require GetTextSize pixels.
  */
-export function ParseNativeContentProbe(log, sourceName = "unrecorded-log") {
+export function ParseNativeContentProbe(log, sourceName = "unrecorded-log", options = {}) {
+	const allowPartial = options.allowPartial === true;
 	if (typeof log !== "string" || !log.trim())
 		throw new Error("Empty native content log");
 	const cases = [];
@@ -164,11 +165,27 @@ export function ParseNativeContentProbe(log, sourceName = "unrecorded-log") {
 		cases.some((item, index) => item.phase !== EXPECTED_CONTENT_PHASES[index] || !item.complete))
 		throw new Error("Missing or unordered native capture phases");
 
+	let incomplete = false;
+	const firstNames = Object.keys(cases[0].widgets).sort();
 	for (const item of cases) {
 		const names = Object.keys(item.widgets).sort();
-		if (names.length !== EXPECTED_CONTENT_WIDGETS.length ||
-			names.some((name, i) => name !== EXPECTED_CONTENT_WIDGETS[i]))
-			throw new Error("Missing or extra fixture widget records in " + item.phase);
+		const unexpected = names.filter(name => !EXPECTED_CONTENT_WIDGETS.includes(name));
+		if (unexpected.length)
+			throw new Error("Unknown fixture widget records in " + item.phase + ": " + unexpected.join(", "));
+		if (!names.includes("NIHContentParity"))
+			throw new Error("Missing native fixture root in " + item.phase);
+		if (names.length !== firstNames.length ||
+			names.some((name, i) => name !== firstNames[i]))
+			throw new Error("Inconsistent native widget roster across capture phases: " + item.phase);
+		const missing = EXPECTED_CONTENT_WIDGETS.filter(name => !Object.hasOwn(item.widgets, name));
+		if (missing.length > 0) {
+			incomplete = true;
+			if (!allowPartial)
+				throw new Error("Missing or extra fixture widget records in " + item.phase);
+		}
+		item.expectedWidgetCount = EXPECTED_CONTENT_WIDGETS.length;
+		item.observedWidgetCount = names.length;
+		item.missingWidgetNames = missing;
 		for (const [name, widget] of Object.entries(item.widgets)) {
 			if (!widget.screenRect || !widget.localRect ||
 				(widget.type === "TextWidget" && !widget.textPixels))
@@ -181,8 +198,11 @@ export function ParseNativeContentProbe(log, sourceName = "unrecorded-log") {
 		captureKind: "native-dayz-client-text-image-content-getters",
 		sourceLog: sourceName,
 		nativeClientBuild: null,
-		status: "captured-unversioned-not-native-parity",
-		notes: "GetTextSize reports native pixel metrics; screenRect reports widget bounds. ImageWidget screen rectangles are not evidence of imageset intrinsic dimensions. No native clipping or DPI branch measured.",
+		status: incomplete ? "incomplete-native-capture" : "captured-unversioned-not-native-parity",
+		expectedWidgetCount: EXPECTED_CONTENT_WIDGETS.length,
+		observedWidgetCount: firstNames.length,
+		missingWidgetNames: EXPECTED_CONTENT_WIDGETS.filter(name => !firstNames.includes(name)),
+		notes: "GetTextSize reports native pixel metrics; screenRect reports widget bounds. ImageWidget screen rectangles are not evidence of imageset intrinsic dimensions. Missing native children cannot be predicted from authored layout. No native clipping or DPI branch measured.",
 		requests: globalRequests,
 		cases
 	};
@@ -190,17 +210,19 @@ export function ParseNativeContentProbe(log, sourceName = "unrecorded-log") {
 
 const directly = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (directly) {
-	if (process.argv.length < 3 || process.argv.length > 4) {
-		console.error("Usage: node scripts/extract-workbench-content.mjs <client-script.log> [output.json]");
+	if (process.argv.length < 3 || process.argv.length > 5) {
+		console.error("Usage: node scripts/extract-workbench-content.mjs <client-script.log> [output.json] [--allow-partial]");
 		process.exitCode = 2;
 	} else {
 		try {
 			const input = process.argv[2];
-			const report = ParseNativeContentProbe(readFileSync(input, "utf8"), input);
+			const allowPartial = process.argv.includes("--allow-partial");
+			const output = process.argv.slice(3).find(arg => arg !== "--allow-partial");
+			const report = ParseNativeContentProbe(readFileSync(input, "utf8"), input, {allowPartial});
 			const serialized = JSON.stringify(report, null, 2) + "\n";
-			if (process.argv[3]) {
-				writeFileSync(process.argv[3], serialized, "utf8");
-				console.log("Native getter record written to " + process.argv[3]);
+			if (output) {
+				writeFileSync(output, serialized, "utf8");
+				console.log("Native getter record written to " + output);
 			} else {
 				console.log(serialized);
 			}
