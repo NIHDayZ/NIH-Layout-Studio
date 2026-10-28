@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { MeasureAuthoredScrollViewport } from "../.geometry-engine-test-build/ScrollViewport.js";
+import { MeasureAuthoredScrollViewport, EstimateNativeScrollExtent } from "../.geometry-engine-test-build/ScrollViewport.js";
 import { MeasureLayoutTree } from "../.geometry-engine-test-build/LayoutMeasurement.js";
 import { ArrangeMeasuredGeometry } from "../.geometry-engine-test-build/GeometrySnapshot.js";
 
@@ -124,7 +124,7 @@ test("native-derived Scroll candidate uses viewport as baseline, then each child
   {x:10,y:10,width:60,height:20},
   {x:40,y:50,width:100,height:30}
  ]);
- const { EstimateNativeScrollExtent } = await import("../.geometry-engine-test-build/ScrollViewport.js");
+
  assert.deepEqual(EstimateNativeScrollExtent(direct),{
   width:140,height:80,
   evidence:"native-derived-scroll-extent-prototype",
