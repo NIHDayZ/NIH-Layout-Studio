@@ -26,7 +26,7 @@ test("native sizing fixture preserves distinct text, content, image and containe
 	const prepared=MeasureLayoutTree(roots);
 	assert.equal(roots.length,1);
 	assert.equal(roots[0].name,"NIHContentParity");
-	assert.equal(prepared.nodeCount,18);
+	assert.equal(prepared.nodeCount,27);
 	const expected={
 		TextFixed:["none","none"],
 		TextToTextH:["text","none"],
@@ -39,7 +39,10 @@ test("native sizing fixture preserves distinct text, content, image and containe
 		ImageContentWide:["content","content"],
 		FrameContentHeight:["none","content"],
 		PanelContentBoth:["content","content"],
-		FrameContentHidden:["none","content"]
+		FrameContentHidden:["none","content"],
+		FrameFixedControl:["none","none"],
+		FrameContentUpper:["none","content"],
+		WrapContentUpper:["none","content"]
 	};
 	for (const [name,modes] of Object.entries(expected)) {
 		const node=ByName(prepared.roots,name);
