@@ -1,8 +1,16 @@
 # Native text / image / content-size investigation
 
-**Status:** Source fixture, passive authored sizing decoder, log parser and
-regressions are implemented. The **new DayZ probe is not compiled or tested
-in-game**. No native measurements from this fixture exist yet.
+**Status (2026-10-28):** The original probe **compiled and ran in DayZ**.
+Four phases yielded complete getter records for 13 of 18 expected
+widgets. Native `size to text h/v` behavior is independently observed
+and tested. Five nested Frame/Panel descendants were absent from the
+recursive output, so the capture is **INCOMPLETE**, not native parity.
+See [the first observed results](2026-10-28-partial-native-capture.md)
+and [partial JSON](capture.runtime.partial.2026-10-28.json).
+
+The fixture is now **v2**, extended to 27 widgets with three extra
+fixed/uppercase/Wrap controls and independent direct lookup probes.
+This revised fixture has **not yet** been compiled/tested in DayZ.
 
 ## Why this is a separate fixture
 
@@ -26,6 +34,9 @@ This layout deliberately compares the following **different requests**:
 | FrameContentHeight | `size to content v` | direct child bottom extent vs actual parent height |
 | PanelContentBoth | `size to content h/v` | two-axis parent content sizing |
 | FrameContentHidden | `size to content v` + hidden far child | unknown native hidden-child inclusion policy |
+| FrameFixedControl | ordinary fixed Frame with two nested children | native tree construction control |
+| FrameContentUpper | uppercase `Size To Content V` on Frame | isolate property spelling/case vs unsupported class |
+| WrapContentUpper | uppercase `Size To Content V` on WrapSpacer | independently test native managed container sizing |
 
 The two built-in image samples are from DayZ's `dayz_gui` imageset. Their
 recorded atlas entries (Expand=20×20 and Gradient=75×5) are **reference
@@ -35,7 +46,9 @@ that error rather than inventing a fallback size.
 
 The test-only script records `GetScreenPos/GetScreenSize`,
 `GetPos/GetSize`, `GetFlags`, `IsVisible`, and `TextWidget.GetTextSize`
-for every widget. There is no equivalent safe image intrinsic getter in
+for every reachable widget. v2 additionally checks direct `FindAnyWidget`
+presence for nested children and immediate parent-child counts, to
+distinguish missing construction from recursive traversal gaps. There is no equivalent safe image intrinsic getter in
 this harness; it records image **widget bounds**, not image source pixels.
 `GetTextSize` and the widget's rectangle are not interchangeable.
 
@@ -51,9 +64,9 @@ sizing behavior is reproducible. The source layout also contains fixed
 children, hidden descendants, and plain alignment controls.
 
 The test mod deliberately does not modify production Canvas rendering or
-change any native flags after creation. Its EnScript compilation and runtime
-execution must be validated separately; passing Node/Vite CI cannot prove
-the test mod is loadable in DayZ.
+change any native flags after creation. The **original v1** harness compiled
+and ran; the revised v2 must be rebuilt and revalidated independently.
+Passing Node/Vite CI cannot prove EnScript compilation.
 
 ## Passive shared sizing intent
 
@@ -74,7 +87,9 @@ measurement and never automatically resizes a widget in the current engine.
 The parser in `scripts/extract-workbench-content.mjs` accepts complete
 DayZ client logs or only the matching `[NIH_LayoutStudio][ContentProbe]`
 records. It refuses malformed values, duplicate getters, missing capture
-phases, missing text pixel sizes, missing widgets, and probe errors.
+phases, missing text pixel sizes, missing **v2 fixture widgets (27)**,
+and probe errors. v1 remains a separately stored incomplete native record,
+not a valid v2 extractor output.
 
 After successfully running the probe, from a local checkout:
 
