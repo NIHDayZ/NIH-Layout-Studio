@@ -5,7 +5,9 @@
 
 ## Census and reproducibility
 
-The 227 vanilla GUI `.layout` files contain **9,524 widget declarations in 31 distinct classes**. Counts are declarations, not unique screens or evidence of native correctness. The scripts API declares 29 widget-related classes (including abstract/base classes and a nonwidget event handler); it is **not exhaustive** for specialized Workbench/DayZ widgets. RTTI class-name strings are supplemental discovery indicators, **not** proof of particular virtual methods or layouts.
+The 227 vanilla GUI `.layout` files contain **9,524 widget declarations in 31 distinct classes**. Counts are declarations, not unique screens or evidence of native correctness.
+
+The most common families also appear across many **different layout files**: Panel (159 files), Text (157), Frame (147), GridSpacer (132), Image (126), Button (100), WrapSpacer (84), and Scroll (42). These layout-level counts demonstrate why the core geometry, painting, and scrolling contracts deserve broader priority than any one comparison screenshot. The scripts API declares 29 widget-related classes (including abstract/base classes and a nonwidget event handler); it is **not exhaustive** for specialized Workbench/DayZ widgets. RTTI class-name strings are supplemental discovery indicators, **not** proof of particular virtual methods or layouts.
 
 Re-run against a local, legally obtained Workbench install:
 
