@@ -13,6 +13,8 @@ export interface ArrangementOptions {
 	 * leaf ImageWidget/TextWidget size-to-content. No native parity asserted.
 	 */
 	providedIntrinsicContent?: boolean;
+	/** Preview only: use measured text height AFTER its authored width is resolved. */
+	constrainedTextPreview?: boolean;
 }
 
 export interface AppliedLayoutStrategy {
