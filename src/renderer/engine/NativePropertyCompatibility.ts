@@ -155,7 +155,7 @@ export function InspectNativePropertyCompatibility(
 				} else if (sourceOrder === "after-all-children") {
 					code = "serialization-order-risk";
 					severity = "warning";
-					detail = "The native test retained children with this property after the child group, but the current Studio serializer writes properties before children. Re-export can change native loader behavior; no rewrite is performed.";
+					detail = "Native DayZ retained children with this property after the child group. Studio's canonical serializer writes properties before children during some structural edits, which may alter native loading. Direct Save/Export of the current source preserves its order; this diagnostic changes nothing.";
 				} else {
 					code = "mixed-native-property-order";
 					detail = "Native tests differ before versus after the child group, but source order here is mixed or unavailable. Do not predict child existence.";
