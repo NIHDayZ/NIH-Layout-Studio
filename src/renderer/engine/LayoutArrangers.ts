@@ -1,5 +1,6 @@
 import type { GeometryRect } from "./GeometryCore.js";
 import { PlanConstrainedGrid } from "./ConstrainedGrid.js";
+import { PlanFixedWrap } from "./FixedWrap.js";
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
 
 /**
@@ -8,6 +9,8 @@ import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
  */
 export interface ArrangementOptions {
 	constrainedGrid?: boolean;
+	/** Native-derived fixed-child WrapSpacer only; no content-sized axes. */
+	fixedWrap?: boolean;
 	/**
 	 * Prototype only: consume a supplied independent intrinsic dimension for
 	 * leaf ImageWidget/TextWidget size-to-content. No native parity asserted.
@@ -21,9 +24,9 @@ export interface ArrangementOptions {
 
 export interface AppliedLayoutStrategy {
 	id: string;
-	kind: "grid";
+	kind: "grid" | "wrap";
 	evidence: "native-disassembly";
-	mode: "constrained-grid-prototype";
+	mode: "constrained-grid-prototype" | "fixed-wrap-prototype";
 }
 
 export interface ChildArrangement {
@@ -64,6 +67,42 @@ function ArrangeConstrainedGrid(
 	};
 }
 
+/**
+ * Apply only the native-derived line packing case for fixed-size children.
+ * Refuse any child with a size-to-content request or a relative axis: that
+ * would require intrinsic negotiation not yet recovered from Workbench.
+ */
+function ArrangeFixedWrap(
+	parent: MeasuredLayoutNode,
+	rect: GeometryRect
+): ChildArrangement | null {
+	const wrap = parent.nativeWrap;
+	if (!wrap || parent.unresolvedContentWidth || parent.unresolvedContentHeight)
+		return null;
+	if (!parent.children.every((child) =>
+		child.authored.visible && child.authored.exactSizeX && child.authored.exactSizeY
+		&& !child.authored.sizeToContentWidth && !child.authored.sizeToContentHeight
+		&& Number.isFinite(child.authored.sizeX) && child.authored.sizeX > 0
+		&& Number.isFinite(child.authored.sizeY) && child.authored.sizeY > 0
+	))
+		return null;
+	const plan = PlanFixedWrap(parent.children.map((child) => ({
+		width: child.authored.sizeX,
+		height: child.authored.sizeY
+	})), rect, wrap);
+	if (!plan)
+		return null;
+	return {
+		rects: plan.rects,
+		applied: {
+			id: parent.node.id,
+			kind: "wrap",
+			evidence: "native-disassembly",
+			mode: "fixed-wrap-prototype"
+		}
+	};
+}
+
 type StrategyPlanner = (node: MeasuredLayoutNode, rect: GeometryRect) => ChildArrangement | null;
 
 /**
@@ -73,7 +112,8 @@ type StrategyPlanner = (node: MeasuredLayoutNode, rect: GeometryRect) => ChildAr
  * authored geometry resolver, not this registry.
  */
 const IMPLEMENTED_STRATEGIES: Partial<Record<MeasuredLayoutNode["strategy"]["kind"], StrategyPlanner>> = {
-	grid: ArrangeConstrainedGrid
+	grid: ArrangeConstrainedGrid,
+	wrap: ArrangeFixedWrap
 };
 
 export function PlanManagedChildren(
@@ -84,6 +124,8 @@ export function PlanManagedChildren(
 	if (!parent.strategy.requiresArrangement || parent.children.length === 0)
 		return null;
 	if (parent.strategy.kind === "grid" && !options.constrainedGrid)
+		return null;
+	if (parent.strategy.kind === "wrap" && !options.fixedWrap)
 		return null;
 	const handler = IMPLEMENTED_STRATEGIES[parent.strategy.kind];
 	return handler?.(parent, containerRect) ?? null;
