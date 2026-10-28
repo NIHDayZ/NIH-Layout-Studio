@@ -1,16 +1,25 @@
 # Native text / image / content-size investigation
 
-**Status (2026-10-28):** The original probe **compiled and ran in DayZ**.
-Four phases yielded complete getter records for 13 of 18 expected
-widgets. Native `size to text h/v` behavior is independently observed
-and tested. Five nested Frame/Panel descendants were absent from the
-recursive output, so the capture is **INCOMPLETE**, not native parity.
-See [the first observed results](2026-10-28-partial-native-capture.md)
-and [partial JSON](capture.runtime.partial.2026-10-28.json).
+**Status (2026-10-28):** Both disposable DayZ probes compiled and ran
+in-game. The **v1** capture contained 13/18 authored widgets. The revised
+**v2** capture independently recorded 20/27 authored widgets, all native
+direct lookup results and all parent child-count checks at four phases.
 
-The fixture is now **v2**, extended to 27 widgets with three extra
-fixed/uppercase/Wrap controls and independent direct lookup probes.
-This revised fixture has **not yet** been compiled/tested in DayZ.
+**Confirmed native difference:** A fixed Frame loaded 2/2 children;
+a content-sized WrapSpacer loaded 2/2 and grew from 20 to **28** height;
+the tested content-flagged Frame/Panel parents loaded **0** children and
+remained at their authored 20 height. The seven absent children were
+unreachable by both recursive traversal and native `FindAnyWidget`.
+This establishes a class/property-specific loader behavior in the
+fixture; **the exact native parser-level cause is not yet proven**.
+Text's `size to text` dimensions also repeated the prior measured
+128×16 and 9×16 native values.
+
+See [v2 runtime evidence](2026-10-28-v2-native-capture.md),
+[v2 machine-readable native getter capture](capture.runtime.partial.v2.2026-10-28.json),
+and [original v1 capture](2026-10-28-partial-native-capture.md).
+Neither incomplete capture is a full parity reference. The client
+build and exact native clipping/DPI context remain unrecorded.
 
 ## Why this is a separate fixture
 
@@ -86,10 +95,12 @@ measurement and never automatically resizes a widget in the current engine.
 
 The parser in `scripts/extract-workbench-content.mjs` accepts complete
 DayZ client logs or only the matching `[NIH_LayoutStudio][ContentProbe]`
-records. It refuses malformed values, duplicate getters, missing capture
-phases, missing text pixel sizes, missing **v2 fixture widgets (27)**,
-and probe errors. v1 remains a separately stored incomplete native record,
-not a valid v2 extractor output.
+records. It refuses malformed values, duplicate getters, missing capture phases,
+missing text pixel sizes, missing **v2 fixture widgets (27)**, and
+probe errors **by default**. With explicit `--allow-partial`, incomplete
+yet internally consistent native captures can be preserved as
+`incomplete-native-capture`, not a PASS. v1 and v2 are stored as
+separately documented partial native records.
 
 After successfully running the probe, from a local checkout:
 
