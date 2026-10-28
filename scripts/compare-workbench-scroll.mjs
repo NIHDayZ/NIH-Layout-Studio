@@ -2,9 +2,11 @@
 /**
  * Workbench ScrollWidget fixture comparator.
  *
- * Predicts known, unscaled scrollbar/offset arithmetic from a fixture and
- * compares it with independently captured Workbench observations.
- * Missing observations are PENDING, never silently treated as a native pass.
+ * Predicts evidence-labeled native scrollbar/offset arithmetic from a
+ * fixture and compares it with independently captured native observations.
+ * Missing observations or unknown native scale context are PENDING, never
+ * silently treated as native parity. Reported native inputs are not
+ * authenticated by this tool; the evidence record must be audited separately.
  *
  * Run after npm run test:geometry-engine:
  *   node scripts/compare-workbench-scroll.mjs tests/fixtures/workbench-scroll/capture.json
