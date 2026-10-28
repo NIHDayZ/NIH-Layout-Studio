@@ -23,7 +23,7 @@ class NIHPropertyMatrixRuntimeProbe {
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(Capture, 2100, false, "after-resize");
 	}
 
-	protected void ApplyViewport(float width, float height) {
+	void ApplyViewport(float width, float height) {
 		if (!m_Root)
 			return;
 		m_Root.SetScreenPos(0, 0);
@@ -32,7 +32,7 @@ class NIHPropertyMatrixRuntimeProbe {
 		Print(string.Format("[NIH_LayoutStudio][PropertyProbe] REQUEST viewport=%1,%2", width, height));
 	}
 
-	protected void Capture(string phase) {
+	void Capture(string phase) {
 		if (!m_Root)
 			return;
 		Print("[NIH_LayoutStudio][PropertyProbe] BEGIN " + phase);
