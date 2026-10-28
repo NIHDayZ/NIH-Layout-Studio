@@ -1,8 +1,9 @@
-# Native-safe property order preservation — design, not implementation
+# Native-safe property order preservation — implementation stages
 
-**Status:** Design proposal for the next independently reviewed change.
-**Production implementation:** Not started. The existing `LayoutParser.Serialize()`
-and all source-aware editor operations remain unchanged in PR #47.
+**Status:** Phase A (canonical property / child-group ordering) is
+implemented on draft PR #47; remaining source-trivia fidelity and
+structural-edit requirements below are explicitly not complete.
+Direct Save/Export still writes the current source string unchanged.
 
 ## Problem and native evidence
 
@@ -21,19 +22,58 @@ References:
 - `tests/fixtures/workbench-content/capture.property-syntax.native.2026-10-28.log`
 - `tests/native-content-property-syntax.test.mjs`
 
-In Studio today, `LayoutParser.Parse()` represents `properties` and
-`children` in separate arrays. Although each parsed property and
-child declaration retains a source line number, **the node structure
-does not explicitly preserve the child-group placement relative to
-properties**. `LayoutParser.SerializeNode()` writes every property
-first and the children group second. Consequently, a canonical
-structural edit may transform a native-loadable after-child property
-into a native-hazardous before-child property.
+Originally, `LayoutParser.Parse()` represented properties and
+children in separate arrays and `SerializeNode()` wrote every property
+first. Phase A now records each child's group-opening source line and
+parent identity. That fixes the verified after-child ordering defect
+for parsed layouts, while exact trivia, source formatting and
+all editing edge cases remain separate validation work.
 
 **Important distinction:** Direct Save and Export As write the current
 `source` string without calling the canonical serializer. Source-aware
 patch operations likewise may preserve order for their specific edits.
 Do not describe an unchanged direct export as reordering the source.
+
+## Phase A — source-order-aware canonical serializer
+
+The minimal implementation uses the existing `LayoutProperty.line` data,
+and records the original **child-group opening line** and **source
+parent ID** on each parsed direct child as optional
+`LayoutNode.sourceGroupLine` and `sourceGroupParentId`.
+`LayoutParser.SerializeNode` merges the existing property and group
+entries by source line rather than writing every property first.
+Multiple distinct child groups remain distinct; an arbitrary property
+between two groups retains its relative order.
+
+New children, or children reparented to an unrelated node, have
+untrusted original group coordinates and join the last valid existing
+group where one exists. If no source-group provenance exists,
+new/synthesized nodes use the traditional properties-before-children
+fallback. This is an intentional conservative boundary, **not**
+a guarantee that every synthesized/modified layout will load in
+DayZ. Canonical source remains formatted output and is not a
+round-trip preserving comments, whitespace, or exact original bytes.
+
+All class/property native compatibility findings remain read-only:
+verified property-before-children hazards still warn; a previously
+hazardous **serializer-order** warning is now informational for
+parsed source whose child-group ordering is known and preserved.
+The exact native C++ parsing implementation is still unknown.
+
+Regression coverage includes all twelve actual DayZ syntax fixtures,
+property ordering between multiple child groups, a new child joining
+the existing group, a child moved from another parent, and fallback
+behavior for synthesized nodes without provenance. Browser coverage
+also checks that a safe trailing native property exports without an
+unnecessary warning. Geometry and Canvas strategies are unchanged.
+
+**Remaining Phase B design tasks:** source trivia/comments,
+new property insertion policies under direct AST edits, byte-accurate
+source-range patching beyond current source-aware actions, and
+extensive undo/redo plus structural-edit browser tests. The
+conceptual ordered-entry model below is an option for Phase B,
+not a requirement to replace the newly introduced small metadata
+with a second parse tree.
 
 ## Design decision
 
@@ -118,7 +158,8 @@ No global property allowlist, native C++ parser reconstruction,
 automatic unknown-property stripping, Canvas subtree suppression,
 or speculative content-size negotiation is included.
 
-The current read-only `NativePropertyCompatibility` and
-Save/Export review remain valuable until the new serializer has
-been designed, tested, and independently approved. PR #47 stays
-draft and unmerged.
+The read-only `NativePropertyCompatibility` and Save/Export
+review remain valuable for **observed native child-loss risks**.
+Phase A ordering preservation is implemented in PR #47, which
+remains draft and unmerged. Full trivia/source-format preservation
+is not implemented or claimed.
