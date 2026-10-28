@@ -516,3 +516,27 @@ remain immutable. `ContentSizingRequests` stays passive and the
 `boundedParentContent` Frame/Panel prototype remains explicit opt-in.
 The production Canvas must not suppress children or apply native
 content-size overrides based on unconfirmed parser hypotheses.
+
+## M2.1 native matrix independently confirmed (2026-10-28)
+
+The full DayZ client `script_2026-10-28_14-50-18.log` provides
+three complete native property-matrix capture phases, preserved as
+timestamped [filtered getter evidence](../tests/fixtures/workbench-content/capture.property-matrix.native.2026-10-28.log)
+and [machine-readable native records](../tests/fixtures/workbench-content/capture.property-matrix.native.2026-10-28.json).
+`tests/native-content-property-matrix.test.mjs` re-parses and verifies
+all 42 native case observations.
+
+**Observed:** `Size To Content V=0` and `=1` on the tested
+ordinary Frame/Panel both correspond to zero native descendants
+immediately after `CreateWidgets`. The no-flag and clipchildren
+controls retain their descendants; WrapSpacer with V=0 retains
+its two children and authored 20 height, while V=1 changes to
+measured 28 height with both children retained. All 14 native
+case values persist unchanged after update and resize.
+
+**Inference boundary:** This establishes a **class-dependent
+native property-presence effect in the tested loader context**.
+No C++ parser implementation or reasons for token recovery are
+exposed by these getters. Shared extent arithmetic must remain
+separate from native parser eligibility; do not suppress parsed
+children or mutate serialization to reproduce the anomaly.
