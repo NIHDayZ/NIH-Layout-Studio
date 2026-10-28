@@ -32,6 +32,9 @@ export interface AuthoredGeometry {
 	vAlign: string;
 	visible: boolean;
 	clipChildren: boolean;
+	/** Native content sizing still requires specialized measurement. */
+	sizeToContentWidth: boolean;
+	sizeToContentHeight: boolean;
 	sortOrder: number;
 }
 
@@ -77,6 +80,8 @@ export function DecodeAuthoredGeometry(node: Pick<GeometryWidget, "properties">)
 		vAlign: properties.get("valign") ?? "top_ref",
 		visible: properties.get("visible") !== "0",
 		clipChildren: properties.get("clipchildren") === "1",
+		sizeToContentWidth: properties.get("size to content h") === "1",
+		sizeToContentHeight: properties.get("size to content v") === "1",
 		sortOrder: NumberOr(properties.get("priority"), 0)
 	};
 }
