@@ -173,6 +173,7 @@ export class LayoutParser {
 					}
 					const child = this.ParseNode(tokens, index, childDecl.type, childDecl.name);
 					child.node.sourceGroupLine = childGroupLine;
+					child.node.sourceGroupParentId = node.id;
 					node.children.push(child.node);
 					index = child.nextIndex;
 				}
@@ -185,6 +186,7 @@ export class LayoutParser {
 			if (declaration) {
 				const child = this.ParseNode(tokens, index, declaration.type, declaration.name);
 				child.node.sourceGroupLine = token.line;
+				child.node.sourceGroupParentId = node.id;
 				node.children.push(child.node);
 				index = child.nextIndex;
 				continue;
@@ -224,7 +226,8 @@ export class LayoutParser {
 		const synthesized: LayoutNode[] = [];
 		for (const child of node.children) {
 			const groupLine = child.sourceGroupLine;
-			if (groupLine === undefined || !Number.isSafeInteger(groupLine) || groupLine <= 0) {
+			if (child.sourceGroupParentId !== node.id ||
+				groupLine === undefined || !Number.isSafeInteger(groupLine) || groupLine <= 0) {
 				synthesized.push(child);
 				continue;
 			}
@@ -236,10 +239,19 @@ export class LayoutParser {
 			group.push(child);
 		}
 
+		// New/reparented children have no trustworthy original group line.
+		// Join the last known child group rather than placing children after
+		// a source-authored trailing property that native DayZ may reject.
+		if (synthesized.length > 0 && grouped.size > 0) {
+			const lastGroup = Array.from(grouped.values()).at(-1);
+			if (lastGroup)
+				lastGroup.push(...synthesized);
+		}
+
 		let groupIndex = 0;
 		for (const [line, children] of grouped)
 			entries.push({ line, order: node.properties.length + groupIndex++, children });
-		if (synthesized.length > 0)
+		if (synthesized.length > 0 && grouped.size === 0)
 			entries.push({ line: Number.MAX_SAFE_INTEGER, order: node.properties.length + groupIndex, children: synthesized });
 
 		entries.sort((left, right) => {
