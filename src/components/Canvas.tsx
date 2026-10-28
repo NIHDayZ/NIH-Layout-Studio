@@ -1,5 +1,5 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
-import { PlanGrid } from "../renderer/GridLayout";
+import { PlanConstrainedGrid, PlanGrid } from "../renderer/GridLayout";
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
@@ -685,6 +685,9 @@ function AnchorOverlay({ node }: { node: LayoutNode }) {
 }
 
 const experimentalGridLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalGridLayout") === "1";
+// Separate opt-in: apply RTTI-verified native fixed-cell arithmetic only to
+// constrained grids; retain intrinsic sizing for Size To Content widgets.
+const experimentalNativeConstrainedGrid = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalNativeConstrainedGrid") === "1";
 const debugSpacerLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugSpacerLayout") === "1";
 const loggedSpacerLayouts = new Set<string>();
 
@@ -709,7 +712,22 @@ function GetGridPlan(node: LayoutNode, childParent: Rect) {
 		width: GetFlag(node.children[index], "hexactsize") ? childRect.width : 0,
 		height: GetFlag(node.children[index], "vexactsize") ? childRect.height : 0
 	}));
-	return PlanGrid(children, GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), GetSpacerGap(node), measured, { width: childParent.width, height: childParent.height });
+	const configuredColumns = GetNumber(node, "Columns", 0);
+	const configuredRows = GetNumber(node, "Rows", 0);
+	if (experimentalNativeConstrainedGrid && !GetFlag(node, "Size To Content H") && !GetFlag(node, "Size To Content V")) {
+		// The native constrained-grid routine uses uniform cell dimensions.
+		// Implicit row/column defaults remain provisional: do not encode them
+		// in the recovered arithmetic helper itself.
+		let columns = 3;
+		if (configuredColumns > 0)
+			columns = Math.floor(configuredColumns);
+		else if (configuredRows > 0)
+			columns = Math.max(1, Math.ceil(children.length / configuredRows));
+		const rows = configuredRows > 0 ? Math.floor(configuredRows) : Math.max(1, Math.ceil(children.length / columns));
+		return PlanConstrainedGrid(children.length, columns, rows,
+			{ width: childParent.width, height: childParent.height }, GetSpacerGap(node), GetNumber(node, "Padding", 0));
+	}
+	return PlanGrid(children, configuredColumns, configuredRows, GetSpacerGap(node), measured, { width: childParent.width, height: childParent.height });
 }
 
 function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | null, selectedIds: string[], onSelect: (node: LayoutNode, additive?: boolean) => void, onGeometryChange: RenderNodeProps["onGeometryChange"], zoom: number, debug: CanvasDebugOptions, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null, snapEnabled: boolean, snapSize: number, onContextMenu: RenderNodeProps["onContextMenu"]) {
