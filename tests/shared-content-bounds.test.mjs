@@ -29,7 +29,7 @@ test("one shared envelope preserves fractional, positive and negative child edge
 		width:119.25,height:95.25,childCount:2
 	});
 	assert.equal(JSON.stringify(rectangles),before);
-	assert.equal(MeasureContentBounds(rectangles),bounds===null?null:bounds);
+	assert.deepEqual(MeasureContentBounds(rectangles),bounds);
 	assert.deepEqual(MeasureContentBounds(rectangles.slice().reverse()),bounds);
 });
 
@@ -43,12 +43,15 @@ test("invalid, empty and overflowed children are rejected atomically instead of 
 		{x:0,y:0,width:5,height:0},
 		{x:0,y:0,width:5,height:-1},
 		{x:Number.MAX_VALUE,y:0,width:Number.MAX_VALUE,height:10},
-		{x:0,y:Number.MAX_VALUE,width:10,height:Number.MAX_VALUE},
-		{x:-Number.MAX_VALUE,y:0,width:10,height:10}
+		{x:0,y:Number.MAX_VALUE,width:10,height:Number.MAX_VALUE}
 	]) {
 		assert.equal(MeasureContentBounds([valid,invalid]),null,
 			"unsafe child cannot leave a partial envelope: "+JSON.stringify(invalid));
 	}
+	assert.equal(MeasureContentBounds([
+		{x:-Number.MAX_VALUE,y:0,width:1e308,height:10},
+		{x:Number.MAX_VALUE,y:0,width:20,height:10}
+	]),null,"an overflowing combined span must be rejected");
 	assert.equal(MeasureContentBounds([{x:0,y:0,width:10,height:0}]),null);
 	assert.deepEqual(MeasureContentBounds([{x:0,y:9,width:10,height:0}],{
 		allowZeroHeight:true
