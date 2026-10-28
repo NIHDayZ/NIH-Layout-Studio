@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { ScaleImageSetCoordinates } from "../.imageset-test-build/ImageSetVariants.js";
+import { OrderImageSetVariants, ScaleImageSetCoordinates } from "../.imageset-test-build/ImageSetVariants.js";
 import { ParseImageSetSource, ResolveProjectImage } from "../.imageset-test-build/ProjectWorkspace.js";
 
 test("dayz_gui icon rectangles remain in 1024 reference space at mpix 0", () => {
@@ -57,4 +57,31 @@ test("XML imageset sprites remain absolute pixels rather than inferred-bound sca
   {path:"icons.png",url:"blob:xml",width:256,height:256}
  ]),"set:xmlgui image:test");
  assert.deepEqual([resolved?.url,resolved?.x,resolved?.y,resolved?.width,resolved?.height,resolved?.atlasWidth,resolved?.atlasHeight],["blob:xml",16,16,16,16,256,256]);
+});
+
+test("variant preference selects mpix 1 when available", () => {
+ const variants = [{ path: "one", mpix: 0 }, { path: "two", mpix: 1 }];
+ assert.deepEqual(OrderImageSetVariants(variants, 1).map((x) => x.path), ["two", "one"]);
+ assert.deepEqual(OrderImageSetVariants(variants).map((x) => x.path), ["one", "two"]);
+ assert.deepEqual(variants.map((x) => x.path), ["one", "two"]);
+});
+test("variant preference safely falls back when requested mpix is missing", () => {
+ const variants = [{ path: "one", mpix: 0 }, { path: "two", mpix: 1 }];
+ assert.deepEqual(OrderImageSetVariants(variants, 2).map((x) => x.path), ["one", "two"]);
+});
+test("resolver selects high-resolution atlas on explicit preference", () => {
+ const set = ParseImageSetSource("dayz_gui.imageset", source);
+ const resolved = ResolveProjectImage(workspace(set, [
+  { path: "Gui/imagesets/dayz_gui.edds", url: "blob:one", width: 1024, height: 1024 },
+  { path: "Gui/imagesets/dayz_gui@2x.edds", url: "blob:two", width: 2048, height: 2048 }
+ ]), "set:dayz_gui image:iconHealth0", 1);
+ assert.deepEqual([resolved?.url, resolved?.x, resolved?.y, resolved?.width, resolved?.logicalWidth],
+  ["blob:two", 1960, 398, 76, 38]);
+});
+test("resolver falls back to standard atlas if preferred high-resolution file is absent", () => {
+ const set = ParseImageSetSource("dayz_gui.imageset", source);
+ const resolved = ResolveProjectImage(workspace(set, [
+  { path: "Gui/imagesets/dayz_gui.edds", url: "blob:one", width: 1024, height: 1024 }
+ ]), "set:dayz_gui image:iconHealth0", 1);
+ assert.equal(resolved?.url, "blob:one");
 });
