@@ -3,6 +3,7 @@ import { DecodeAuthoredGeometry, MeasureAuthoredSize, type AuthoredGeometry, typ
 import { ResolveChildLayoutStrategy, type ChildLayoutStrategy } from "./WidgetStrategies.js";
 import { DecodeNativeGridSettings, type NativeGridSettings } from "./ConstrainedGrid.js";
 import { ResolveIntrinsicMeasurement, type IntrinsicMeasurementProviders, type ResolvedIntrinsicMeasurement } from "./IntrinsicMeasurements.js";
+import type { ConstrainedTextPreparer, PreparedTextFlow } from "./ConstrainedText.js";
 
 /**
  * A prepared layout node with geometry properties decoded exactly once.
@@ -21,6 +22,8 @@ export interface MeasuredLayoutNode {
 	readonly measurement: MeasuredWidget;
 	/** Optional external resource measurements, never calculated from the widget rectangle. */
 	readonly intrinsic: ResolvedIntrinsicMeasurement | null;
+	/** Deferred width-constrained text preview; must run after width arrangement. */
+	readonly textFlow: PreparedTextFlow | null;
 	readonly unresolvedContentWidth: boolean;
 	readonly unresolvedContentHeight: boolean;
 	readonly children: readonly MeasuredLayoutNode[];
@@ -42,6 +45,8 @@ export interface MeasuredLayoutTree {
  */
 export interface MeasurementOptions {
 	intrinsics?: IntrinsicMeasurementProviders;
+	/** Optional preview-only text measurement; not native Workbench. */
+	constrainedText?: ConstrainedTextPreparer;
 }
 
 export function MeasureLayoutTree(
@@ -66,6 +71,9 @@ export function MeasureLayoutTree(
 		const nativeGrid = strategy.kind === "grid" ? DecodeNativeGridSettings(node.properties) : null;
 		const intrinsic = options.intrinsics && (authored.sizeToContentWidth || authored.sizeToContentHeight)
 			? ResolveIntrinsicMeasurement(node, options.intrinsics) : null;
+		const textFlow = options.constrainedText && node.type.trim().toLowerCase() === "textwidgetclass"
+			&& authored.sizeToContentHeight && !authored.sizeToContentWidth && children.length === 0
+			? options.constrainedText(node) : null;
 		const unresolvedContentWidth = authored.sizeToContentWidth;
 		const unresolvedContentHeight = authored.sizeToContentHeight;
 		++nodeCount;
@@ -80,6 +88,7 @@ export function MeasureLayoutTree(
 			nativeGrid,
 			measurement: MeasureAuthoredSize(authored),
 			intrinsic,
+			textFlow,
 			unresolvedContentWidth,
 			unresolvedContentHeight,
 			children
