@@ -596,3 +596,66 @@ Full evidence:
 [actual native result](../tests/fixtures/workbench-content/2026-10-28-property-syntax-native-results.md),
 [raw probe lines](../tests/fixtures/workbench-content/capture.property-syntax.native.2026-10-28.log),
 [structured native getters](../tests/fixtures/workbench-content/capture.property-syntax.native.2026-10-28.json).
+
+
+## M2.3 native property compatibility diagnostics (2026-10-28)
+
+A **read-only** native source-loader compatibility inspector now lives in
+`src/renderer/engine/NativePropertyCompatibility.ts`. It is independent of
+native geometry measurement, painting, and the Studio serializer:
+
+- `ClassifyNativePropertyEvidence(type, propertyName)` uses **exact**
+  case-insensitive widget-class / property-name pairs observed in DayZ
+  client probes. It is **not** a complete C++ widget-property allowlist.
+  The observed Frame/Panel risk pairs are `Size To Content H/V`;
+  additionally Frame `Size To Text V` and the deliberately unknown
+  `NIH_ProbeUnknown` probe key were observed. Only Frame
+  `clipchildren` and WrapSpacer `Size To Content V` are marked
+  explicitly accepted in this limited evidence registry.
+  Every other pair is **unverified**, not silently treated as valid or
+  unsupported.
+- `InspectNativePropertySourceOrder` examines the original
+  `LayoutProperty.line` and direct child declaration `LayoutNode.line`
+  metadata; the parsed **properties and children arrays themselves do not
+  retain interleaving order**. A before/after inference is made only
+  when every necessary source line exists. Otherwise the inspector says
+  `mixed-or-unavailable`, not "before" by guess.
+- `InspectNativePropertyCompatibility(roots)` produces warnings for
+  **native-observed child-block loss** when a demonstrated-risk property
+  appears **before all children**, and for **serialization-order risk**
+  when it appears **after all children**. The latter is significant:
+  the current `LayoutParser.SerializeNode` writes **all properties
+  before the children block**, even if the original file placed an
+  unsupported attribute afterwards and native DayZ had retained both
+  children. A Studio export therefore **could change native loader
+  behavior** while leaving the high-level tree otherwise intact.
+  We only diagnose this; the serializer is unchanged.
+- `mixed-native-property-order` is informational when line provenance
+  is missing or child placement is mixed. An optional
+  `{includeUnverified:true}` emits **informational** notices for
+  unverified class/property pairs. This is opt-in to avoid misleading,
+  noisy warnings on ordinary imported layouts.
+
+To use these diagnostics with the shared measurement engine, explicitly
+call `MeasureLayoutTree(roots, { nativePropertyDiagnostics: true })`
+and inspect the returned `nativePropertyDiagnostics` array.
+**By default it is empty.** This option changes **no geometry,
+visibility, layout strategy, internal measurement, authored child list
+or serialization**, and the production Canvas does not invoke it.
+Source line provenance must come from the real `LayoutParser`, not
+manually constructed line-less geometry nodes.
+
+Regression tests in `tests/native-property-compatibility.test.mjs`
+cross-check **all twelve native syntax input fixtures** against their
+actual getter results, demonstrate the serializer's before/after
+reordering on the four relevant examples, verify missing source
+provenance fails conservative, and prove geometry snapshots are
+identical with the diagnostics off/on.
+
+**Evidence boundary:** Class/property outcomes are from a limited
+DayZ client session with script define `DAYZ_1_30`. The actual build,
+other widget classes, and the exact C++ parser recovery path are still
+unknown. A safety warning is not permission to delete a widget
+subtree or automatically rewrite attributes. A future UI may present
+these findings to editors before export, but this increment does not
+change the production UI.
