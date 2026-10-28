@@ -37,21 +37,42 @@ function Invoke-Tool {
 function Invoke-Check {
 	param([string]$TaskName, [string]$CommandName)
 	$logPath = Join-Path $folder "$TaskName.log"
+	$stdoutPath = Join-Path $folder "$TaskName.stdout.log"
+	$stderrPath = Join-Path $folder "$TaskName.stderr.log"
 	Write-Host "Running $CommandName" -ForegroundColor Cyan
-	Push-Location $repoRoot
-	try {
-		& npm.cmd run $CommandName *> $logPath
-		$exitCode = $LASTEXITCODE
-	} finally {
-		Pop-Location
+
+	# PowerShell 5.1 promotes native stderr emitted by npm/esbuild/tsc
+	# into NativeCommandError when ErrorActionPreference is Stop.
+	# Start-Process redirects both streams outside the PowerShell error
+	# pipeline and reports the real native process exit code instead.
+	$commandLine = '/D /S /C "npm.cmd run {0}"' -f $CommandName
+	$process = Start-Process -FilePath $env:ComSpec -ArgumentList $commandLine `
+		-WorkingDirectory $repoRoot -Wait -PassThru -NoNewWindow `
+		-RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
+	$exitCode = $process.ExitCode
+
+	# A combined archival log is convenient for sharing, while the separate
+	# originals avoid losing stderr detail or confusing it with test failure.
+	Set-Content -LiteralPath $logPath -Value '=== STDOUT ===' -Encoding UTF8
+	if (Test-Path -LiteralPath $stdoutPath) {
+		Get-Content -LiteralPath $stdoutPath | Add-Content -LiteralPath $logPath
 	}
+	Add-Content -LiteralPath $logPath -Value '=== STDERR ==='
+	if (Test-Path -LiteralPath $stderrPath) {
+		Get-Content -LiteralPath $stderrPath | Add-Content -LiteralPath $logPath
+	}
+
 	if ($exitCode -ne 0) {
-		Write-Host "FAILED: $CommandName (exit $exitCode). Last output:" -ForegroundColor Red
-		Get-Content -LiteralPath $logPath -Tail 25 | Out-Host
-		return @{ status = 'FAIL'; exitCode = $exitCode; log = $logPath }
+		Write-Host "FAILED: $CommandName (exit $exitCode). Last stdout lines:" -ForegroundColor Red
+		Get-Content -LiteralPath $stdoutPath -Tail 25 | Out-Host
+		Write-Host "Last stderr lines:" -ForegroundColor Red
+		Get-Content -LiteralPath $stderrPath -Tail 25 | Out-Host
+		return @{ status = 'FAIL'; exitCode = $exitCode; log = $logPath;
+			stdoutLog = $stdoutPath; stderrLog = $stderrPath }
 	}
 	Write-Host "PASS: $CommandName" -ForegroundColor Green
-	return @{ status = 'PASS'; exitCode = 0; log = $logPath }
+	return @{ status = 'PASS'; exitCode = 0; log = $logPath;
+		stdoutLog = $stdoutPath; stderrLog = $stderrPath }
 }
 
 $null = Get-Command git -ErrorAction Stop
