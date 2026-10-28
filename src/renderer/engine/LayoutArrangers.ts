@@ -5,6 +5,7 @@ import { MeasureAuthoredScrollViewport, type AuthoredScrollViewport } from "./Sc
 import { ResolveAuthoredRect } from "./WidgetGeometry.js";
 import { EstimateUnscaledScrollViewport, type UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
+import { ScatterManagedRects, SelectManagedChildIndices } from "./ManagedVisibility.js";
 
 /**
  * Explicitly enabled prototype strategies. Default (omitted) means
@@ -48,27 +49,31 @@ export interface ChildArrangement {
 /**
  * Verified native fixed-cell arithmetic, guarded wherever Workbench behavior
  * has not yet been traced: content-sized axes, overflowing slot count,
- * filtered/hidden children, and invalid parent geometry.
+ * invalid native visibility flags and invalid parent geometry.
  */
 function ArrangeConstrainedGrid(
 	parent: MeasuredLayoutNode,
 	rect: GeometryRect
 ): ChildArrangement | null {
 	const grid = parent.nativeGrid;
-	if (!grid || parent.unresolvedContentWidth || parent.unresolvedContentHeight)
+	const indices = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
+	if (!grid || !indices || indices.length === 0
+		|| parent.unresolvedContentWidth || parent.unresolvedContentHeight
+		|| indices.length > grid.columns * grid.rows)
 		return null;
-	if (parent.children.length > grid.columns * grid.rows)
-		return null;
-	if (!parent.children.every((child) => child.authored.visible))
-		return null;
-	if (!Number.isFinite(rect.width) || rect.width < 0 || !Number.isFinite(rect.height) || rect.height < 0)
+	if (!Number.isFinite(rect.width) || rect.width < 0
+		|| !Number.isFinite(rect.height) || rect.height < 0)
 		return null;
 
+	const plan = PlanConstrainedGrid(
+		indices.length, grid.columns, grid.rows,
+		{ width: rect.width, height: rect.height }, grid.margin, grid.padding
+	);
+	const rects = ScatterManagedRects(indices, plan.rects, parent.children.length);
+	if (!rects)
+		return null;
 	return {
-		rects: PlanConstrainedGrid(
-			parent.children.length, grid.columns, grid.rows,
-			{ width: rect.width, height: rect.height }, grid.margin, grid.padding
-		).rects,
+		rects,
 		applied: {
 			id: parent.node.id,
 			kind: "grid",
@@ -83,21 +88,32 @@ function ArrangeConstrainedGrid(
  * Refuse any child with a size-to-content request or a relative axis: that
  * would require intrinsic negotiation not yet recovered from Workbench.
  */
+interface EligibleWrapChildren {
+	readonly indices: readonly number[];
+	readonly sizes: readonly Pick<GeometryRect, "width" | "height">[];
+}
+
 function ReadFixedWrapChildren(
 	parent: MeasuredLayoutNode
-): readonly Pick<GeometryRect, "width" | "height">[] | null {
-	if (!parent.nativeWrap || parent.unresolvedContentWidth
-		|| !parent.children.every((child) =>
-			child.authored.visible && child.authored.exactSizeX && child.authored.exactSizeY
-			&& !child.authored.sizeToContentWidth && !child.authored.sizeToContentHeight
-			&& Number.isFinite(child.authored.sizeX) && child.authored.sizeX > 0
-			&& Number.isFinite(child.authored.sizeY) && child.authored.sizeY > 0
-		))
+): EligibleWrapChildren | null {
+	const indices = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
+	if (!parent.nativeWrap || parent.unresolvedContentWidth || !indices || indices.length === 0)
 		return null;
-	return parent.children.map((child) => ({
-		width: child.authored.sizeX,
-		height: child.authored.sizeY
-	}));
+	if (!indices.every((index) => {
+		const child = parent.children[index].authored;
+		return child.exactSizeX && child.exactSizeY
+			&& !child.sizeToContentWidth && !child.sizeToContentHeight
+			&& Number.isFinite(child.sizeX) && child.sizeX > 0
+			&& Number.isFinite(child.sizeY) && child.sizeY > 0;
+	}))
+		return null;
+	return {
+		indices,
+		sizes: indices.map((index) => ({
+			width: parent.children[index].authored.sizeX,
+			height: parent.children[index].authored.sizeY
+		}))
+	};
 }
 
 /**
@@ -114,23 +130,31 @@ export function ProbeWrapContentHeight(
 		|| parent.strategy.kind !== "wrap"
 		|| parent.unresolvedContentWidth || !parent.unresolvedContentHeight)
 		return null;
-	const sizes = ReadFixedWrapChildren(parent);
-	return sizes && parent.nativeWrap
-		? MeasureFixedWrapContent(sizes, resolvedWidth, parent.nativeWrap) : null;
+	const eligible = ReadFixedWrapChildren(parent);
+	if (!eligible || !parent.nativeWrap)
+		return null;
+	const plan = MeasureFixedWrapContent(eligible.sizes, resolvedWidth, parent.nativeWrap);
+	if (!plan)
+		return null;
+	const rects = ScatterManagedRects(eligible.indices, plan.rects, parent.children.length);
+	return rects ? { ...plan, rects } : null;
 }
 
 function ArrangeFixedWrap(
 	parent: MeasuredLayoutNode,
 	rect: GeometryRect
 ): ChildArrangement | null {
-	const sizes = ReadFixedWrapChildren(parent);
-	if (!sizes || !parent.nativeWrap || parent.unresolvedContentHeight)
+	const eligible = ReadFixedWrapChildren(parent);
+	if (!eligible || !parent.nativeWrap || parent.unresolvedContentHeight)
 		return null;
-	const plan = PlanFixedWrap(sizes, rect, parent.nativeWrap);
+	const plan = PlanFixedWrap(eligible.sizes, rect, parent.nativeWrap);
 	if (!plan)
 		return null;
+	const rects = ScatterManagedRects(eligible.indices, plan.rects, parent.children.length);
+	if (!rects)
+		return null;
 	return {
-		rects: plan.rects,
+		rects,
 		applied: {
 			id: parent.node.id,
 			kind: "wrap",
@@ -141,7 +165,7 @@ function ArrangeFixedWrap(
 }
 
 /**
- * Read-only ScrollWidget viewport diagnostic. Only exact, visible, direct
+ * Read-only ScrollWidget viewport diagnostic. Only eligible exact, direct
  * child bounds are measured; we never infer native scrollbars/offsets.
  * This does NOT fulfill the ScrollWidget arrangement strategy.
  */
@@ -151,16 +175,22 @@ export function ProbeScrollViewport(
 	options: ArrangementOptions = {}
 ): AuthoredScrollViewport | null {
 	if (!options.scrollViewportDiagnostics || parent.strategy.kind !== "scroll"
-		|| parent.unresolvedContentWidth || parent.unresolvedContentHeight
-		|| !parent.children.every((child) =>
-			child.authored.visible && !child.strategy.requiresArrangement
-			&& child.authored.exactPositionX && child.authored.exactPositionY
-			&& child.authored.exactSizeX && child.authored.exactSizeY
-			&& !child.authored.sizeToContentWidth && !child.authored.sizeToContentHeight
-		))
+		|| parent.unresolvedContentWidth || parent.unresolvedContentHeight)
 		return null;
-	const rects = parent.children.map((child) =>
-		ResolveAuthoredRect(child.authored, { width: rect.width, height: rect.height }));
+	const indices = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
+	if (!indices || indices.length === 0
+		|| !indices.every((index) => {
+			const child = parent.children[index];
+			return !child.strategy.requiresArrangement
+				&& child.authored.exactPositionX && child.authored.exactPositionY
+				&& child.authored.exactSizeX && child.authored.exactSizeY
+				&& !child.authored.sizeToContentWidth && !child.authored.sizeToContentHeight;
+		}))
+		return null;
+	const rects = indices.map((index) =>
+		ResolveAuthoredRect(parent.children[index].authored, {
+			width: rect.width, height: rect.height
+		}));
 	return MeasureAuthoredScrollViewport(rect, rects);
 }
 
