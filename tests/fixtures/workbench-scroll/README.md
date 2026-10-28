@@ -1,6 +1,9 @@
 # Workbench ScrollWidget parity capture kit
 
-**Status:** Native observation requested. Predictions in `capture.template.json` are NOT native reference results.
+**Status:** In-game native ScrollWidget getter observations collected on October 28, 2026.
+The four independently measured child-viewport/context rectangles are still **PENDING**
+in `capture.template.json`; native scale/context and clipping have not been captured.
+See [2026-10-28-runtime-capture.md](2026-10-28-runtime-capture.md).
 
 ## Purpose
 
@@ -33,12 +36,17 @@ the top toolbar has Root DPI scaling disabled. The relation of these UI controls
 to the native scrollbar thickness scaling path is unresolved. The unscaled
 `10`-unit math in the numeric comparator remains a **hypothesis**.
 
-**Next validation environment:** running DayZ UI, where scrollbar movement,
-offset getters and actual clipping can be investigated. An optional standalone,
-**test-only** DayZ probe is provided in [runtime-mod/](runtime-mod/README.md).
-It calls supported native ScrollWidget getters and requests normalized scroll
-positions from the client. Its source has **not** been DayZ-compiled or run yet.
-The engine has no runtime ScrollWidget implementation enabled.
+**In-game runtime capture completed:** the disposable [runtime-mod/](runtime-mod/README.md)
+compiled and ran successfully in a DayZ client session. The initial, halfway,
+full-scroll and reset getter values have been recorded in
+[`capture.runtime.2026-10-28.json`](capture.runtime.2026-10-28.json)
+and checked by `tests/workbench-scroll-runtime.test.mjs`. Observed effective
+scrollbar width was 10, content extents were 295×220, and native child
+screen-space motion matched the recovered offset and left-scrollbar arithmetic.
+
+This is **native getter and screen-coordinate evidence**, not a measured child
+viewport/context rectangle, native DPI context or clipping region.
+The engine has no production ScrollWidget strategy enabled.
 
 **Numeric parity is now additionally gated by native scaling provenance.**
 The unscaled 10-unit predictions remain visible as hypotheses, but a fixture
