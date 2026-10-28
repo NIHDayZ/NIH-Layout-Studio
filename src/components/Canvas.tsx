@@ -688,7 +688,7 @@ function GetGridPlan(node: LayoutNode, childParent: Rect) {
 		width: GetFlag(node.children[index], "hexactsize") ? childRect.width : 0,
 		height: GetFlag(node.children[index], "vexactsize") ? childRect.height : 0
 	}));
-	return PlanGrid(children, GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), GetSpacerGap(node), measured);
+	return PlanGrid(children, GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), GetSpacerGap(node), measured, { width: childParent.width, height: childParent.height });
 }
 
 function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | null, selectedIds: string[], onSelect: (node: LayoutNode, additive?: boolean) => void, onGeometryChange: RenderNodeProps["onGeometryChange"], zoom: number, debug: CanvasDebugOptions, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null, snapEnabled: boolean, snapSize: number, onContextMenu: RenderNodeProps["onContextMenu"]) {
