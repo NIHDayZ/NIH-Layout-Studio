@@ -1,5 +1,6 @@
 import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect } from "./GeometryCore.js";
 import { DecodeAuthoredGeometry, ResolveAuthoredRect, type GeometryWidget } from "./WidgetGeometry.js";
+import { ResolveChildLayoutStrategy } from "./WidgetStrategies.js";
 
 export type GeometryIssueCode = "unresolved-layout-strategy" | "duplicate-widget-id";
 
@@ -19,16 +20,6 @@ export interface AuthoredGeometrySnapshot {
 	byId: ReadonlyMap<string, ArrangedWidget>;
 	issues: readonly GeometryIssue[];
 	rootRect: GeometryRect;
-}
-
-function UsesManagedChildLayout(type: string): boolean {
-	const normalized = type.toLowerCase();
-	return normalized.includes("gridspacerwidget")
-		|| normalized.includes("wrapspacerwidget")
-		|| normalized.includes("scrollwidget")
-		|| normalized.includes("spacerwidget")
-		|| normalized.includes("contentwidget")
-		|| normalized.includes("embededwidget");
 }
 
 /**
@@ -82,12 +73,13 @@ export function BuildAuthoredGeometrySnapshot(
 				byId.set(node.id, arranged);
 			}
 
-			if (node.children.length > 0 && UsesManagedChildLayout(node.type)) {
+			const strategy = ResolveChildLayoutStrategy(node.type);
+			if (node.children.length > 0 && strategy.requiresArrangement) {
 				issues.push({
 					code: "unresolved-layout-strategy",
 					id: node.id,
 					type: node.type,
-					detail: "Children are shown at authored positions; native container measurement/arrangement is not applied."
+					detail: `Unresolved ${strategy.kind} arrangement (${strategy.evidence} evidence); children use authored positions only.`
 				});
 			}
 
