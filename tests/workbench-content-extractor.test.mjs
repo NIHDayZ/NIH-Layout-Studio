@@ -56,7 +56,7 @@ test("native content parser preserves independent widget and text pixel getters 
 });
 
 test("a fixture widget missing from every phase still rejects the native capture",()=>{
-	const missing=MakeSample().split("\\n").filter(line=>!line.includes("name=FrameChildBottom ")).join("\\n");
+	const missing=MakeSample().split("\n").filter(line=>!line.includes("name=FrameChildBottom ")).join("\n");
 	assert.throws(()=>ParseNativeContentProbe(missing),/Missing or extra fixture widget records/);
 });
 
