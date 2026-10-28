@@ -778,6 +778,17 @@ export default function App() {
 	const previewRef = useRef<HTMLDivElement>(null);
 	const resolution = resolutions[resolutionIndex];
 
+	// Inspect the current SOURCE text, not the potentially stale Canvas document.
+	// Missing/unsupported native property evidence never mutates the layout.
+	const nativeCompatibilityWarnings = useMemo(() => {
+		try {
+			return InspectNativePropertyCompatibility(parser.Parse(source).roots)
+				.filter((finding) => finding.severity === "warning");
+		} catch {
+			return [];
+		}
+	}, [source, parser]);
+
 	useEffect(() => () => DisposeProjectWorkspace(project), [project]);
 	useEffect(() => () => DisposeProjectWorkspace(vanillaProject), [vanillaProject]);
 	useEffect(() => { dependencyProjectsRef.current = dependencyProjects; }, [dependencyProjects]);
@@ -1078,17 +1089,6 @@ export default function App() {
 	const layoutProblems = useMemo<LayoutProblem[]>(() => {
 		try { return parser.AnalyzeFormatting(source); }
 		catch { return [{ type: "parse", severity: "error", line: 1, message: "Layout could not be analyzed." }]; }
-	}, [source, parser]);
-
-	// Inspect the current SOURCE text, not the potentially stale Canvas document.
-	// Missing/unsupported native property evidence never mutates the layout.
-	const nativeCompatibilityWarnings = useMemo(() => {
-		try {
-			return InspectNativePropertyCompatibility(parser.Parse(source).roots)
-				.filter((finding) => finding.severity === "warning");
-		} catch {
-			return [];
-		}
 	}, [source, parser]);
 
 	function NormalizeProblem(problem: LayoutProblem) {
