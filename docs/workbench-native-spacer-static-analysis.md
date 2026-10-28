@@ -71,3 +71,24 @@ The grid arithmetic is row-major: the horizontal inner loop compares its index w
 For `spacertest.layout`, the unconfigured outer grid does **not** have size-to-content enabled, and the nested grid has `Columns=2`, `Rows=5`. Both should be tested against native equal-cell allocation. By contrast, `spacertest2.layout` enables size-to-content on both axes and visibly uses fixed outer cells and flexible middle cells. Those are different constraints; do not apply one equal-cell rule indiscriminately to both.
 
 Still unresolved: precisely when the native size-to-content pass overrides/changes final grid child dimensions, how zero/absent row or column settings are initialized, and the exact meaning of alignment and visibility flags. The compiled routine alone does not prove that `Columns=3` is a universal default.
+
+
+## First native-derived editor prototype (opt-in)
+
+`src/renderer/GridLayout.ts` now exports `PlanConstrainedGrid`, a pure implementation of the **equal-cell arithmetic** verified in native `GridSpacerWidget` arrangement. It preserves explicitly configured row counts even when the grid contains fewer children than available cells. The helper accepts resolved counts rather than pretending that the binary's default initialization was recovered.
+
+Enable `experimentalGridLayout=1&experimentalNativeConstrainedGrid=1` to route **only grids with both `Size To Content H=0` and `Size To Content V=0`** through that planner. Other grids continue to use the existing experimental intrinsic-size planner, preserving the validated `spacertest2.layout` behavior. `experimentalNativeConstrainedGrid` is temporary until Workbench comparisons establish parity.
+
+The editor still uses its *existing inferred* column count when the authored properties omit both dimensions. This is explicitly **not a claim that Workbench universally defaults to three columns**. The grid's `Padding` and `Margin` property mapping to the native edge-inset and per-cell-gap fields also needs independent validation; the pure arithmetic is stronger evidence than that mapping.
+
+Suggested immediate test: compare `spacertest.layout` at 1920×1080 and the same zoom in both programs. The unconfigured outer grid should allocate equal cells and the nested `Columns=2, Rows=5` grid should divide into ten slots rather than overflow due to authored child sizes. The nested `WrapSpacerWidget` still uses the provisional authored-coordinate model and is **not** expected to match until its native arrangement logic is reconstructed.
+
+### Disassembly verification checkpoints
+
+- `0x1408E0A5F` reads the horizontal count from `[grid+0x174]`.
+- `0x1408E0A8B` reads the vertical count from `[grid+0x170]`.
+- `0x1408E0B30` bounds the horizontal child loop.
+- `0x1408E0B4C` writes a child's X and width; `0x1408E0B70` writes Y and height, subject to mode flags.
+- `0x1408E0B96` invokes a child's virtual update after assigning its rectangle.
+
+The instruction addresses are image VAs with module base `0x140000000`, not file offsets. They are valid only for the archive's pinned executable build.
