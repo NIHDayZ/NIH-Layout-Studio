@@ -475,3 +475,44 @@ Relevant tests:
 Scroll and Wrap regressions. Production Canvas rendering, authored property
 serialization, native DPI controls and final native content negotiation have
 not changed.
+
+
+## M2.1 native attribute compatibility isolation (2026-10-28)
+
+The second in-game content probe gave us a concrete native tree difference,
+not a sufficiently narrow C++ parser explanation. Ordinary Frame/Panel
+parents authored with `Size To Content` (enabled) were constructed
+without the expected descendants, verified by both independent
+`FindAnyWidget` lookups and `GetChildren` counts. A fixed Frame
+retained overhanging children; a native WrapSpacer retained its children
+and grew from authored 20 to measured 28 height. This supports
+**per-widget-family eligibility**, but not a general deletion rule for
+unsupported attributes or a conclusion about native loader internals.
+
+We now preserve these distinctions in a separate, isolated 14-case
+property matrix, `tests/fixtures/workbench-content/NIH_ContentProperty_Matrix.layout`.
+Each variant has exactly the same two authored children and 190×20
+parent rectangle within its own Frame, Panel or Wrap family.
+The control series varies only property *absence*, `0` versus `1`,
+horizontal/vertical axis, `Size To Text V`, or `clipchildren`.
+Its test-only `NIH_PropertyMatrixRuntime.c` companion records native
+children and sizes **immediately after creation**, **after Update**,
+and **after a root resize**; it runs only after the original v2 probe,
+with a separate log prefix and strict extractor.
+
+This enables the following distinctions without guessing:
+1. If a zero-value attribute also removes children, **presence or
+   parsing** rather than activation is implicated.
+2. If `1` removes children but `0` does not, investigate **enabled
+   property execution** on that class.
+3. If children exist at creation but vanish after `Update`, investigate
+   layout update behavior instead of initial widget construction.
+4. Compare ordinary Frame/Panel to Wrap only for **eligibility and
+   observed geometry**; do not transfer Wrap's native measurement policy
+   to another widget class.
+
+No new native result exists for this matrix yet. Existing v1/v2 data
+remain immutable. `ContentSizingRequests` stays passive and the
+`boundedParentContent` Frame/Panel prototype remains explicit opt-in.
+The production Canvas must not suppress children or apply native
+content-size overrides based on unconfirmed parser hypotheses.
