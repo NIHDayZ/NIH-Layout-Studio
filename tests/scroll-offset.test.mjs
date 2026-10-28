@@ -59,3 +59,57 @@ test("zero scrolling range returns zero; negative or nonfinite range is refused"
   assert.equal(MeasureNativeScrollNormalizedPosition({ ...base, contentWidth: 80 }), null);
   assert.equal(MeasureNativeScrollNormalizedPosition({ ...base, scrollbarThickness: Infinity }), null);
 });
+
+test("snapshot only projects Scroll offsets with explicit samples and enabled unscaled viewport diagnostic", async () => {
+  const { MeasureLayoutTree } = await import("../.geometry-engine-test-build/LayoutMeasurement.js");
+  const { ArrangeMeasuredGeometry } = await import("../.geometry-engine-test-build/GeometrySnapshot.js");
+  const properties = [
+    ["size","100 60"],["hexactsize","1"],["vexactsize","1"],
+    ["Scrollbar V","1"],["Scrollbar V Left","1"]
+  ].map(([name,value])=>({name,value}));
+  const scroll = {id:"scroll",name:"scroll",type:"ScrollWidgetClass",properties,children:[]};
+  const prepared = MeasureLayoutTree([scroll]);
+  const root={x:0,y:0,width:400,height:300};
+  const samples=new Map([["scroll",{horizontal:17,vertical:23}]]);
+  const baseline=ArrangeMeasuredGeometry(prepared,root);
+  const disabled=ArrangeMeasuredGeometry(prepared,root,1,{scrollOffsetSamples:samples});
+  assert.equal(baseline.scrollChildContextCandidates.size,0);
+  assert.equal(disabled.scrollChildContextCandidates.size,0);
+  const enabled=ArrangeMeasuredGeometry(prepared,root,1,{
+    scrollScrollbarViewportDiagnostics:true, scrollOffsetSamples:samples
+  });
+  const candidate=enabled.scrollChildContextCandidates.get("scroll");
+  assert.deepEqual(candidate.childContext,{x:-7,y:-23,width:90,height:60});
+  assert.deepEqual(candidate.viewport,{x:10,y:0,width:90,height:60});
+  assert.deepEqual(enabled.entries,baseline.entries);
+  assert.deepEqual(enabled.issues,baseline.issues);
+  assert.deepEqual(enabled.appliedStrategies,baseline.appliedStrategies);
+
+  const missing=ArrangeMeasuredGeometry(prepared,root,1,{
+    scrollScrollbarViewportDiagnostics:true
+  });
+  assert.equal(missing.scrollChildContextCandidates.size,0);
+  const scaled=ArrangeMeasuredGeometry(prepared,root,2,{
+    scrollScrollbarViewportDiagnostics:true, scrollOffsetSamples:samples
+  });
+  assert.equal(scaled.scrollChildContextCandidates.size,0);
+  const invalid=ArrangeMeasuredGeometry(prepared,root,1,{
+    scrollScrollbarViewportDiagnostics:true,
+    scrollOffsetSamples:new Map([["scroll",{horizontal:NaN,vertical:0}]])
+  });
+  assert.equal(invalid.scrollChildContextCandidates.size,0);
+});
+
+test("non-Scroll widgets cannot inherit Scroll child-context projection", async () => {
+  const { MeasureLayoutTree } = await import("../.geometry-engine-test-build/LayoutMeasurement.js");
+  const { ArrangeMeasuredGeometry } = await import("../.geometry-engine-test-build/GeometrySnapshot.js");
+  const panel={id:"panel",name:"panel",type:"PanelWidgetClass",
+    properties:[{name:"size",value:"100 60"},{name:"hexactsize",value:"1"},
+      {name:"vexactsize",value:"1"}],children:[]};
+  const snapshot=ArrangeMeasuredGeometry(MeasureLayoutTree([panel]),
+    {x:0,y:0,width:400,height:300},1,{
+      scrollScrollbarViewportDiagnostics:true,
+      scrollOffsetSamples:new Map([["panel",{horizontal:2,vertical:3}]])
+    });
+  assert.equal(snapshot.scrollChildContextCandidates.size,0);
+});
