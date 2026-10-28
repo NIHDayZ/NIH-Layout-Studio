@@ -14,6 +14,16 @@ export const EXPECTED_CONTENT_PHASES = [
 	"baseline-1120x460", "short-text-1120x460",
 	"restored-1120x460", "baseline-720x460"
 ];
+/** The expected fixture roster is capture validation, not an engine widget registry. */
+export const EXPECTED_CONTENT_WIDGETS = [
+	"NIHContentParity",
+	"TextFixed", "TextToTextH", "TextToTextV", "TextToTextBoth",
+	"TextToContentBoth", "TextLongNarrow",
+	"ImageFixed", "ImageContentBoth", "ImageContentWide",
+	"FrameContentHeight", "FrameChildTop", "FrameChildBottom",
+	"PanelContentBoth", "PanelChild",
+	"FrameContentHidden", "VisibleChild", "HiddenChild"
+].sort();
 
 function ReadNumbers(raw, count, context) {
 	const values = raw.split(",").map(Number);
@@ -128,13 +138,11 @@ export function ParseNativeContentProbe(log, sourceName = "unrecorded-log") {
 		cases.some((item, index) => item.phase !== EXPECTED_CONTENT_PHASES[index] || !item.complete))
 		throw new Error("Missing or unordered native capture phases");
 
-	const baseline = Object.keys(cases[0].widgets).sort();
-	if (!baseline.length || !baseline.includes("NIHContentParity"))
-		throw new Error("Missing native fixture root");
 	for (const item of cases) {
 		const names = Object.keys(item.widgets).sort();
-		if (names.length !== baseline.length || names.some((name, i) => name !== baseline[i]))
-			throw new Error("Missing or extra widget records in " + item.phase);
+		if (names.length !== EXPECTED_CONTENT_WIDGETS.length ||
+			names.some((name, i) => name !== EXPECTED_CONTENT_WIDGETS[i]))
+			throw new Error("Missing or extra fixture widget records in " + item.phase);
 		for (const [name, widget] of Object.entries(item.widgets)) {
 			if (!widget.screenRect || !widget.localRect ||
 				(widget.type === "TextWidget" && !widget.textPixels))
