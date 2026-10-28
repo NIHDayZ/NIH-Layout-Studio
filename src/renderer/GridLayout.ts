@@ -1,7 +1,12 @@
-import type { Rect } from "./LayoutMath";
+interface GridRect {
+ x: number;
+ y: number;
+ width: number;
+ height: number;
+}
 
 export interface GridPlan {
- rects: Rect[];
+ rects: GridRect[];
  contentWidth: number;
  contentHeight: number;
  columns: number;
@@ -9,7 +14,7 @@ export interface GridPlan {
 }
 
 /** Provisional editor grid model. Rows is a configured hint, not a hard child cap. */
-export function PlanGrid(children: Rect[], columnsSetting: number, rowsSetting: number, gap: number): GridPlan {
+export function PlanGrid(children: GridRect[], columnsSetting: number, rowsSetting: number, gap: number): GridPlan {
  const count = children.length;
  const safeColumns = Number.isFinite(columnsSetting) ? Math.floor(columnsSetting) : 0;
  const safeRows = Number.isFinite(rowsSetting) ? Math.floor(rowsSetting) : 0;
