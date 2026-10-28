@@ -27,13 +27,6 @@ export interface MeasuredLayoutTree {
 	readonly managedContainerCount: number;
 }
 
-function HasFlag(node: GeometryWidget, name: string): boolean {
-	// Mirror GetNodeProperty first-occurrence semantics. These two optional
-	// properties are kept distinct from exact/relative authored size flags.
-	const property = node.properties.find((item) => item.name.toLowerCase() === name);
-	return property?.value === "1";
-}
-
 /**
  * Phase 1: bottom-up property decoding and conservative intrinsic measurement.
  *
@@ -57,8 +50,8 @@ export function MeasureLayoutTree(roots: readonly GeometryWidget[]): MeasuredLay
 		}
 		const authored = DecodeAuthoredGeometry(node);
 		const strategy = ResolveChildLayoutStrategy(node.type);
-		const unresolvedContentWidth = HasFlag(node, "size to content h");
-		const unresolvedContentHeight = HasFlag(node, "size to content v");
+		const unresolvedContentWidth = authored.sizeToContentWidth;
+		const unresolvedContentHeight = authored.sizeToContentHeight;
 		++nodeCount;
 		if (unresolvedContentWidth || unresolvedContentHeight)
 			++unresolvedContentSizeCount;
