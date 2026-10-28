@@ -25,7 +25,8 @@ test("Problems UI shows evidence-backed source-order risk and actual widget name
 	const markup=renderToStaticMarkup(createElement(NativeCompatibilityWarnings,{warnings}));
 	assert.ok(markup.includes("FrameContentAfter0"),markup);
 	assert.ok(markup.includes("Size To Content V"),markup);
-	assert.ok(markup.includes("Re-export can change native loader behavior"),markup);
+	assert.ok(markup.includes("canonical serializer writes properties before children"),markup);
+	assert.ok(markup.includes("Direct Save/Export of the current source preserves its order"),markup);
 	assert.ok(markup.includes("DayZ native client fixture"),markup);
 	assert.ok(!markup.includes("undefined"),markup);
 	assert.ok(!markup.includes("Delete children"),markup);
