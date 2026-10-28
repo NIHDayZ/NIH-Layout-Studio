@@ -715,15 +715,10 @@ function GetGridPlan(node: LayoutNode, childParent: Rect) {
 	const configuredColumns = GetNumber(node, "Columns", 0);
 	const configuredRows = GetNumber(node, "Rows", 0);
 	if (experimentalNativeConstrainedGrid && !GetFlag(node, "Size To Content H") && !GetFlag(node, "Size To Content V")) {
-		// The native constrained-grid routine uses uniform cell dimensions.
-		// Implicit row/column defaults remain provisional: do not encode them
-		// in the recovered arithmetic helper itself.
-		let columns = 3;
-		if (configuredColumns > 0)
-			columns = Math.floor(configuredColumns);
-		else if (configuredRows > 0)
-			columns = Math.max(1, Math.ceil(children.length / configuredRows));
-		const rows = configuredRows > 0 ? Math.floor(configuredRows) : Math.max(1, Math.ceil(children.length / columns));
+		// Verified GridSpacerWidget property-load routine at image VA
+		// 0x1408DED50 defaults both Rows and Columns independently to 3.
+		const columns = configuredColumns > 0 ? Math.floor(configuredColumns) : 3;
+		const rows = configuredRows > 0 ? Math.floor(configuredRows) : 3;
 		return PlanConstrainedGrid(children.length, columns, rows,
 			{ width: childParent.width, height: childParent.height }, GetSpacerGap(node), GetNumber(node, "Padding", 0));
 	}
