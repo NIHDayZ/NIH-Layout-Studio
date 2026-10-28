@@ -95,3 +95,38 @@ can never count as native PASS.
 No production Canvas changes or PR merge follow from this test alone.
 Continue common geometry/native measurement evidence collection in the
 unified engine rather than widget-specific hacks.
+
+
+## Shared authored visibility and clipping candidate (read-only)
+
+The shared engine now provides an **opt-in, class-agnostic** diagnostic via
+`ArrangeMeasuredGeometry(measured, rootRect, 1, {authoredVisibilityDiagnostics:true})`.
+`snapshot.visibilityDiagnostics` is keyed by authored widget ID and reports:
+
+- `selfVisible`: the widget's own authored `visible` value.
+- `hierarchyVisible`: inherited ancestor visibility AND `selfVisible`.
+- `hiddenByAncestor`: whether its parent chain is hidden.
+- `ancestorClip`: the inherited bounding clip of parent containers.
+- `intersectionCandidate`: intersected authored absolute rectangle.
+- `outsideAncestorClip`: no positive-area intersection.
+- `paintCandidate`: intersection only when the hierarchy is visible and the
+  rectangle has positive area. This is **NOT** native painted pixels or
+  a Workbench scissor rectangle.
+
+The **native** `IsVisible()`/`IsVisibleHierarchy()` observations in
+`capture.runtime.2026-10-28.json` independently verify self and inherited
+visibility for all **32 descendant states**. The diagnostic additionally
+classifies `Panel_Negative` as partially outside the 1120×460 root
+(intersection `x=0,y=0,w=108,h=61`), and `Button_Overhang` as
+outside the doubly clipped ancestor area (but *hierarchy-visible*).
+
+Those intersections are mathematical predictions under the existing
+authored `clipchildren` semantics, not observations of DayZ's actual pixel
+scissor. A visible widget can be fully outside the predicted clip while
+still returning native `IsVisibleHierarchy()=1`. No geometry, style,
+editing or Canvas behavior is changed by enabling the diagnostic.
+
+`tests/common-visibility.test.mjs` tests these distinctions, immutable
+side-channel behavior, invalid geometry refusal, and non-interference with
+managed layout strategy diagnostics. Native clipping and clipchildren
+eligibility still require independent DayZ/Workbench pixel or clip telemetry.
