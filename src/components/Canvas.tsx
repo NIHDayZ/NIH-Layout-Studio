@@ -685,32 +685,26 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 			<RenderNode key={`${child.name}-${index}`} node={child} parent={childParent} selected={selected} selectedIds={selectedIds} onSelect={onSelect} onGeometryChange={onGeometryChange} zoom={zoom} debug={debug} project={project} dependencyProjects={dependencyProjects} vanillaProject={vanillaProject} snapEnabled={snapEnabled} snapSize={snapSize} onContextMenu={onContextMenu} />
 		));
 
-	// Spacer widgets own child layout on the native side. Approximate that here
-	// rather than interpreting every child position as an independent absolute
-	// coordinate. This is especially important for runtime-populated WrapSpacer
-	// and GridSpacer containers inside ScrollWidget.
+	// WrapSpacer and GridSpacer have different positioning semantics. Keep the
+	// authored geometry for WrapSpacer children; the sequential GridSpacer
+	// approximation is provisional until Enfusion grid rules are verified.
 	const direction = GetSpacerDirection(node);
 	const gap = GetSpacerGap(node);
+	const isGridSpacer = node.type.toLowerCase().includes("gridspacerwidget");
 	let cursor = 0;
 	return node.children.map((child, index) => {
 		const natural = ResolveRect(child, childParent);
 		let childRect = natural;
-		if (direction === "column") {
-			const height = natural.height > 0 ? natural.height : childParent.height;
-			const valign = (GetNodeProperty(child, "valign") ?? "").toLowerCase();
-			// Explicit edge-referenced children (e.g. HUD ItemActions anchored to the
-			// bottom of a WrapSpacer) retain their resolved anchor. A top-down spacer
-			// cursor would otherwise relocate the whole group to the upper-left.
-			if (valign === "bottom_ref") {
-				childRect = natural;
-			} else {
+		if (isGridSpacer) {
+			if (direction === "column") {
+				const height = natural.height > 0 ? natural.height : childParent.height;
 				childRect = { x: natural.x, y: cursor, width: natural.width, height };
 				cursor += height + gap;
+			} else {
+				const width = natural.width > 0 ? natural.width : childParent.width;
+				childRect = { x: cursor, y: natural.y, width, height: natural.height };
+				cursor += width + gap;
 			}
-		} else {
-			const width = natural.width > 0 ? natural.width : childParent.width;
-			childRect = { x: cursor, y: natural.y, width, height: natural.height };
-			cursor += width + gap;
 		}
 		if (debugSpacerLayout && loggedSpacerLayouts.size < 160) {
 			const key = JSON.stringify([node.id, child.id, childParent.width, childParent.height, natural, childRect]);
