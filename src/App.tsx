@@ -778,16 +778,18 @@ export default function App() {
 	const previewRef = useRef<HTMLDivElement>(null);
 	const resolution = resolutions[resolutionIndex];
 
-	// Inspect the current SOURCE text, not the potentially stale Canvas document.
-	// Missing/unsupported native property evidence never mutates the layout.
-	const nativeCompatibilityWarnings = useMemo(() => {
-		try {
-			return InspectNativePropertyCompatibility(parser.Parse(source).roots)
-				.filter((finding) => finding.severity === "warning");
-		} catch {
-			return [];
-		}
+	// Share one read-only SOURCE parse between native compatibility and formatting.
+	// The Canvas document can be stale while SOURCE text is edited directly.
+	const liveSourceDocument = useMemo(() => {
+		try { return parser.Parse(source); }
+		catch { return null; }
 	}, [source, parser]);
+	const nativeCompatibilityWarnings = useMemo(() => {
+		if (!liveSourceDocument)
+			return [];
+		return InspectNativePropertyCompatibility(liveSourceDocument.roots)
+			.filter((finding) => finding.severity === "warning");
+	}, [liveSourceDocument]);
 
 	useEffect(() => () => DisposeProjectWorkspace(project), [project]);
 	useEffect(() => () => DisposeProjectWorkspace(vanillaProject), [vanillaProject]);
@@ -1092,9 +1094,11 @@ export default function App() {
 	}
 
 	const layoutProblems = useMemo<LayoutProblem[]>(() => {
-		try { return parser.AnalyzeFormatting(source); }
+		if (!liveSourceDocument)
+			return [{ type: "parse", severity: "error", line: 1, message: "Layout could not be analyzed." }];
+		try { return parser.AnalyzeFormatting(source, liveSourceDocument); }
 		catch { return [{ type: "parse", severity: "error", line: 1, message: "Layout could not be analyzed." }]; }
-	}, [source, parser]);
+	}, [source, parser, liveSourceDocument]);
 
 	function NormalizeProblem(problem: LayoutProblem) {
 		if (!problem.canNormalize) return;
