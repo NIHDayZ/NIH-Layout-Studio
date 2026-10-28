@@ -565,3 +565,34 @@ and the strict extractor is `scripts/extract-workbench-property-syntax.mjs`.
 **This stage has not run in DayZ**; results must not be inserted into
 the unified runtime engine until independently captured and validated.
 Production Canvas and serialization remain unchanged.
+
+## M2.2 native parser-order conclusion (2026-10-28)
+
+The DayZ client loaded all 12 independent resource files in
+`tests/fixtures/workbench-content/syntax-matrix/`.
+The 24 native getter records are preserved as original filtered
+log lines and structured JSON, with a regression that reparses
+and verifies every result.
+
+On tested Frame/Panel parents, both the unsupported-looking
+`Size To Content V=0` property and a deliberately unknown
+`NIH_ProbeUnknown=0` property suppressed *subsequently authored*
+children when placed before the child group, but preserved both
+when placed afterward. Recognized `clipchildren=1` retained
+children in either location. All parents existed and all child
+counts were stable before and after `Update`.
+
+This supports a **general native source-loader parsing and
+attribute-order effect** for these examples, distinct from a
+content-bound measurement formula. The exact C++ error recovery
+path is still not recovered. Do not implement an automatic child
+filter in Canvas or strip attributes from exported layouts.
+Keep the geometry engine pure; a future read-only
+native-compatibility diagnostics layer may classify
+unsupported property names by widget family, provided evidence
+is available.
+
+Full evidence:
+[actual native result](../tests/fixtures/workbench-content/2026-10-28-property-syntax-native-results.md),
+[raw probe lines](../tests/fixtures/workbench-content/capture.property-syntax.native.2026-10-28.log),
+[structured native getters](../tests/fixtures/workbench-content/capture.property-syntax.native.2026-10-28.json).
