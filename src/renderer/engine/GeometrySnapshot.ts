@@ -1,7 +1,7 @@
 import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type LayoutConstraints, type MeasuredWidget } from "./GeometryCore.js";
 import { ResolveAuthoredRect, ResolveAuthoredRectWithSize, type GeometryWidget } from "./WidgetGeometry.js";
 import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
-import { PlanManagedChildren, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
+import { PlanManagedChildren, ProbeWrapContentHeight, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
 import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
@@ -38,6 +38,14 @@ export interface AppliedParentContent {
 	contributingChildren: number;
 }
 
+export interface AppliedWrapContent {
+	id: string;
+	evidence: "native-derived-wrap-lines";
+	axis: "vertical";
+	lineCount: number;
+	requiredHeight: number;
+}
+
 export interface AuthoredGeometrySnapshot {
 	/**
 	 * Pre-order geometry in document order. These are authored-coordinate
@@ -53,6 +61,7 @@ export interface AuthoredGeometrySnapshot {
 	appliedIntrinsics: readonly AppliedIntrinsicContent[];
 	appliedConstrainedText: readonly AppliedConstrainedText[];
 	appliedParentContent: readonly AppliedParentContent[];
+	appliedWrapContent: readonly AppliedWrapContent[];
 	rootRect: GeometryRect;
 }
 
@@ -77,6 +86,7 @@ export function ArrangeMeasuredGeometry(
 	const appliedIntrinsics: AppliedIntrinsicContent[] = [];
 	const appliedConstrainedText: AppliedConstrainedText[] = [];
 	const appliedParentContent: AppliedParentContent[] = [];
+	const appliedWrapContent: AppliedWrapContent[] = [];
 	// Only the current arrangement pass owns these width-dependent metrics.
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
@@ -120,6 +130,9 @@ export function ArrangeMeasuredGeometry(
 			// unused authored coordinates for managed children.
 			const strategyRect = allocatedRects?.[index];
 			const authoredRect = strategyRect ?? ResolveAuthoredRect(authored, parentSize);
+			const measuredWrapContent = !strategyRect
+				? ProbeWrapContentHeight(prepared, authoredRect.width, options) : null;
+			const useWrapHeight = measuredWrapContent !== null;
 			// Width-constrained text and child-extent measurement share the
 			// same pass-local validated cache. No cross-document stale results.
 			const constrainedText = !allocatedRects ? ProbeTextHeight(prepared, authoredRect.width) : null;
@@ -131,7 +144,7 @@ export function ArrangeMeasuredGeometry(
 			const useIntrinsicHeight = !useConstrainedHeight && applyContent
 				&& authored.sizeToContentHeight && intrinsic?.height !== undefined;
 			const parentAttempt: ParentContentAttempt | null =
-				options.boundedParentContent && !allocatedRects && prepared.children.length > 0
+				options.boundedParentContent && !allocatedRects && !useWrapHeight && prepared.children.length > 0
 					&& authored.sizeToContentHeight
 					? ResolveBoundedParentHeight(prepared, authoredRect.width, {
 						textHeight: (child, width) => ProbeTextHeight(child, width)?.height ?? null,
@@ -140,10 +153,11 @@ export function ArrangeMeasuredGeometry(
 					}) : null;
 			const parentHeight = parentAttempt?.result?.height;
 			const useParentHeight = parentHeight !== undefined;
-			const useHeight = useParentHeight || useConstrainedHeight || useIntrinsicHeight;
+			const useHeight = useWrapHeight || useParentHeight || useConstrainedHeight || useIntrinsicHeight;
 			const resolvedSize = {
 				width: useWidth ? intrinsic!.width! : authoredRect.width,
-				height: useParentHeight ? parentHeight : useConstrainedHeight ? constrainedText!.height
+				height: useWrapHeight ? measuredWrapContent!.requiredHeight
+					: useParentHeight ? parentHeight : useConstrainedHeight ? constrainedText!.height
 					: useIntrinsicHeight ? intrinsic!.height! : authoredRect.height
 			};
 			const localRect = strategyRect ?? (
@@ -151,6 +165,15 @@ export function ArrangeMeasuredGeometry(
 					? ResolveAuthoredRectWithSize(authored, parentSize, resolvedSize)
 					: authoredRect
 			);
+			if (useWrapHeight) {
+				appliedWrapContent.push({
+					id: node.id,
+					evidence: "native-derived-wrap-lines",
+					axis: "vertical",
+					lineCount: measuredWrapContent!.lineCount,
+					requiredHeight: measuredWrapContent!.requiredHeight
+				});
+			}
 			if (useParentHeight) {
 				appliedParentContent.push({
 					id: node.id,
@@ -225,7 +248,7 @@ export function ArrangeMeasuredGeometry(
 					detail: `Native ${axes} size-to-content has not been measured; unresolved axes use authored size.`
 				});
 			}
-			const layoutPlan = PlanManagedChildren(prepared, absoluteRect, options);
+			const layoutPlan = PlanManagedChildren(prepared, absoluteRect, options, measuredWrapContent);
 			const childSlots = layoutPlan?.rects ?? null;
 			if (layoutPlan)
 				appliedStrategies.push(layoutPlan.applied);
@@ -253,7 +276,7 @@ export function ArrangeMeasuredGeometry(
 		dpiScale
 	};
 	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, rootRect: { ...rootRect } };
 }
 
 /**
