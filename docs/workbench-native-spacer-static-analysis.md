@@ -31,7 +31,7 @@ The compiled methods now have class attribution:
 - **Wrap measurement `0x1408E0670`**: calls the base measurement helper `0x1408E05D0` and traverses children to derive the required vertical extent. A float stored at `+0x170` in this *different class* is therefore **not** the grid's row count.
 - **Base spacer measurement `0x1408E05D0`**: a distinct method assigned to the base `SpacerWidget` vtable.
 
-**Important:** class-specific offsets must not be conflated. Property-to-field decoding is only partially inferred. For the grid routine, the two values converted from integer fields `+0x160/+0x164` act as edge inset and cell gap, optionally scaled via a parent DPI-style flag; the exact authored-property correspondence needs independent testing.
+**Important:** class-specific offsets must not be conflated. Property-to-field decoding is only partially inferred. For the grid routine, integer fields `+0x160/+0x164` act as edge inset and cell gap, optionally scaled via a parent DPI-style flag. The embedded native metadata labels `Padding` as “Outer margin” and `Margin` as “Padding between elements,” consistent with this interpretation.
 
 The arithmetic observed in the first routine can be expressed, approximately, as:
 
@@ -70,16 +70,16 @@ The grid arithmetic is row-major: the horizontal inner loop compares its index w
 
 For `spacertest.layout`, the unconfigured outer grid does **not** have size-to-content enabled, and the nested grid has `Columns=2`, `Rows=5`. Both should be tested against native equal-cell allocation. By contrast, `spacertest2.layout` enables size-to-content on both axes and visibly uses fixed outer cells and flexible middle cells. Those are different constraints; do not apply one equal-cell rule indiscriminately to both.
 
-Still unresolved: precisely when the native size-to-content pass overrides/changes final grid child dimensions, how zero/absent row or column settings are initialized, and the exact meaning of alignment and visibility flags. The compiled routine alone does not prove that `Columns=3` is a universal default.
+Still unresolved: precisely when the native size-to-content pass overrides/changes final grid child dimensions and the exact meaning of alignment and visibility flags. Defaults are verified in the property-loading routine below.
 
 
 ## First native-derived editor prototype (opt-in)
 
-`src/renderer/GridLayout.ts` now exports `PlanConstrainedGrid`, a pure implementation of the **equal-cell arithmetic** verified in native `GridSpacerWidget` arrangement. It preserves explicitly configured row counts even when the grid contains fewer children than available cells. The helper accepts resolved counts rather than pretending that the binary's default initialization was recovered.
+`src/renderer/GridLayout.ts` now exports `PlanConstrainedGrid`, a pure implementation of the **equal-cell arithmetic** verified in native `GridSpacerWidget` arrangement. It preserves explicitly configured row counts even when the grid contains fewer children than available cells. The helper accepts resolved counts; `ResolveNativeGridCounts` supplies the independently recovered native defaults.
 
 Enable `experimentalGridLayout=1&experimentalNativeConstrainedGrid=1` to route **only grids with both `Size To Content H=0` and `Size To Content V=0`** through that planner. Other grids continue to use the existing experimental intrinsic-size planner, preserving the validated `spacertest2.layout` behavior. `experimentalNativeConstrainedGrid` is temporary until Workbench comparisons establish parity.
 
-The editor still uses its *existing inferred* column count when the authored properties omit both dimensions. This is explicitly **not a claim that Workbench universally defaults to three columns**. The grid's `Padding` and `Margin` property mapping to the native edge-inset and per-cell-gap fields also needs independent validation; the pure arithmetic is stronger evidence than that mapping.
+The native property loader at `0x1408DED50` assigns `3` independently to column count `+0x174` and row count `+0x170` when saved values are absent. Both defaults are now confirmed. Native reflection labels `Padding` as an outer margin and `Margin` as spacing between elements, supporting the inset versus cell-gap interpretation.
 
 Suggested immediate test: compare `spacertest.layout` at 1920×1080 and the same zoom in both programs. The unconfigured outer grid should allocate equal cells and the nested `Columns=2, Rows=5` grid should divide into ten slots rather than overflow due to authored child sizes. The nested `WrapSpacerWidget` still uses the provisional authored-coordinate model and is **not** expected to match until its native arrangement logic is reconstructed.
 
@@ -92,3 +92,12 @@ Suggested immediate test: compare `spacertest.layout` at 1920×1080 and the same
 - `0x1408E0B96` invokes a child's virtual update after assigning its rectangle.
 
 The instruction addresses are image VAs with module base `0x140000000`, not file offsets. They are valid only for the archive's pinned executable build.
+
+
+## Verified default counts and property semantics (third pass)
+
+At native property loader `0x1408DED50`, a missing **Columns** value leads to immediate `3` at `0x1408DED7C`, written to `[grid+0x174]` at `0x1408DED85`. A missing **Rows** value leads to immediate `3` at `0x1408DEDA2`, written to `[grid+0x170]`; present row values are loaded instead. Both defaults are independent: `Rows=5` with omitted `Columns` does **not** imply `ceil(children/5)` columns.
+
+Embedded class-property metadata near RVA `0x206ED40` distinguishes `Padding` (description **Outer margin**) from `Margin` (description **Padding between elements**). Thus the editor's new constrained-grid path maps `Padding` to the two edge insets and `Margin` to spacing between cells. The binary's exact propagation of DPI scaling and content-alignment flags still requires separate validation.
+
+Only the constrained grid arithmetic has been ported. Wrap and size-to-content behavior remains incomplete.
