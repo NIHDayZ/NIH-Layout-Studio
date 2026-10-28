@@ -1,4 +1,5 @@
 import type { GeometryRect } from "./GeometryCore.js";
+import { DecodeNativeSpacerSpacing, ReadFirstIntegerProperty } from "./SpacerSettings.js";
 
 export interface GridSize {
 	width: number;
@@ -84,29 +85,9 @@ export interface NativeGridSettings {
  * Compiled Workbench defaults: rows=columns=3, Padding=Margin=2.
  */
 export function DecodeNativeGridSettings(properties: readonly { name: string; value: string }[]): NativeGridSettings {
-	const values = new Map<string, string>();
-	for (const property of properties) {
-		const key = property.name.toLowerCase();
-		if (!values.has(key))
-			values.set(key, property.value);
-	}
-	function IntSetting(key: string, fallback: number): number {
-		const raw = values.get(key);
-		if (raw === undefined || !raw.trim())
-			return fallback;
-		const number = Number(raw);
-		if (!Number.isFinite(number))
-			return fallback;
-		return Math.trunc(number);
-	}
 	const { columns, rows } = ResolveNativeGridCounts(
-		IntSetting("columns", 3),
-		IntSetting("rows", 3)
+		ReadFirstIntegerProperty(properties, "columns", 3),
+		ReadFirstIntegerProperty(properties, "rows", 3)
 	);
-	return {
-		columns,
-		rows,
-		padding: Math.max(0, IntSetting("padding", 2)),
-		margin: Math.max(0, IntSetting("margin", 2))
-	};
+	return { columns, rows, ...DecodeNativeSpacerSpacing(properties) };
 }
