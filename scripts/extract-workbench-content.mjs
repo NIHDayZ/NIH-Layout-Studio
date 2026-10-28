@@ -54,6 +54,10 @@ export function ParseNativeContentProbe(log, sourceName = "unrecorded-log") {
 		if (marker < 0)
 			continue;
 		const data = line.slice(marker + PREFIX.length).trim();
+		// A filtered/pasted log can leave an empty prefix-only line.
+		// It does not close a capture or substitute for a missing END.
+		if (!data)
+			continue;
 		if (data.startsWith("ERROR:"))
 			throw new Error("DayZ probe error: " + data);
 
