@@ -40,13 +40,35 @@ function ResourceId(resource: SdfFontResource): number {
 const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
 const experimentalMsdfSmoothing = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfSmoothing") === "1";
 const experimentalMsdfStroke = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfStroke") === "1";
-function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, character: string, mode: string, requestedFontSize: number, penX: number, baseY: number, drawX: number, drawY: number, drawWidth: number, drawHeight: number, widgetWidth: number, widgetHeight: number, clipPadding: number) {
+function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, character: string, mode: string, requestedFontSize: number, penX: number, baseY: number, drawX: number, drawY: number, drawWidth: number, drawHeight: number, widgetWidth: number, widgetHeight: number, clipPadding: number, sprite: HTMLCanvasElement) {
  if (!debugFnt5Sampling || loggedPlacements.size >= 120)
   return;
  const key = JSON.stringify([ResourceId(resource), glyph.codePoint, mode, requestedFontSize, widgetWidth, widgetHeight]);
  if (loggedPlacements.has(key))
   return;
  loggedPlacements.add(key);
+ // The atlas cell includes MSDF padding, so its draw rectangle alone is not an ink-clipping test.
+ const pixels = sprite.getContext("2d", { willReadFrequently: true })?.getImageData(0, 0, sprite.width, sprite.height);
+ let minX = sprite.width, minY = sprite.height, maxX = -1, maxY = -1;
+ if (pixels) {
+  for (let y = 0; y < sprite.height; ++y) {
+   for (let x = 0; x < sprite.width; ++x) {
+    if (pixels.data[(y * sprite.width + x) * 4 + 3] <= 128)
+     continue;
+    minX = Math.min(minX, x);
+    minY = Math.min(minY, y);
+    maxX = Math.max(maxX, x);
+    maxY = Math.max(maxY, y);
+   }
+  }
+ }
+ const inkRect = maxX >= minX && maxY >= minY
+  ? { x: drawX + minX * drawWidth / sprite.width, y: drawY + minY * drawHeight / sprite.height,
+     width: (maxX + 1 - minX) * drawWidth / sprite.width, height: (maxY + 1 - minY) * drawHeight / sprite.height }
+  : null;
+ const inkOutsideWidget = inkRect
+  ? inkRect.x < 0 || inkRect.y < 0 || inkRect.x + inkRect.width > widgetWidth || inkRect.y + inkRect.height > widgetHeight
+  : null;
  const details = {
   font: resource.fnt5Name ?? resource.metadata.fontFile,
   character, codePoint: glyph.codePoint, mode,
@@ -54,8 +76,11 @@ function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, char
   metric: { width: glyph.width, height: glyph.height, bearingX: glyph.bearingX, bearingY: glyph.bearingY, advance: glyph.advance },
   penX, baseY,
   drawRect: { x: drawX, y: drawY, width: drawWidth, height: drawHeight },
+  inkRect,
   widgetRect: { x: 0, y: 0, width: widgetWidth, height: widgetHeight },
-  outsideWidget: drawX < 0 || drawY < 0 || drawX + drawWidth > widgetWidth || drawY + drawHeight > widgetHeight,
+  cellOutsideWidget: drawX < 0 || drawY < 0 || drawX + drawWidth > widgetWidth || drawY + drawHeight > widgetHeight,
+  inkOutsideWidget,
+  inkThreshold: 128,
   debugExpandedCanvas: clipPadding > 0
  };
  console.info("[NIH Layout Studio][FNT5 placement] " + JSON.stringify(details));
@@ -246,18 +271,18 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
         // Diagnostic: align the entire reconstructed glyph cell at the line origin.
         // Keep the existing advance, wrapping and widget clipping unchanged.
         ink.drawImage(sprite, penX, baseY, resource.fnt5CellSize * scale, resource.fnt5CellSize * scale);
-        LogFnt5Placement(resource, glyph, character, "cell", fontSize, penX, baseY, penX, baseY, resource.fnt5CellSize * scale, resource.fnt5CellSize * scale, width, height, clipPadding);
+        LogFnt5Placement(resource, glyph, character, "cell", fontSize, penX, baseY, penX, baseY, resource.fnt5CellSize * scale, resource.fnt5CellSize * scale, width, height, clipPadding, sprite);
        } else if (experimentalFnt5Placement && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
         const placement = Fnt5Placement(resource.fnt5CellSize, glyph.width, glyph.height, glyph.bearingX, glyph.bearingY, meta.fontSize, fontSize, penX, baseY);
         if (placement) {
          ink.drawImage(sprite, placement.x, placement.y, placement.size, placement.size);
-         LogFnt5Placement(resource, glyph, character, "bearing", fontSize, penX, baseY, placement.x, placement.y, placement.size, placement.size, width, height, clipPadding);
+         LogFnt5Placement(resource, glyph, character, "bearing", fontSize, penX, baseY, placement.x, placement.y, placement.size, placement.size, width, height, clipPadding, sprite);
         }
        } else {
         const x = penX + glyph.bearingX * scale;
         const y = baseY + (meta.fontSize - glyph.bearingY) * scale;
         ink.drawImage(sprite, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale);
-        LogFnt5Placement(resource, glyph, character, "legacy", fontSize, penX, baseY, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale, width, height, clipPadding);
+        LogFnt5Placement(resource, glyph, character, "legacy", fontSize, penX, baseY, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale, width, height, clipPadding, sprite);
        }
       }
      }
