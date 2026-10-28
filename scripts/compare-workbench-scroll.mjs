@@ -12,12 +12,54 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
-import { EstimateUnscaledScrollViewport } from "../.geometry-engine-test-build/ScrollSettings.js";
+import { EstimateUnscaledScrollViewport, EstimateContextScaledScrollViewport } from "../.geometry-engine-test-build/ScrollSettings.js";
 import { ProjectNativeScrollChildContext } from "../.geometry-engine-test-build/ScrollOffset.js";
 
 const EXPECTED_SCHEMA = 1;
 const RECT_FIELDS = ["x", "y", "width", "height"];
 const EVIDENCE_FIELDS = ["captureMethod", "workbenchBuild", "evidenceFile"];
+const NATIVE_INPUT_EVIDENCE_FIELDS = ["scaleBranchSource", "offsetSource"];
+
+/**
+ * A visible editor zoom or an unchecked Root DPI box cannot establish the
+ * native branch or +0xC4/+0xCC context. Until explicitly observed, the old
+ * unscaled prediction is preserved solely as a labeled hypothesis.
+ */
+function PredictNativeViewport(item) {
+	const scale = item.nativeScale;
+	if (scale == null) {
+		return {
+			viewport: EstimateUnscaledScrollViewport(item.container, item.settings, 1),
+			basis: "unverified-unscaled-hypothesis",
+			verified: false
+		};
+	}
+	if (typeof scale !== "object" || Array.isArray(scale))
+		throw new Error(`Invalid nativeScale for ${item.id}`);
+	if (scale.mode === "unscaled") {
+		if (Object.keys(scale).some(key => key !== "mode"))
+			throw new Error(`Unexpected unscaled nativeScale fields in ${item.id}`);
+		return {
+			viewport: EstimateUnscaledScrollViewport(item.container, item.settings, 1),
+			basis: "reported-native-unscaled-branch",
+			verified: true
+		};
+	}
+	if (scale.mode === "context-scaled") {
+		if (!Number.isInteger(scale.numerator) || !Number.isInteger(scale.denominator)
+			|| Object.keys(scale).some(key => !["mode", "numerator", "denominator"].includes(key)))
+			throw new Error(`Invalid nativeScale context in ${item.id}`);
+		return {
+			viewport: EstimateContextScaledScrollViewport(item.container, item.settings, {
+				numerator: scale.numerator,
+				denominator: scale.denominator
+			}),
+			basis: "reported-native-context-fields",
+			verified: true
+		};
+	}
+	throw new Error(`Unknown nativeScale mode in ${item.id}`);
+}
 
 function RectNear(expected, observed, tolerance) {
 	if (!observed || typeof observed !== "object")
@@ -57,19 +99,19 @@ export function CompareWorkbenchScrollFixtures(data) {
 		if (!Number.isFinite(tolerance) || tolerance < 0 || tolerance > 5)
 			throw new Error(`Invalid comparison tolerance in ${item.id}`);
 
-		const viewport = EstimateUnscaledScrollViewport(item.container, item.settings, 1);
-		const projected = viewport
-			? ProjectNativeScrollChildContext(viewport.childViewport, item.offsets) : null;
-		if (!viewport || !projected)
+		const estimate = PredictNativeViewport(item);
+		const projected = estimate.viewport
+			? ProjectNativeScrollChildContext(estimate.viewport.childViewport, item.offsets) : null;
+		if (!estimate.viewport || !projected)
 			throw new Error(`Unusable diagnostic inputs in ${item.id}`);
 
 		const predicted = {
-			childViewport: viewport.childViewport,
+			childViewport: estimate.viewport.childViewport,
 			childContext: projected.childContext
 		};
 		const observed = item.observed;
 		if (observed == null) {
-			results.push({ id: item.id, status: "pending", predicted, errors: [] });
+			results.push({ id: item.id, status: "pending", predicted, predictionBasis: estimate.basis, errors: [] });
 			continue;
 		}
 		if (!item.provenance || EVIDENCE_FIELDS.some(field =>
@@ -77,8 +119,19 @@ export function CompareWorkbenchScrollFixtures(data) {
 			throw new Error(`Case ${item.id} has measurements but no independently documented Workbench provenance`);
 		}
 		if (item.provenance.captureMethod === "synthetic") {
-			results.push({ id: item.id, status: "synthetic", predicted, errors: [] });
+			results.push({ id: item.id, status: "synthetic", predicted, predictionBasis: estimate.basis, errors: [] });
 			continue;
+		}
+		if (!estimate.verified) {
+			results.push({
+				id: item.id, status: "pending", predicted, predictionBasis: estimate.basis,
+				errors: ["Native scrollbar scale branch/context is not independently established"]
+			});
+			continue;
+		}
+		if (NATIVE_INPUT_EVIDENCE_FIELDS.some(field =>
+			typeof item.provenance[field] !== "string" || !item.provenance[field].trim())) {
+			throw new Error(`Case ${item.id} lacks captured native scale/offset input provenance`);
 		}
 		const errors = [
 			...(RectNear(predicted.childViewport, observed.childViewport, tolerance)
@@ -86,7 +139,7 @@ export function CompareWorkbenchScrollFixtures(data) {
 			...(RectNear(predicted.childContext, observed.childContext, tolerance)
 				?? ["childContext: missing Workbench observation"])
 		];
-		results.push({ id: item.id, status: errors.length ? "fail" : "pass", predicted, errors });
+		results.push({ id: item.id, status: errors.length ? "fail" : "pass", predicted, predictionBasis: estimate.basis, errors });
 	}
 	const summary = {
 		pass: results.filter(v => v.status === "pass").length,
@@ -108,7 +161,7 @@ if (invokedDirectly) {
 		try {
 			const report = CompareWorkbenchScrollFixtures(JSON.parse(readFileSync(filename, "utf8")));
 			for (const result of report.results) {
-				console.log(`${result.status.toUpperCase()} ${result.id}`);
+				console.log(`${result.status.toUpperCase()} ${result.id} [${result.predictionBasis}]`);
 				for (const problem of result.errors)
 					console.log(`  ${problem}`);
 			}
