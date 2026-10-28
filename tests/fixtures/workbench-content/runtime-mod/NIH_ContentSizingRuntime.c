@@ -154,6 +154,7 @@ class NIHContentSizingRuntimeProbe {
 modded class MissionGameplay {
 	protected ref NIHContentSizingRuntimeProbe m_NIH_ContentSizingProbe;
 	protected ref NIHPropertyMatrixRuntimeProbe m_NIH_PropertyMatrixProbe;
+	protected ref NIHPropertySyntaxRuntimeProbe m_NIH_PropertySyntaxProbe;
 
 	override void OnInit() {
 		super.OnInit();
@@ -162,9 +163,12 @@ modded class MissionGameplay {
 
 		m_NIH_ContentSizingProbe = new NIHContentSizingRuntimeProbe();
 		m_NIH_PropertyMatrixProbe = new NIHPropertyMatrixRuntimeProbe();
+		m_NIH_PropertySyntaxProbe = new NIHPropertySyntaxRuntimeProbe();
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(NIHStartContentSizingProbe, 250, false);
 		// Run the separate property matrix after the original four phases.
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(NIHStartPropertyMatrixProbe, 7400, false);
+		// The syntax isolation runs after the previous matrix's final capture.
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(NIHStartPropertySyntaxProbe, 10800, false);
 	}
 
 	protected void NIHStartContentSizingProbe() {
@@ -175,5 +179,10 @@ modded class MissionGameplay {
 	protected void NIHStartPropertyMatrixProbe() {
 		if (m_NIH_PropertyMatrixProbe)
 			m_NIH_PropertyMatrixProbe.Start();
+	}
+
+	protected void NIHStartPropertySyntaxProbe() {
+		if (m_NIH_PropertySyntaxProbe)
+			m_NIH_PropertySyntaxProbe.Start();
 	}
 }
