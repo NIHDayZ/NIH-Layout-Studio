@@ -54,7 +54,7 @@ test("native absent children are retained as zero counts without filling expecte
 test("unknown, missing, duplicated and mismatched phases and cases reject the capture",()=>{
 	const good=MakeLog();
 	assert.throws(()=>ParseNativePropertyMatrix(good.replace(
-		"BEGIN after-create","BEGIN post-update")),/Invalid native phase|Missing/);
+		"BEGIN after-create","BEGIN post-update")),/Invalid native phase|Missing|Unexpected or duplicate native root size/);
 	assert.throws(()=>ParseNativePropertyMatrix(good.replace(
 		"END after-resize","END other")),/Invalid native phase END/);
 	assert.throws(()=>ParseNativePropertyMatrix(good.replace(
