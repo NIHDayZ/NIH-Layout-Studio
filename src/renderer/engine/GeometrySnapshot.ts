@@ -9,6 +9,7 @@ import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
 import { InspectAuthoredVisibility, type AuthoredVisibilityDiagnostic } from "./GeometryVisibility.js";
+import { MeasureArrangedDirectChildBounds, type ArrangedDirectChildBounds } from "./ContentBounds.js";
 export type { ArrangementOptions, AppliedLayoutStrategy } from "./LayoutArrangers.js";
 
 export type GeometryIssueCode = "unresolved-layout-strategy" | "unresolved-size-to-content" | "unresolved-parent-content-dependency" | "duplicate-widget-id";
@@ -76,6 +77,8 @@ export interface AuthoredGeometrySnapshot {
 	scrollChildContextCandidates: ReadonlyMap<string, NativeScrollChildContext>;
 	/** Optional generic authored visibility and clip-intersection candidates, not native scissor bounds. */
 	visibilityDiagnostics: ReadonlyMap<string, AuthoredVisibilityDiagnostic>;
+	/** Generic bounds of already arranged direct children, not a native content-size policy. */
+	directChildBoundsCandidates: ReadonlyMap<string, ArrangedDirectChildBounds>;
 	rootRect: GeometryRect;
 }
 
@@ -335,7 +338,12 @@ export function ArrangeMeasuredGeometry(
 		dpiScale
 	};
 	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, visibilityDiagnostics, rootRect: { ...rootRect } };
+	// Shared O(n) content measurement from FINAL arranged child rectangles.
+	// This optional pass does not affect parent sizing or any prior placement.
+	const directChildBoundsCandidates = options.directChildBoundsDiagnostics
+		? MeasureArrangedDirectChildBounds(entries)
+		: new Map<string, ArrangedDirectChildBounds>();
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, visibilityDiagnostics, directChildBoundsCandidates, rootRect: { ...rootRect } };
 }
 
 /**
