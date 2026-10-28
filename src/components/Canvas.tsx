@@ -6,6 +6,7 @@ import { ResolveProjectBitmapFont, ResolveProjectSdfFont, ResolveProjectFont, Re
 import type { BitmapFontDefinition } from "../project/FntParser";
 import {
 	GetFlag,
+	GetNumber,
 	GetNodeProperty,
 	IsRenderableNode,
 	ParseColor,
@@ -718,6 +719,11 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 					valign: GetNodeProperty(child, "valign") ?? null,
 					parentProperties: Object.fromEntries(node.properties.map((property) => [property.name, property.value])),
 					childIndex: index, siblingCount: node.children.length,
+					configuredColumns: isGridSpacer ? GetNumber(node, "Columns", 0) : null,
+					configuredRows: isGridSpacer ? GetNumber(node, "Rows", 0) : null,
+					sizeToContentH: isGridSpacer ? GetFlag(node, "Size To Content H") : null,
+					sizeToContentV: isGridSpacer ? GetFlag(node, "Size To Content V") : null,
+					childVisible: GetNodeProperty(child, "visible") !== "0",
 					childParent, natural, applied: childRect,
 					overflowsParent: childRect.x < 0 || childRect.y < 0 || childRect.x + childRect.width > childParent.width || childRect.y + childRect.height > childParent.height
 				}));
