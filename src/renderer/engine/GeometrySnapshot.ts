@@ -8,6 +8,7 @@ import { EstimateNativeScrollExtent, type AuthoredScrollViewport, type NativeScr
 import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
+import { InspectAuthoredVisibility, type AuthoredVisibilityDiagnostic } from "./GeometryVisibility.js";
 export type { ArrangementOptions, AppliedLayoutStrategy } from "./LayoutArrangers.js";
 
 export type GeometryIssueCode = "unresolved-layout-strategy" | "unresolved-size-to-content" | "unresolved-parent-content-dependency" | "duplicate-widget-id";
@@ -73,6 +74,8 @@ export interface AuthoredGeometrySnapshot {
 	scrollAdjustedViewports: ReadonlyMap<string, UnscaledScrollViewportCandidate>;
 	/** Projected child contexts from explicit scrollbar viewport and offset inputs; not applied. */
 	scrollChildContextCandidates: ReadonlyMap<string, NativeScrollChildContext>;
+	/** Optional generic authored visibility and clip-intersection candidates, not native scissor bounds. */
+	visibilityDiagnostics: ReadonlyMap<string, AuthoredVisibilityDiagnostic>;
 	rootRect: GeometryRect;
 }
 
@@ -102,6 +105,7 @@ export function ArrangeMeasuredGeometry(
 	const scrollExtentCandidates = new Map<string, NativeScrollExtentCandidate>();
 	const scrollAdjustedViewports = new Map<string, UnscaledScrollViewportCandidate>();
 	const scrollChildContextCandidates = new Map<string, NativeScrollChildContext>();
+	const visibilityDiagnostics = new Map<string, AuthoredVisibilityDiagnostic>();
 	// Only the current arrangement pass owns these width-dependent metrics.
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
@@ -239,6 +243,15 @@ export function ArrangeMeasuredGeometry(
 			};
 
 			entries.push(arranged);
+			// This is a read-only side channel: inherited geometry and the
+			// actual arranged entries remain untouched. Keep the same
+			// first-ID-wins contract as byId for duplicate authored IDs.
+			if (options.authoredVisibilityDiagnostics && !visibilityDiagnostics.has(node.id)) {
+				const diagnostic = InspectAuthoredVisibility(absoluteRect, inheritedClip,
+					authored.visible, parentVisible);
+				if (diagnostic)
+					visibilityDiagnostics.set(node.id, diagnostic);
+			}
 			if (byId.has(node.id)) {
 				issues.push({
 					code: "duplicate-widget-id",
@@ -322,7 +335,7 @@ export function ArrangeMeasuredGeometry(
 		dpiScale
 	};
 	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, visibilityDiagnostics, rootRect: { ...rootRect } };
 }
 
 /**
