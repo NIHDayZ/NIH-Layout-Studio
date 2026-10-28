@@ -33,6 +33,7 @@ export interface NativeCompatibilityDiagnostic {
 	readonly severity: "warning" | "info";
 	readonly id: string;
 	readonly type: string;
+	readonly widgetName: string;
 	readonly propertyName: string;
 	readonly propertyValue: string;
 	readonly propertyLine: number | null;
@@ -169,6 +170,7 @@ export function InspectNativePropertyCompatibility(
 					severity,
 					id: node.id,
 					type: node.type,
+					widgetName: node.name,
 					propertyName: property.name,
 					propertyValue: property.value,
 					propertyLine,
