@@ -41,8 +41,32 @@ jobs:
       - name: Native imageset atlas regression tests
         run: npm run test:imageset
 
+      - name: Native-derived grid layout regression tests
+        run: npm run test:grid-layout
+
+      - name: Workbench widget census regression tests
+        run: npm run test:widget-census
+
       - name: SDF preview raster tests
         run: npm run test:sdf-preview
+
+      - name: Packed FNT5 chunk tests
+        run: node --test tests/fnt5-packed-chunks.test.mjs
+
+      - name: FNT5 full-string layout comparison tests
+        run: node --test tests/fnt5-layout-comparison.test.mjs
+
+      - name: FNT5 unclipped glyph preview tests
+        run: node --test tests/fnt5-unclipped-preview.test.mjs
+
+      - name: FNT5 experimental placement tests
+        run: node --test tests/fnt5-placement.test.mjs
+
+      - name: FNT5 workspace sibling path tests
+        run: node --test tests/fnt5-sibling-paths.test.mjs
+
+      - name: Sidecar-less FNT5 resource tests
+        run: node --test tests/fnt5-standalone.test.mjs
 
       - name: FNT5 TCRD atlas origin tests
         run: node --test tests/fnt5-atlas-origins.test.mjs

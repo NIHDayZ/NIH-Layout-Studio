@@ -22,3 +22,14 @@ test("rejects invalid atlas and out of bounds cells",()=>{
   {character:"Z",origin:{x:3,y:3},cell:{width:2,height:2},candidateInk:{x:3,y:3,width:1,height:1}}
  ]),/outside atlas/);
 });
+
+test("MSDF median foreground excludes unrelated single-channel atlas values",()=>{
+ const width=6,height=6,rgba=new Uint8ClampedArray(width*height*4);
+ const set=(x,y,r,g,b)=>{const i=(y*width+x)*4;rgba[i]=r;rgba[i+1]=g;rgba[i+2]=b;rgba[i+3]=255;};
+ set(1,1,255,0,0); // red alone is not MSDF foreground
+ set(2,2,255,255,0);
+ set(4,4,255,160,100);
+ const result=examineGlyphPixels({width,height,rgba},[{character:"A",recordIndex:1,origin:{x:1,y:1},cell:{width:4,height:4},candidateInk:{x:2,y:2,width:1,height:1}}])[0];
+ assert.deepEqual(result.msdfForeground,{aboveThreshold:2,withinCandidate:1,outsideCandidate:1,bounds:{x:2,y:2,width:3,height:3}});
+ assert.equal(result.channels[0].aboveThreshold,3);
+});

@@ -3,7 +3,7 @@ import test from "node:test";
 import { inspectFnt5, inspectFsdf } from "../tools/inspect-fnt5.mjs";
 
 function chunk(name, payload) {
- const result = Buffer.alloc(8 + payload.length + (payload.length & 1));
+ const result = Buffer.alloc(8 + payload.length);
  result.write(name, 0, "ascii");
  result.writeUInt32BE(payload.length, 4);
  payload.copy(result, 8);
@@ -65,7 +65,7 @@ test("rejects TCRD records that do not fit 14 bytes", () => {
  form.writeUInt32BE(form.length-8,4);
  assert.throws(()=>inspectFnt5(form),/non-14-byte TCRD/);
 });
-test("accepts valid padded odd-length chunk", () => {
+test("accepts packed odd-length chunk", () => {
  const odd=chunk("META",Buffer.from([0x41]));
  const original=fixture();
  const bytes=updateFormLength(Buffer.concat([original.subarray(0,12),odd,original.subarray(12)]));
@@ -73,9 +73,9 @@ test("accepts valid padded odd-length chunk", () => {
  assert.equal(result.chunks[0].name,"META");
  assert.equal(result.chunks[0].length,1);
 });
-test("rejects missing odd-length padding byte even with matching FORM length", () => {
+test("rejects truncated odd-length chunk with matching FORM length", () => {
  const odd=chunk("META",Buffer.from([0x41]));
  const original=fixture();
  const bytes=updateFormLength(Buffer.concat([original.subarray(0,12),odd.subarray(0,-1),original.subarray(12)]));
- assert.throws(()=>inspectFnt5(bytes),/Chunk exceeds file bounds|Truncated chunk header|Invalid IFF chunk padding|Missing required chunk/);
+ assert.throws(()=>inspectFnt5(bytes),/Chunk exceeds file bounds|Truncated chunk header|Missing required chunk/);
 });

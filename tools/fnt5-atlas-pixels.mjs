@@ -20,6 +20,18 @@ export function examineGlyphPixels(decoded, mappedGlyphs, threshold=16) {
    return {channel:name,aboveThreshold:active,withinCandidate:inCandidate,outsideCandidate:outside,
     bounds:active?{x:minX,y:minY,width:maxX-minX+1,height:maxY-minY+1}:null};
   });
-  return {character:g.character,recordIndex:g.recordIndex,cell:g.origin,candidateInk:ink,channels};
+  let count=0,within=0,minX=width,minY=height,maxX=-1,maxY=-1;
+  for(let py=y;py<y+cellHeight;++py)for(let px=x;px<x+cellWidth;++px){
+   const [r,g,b]=sample(px,py);
+   const median=Math.max(Math.min(r,g),Math.min(Math.max(r,g),b));
+   if(median<=128)continue;
+   ++count;
+   minX=Math.min(minX,px);minY=Math.min(minY,py);
+   maxX=Math.max(maxX,px);maxY=Math.max(maxY,py);
+   if(px>=ink.x&&px<ink.x+ink.width&&py>=ink.y&&py<ink.y+ink.height)++within;
+  }
+  const msdfForeground={aboveThreshold:count,withinCandidate:within,outsideCandidate:count-within,
+   bounds:count?{x:minX,y:minY,width:maxX-minX+1,height:maxY-minY+1}:null};
+  return {character:g.character,recordIndex:g.recordIndex,cell:g.origin,candidateInk:ink,channels,msdfForeground};
  });
 }

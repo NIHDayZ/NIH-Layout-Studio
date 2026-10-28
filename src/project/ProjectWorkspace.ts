@@ -1,7 +1,9 @@
-import { ScaleImageSetCoordinates } from "./ImageSetVariants";
+import { OrderImageSetVariants, ScaleImageSetCoordinates } from "./ImageSetVariants";
 import type { SdfFontResource } from "./SdfTextCanvas";
 import { InspectFnt5, ParseFsdf, ParseFsdfGlyphMetrics } from "./Fnt5Metadata";
 import { ParseFnt5AtlasOrigins } from "./Fnt5AtlasOrigins";
+import { ParseStandaloneFnt5 } from "./Fnt5Standalone";
+import { Fnt5SiblingPaths } from "./Fnt5SiblingPaths";
 import type {
 	ImageSetDefinition,
 	ImageSetImage,
@@ -485,6 +487,22 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 					const structure = InspectFnt5(bytes);
 					if (structure && structure.glyphRecordCount > 0) {
 						++fnt5Inspected;
+						// Sidecar-less FNT5 parsing is experimental and only enabled for local validation.
+						if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalStandaloneFnt5") === "1") {
+							const paths = Fnt5SiblingPaths(fontFile.path);
+							const atlas = files.find((candidate) => candidate.extension === ".edds" && NormalizePath(candidate.path).toLowerCase() === paths.atlasPath);
+							const atlasUrl = atlas ? resourceObjectUrls.get(atlas.path) : undefined;
+							const dims = atlas ? resourceDimensions.get(atlas.path) : undefined;
+							if (atlasUrl && dims) {
+							const standalone = ParseStandaloneFnt5(bytes, atlasUrl, dims.width, dims.height);
+							if (standalone) {
+								standalone.fnt5Name = FileStem(fontFile.path);
+								const key = paths.resourceKey;
+								sdfFonts.set(key, standalone);
+								sdfFonts.set(FileStem(fontFile.path), standalone);
+							}
+						}
+						}
 						const sidecar = files.find((candidate) => candidate.extension === ".fsdf" && NormalizePath(candidate.path).toLowerCase() === NormalizePath(fontFile.path).replace(/\.fnt$/i, ".fsdf").toLowerCase());
 						if (sidecar) {
 							try {
@@ -631,7 +649,17 @@ export function ResolveImageSetAtlasUrl(project: ProjectWorkspaceModel | null, s
 	return null;
 }
 
-export function ResolveProjectImage(project: ProjectWorkspaceModel | null, imageReference: string | undefined): ResolvedImageResource | null {
+const experimentalImageSetMpix = (() => {
+	if (typeof window === "undefined")
+		return null;
+	const value = new URLSearchParams(window.location.search).get("experimentalImageSetMpix");
+	if (value === null)
+		return null;
+	const parsed = Number(value);
+	return Number.isInteger(parsed) && parsed >= 0 && parsed <= 8 ? parsed : null;
+})();
+
+export function ResolveProjectImage(project: ProjectWorkspaceModel | null, imageReference: string | undefined, preferredMpix: number | null = experimentalImageSetMpix): ResolvedImageResource | null {
 	if (!project || !imageReference)
 		return null;
 	const unquoted = Unquote(imageReference);
@@ -667,10 +695,10 @@ export function ResolveProjectImage(project: ProjectWorkspaceModel | null, image
 		const image = set.images.get(requestedImage);
 		if (!image)
 			return null;
-		// Prefer reference-resolution assets for exact ImageSetDefClass coordinates.
-		// Higher-mpix variants are a fallback only if reference atlas is unavailable.
+		// Reference-resolution remains the default. The experimental mpix option
+		// prefers its matching atlas when available and preserves fallback.
 		const variants = set.textures?.length
-			? [...set.textures].sort((a, b) => a.mpix - b.mpix)
+			? OrderImageSetVariants(set.textures, preferredMpix)
 			: set.texturePath ? [{ path: set.texturePath, mpix: 0 }] : [];
 		let atlasUrl: string | null = null;
 		let selectedMpix = 0;

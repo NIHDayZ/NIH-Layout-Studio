@@ -1,5 +1,7 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
+import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../renderer/GridLayout";
+import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
@@ -7,6 +9,7 @@ import { ResolveProjectBitmapFont, ResolveProjectSdfFont, ResolveProjectFont, Re
 import type { BitmapFontDefinition } from "../project/FntParser";
 import {
 	GetFlag,
+	GetNumber,
 	GetNodeProperty,
 	IsRenderableNode,
 	ParseColor,
@@ -301,6 +304,23 @@ function ResolveControlTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverrid
 	return textStyle;
 }
 
+const experimentalFnt5FitRaw = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("experimentalFnt5Fit") : null;
+// "1" uses the best-observed 0.9 Workbench comparison baseline. Numeric ratios remain available for diagnostics.
+const experimentalFnt5FitRatio = (() => {
+	if (experimentalFnt5FitRaw === null || experimentalFnt5FitRaw === "0")
+		return null;
+	if (experimentalFnt5FitRaw === "1")
+		return 0.9;
+	const ratio = Number(experimentalFnt5FitRaw);
+	if (!Number.isFinite(ratio) || ratio < 0.5 || ratio > 1.2)
+		return null;
+	return ratio;
+})();
+const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
+const debugHudGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugHudGeometry") === "1";
+const experimentalWorkbenchControlFonts = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchControlFonts") === "1";
+const experimentalWorkbenchBackdrop = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchBackdrop") === "1";
+const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
 	const text = GetNodeProperty(node, "text") ?? "";
 	const resolvedStyle = ResolveWidgetStyle(node, project, dependencyProjects, vanillaProject);
@@ -325,8 +345,48 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 		if (bitmapFont || sdfFont)
 			break;
 	}
-	if (sdfFont)
-		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={textStyle.fontSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetNodeProperty(node, "wrap") !== "0"} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
+	if (debugTextResolution && text.trim() && loggedTextRoutes.size < 100) {
+		const route = sdfFont ? "SDF" : bitmapFont ? "FNT3 bitmap" : fontOverride ? "webfont" : "CSS fallback";
+		const key = JSON.stringify([node.id, route, text, fontPath ?? null, sdfFont?.atlasUrl ?? null, bitmapFont?.atlasUrl ?? null, fontOverride ?? null]);
+		if (!loggedTextRoutes.has(key)) {
+			loggedTextRoutes.add(key);
+			console.info("[NIH Layout Studio][Text route]", {
+				widget: node.name, widgetId: node.id, text: text.slice(0, 100),
+				fontPath: fontPath ?? null, route,
+				resolvedSdf: sdfFont?.fnt5Name ?? null,
+				resolvedBitmap: bitmapFont?.name ?? null,
+				fontOverride: fontOverride ?? null,
+				availableSdfFonts: workspaces.flatMap((ws, index) => ws ? Array.from(ws.sdfFonts.keys()).filter(key => !key.includes("/")).map(key => ({ workspace: index, name: key })) : []),
+				availableBitmapFonts: workspaces.flatMap((ws, index) => ws ? Array.from(ws.bitmapFonts.keys()).filter(key => !key.includes("/")).map(key => ({ workspace: index, name: key })) : [])
+			});
+		}
+	}
+	// Native Workbench uses the Metron font-generator sizes for controls.
+	// Keep this opt-in and CSS-fallback-only while measuring parity. Neither
+	// explicit author text sizes nor FNT3/FNT5 text paths are modified.
+	if (experimentalWorkbenchControlFonts && !sdfFont && !bitmapFont && node.type.toLowerCase().includes("buttonwidget")) {
+		const explicitlySized = ["exact text size", "exact size", "fontsize", "font size"].some((name) => {
+			const raw = GetNodeProperty(node, name);
+			return raw !== undefined && Number(raw) > 0;
+		});
+		if (!explicitlySized) {
+			const size = SelectWorkbenchControlFontSize(fontPath, rect.height);
+			if (size !== null)
+				textStyle.fontSize = size;
+		}
+	}
+	if (sdfFont) {
+		// Diagnostic only: compare nominal-size inference against a font size
+		// that fits the widget. Explicit author-provided sizes remain untouched.
+		const explicitTextSize = ["exact text size", "exact size", "fontsize", "font size"].some((name) => {
+			const value = Number(GetNodeProperty(node, name));
+			return Number.isFinite(value) && value > 0;
+		});
+		const fittedSize = experimentalFnt5FitRatio !== null && sdfFont.fnt5PixelMetrics && !explicitTextSize
+			? Math.min(textStyle.fontSize, Math.max(1, rect.height * experimentalFnt5FitRatio))
+			: textStyle.fontSize;
+		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={fittedSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetNodeProperty(node, "wrap") !== "0"} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
+	}
 	if (bitmapFont)
 		return RenderBitmapText(node, rect, bitmapFont, color, textStyle);
 
@@ -402,6 +462,10 @@ function ModulatedImageSprite({
 			canvas.width = pixelWidth;
 			canvas.height = pixelHeight;
 			context.clearRect(0, 0, pixelWidth, pixelHeight);
+			// A one-texel imageset center is a solid fill, not a miniature
+			// image to interpolate. Bilinear sampling can bleed neighboring
+			// atlas pixels into large stretched ButtonWidget backgrounds.
+			context.imageSmoothingEnabled = !(resolved.width === 1 && resolved.height === 1);
 			if (resolved.atlasWidth === 1 && resolved.atlasHeight === 1)
 				context.drawImage(image, 0, 0, pixelWidth, pixelHeight);
 			else
@@ -621,6 +685,13 @@ function AnchorOverlay({ node }: { node: LayoutNode }) {
 	return <span className="anchor-dot" style={{ left: x, top: y }} />;
 }
 
+const experimentalGridLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalGridLayout") === "1";
+// Separate opt-in: apply RTTI-verified native fixed-cell arithmetic only to
+// constrained grids; retain intrinsic sizing for Size To Content widgets.
+const experimentalNativeConstrainedGrid = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalNativeConstrainedGrid") === "1";
+const debugSpacerLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugSpacerLayout") === "1";
+const loggedSpacerLayouts = new Set<string>();
+
 function GetSpacerDirection(node: LayoutNode): "row" | "column" {
 	const orientation = (GetNodeProperty(node, "orientation") ?? GetNodeProperty(node, "Orientation") ?? "").toLowerCase();
 	if (orientation.includes("horizontal") || orientation === "h" || orientation === "0")
@@ -629,8 +700,29 @@ function GetSpacerDirection(node: LayoutNode): "row" | "column" {
 }
 
 function GetSpacerGap(node: LayoutNode): number {
-	const raw = Number(GetNodeProperty(node, "Spacing") ?? GetNodeProperty(node, "spacing") ?? GetNodeProperty(node, "Gap") ?? 0);
+	const raw = Number(GetNodeProperty(node, "Spacing") ?? GetNodeProperty(node, "spacing") ?? GetNodeProperty(node, "Gap") ?? GetNodeProperty(node, "Margin") ?? GetNodeProperty(node, "margin") ?? 0);
 	return Number.isFinite(raw) ? Math.max(0, raw) : 0;
+}
+
+function GetGridPlan(node: LayoutNode, childParent: Rect) {
+	const children = node.children.map((child) => ResolveRect(child, childParent));
+	// Parent-relative children are rendered at their resolved sizes, but must
+	// not contribute that same parent-dependent size to intrinsic measurement.
+	const measured = children.map((childRect, index) => ({
+		...childRect,
+		width: GetFlag(node.children[index], "hexactsize") ? childRect.width : 0,
+		height: GetFlag(node.children[index], "vexactsize") ? childRect.height : 0
+	}));
+	const configuredColumns = GetNumber(node, "Columns", 0);
+	const configuredRows = GetNumber(node, "Rows", 0);
+	if (experimentalNativeConstrainedGrid && !GetFlag(node, "Size To Content H") && !GetFlag(node, "Size To Content V")) {
+		// Verified GridSpacerWidget property-load routine at image VA
+		// 0x1408DED50 defaults both Rows and Columns independently to 3.
+		const { columns, rows } = ResolveNativeGridCounts(configuredColumns, configuredRows);
+		return PlanConstrainedGrid(children.length, columns, rows,
+			{ width: childParent.width, height: childParent.height }, GetNumber(node, "Margin", 0), GetNumber(node, "Padding", 0));
+	}
+	return PlanGrid(children, configuredColumns, configuredRows, GetSpacerGap(node), measured, { width: childParent.width, height: childParent.height });
 }
 
 function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | null, selectedIds: string[], onSelect: (node: LayoutNode, additive?: boolean) => void, onGeometryChange: RenderNodeProps["onGeometryChange"], zoom: number, debug: CanvasDebugOptions, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null, snapEnabled: boolean, snapSize: number, onContextMenu: RenderNodeProps["onContextMenu"]) {
@@ -642,24 +734,52 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 			<RenderNode key={`${child.name}-${index}`} node={child} parent={childParent} selected={selected} selectedIds={selectedIds} onSelect={onSelect} onGeometryChange={onGeometryChange} zoom={zoom} debug={debug} project={project} dependencyProjects={dependencyProjects} vanillaProject={vanillaProject} snapEnabled={snapEnabled} snapSize={snapSize} onContextMenu={onContextMenu} />
 		));
 
-	// Spacer widgets own child layout on the native side. Approximate that here
-	// rather than interpreting every child position as an independent absolute
-	// coordinate. This is especially important for runtime-populated WrapSpacer
-	// and GridSpacer containers inside ScrollWidget.
+	// WrapSpacer and GridSpacer have different positioning semantics. Keep the
+	// authored geometry for WrapSpacer children; the sequential GridSpacer
+	// approximation is provisional until Enfusion grid rules are verified.
 	const direction = GetSpacerDirection(node);
 	const gap = GetSpacerGap(node);
+	const isGridSpacer = node.type.toLowerCase().includes("gridspacerwidget");
 	let cursor = 0;
+	const gridPlan = isGridSpacer && experimentalGridLayout ? GetGridPlan(node, childParent) : null;
 	return node.children.map((child, index) => {
 		const natural = ResolveRect(child, childParent);
 		let childRect = natural;
-		if (direction === "column") {
-			const height = natural.height > 0 ? natural.height : childParent.height;
-			childRect = { x: natural.x, y: cursor, width: natural.width, height };
-			cursor += height + gap;
-		} else {
-			const width = natural.width > 0 ? natural.width : childParent.width;
-			childRect = { x: cursor, y: natural.y, width, height: natural.height };
-			cursor += width + gap;
+		if (gridPlan) {
+			childRect = gridPlan.rects[index];
+		} else if (isGridSpacer) {
+			if (direction === "column") {
+				const height = natural.height > 0 ? natural.height : childParent.height;
+				childRect = { x: natural.x, y: cursor, width: natural.width, height };
+				cursor += height + gap;
+			} else {
+				const width = natural.width > 0 ? natural.width : childParent.width;
+				childRect = { x: cursor, y: natural.y, width, height: natural.height };
+				cursor += width + gap;
+			}
+		}
+		if (debugSpacerLayout && loggedSpacerLayouts.size < 160) {
+			const key = JSON.stringify([node.id, child.id, childParent.width, childParent.height, natural, childRect]);
+			if (!loggedSpacerLayouts.has(key)) {
+				loggedSpacerLayouts.add(key);
+				console.info("[NIH Layout Studio][Spacer layout] " + JSON.stringify({
+					parent: node.name, parentId: node.id, parentType: node.type,
+					child: child.name, childId: child.id, childType: child.type,
+					direction, gap, position: GetNodeProperty(child, "position") ?? null,
+					halign: GetNodeProperty(child, "halign") ?? null,
+					valign: GetNodeProperty(child, "valign") ?? null,
+					parentProperties: Object.fromEntries(node.properties.map((property) => [property.name, property.value])),
+					childIndex: index, siblingCount: node.children.length,
+					configuredColumns: isGridSpacer ? GetNumber(node, "Columns", 0) : null,
+					gridPlan: gridPlan ? { columns: gridPlan.columns, rows: gridPlan.rows, contentWidth: gridPlan.contentWidth, contentHeight: gridPlan.contentHeight } : null,
+					configuredRows: isGridSpacer ? GetNumber(node, "Rows", 0) : null,
+					sizeToContentH: isGridSpacer ? GetFlag(node, "Size To Content H") : null,
+					sizeToContentV: isGridSpacer ? GetFlag(node, "Size To Content V") : null,
+					childVisible: GetNodeProperty(child, "visible") !== "0",
+					childParent, natural, applied: childRect,
+					overflowsParent: childRect.x < 0 || childRect.y < 0 || childRect.x + childRect.width > childParent.width || childRect.y + childRect.height > childParent.height
+				}));
+			}
 		}
 		return <RenderNode key={`${child.name}-${index}`} node={child} parent={{ x: childRect.x, y: childRect.y, width: childRect.width, height: childRect.height }} forcedRect={childRect} selected={selected} selectedIds={selectedIds} onSelect={onSelect} onGeometryChange={onGeometryChange} zoom={zoom} debug={debug} project={project} dependencyProjects={dependencyProjects} vanillaProject={vanillaProject} snapEnabled={snapEnabled} snapSize={snapSize} onContextMenu={onContextMenu} />;
 	});
@@ -675,8 +795,24 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 	const [dragRect, setDragRect] = useState<Rect | null>(null);
 	const [hovered, setHovered] = useState(false);
 	const [pressed, setPressed] = useState(false);
-	const rect = dragRect ?? resolvedRect;
+	let rect = dragRect ?? resolvedRect;
 	const kind = GetWidgetKind(node);
+	// Opt-in sizing applies before child placement so bottom/center anchors stay
+	// attached to the same parent edge when content requires a larger grid.
+	if (experimentalGridLayout && kind.isSpacer && node.type.toLowerCase().includes("gridspacerwidget") && !dragRect) {
+		const plan = GetGridPlan(node, { x: 0, y: 0, width: rect.width, height: rect.height });
+		const width = GetFlag(node, "Size To Content H") ? Math.max(rect.width, plan.contentWidth) : rect.width;
+		const height = GetFlag(node, "Size To Content V") ? Math.max(rect.height, plan.contentHeight) : rect.height;
+		const halign = (GetNodeProperty(node, "halign") ?? "").toLowerCase();
+		const valign = (GetNodeProperty(node, "valign") ?? "").toLowerCase();
+		let x = rect.x;
+		let y = rect.y;
+		if (halign === "right_ref") x -= width - rect.width;
+		else if (halign === "center_ref") x -= (width - rect.width) / 2;
+		if (valign === "bottom_ref") y -= height - rect.height;
+		else if (valign === "center_ref") y -= (height - rect.height) / 2;
+		rect = { x, y, width, height };
+	}
 	const isSelected = selected?.id === node.id;
 	const isMultiSelected = selectedIds.includes(node.id);
 	const resolvedWidgetStyle = ResolveWidgetStyle(node, project, dependencyProjects, vanillaProject);
@@ -751,6 +887,8 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 
 	return (
 		<div
+			data-layout-node-id={node.id}
+			data-layout-node-name={node.name}
 			className={`canvas-widget ${kind.isFrame ? "frame-widget" : ""} ${kind.isPanel ? "panel-widget" : ""} ${kind.isText ? "text-widget" : ""} ${kind.isButton ? "button-widget" : ""} ${kind.isImage ? "image-widget" : ""} ${kind.isSpacer ? "spacer-widget" : ""} ${kind.isScroll ? "scroll-widget" : ""} ${isSelected ? "editor-selected" : ""}`}
 			style={style}
 			onPointerDown={(event) => BeginGeometryDrag(event, "move")}
@@ -776,15 +914,52 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 
 export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChange, width, height, zoom, debug, project, dependencyProjects, vanillaProject, snapEnabled, snapSize, showGrid, onContextMenu }: CanvasProps) {
 	const root: Rect = { x: 0, y: 0, width, height };
+	const canvasRef = useRef<HTMLDivElement>(null);
 	const geometryTraceEnabled = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugWidgetGeometry") === "1";
 	useEffect(() => {
-		if (!geometryTraceEnabled || !selected) return;
+		if (!geometryTraceEnabled || !selected)
+			return;
 		const ancestry = TraceWidgetGeometry(nodes, selected.id, width, height);
-		console.info("[NIH Layout Studio][Widget geometry]", { root: { width, height }, selectedId: selected.id, ancestry, note: "Calculated rectangles are local to their parents and expressed in unzoomed layout pixels. Spacer child geometry may be overridden by layout behavior." });
+		console.info("[NIH Layout Studio][Widget geometry]", {
+			root: { width, height }, selectedId: selected.id, ancestry,
+			note: "Calculated rectangles are local to their parents and expressed in unzoomed layout pixels. Spacer child geometry may be overridden by layout behavior."
+		});
 	}, [geometryTraceEnabled, nodes, selected, width, height]);
+	useEffect(() => {
+		if (!debugHudGeometry || !canvasRef.current)
+			return;
+		const element = canvasRef.current;
+		const rootBounds = element.getBoundingClientRect();
+		const scaleX = rootBounds.width / Math.max(1, width);
+		const scaleY = rootBounds.height / Math.max(1, height);
+		const records = Array.from(element.querySelectorAll<HTMLElement>("[data-layout-node-id]"))
+			.filter((node) => node.classList.contains("text-widget") || node.classList.contains("image-widget"))
+			.slice(0, 160)
+			.map((node) => {
+				const bounds = node.getBoundingClientRect();
+				const text = node.querySelector(".widget-text")?.textContent ?? "";
+				return {
+					id: node.dataset.layoutNodeId,
+					name: node.dataset.layoutNodeName,
+					kind: node.classList.contains("text-widget") ? "text" : "image",
+					text: text.slice(0, 80),
+					rect: {
+						x: Number(((bounds.left - rootBounds.left) / scaleX).toFixed(2)),
+						y: Number(((bounds.top - rootBounds.top) / scaleY).toFixed(2)),
+						width: Number((bounds.width / scaleX).toFixed(2)),
+						height: Number((bounds.height / scaleY).toFixed(2))
+					}
+				};
+			});
+		console.info("[NIH Layout Studio][HUD geometry] " + JSON.stringify({
+			root: { width, height }, screenRoot: { width: rootBounds.width, height: rootBounds.height },
+			scale: { x: scaleX, y: scaleY }, captured: records.length, records
+		}));
+	}, [nodes, width, height, zoom, project, dependencyProjects, vanillaProject]);
+
 	return (
 		<div className="canvas-shell">
-			<div className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}) }} onMouseDown={() => undefined}>
+			<div ref={canvasRef} className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}), ...(experimentalWorkbenchBackdrop ? { backgroundColor: "rgb(130,130,130)" } : {}) }} onMouseDown={() => undefined}>
 				{nodes.map((node, index) => (
 					<RenderNode
 						key={`${node.name}-${index}`}

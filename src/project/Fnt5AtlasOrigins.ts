@@ -1,4 +1,4 @@
-/** FNT5 RICH GLPS to TCRD atlas origin mapping. Geometry fields beyond origin remain unknown. */
+/** FNT5 GLPS to TCRD atlas origin mapping. Geometry fields beyond origin remain unknown. */
 export interface Fnt5AtlasOrigin { x: number; y: number; }
 export function ParseFnt5AtlasOrigins(bytes: Uint8Array): Map<number, Fnt5AtlasOrigin> | null {
  if(bytes.length < 12 || String.fromCharCode(...bytes.subarray(0,4)) !== "FORM" || String.fromCharCode(...bytes.subarray(8,12)) !== "FNT5") return null;
@@ -17,7 +17,7 @@ export function ParseFnt5AtlasOrigins(bytes: Uint8Array): Map<number, Fnt5AtlasO
  if(at!==bytes.length||!glps||!tcrd||glps.length<16||tcrd.length%14!==0)return null;
  const g=new DataView(glps.buffer,glps.byteOffset,glps.byteLength);
  const t=new DataView(tcrd.buffer,tcrd.byteOffset,tcrd.byteLength);
- if(String.fromCharCode(glps[0],glps[2],glps[4],glps[6])!=="RICH"||glps[1]||glps[3]||glps[5]||glps[7])return null;
+ // The first 8 bytes vary between font variants; range counts and table shape are validated below.
  const count=g.getUint32(8,true),rangeCount=g.getUint32(12,true);
  if(count!==tcrd.length/14||rangeCount===0||rangeCount>4096||glps.length!==16+rangeCount*8)return null;
  const origins=new Map<number,Fnt5AtlasOrigin>();
