@@ -35,3 +35,11 @@ This prevents one feedback loop, **not** proof of native Workbench parity. A rel
 5. `gui/layouts/inventory_new/medium/day_z_inventory_new.layout`: inventory layout with varied nested spacers.
 
 Match root resolution and preview zoom between Workbench and Studio. Compare both positions and element dimensions; avoid widget-name-specific offsets or hardcoded layout filenames.
+
+## Workbench presentation comparison (opt-in)
+
+The shipped `gui/fonts/MetronBook.xml` font generator lists 12, 14, 16, 22, 28, 48 and 58 px tiers. The default CSS fallback's 32 px cap visibly undersizes the button labels in `spacertest2.layout` (60 px cells). `experimentalWorkbenchControlFonts=1` tries the largest available tier not exceeding each button height, only for CSS fallback buttons using a recognized Metron font family. It does **not** affect explicit text sizes, parsed FNT3/FNT5 resources or unfamiliar mod fonts. Native font sizing is still subject to visual confirmation.
+
+The Workbench comparison screenshot's editor canvas is approximately RGB(130,130,130). `experimentalWorkbenchBackdrop=1` changes **only the Studio canvas preview** to that neutral gray, allowing transparent sprite compositing to be compared against the same backing color. This must not be confused with the color of the game's live HUD or a layout's actual background. The default preview stays unchanged.
+
+Use these presentation flags together with `experimentalGridLayout=1` to compare styled buttons at matched root resolution and zoom. The Workbench background and Metron sizing are experimental diagnostics, not established engine parity.
