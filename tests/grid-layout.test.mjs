@@ -28,3 +28,23 @@ test("invalid settings and empty grids are safe", () => {
  assert.equal(plan.rows, 0);
  assert.equal(plan.contentHeight, 0);
 });
+
+test("relative-sized child does not inflate its own grid measurement", () => {
+ const children = [rect(50, 10), rect(50, 30)];
+ const measured = [rect(50, 10), rect(50, 0)];
+ const plan = PlanGrid(children, 1, 2, 0, measured);
+ assert.equal(plan.contentHeight, 10);
+ assert.deepEqual(plan.rects.map(({ y, height }) => [y, height]), [[0, 10], [10, 30]]);
+});
+
+test("parent growth does not change intrinsic content for relative-sized children", () => {
+ const first = PlanGrid([rect(50, 10), rect(50, 30)], 1, 2, 0, [rect(50, 10), rect(50, 0)]);
+ const expanded = PlanGrid([rect(50, 10), rect(50, 40)], 1, 2, 0, [rect(50, 10), rect(50, 0)]);
+ assert.equal(first.contentHeight, expanded.contentHeight);
+ assert.equal(first.rects[1].y, expanded.rects[1].y);
+ assert.equal(expanded.rects[1].height, 40);
+});
+
+test("measurement array must have one entry for each rendered child", () => {
+ assert.throws(() => PlanGrid([rect(10, 10)], 1, 1, 0, []), /measurements must match/i);
+});
