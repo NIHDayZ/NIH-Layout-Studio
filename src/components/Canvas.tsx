@@ -756,8 +756,17 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 	// Opt-in sizing applies before child placement so bottom/center anchors stay
 	// attached to the same parent edge when content requires a larger grid.
 	if (experimentalGridLayout && kind.isSpacer && node.type.toLowerCase().includes("gridspacerwidget") && !dragRect) {
-		const plan = PlanGrid(node.children.map((child) => ResolveRect(child, { x: 0, y: 0, width: rect.width, height: rect.height })),
-			GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), GetSpacerGap(node));
+		// Relative-size descendants depend on this container's dimensions. Do not
+		// feed their resulting size back into size-to-content measurement: that
+		// creates a positive feedback loop in nested grids.
+		const plan = PlanGrid(node.children.map((child) => {
+			const childRect = ResolveRect(child, { x: 0, y: 0, width: rect.width, height: rect.height });
+			return {
+				...childRect,
+				width: GetFlag(child, "hexactsize") ? childRect.width : 0,
+				height: GetFlag(child, "vexactsize") ? childRect.height : 0
+			};
+		}), GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), GetSpacerGap(node));
 		const width = GetFlag(node, "Size To Content H") ? Math.max(rect.width, plan.contentWidth) : rect.width;
 		const height = GetFlag(node, "Size To Content V") ? Math.max(rect.height, plan.contentHeight) : rect.height;
 		const halign = (GetNodeProperty(node, "halign") ?? "").toLowerCase();
