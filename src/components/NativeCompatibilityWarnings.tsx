@@ -71,7 +71,7 @@ export function NativeCompatibilityReview({ actionLabel, warnings, onCancel, onC
 				<NativeCompatibilityWarnings warnings={warnings} limit={12} />
 				<div className="native-compatibility-dialog-footnote">
 					Findings are based on limited native DayZ tests, not a complete Workbench property allowlist.
-					Continuing {actionLabel.toLowerCase()}s your current source unchanged; nothing is repaired or removed automatically.
+					Continuing will {actionLabel === "Save" ? "save" : "export"} your current source unchanged; nothing is repaired or removed automatically.
 				</div>
 				<div className="native-compatibility-dialog-actions">
 					<button onClick={onCancel} autoFocus>Cancel</button>
