@@ -1,0 +1,95 @@
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] BEGIN after-create
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create rootScreenSize=1920,1080
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameNoFlag screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameFlagZero parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameFlagZero screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameFlagOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameFlagOne screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameHorizontalOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameHorizontalOne screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameBothOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameBothOne screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameTextOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameTextOne screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameClipped parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PFrameClipped screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PPanelNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PPanelNoFlag screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PPanelFlagZero parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PPanelFlagZero screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PPanelFlagOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PPanelFlagOne screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PPanelHorizontalOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PPanelHorizontalOne screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PWrapNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PWrapNoFlag screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PWrapFlagZero parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PWrapFlagZero screenSize=190,20 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PWrapFlagOne parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-create case=PWrapFlagOne screenSize=190,28 localSize=190,20
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] END after-create
+14:51:05.528 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] REQUEST viewport=1120,720
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] BEGIN post-update
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update rootScreenSize=1120,720
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameNoFlag screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameFlagZero parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameFlagZero screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameFlagOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameFlagOne screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameHorizontalOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameHorizontalOne screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameBothOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameBothOne screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameTextOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameTextOne screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameClipped parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PFrameClipped screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PPanelNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PPanelNoFlag screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PPanelFlagZero parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PPanelFlagZero screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PPanelFlagOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PPanelFlagOne screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PPanelHorizontalOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PPanelHorizontalOne screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PWrapNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PWrapNoFlag screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PWrapFlagZero parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PWrapFlagZero screenSize=190,20 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PWrapFlagOne parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=post-update case=PWrapFlagOne screenSize=190,28 localSize=190,20
+14:51:06.228 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] END post-update
+14:51:07.029 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] REQUEST viewport=1120,620
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] BEGIN after-resize
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize rootScreenSize=1120,620
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameNoFlag screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameFlagZero parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameFlagZero screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameFlagOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameFlagOne screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameHorizontalOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameHorizontalOne screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameBothOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameBothOne screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameTextOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameTextOne screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameClipped parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PFrameClipped screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PPanelNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PPanelNoFlag screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PPanelFlagZero parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PPanelFlagZero screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PPanelFlagOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PPanelFlagOne screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PPanelHorizontalOne parentPresent=1 childCount=0 topFound=0 bottomFound=0
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PPanelHorizontalOne screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PWrapNoFlag parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PWrapNoFlag screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PWrapFlagZero parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PWrapFlagZero screenSize=190,20 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PWrapFlagOne parentPresent=1 childCount=2 topFound=1 bottomFound=1
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] phase=after-resize case=PWrapFlagOne screenSize=190,28 localSize=190,20
+14:51:07.628 SCRIPT       : [NIH_LayoutStudio][PropertyProbe] END after-resize
