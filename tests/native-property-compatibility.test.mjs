@@ -19,16 +19,16 @@ const parse=name=>new LayoutParser().Parse(source(name));
 const cases=[
 	["FrameBase",null,null],
 	["FrameContentBefore0","observed-native-child-loss-risk",0],
-	["FrameContentAfter0","serialization-order-risk",2],
+	["FrameContentAfter0","observed-native-safe-after-children",2],
 	["FrameUnknownBefore0","observed-native-child-loss-risk",0],
-	["FrameUnknownAfter0","serialization-order-risk",2],
+	["FrameUnknownAfter0","observed-native-safe-after-children",2],
 	["FrameClipBefore1",null,2],
 	["FrameClipAfter1",null,2],
 	["PanelBase",null,2],
 	["PanelContentBefore0","observed-native-child-loss-risk",0],
-	["PanelContentAfter0","serialization-order-risk",2],
+	["PanelContentAfter0","observed-native-safe-after-children",2],
 	["PanelUnknownBefore0","observed-native-child-loss-risk",0],
-	["PanelUnknownAfter0","serialization-order-risk",2]
+	["PanelUnknownAfter0","observed-native-safe-after-children",2]
 ];
 
 test("all 12 class/property/order classifications track actual native hierarchy outcomes without erasing authored children",()=>{
@@ -45,7 +45,7 @@ test("all 12 class/property/order classifications track actual native hierarchy 
 		if(expectedCode) {
 			assert.equal(findings.length,1,name);
 			assert.equal(findings[0].code,expectedCode,name);
-			assert.equal(findings[0].severity,"warning");
+			assert.equal(findings[0].severity,expectedCode === "observed-native-safe-after-children" ? "info" : "warning");
 			assert.equal(findings[0].id,parent.id);
 			assert.equal(findings[0].basis,"dayz-2026-10-28-property-syntax-probe");
 			assert.equal(findings[0].evidence,"observed-child-loss-before-block");
@@ -57,22 +57,24 @@ test("all 12 class/property/order classifications track actual native hierarchy 
 	}
 });
 
-test("Studio serialization moves after-child unsupported property before children; read-only warning detects the native regression risk",()=>{
+test("Studio canonical serialization now preserves native-tested after-child property placement without mutating the tree",()=>{
 	for(const name of ["FrameContentAfter0","FrameUnknownAfter0","PanelContentAfter0","PanelUnknownAfter0"]) {
 		const sourceDocument=parse(name);
 		const originalSource=source(name);
 		const originalTree=JSON.stringify(sourceDocument.roots);
 		const before=InspectNativePropertyCompatibility(sourceDocument.roots);
 		assert.equal(before.length,1);
-		assert.equal(before[0].code,"serialization-order-risk");
+		assert.equal(before[0].code,"observed-native-safe-after-children");
 		assert.equal(before[0].sourceOrder,"after-all-children");
 		const exported=new LayoutParser().Serialize(sourceDocument);
 		assert.notEqual(exported,originalSource,name+" source order reflow");
 		const reparsed=new LayoutParser().Parse(exported);
 		const after=InspectNativePropertyCompatibility(reparsed.roots);
 		assert.equal(after.length,1);
-		assert.equal(after[0].code,"observed-native-child-loss-risk");
-		assert.equal(after[0].sourceOrder,"before-all-children");
+		assert.equal(after[0].code,"observed-native-safe-after-children");
+		assert.equal(after[0].sourceOrder,"after-all-children");
+		assert.ok(exported.indexOf(name+"_Bottom") < exported.indexOf("Size To Content V") ||
+			exported.indexOf(name+"_Bottom") < exported.indexOf("NIH_ProbeUnknown"));
 		assert.equal(reparsed.roots[0].children[0].children.length,2);
 		assert.equal(JSON.stringify(sourceDocument.roots),originalTree);
 	}
