@@ -70,9 +70,11 @@ Workbench editor view.
 4. Visibility/clipping in a screenshot does not establish the engine's exact
    scissor rectangle. Record it as visual evidence unless measured by
    independent native instrumentation.
-5. The source is intentionally not compiled by the Node/Vite CI. A first
-   DayZ client compile/runtime check is required before calling this harness
-   validated. Do not interpret passing web CI as a DayZ script compile pass.
+5. The source is intentionally not compiled by Node/Vite CI. The user has
+   independently confirmed that it compiled and executed in a DayZ gameplay
+   session on 2026-10-28. See
+   [the runtime capture](../2026-10-28-runtime-capture.md). Future changes
+   still require DayZ compilation; web CI does not guarantee this.
 
 ## Numeric comparator scale contract
 
@@ -95,9 +97,10 @@ source descriptions; the comparator cannot independently authenticate files,
 build identifiers, or captured inputs. `captureMethod: "synthetic"` is
 still explicitly excluded from native pass totals.
 
-The original four fixture cases remain `PENDING` and **must not** be
-converted to passing references from this uncompiled sample or the static
-Workbench screenshots.
+The original four native viewport comparator cases remain `PENDING`
+despite the successful runtime getter capture. Screen-space child positions
+and effective scrollbar width do not prove native clip rectangles or the
+scale-context branch.
 
 ## Scope after this experiment
 
