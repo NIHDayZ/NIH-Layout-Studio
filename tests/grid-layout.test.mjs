@@ -48,3 +48,48 @@ test("parent growth does not change intrinsic content for relative-sized childre
 test("measurement array must have one entry for each rendered child", () => {
  assert.throws(() => PlanGrid([rect(10, 10)], 1, 1, 0, []), /measurements must match/i);
 });
+
+test("Workbench SpacerTest2 implicit 3x3 grid reserves fixed edges and stretches middle cells", () => {
+ // Values from the vanilla example (author-defined parent 454.336 x 611.67798).
+ const width = 454.336, height = 611.67798;
+ const children = [
+  rect(60, 60), rect(width, 60), rect(60, 60),
+  rect(60, height), rect(width, height), rect(60, height),
+  rect(60, 60), rect(width, 60), rect(60, 60)
+ ];
+ const measured = [
+  rect(60, 60), rect(0, 60), rect(60, 60),
+  rect(60, 0), rect(0, 0), rect(60, 0),
+  rect(60, 60), rect(0, 60), rect(60, 60)
+ ];
+ const plan = PlanGrid(children, 0, 0, 0, measured, { width, height });
+ assert.equal(plan.columns, 3);
+ assert.equal(plan.rows, 3);
+ assert.equal(plan.contentWidth, width);
+ assert.equal(plan.contentHeight, height);
+ assert.deepEqual(plan.rects.map(({ x, y }) => [Math.round(x), Math.round(y)]),
+  [[0,0],[60,0],[394,0],[0,60],[60,60],[394,60],[0,552],[60,552],[394,552]]);
+ assert.equal(Math.round(plan.rects[4].width), 334);
+ assert.equal(Math.round(plan.rects[4].height), 492);
+ assert.equal(plan.rects[0].width, 60);
+ assert.equal(plan.rects[8].height, 60);
+});
+
+test("flexible cells use their own column and row dimensions for fractional children", () => {
+ const plan = PlanGrid(
+  [rect(60, 30), rect(100, 60), rect(60, 30), rect(60, 60)],
+  2, 2, 0,
+  [rect(60, 30), rect(0, 30), rect(60, 30), rect(0, 30)],
+  { width: 200, height: 60 }
+ );
+ assert.equal(plan.rects[1].width, 140 * 100 / 200);
+ assert.equal(plan.rects[3].width, 140 * 60 / 200);
+ assert.equal(plan.contentWidth, 200);
+});
+
+test("configured single-column grids retain vertical flow", () => {
+ const plan = PlanGrid(Array.from({length:5},()=>rect(320,40)),1,4,0,undefined,{width:320,height:160});
+ assert.equal(plan.columns,1);
+ assert.equal(plan.rows,5);
+ assert.equal(plan.contentHeight,200);
+});
