@@ -1,4 +1,4 @@
-import type { GeometryRect } from "./GeometryCore.js";
+import type { ArrangedWidget, GeometryRect } from "./GeometryCore.js";
 
 /**
  * Shared, class-independent envelope of already positioned *direct* children.
@@ -66,4 +66,60 @@ export function MeasureContentBounds(
 		return null;
 
 	return { left, top, right, bottom, width, height, childCount: children.length };
+}
+
+/**
+ * Diagnostic-only envelope computed from the already arranged direct
+ * children of a parent. Every child participates, including hidden children
+ * and authored fallback positions inside unresolved managed containers.
+ * This is intentionally NOT native size-to-content behavior.
+ */
+export interface ArrangedDirectChildBounds {
+	readonly bounds: ContentBounds;
+	readonly evidence: "arranged-direct-child-bounds";
+	readonly assumptions: "all-direct-children-including-hidden-no-native-filter";
+}
+
+/**
+ * O(total widgets): group each arranged child once by parent ID, then
+ * calculate each parent's direct rectangle envelope. No tree re-traversal,
+ * per-widget resource lookup, mutation or native eligibility assumptions.
+ *
+ * Duplicate IDs make the parent association ambiguous. Fail closed for the
+ * entire diagnostic pass; the snapshot separately reports duplicate IDs.
+ */
+export function MeasureArrangedDirectChildBounds(
+	entries: readonly Pick<ArrangedWidget, "id" | "parentId" | "localRect">[]
+): ReadonlyMap<string, ArrangedDirectChildBounds> {
+	const seen = new Set<string>();
+	for (const entry of entries) {
+		if (seen.has(entry.id))
+			return new Map();
+		seen.add(entry.id);
+	}
+
+	const byParent = new Map<string, GeometryRect[]>();
+	for (const entry of entries) {
+		if (entry.parentId === null || !seen.has(entry.parentId))
+			continue;
+		let rects = byParent.get(entry.parentId);
+		if (!rects) {
+			rects = [];
+			byParent.set(entry.parentId, rects);
+		}
+		rects.push(entry.localRect);
+	}
+
+	const output = new Map<string, ArrangedDirectChildBounds>();
+	for (const [parentId, children] of byParent) {
+		const bounds = MeasureContentBounds(children, { allowZeroHeight: true });
+		if (!bounds)
+			continue;
+		output.set(parentId, {
+			bounds,
+			evidence: "arranged-direct-child-bounds",
+			assumptions: "all-direct-children-including-hidden-no-native-filter"
+		});
+	}
+	return output;
 }
