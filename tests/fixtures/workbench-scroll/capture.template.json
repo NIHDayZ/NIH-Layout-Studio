@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "notes": "Capture template only: observed=null means no Workbench measurement has been supplied. Predicted values are diagnostic hypotheses, not golden results. Do not invent observed values.",
+  "sourceLayout": "tests/fixtures/workbench-scroll/NIH_Scroll_Parity.layout",
+  "workbenchArchiveExample": "gui/layouts/examples/ScrollTest.layout",
+  "cases": [
+    {
+      "id": "ScrollNone",
+      "container": {
+        "width": 240,
+        "height": 180
+      },
+      "settings": {
+        "horizontal": false,
+        "vertical": false,
+        "verticalLeft": false
+      },
+      "offsets": {
+        "horizontal": 0,
+        "vertical": 0
+      },
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    },
+    {
+      "id": "ScrollVertical",
+      "container": {
+        "width": 240,
+        "height": 180
+      },
+      "settings": {
+        "horizontal": false,
+        "vertical": true,
+        "verticalLeft": false
+      },
+      "offsets": {
+        "horizontal": 0,
+        "vertical": 0
+      },
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    },
+    {
+      "id": "ScrollBoth",
+      "container": {
+        "width": 240,
+        "height": 180
+      },
+      "settings": {
+        "horizontal": true,
+        "vertical": true,
+        "verticalLeft": false
+      },
+      "offsets": {
+        "horizontal": 0,
+        "vertical": 0
+      },
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    },
+    {
+      "id": "ScrollLeft",
+      "container": {
+        "width": 240,
+        "height": 180
+      },
+      "settings": {
+        "horizontal": true,
+        "vertical": true,
+        "verticalLeft": true
+      },
+      "offsets": {
+        "horizontal": 0,
+        "vertical": 0
+      },
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    }
+  ]
+}
