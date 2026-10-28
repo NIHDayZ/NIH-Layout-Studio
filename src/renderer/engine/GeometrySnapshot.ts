@@ -255,7 +255,8 @@ export function ArrangeMeasuredGeometry(
 					detail: `Native ${axes} size-to-content has not been measured; unresolved axes use authored size.`
 				});
 			}
-			const wantsScrollInspection = options.scrollViewportDiagnostics || options.scrollNativeExtentDiagnostics;
+			const wantsScrollInspection = (options.scrollViewportDiagnostics || options.scrollNativeExtentDiagnostics)
+				&& strategy.kind === "scroll";
 			const viewportDiagnostic = wantsScrollInspection
 				? ProbeScrollViewport(prepared, absoluteRect, {
 					...options, scrollViewportDiagnostics: true

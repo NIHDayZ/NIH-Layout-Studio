@@ -355,3 +355,16 @@ const scrollDiagnostic = ArrangeMeasuredGeometry(
 `tests/wrap-content.test.mjs` verifies single-source line arithmetic, nested constraints and reflow across multiple widths, anchor realignment, independent feature gates and strict fallback. `tests/scroll-viewport.test.mjs` verifies authored direct-child overhang, negative coordinates, nested viewports, unsupported content/visibility/managed cases and unchanged default geometry. Both suites run under `npm run test:geometry-engine`.
 
 **Native parity gate:** keep all three opt-in strategies (`fixedWrap`, `wrapContentHeight`, `scrollViewportDiagnostics`) disabled in the live canvas. Compare geometry to Workbench for at least two container dimensions, multiple child sizes and alignment modes before upgrading any of these from diagnostic hypotheses.
+
+
+## M3 Scroll native content extent investigation
+
+Native analysis used the **user-provided pinned** Workbench executable (SHA-256 `8fa4c688f28cb1214bb339aa93b451c4208a692a69ece8001d0f0ad0dd9fba85`). MSVC RTTI identifies the primary `ScrollWidget` vtable at `0x142063160` with measurement slot 13 at `0x1408E0460` and arrangement/extent slot 14 at `0x1408E0C70`. The full instruction evidence is recorded in `docs/workbench-native-widget-scope.md`.
+
+The Scroll extent routine initializes content width/height from the widget's own dimensions, then extends them to the maximum of each eligible child's measured **right and bottom** edges relative to an adjusted child context. It also performs scroll offset, available-viewport and scaling adjustments whose parameter/property mappings are still uncertain. This is not equivalent to simply taking the union of children's authored rectangles.
+
+`EstimateNativeScrollExtent(authoredInspection)` now reproduces only the confirmed max-extent step under a **documented zero-offset, unadjusted-viewport assumption**, returning `evidence: "native-derived-scroll-extent-prototype"`. Callers enable this via `{scrollNativeExtentDiagnostics:true}`, separately from `{scrollViewportDiagnostics:true}`. The snapshot's `scrollExtentCandidates` map provides those independent candidates; it does not change authored widget geometry, clipping, ScrollWidget scroll position, content size, scroll range or scrollbar geometry.
+
+The existing `ProbeScrollViewport` is reused to validate eligible exact/visible direct child positions **once**, then `EstimateNativeScrollExtent` operates on the same bounding edges. Only ScrollWidget nodes enter this path; the common walker does not contain scrollbar-specific formulas. Tests cover candidate extents, viewport baseline, negative authored positions, opt-in independence, unchanged geometry, and unsupported relative/hidden/managed child conditions.
+
+**Parity gate:** verify the offset fields (`+0x178/+0x17C`), eligibility flag (`+0x159`), scrollbar byte flags (`+0x188/+0x189/+0x18C`), DPI-dependent reservation formula and clipping behavior against property reflection and representative Workbench layout fixtures. No runtime Scroll arrangement or scroll-range estimate should be enabled until that evidence is available.
