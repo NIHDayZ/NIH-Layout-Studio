@@ -1,4 +1,5 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
+import { PlanGrid } from "../renderer/GridLayout";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
@@ -662,6 +663,7 @@ function AnchorOverlay({ node }: { node: LayoutNode }) {
 	return <span className="anchor-dot" style={{ left: x, top: y }} />;
 }
 
+const experimentalGridLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalGridLayout") === "1";
 const debugSpacerLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugSpacerLayout") === "1";
 const loggedSpacerLayouts = new Set<string>();
 
@@ -693,10 +695,15 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 	const gap = GetSpacerGap(node);
 	const isGridSpacer = node.type.toLowerCase().includes("gridspacerwidget");
 	let cursor = 0;
+	const gridPlan = isGridSpacer && experimentalGridLayout
+		? PlanGrid(node.children.map((child) => ResolveRect(child, childParent)), GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), gap)
+		: null;
 	return node.children.map((child, index) => {
 		const natural = ResolveRect(child, childParent);
 		let childRect = natural;
-		if (isGridSpacer) {
+		if (gridPlan) {
+			childRect = gridPlan.rects[index];
+		} else if (isGridSpacer) {
 			if (direction === "column") {
 				const height = natural.height > 0 ? natural.height : childParent.height;
 				childRect = { x: natural.x, y: cursor, width: natural.width, height };
@@ -720,6 +727,7 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 					parentProperties: Object.fromEntries(node.properties.map((property) => [property.name, property.value])),
 					childIndex: index, siblingCount: node.children.length,
 					configuredColumns: isGridSpacer ? GetNumber(node, "Columns", 0) : null,
+					gridPlan: gridPlan ? { columns: gridPlan.columns, rows: gridPlan.rows, contentWidth: gridPlan.contentWidth, contentHeight: gridPlan.contentHeight } : null,
 					configuredRows: isGridSpacer ? GetNumber(node, "Rows", 0) : null,
 					sizeToContentH: isGridSpacer ? GetFlag(node, "Size To Content H") : null,
 					sizeToContentV: isGridSpacer ? GetFlag(node, "Size To Content V") : null,
