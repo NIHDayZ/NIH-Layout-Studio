@@ -1,6 +1,7 @@
 import type { LayoutConstraints, MeasuredWidget } from "./GeometryCore.js";
 import { DecodeAuthoredGeometry, MeasureAuthoredSize, type AuthoredGeometry, type GeometryWidget } from "./WidgetGeometry.js";
 import { ResolveChildLayoutStrategy, type ChildLayoutStrategy } from "./WidgetStrategies.js";
+import { DecodeNativeGridSettings, type NativeGridSettings } from "./ConstrainedGrid.js";
 
 /**
  * A prepared layout node with geometry properties decoded exactly once.
@@ -14,6 +15,8 @@ export interface MeasuredLayoutNode {
 	readonly node: GeometryWidget;
 	readonly authored: AuthoredGeometry;
 	readonly strategy: ChildLayoutStrategy;
+	/** Grid-only native settings decoded once; absent for other widget classes. */
+	readonly nativeGrid: NativeGridSettings | null;
 	readonly measurement: MeasuredWidget;
 	readonly unresolvedContentWidth: boolean;
 	readonly unresolvedContentHeight: boolean;
@@ -50,6 +53,7 @@ export function MeasureLayoutTree(roots: readonly GeometryWidget[]): MeasuredLay
 		}
 		const authored = DecodeAuthoredGeometry(node);
 		const strategy = ResolveChildLayoutStrategy(node.type);
+		const nativeGrid = strategy.kind === "grid" ? DecodeNativeGridSettings(node.properties) : null;
 		const unresolvedContentWidth = authored.sizeToContentWidth;
 		const unresolvedContentHeight = authored.sizeToContentHeight;
 		++nodeCount;
@@ -61,6 +65,7 @@ export function MeasureLayoutTree(roots: readonly GeometryWidget[]): MeasuredLay
 			node,
 			authored,
 			strategy,
+			nativeGrid,
 			measurement: MeasureAuthoredSize(authored),
 			unresolvedContentWidth,
 			unresolvedContentHeight,
