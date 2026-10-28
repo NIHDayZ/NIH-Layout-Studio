@@ -44,6 +44,9 @@ jobs:
       - name: Native-derived grid layout regression tests
         run: npm run test:grid-layout
 
+      - name: Unified layout geometry primitives
+        run: npm run test:geometry-engine
+
       - name: Workbench widget census regression tests
         run: npm run test:widget-census
 

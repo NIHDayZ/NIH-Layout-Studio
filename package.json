@@ -11,6 +11,7 @@
     "test:bc7": "npm run build:bc7-tests && node --test tests/bc7.test.mjs",
     "test:bc7:reference": "npm run build:bc7-tests && cc -O2 -std=c99 tests/reference/bc7_reference.c -o .bc7-test-build/bc7-reference && node --test tests/bc7.reference.test.mjs",
     "test:widget-census": "node --test tests/workbench-widget-census.test.mjs",
+    "test:geometry-engine": "tsc src/renderer/engine/GeometryCore.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --rootDir src/renderer/engine --outDir .geometry-engine-test-build && node --test tests/geometry-engine.test.mjs",
     "test:grid-layout": "tsc src/renderer/GridLayout.ts src/renderer/ControlFontSizing.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --rootDir src/renderer --outDir .grid-layout-test-build && node --test tests/grid-layout.test.mjs tests/control-font-sizing.test.mjs",
     "test:layout-ids": "tsc src/parser/LayoutParser.ts src/model/WidgetCopyName.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --rootDir src --outDir .layout-parser-test-build && node --test tests/layout-widget-ids.test.mjs",
     "build:bc7-tests": "tsc src/project/Bc7Decoder.ts src/project/EddsDecoder.ts --target es2022 --module es2022 --moduleResolution bundler --skipLibCheck --rootDir src --outDir .bc7-test-build",
