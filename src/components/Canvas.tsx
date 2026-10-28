@@ -719,7 +719,7 @@ function GetGridPlan(node: LayoutNode, childParent: Rect) {
 		// 0x1408DED50 defaults both Rows and Columns independently to 3.
 		const { columns, rows } = ResolveNativeGridCounts(configuredColumns, configuredRows);
 		return PlanConstrainedGrid(children.length, columns, rows,
-			{ width: childParent.width, height: childParent.height }, GetSpacerGap(node), GetNumber(node, "Padding", 0));
+			{ width: childParent.width, height: childParent.height }, GetNumber(node, "Margin", 0), GetNumber(node, "Padding", 0));
 	}
 	return PlanGrid(children, configuredColumns, configuredRows, GetSpacerGap(node), measured, { width: childParent.width, height: childParent.height });
 }
