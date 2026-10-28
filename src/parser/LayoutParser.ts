@@ -83,7 +83,7 @@ export class LayoutParser {
 			}
 		}
 
-		const document = parsedDocument ?? this.Parse(source);
+		const document = parsedDocument?.source === source ? parsedDocument : this.Parse(source);
 		const walk = (nodes: LayoutNode[]) => {
 			for (const node of nodes) {
 				const seen = new Map<string, LayoutProperty>();
