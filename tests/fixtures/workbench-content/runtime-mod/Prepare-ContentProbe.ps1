@@ -13,7 +13,9 @@ $fixtureRoot = Split-Path -Parent $PSScriptRoot
 $sourceFiles = @(
 	@{ Source = (Join-Path $PSScriptRoot 'config.cpp'); Relative = 'config.cpp' },
 	@{ Source = (Join-Path $PSScriptRoot 'NIH_ContentSizingRuntime.c'); Relative = 'Scripts\5_Mission\NIH_ContentSizingRuntime.c' },
-	@{ Source = (Join-Path $fixtureRoot 'NIH_ContentSizing_Parity.layout'); Relative = 'gui\layouts\NIH_ContentSizing_Parity.layout' }
+	@{ Source = (Join-Path $PSScriptRoot 'NIH_PropertyMatrixRuntime.c'); Relative = 'Scripts\5_Mission\NIH_PropertyMatrixRuntime.c' },
+	@{ Source = (Join-Path $fixtureRoot 'NIH_ContentSizing_Parity.layout'); Relative = 'gui\layouts\NIH_ContentSizing_Parity.layout' },
+	@{ Source = (Join-Path $fixtureRoot 'NIH_ContentProperty_Matrix.layout'); Relative = 'gui\layouts\NIH_ContentProperty_Matrix.layout' }
 )
 
 foreach ($entry in $sourceFiles) {
