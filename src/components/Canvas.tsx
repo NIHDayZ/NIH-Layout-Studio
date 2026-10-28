@@ -661,6 +661,9 @@ function AnchorOverlay({ node }: { node: LayoutNode }) {
 	return <span className="anchor-dot" style={{ left: x, top: y }} />;
 }
 
+const debugSpacerLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugSpacerLayout") === "1";
+const loggedSpacerLayouts = new Set<string>();
+
 function GetSpacerDirection(node: LayoutNode): "row" | "column" {
 	const orientation = (GetNodeProperty(node, "orientation") ?? GetNodeProperty(node, "Orientation") ?? "").toLowerCase();
 	if (orientation.includes("horizontal") || orientation === "h" || orientation === "0")
@@ -708,6 +711,20 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 			const width = natural.width > 0 ? natural.width : childParent.width;
 			childRect = { x: cursor, y: natural.y, width, height: natural.height };
 			cursor += width + gap;
+		}
+		if (debugSpacerLayout && loggedSpacerLayouts.size < 160) {
+			const key = JSON.stringify([node.id, child.id, childParent.width, childParent.height, natural, childRect]);
+			if (!loggedSpacerLayouts.has(key)) {
+				loggedSpacerLayouts.add(key);
+				console.info("[NIH Layout Studio][Spacer layout] " + JSON.stringify({
+					parent: node.name, parentId: node.id, parentType: node.type,
+					child: child.name, childId: child.id, childType: child.type,
+					direction, gap, position: GetNodeProperty(child, "position") ?? null,
+					halign: GetNodeProperty(child, "halign") ?? null,
+					valign: GetNodeProperty(child, "valign") ?? null,
+					childParent, natural, applied: childRect
+				}));
+			}
 		}
 		return <RenderNode key={`${child.name}-${index}`} node={child} parent={{ x: childRect.x, y: childRect.y, width: childRect.width, height: childRect.height }} forcedRect={childRect} selected={selected} selectedIds={selectedIds} onSelect={onSelect} onGeometryChange={onGeometryChange} zoom={zoom} debug={debug} project={project} dependencyProjects={dependencyProjects} vanillaProject={vanillaProject} snapEnabled={snapEnabled} snapSize={snapSize} onContextMenu={onContextMenu} />;
 	});
