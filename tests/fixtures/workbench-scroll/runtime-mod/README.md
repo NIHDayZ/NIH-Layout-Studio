@@ -8,7 +8,10 @@ server or silently injected into an ordinary mod.
 
 ## Assemble on the Windows workdrive
 
-Create `P:\NIH_LayoutScrollProbe` (outside the Layout Studio repository):
+Run `Prepare-ScrollProbe.ps1` from Windows PowerShell 5.1 to create
+`P:\NIH_LayoutScrollProbe` without manually copying the files. It refuses
+to overwrite any existing target file unless you explicitly supply
+`-Overwrite`. Alternatively, copy the files manually:
 
 | Destination | Source in this repository |
 |---|---|
