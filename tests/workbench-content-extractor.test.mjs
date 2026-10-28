@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { ParseNativeContentProbe, EXPECTED_CONTENT_PHASES } from "../scripts/extract-workbench-content.mjs";
+import { ParseNativeContentProbe, EXPECTED_CONTENT_PHASES, EXPECTED_CONTENT_WIDGETS } from "../scripts/extract-workbench-content.mjs";
 
 const prefix="[NIH_LayoutStudio][ContentProbe]";
 function MakeSample({missingPhase=false,missingText=false,duplicate=false,hasError=false}={}) {
@@ -9,11 +9,21 @@ function MakeSample({missingPhase=false,missingText=false,duplicate=false,hasErr
 		if(missingPhase&&index===3)
 			break;
 		lines.push("13:04:01 SCRIPT : "+prefix+" BEGIN "+phase);
-		for(const [name,type,rect] of [
-			["NIHContentParity","FrameWidget","0,0,1120,460"],
-			["TextFixed","TextWidget","20,20,220,40"],
-			["ImageFixed","ImageWidget","330,20,90,55"]
-		]) {
+		for(const name of EXPECTED_CONTENT_WIDGETS) {
+			let type="PanelWidget";
+			if (name==="NIHContentParity" || name.startsWith("Frame"))
+				type="FrameWidget";
+			else if (name.startsWith("Text"))
+				type="TextWidget";
+			else if (name.startsWith("Image"))
+				type="ImageWidget";
+			let rect="0,0,100,40";
+			if (name==="NIHContentParity")
+				rect="0,0,1120,460";
+			else if (name==="TextFixed")
+				rect="20,20,220,40";
+			else if (name==="ImageFixed")
+				rect="330,20,90,55";
 			lines.push("13:04:01 SCRIPT : "+prefix+" phase="+phase+" name="+name+" type="+type+" screenRect="+rect);
 			lines.push("13:04:01 SCRIPT : "+prefix+" phase="+phase+" name="+name+" localRect=0,0,1,1 flags=1024 selfVisible=1");
 			if(type==="TextWidget"&&!missingText)
@@ -35,12 +45,19 @@ test("native content parser preserves independent widget and text pixel getters 
 	assert.equal(parsed.status,"captured-unversioned-not-native-parity");
 	assert.deepEqual(parsed.cases.map(item=>item.phase),EXPECTED_CONTENT_PHASES);
 	assert.equal(parsed.cases.length,4);
+	assert.equal(EXPECTED_CONTENT_WIDGETS.length,18);
+	assert.equal(Object.keys(parsed.cases[0].widgets).length,18);
 	assert.equal(parsed.cases[0].widgets.TextFixed.textPixels.width,112);
 	assert.equal(parsed.cases[0].widgets.TextFixed.textPixels.height,16);
 	assert.deepEqual(parsed.cases[0].widgets.TextFixed.screenRect,{x:20,y:20,width:220,height:40});
 	assert.equal(parsed.cases[0].widgets.ImageFixed.textPixels,undefined);
 	assert.equal(parsed.cases[0].widgets.ImageFixed.screenRect.width,90);
 	assert.ok(parsed.notes.includes("not evidence of imageset intrinsic"));
+});
+
+test("a fixture widget missing from every phase still rejects the native capture",()=>{
+	const missing=MakeSample().split("\\n").filter(line=>!line.includes("name=FrameChildBottom ")).join("\\n");
+	assert.throws(()=>ParseNativeContentProbe(missing),/Missing or extra fixture widget records/);
 });
 
 test("missing capture phase, native getter, duplicate record or reported probe ERROR rejects whole capture",()=>{
