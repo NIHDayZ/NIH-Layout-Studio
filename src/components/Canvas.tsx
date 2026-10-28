@@ -1,5 +1,6 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { PlanGrid } from "../renderer/GridLayout";
+import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
@@ -316,6 +317,8 @@ const experimentalFnt5FitRatio = (() => {
 })();
 const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const debugHudGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugHudGeometry") === "1";
+const experimentalWorkbenchControlFonts = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchControlFonts") === "1";
+const experimentalWorkbenchBackdrop = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchBackdrop") === "1";
 const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
 	const text = GetNodeProperty(node, "text") ?? "";
@@ -355,6 +358,20 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 				availableSdfFonts: workspaces.flatMap((ws, index) => ws ? Array.from(ws.sdfFonts.keys()).filter(key => !key.includes("/")).map(key => ({ workspace: index, name: key })) : []),
 				availableBitmapFonts: workspaces.flatMap((ws, index) => ws ? Array.from(ws.bitmapFonts.keys()).filter(key => !key.includes("/")).map(key => ({ workspace: index, name: key })) : [])
 			});
+		}
+	}
+	// Native Workbench uses the Metron font-generator sizes for controls.
+	// Keep this opt-in and CSS-fallback-only while measuring parity. Neither
+	// explicit author text sizes nor FNT3/FNT5 text paths are modified.
+	if (experimentalWorkbenchControlFonts && !sdfFont && !bitmapFont && node.type.toLowerCase().includes("buttonwidget")) {
+		const explicitlySized = ["exact text size", "exact size", "fontsize", "font size"].some((name) => {
+			const raw = GetNodeProperty(node, name);
+			return raw !== undefined && Number(raw) > 0;
+		});
+		if (!explicitlySized) {
+			const size = SelectWorkbenchControlFontSize(fontPath, rect.height);
+			if (size !== null)
+				textStyle.fontSize = size;
 		}
 	}
 	if (sdfFont) {
@@ -919,7 +936,7 @@ export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChang
 
 	return (
 		<div className="canvas-shell">
-			<div ref={canvasRef} className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}) }} onMouseDown={() => undefined}>
+			<div ref={canvasRef} className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}), ...(experimentalWorkbenchBackdrop ? { backgroundColor: "rgb(130,130,130)" } : {}) }} onMouseDown={() => undefined}>
 				{nodes.map((node, index) => (
 					<RenderNode
 						key={`${node.name}-${index}`}
