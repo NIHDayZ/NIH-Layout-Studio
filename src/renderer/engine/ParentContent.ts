@@ -51,7 +51,7 @@ function IsOrdinaryContainer(node: MeasuredLayoutNode): boolean {
  *
  * This is not a native Workbench container sizing implementation. In
  * particular, it does not infer padding, invisible-child behavior,
- * scroll extents, or layout manager allocations.
+ * scroll extents, or layout manager allocations. A managed child with\n * fixed authored height contributes only its outer box, not its contents.
  */
 export function ResolveBoundedParentHeight(
 	parent: MeasuredLayoutNode,
@@ -77,7 +77,12 @@ export function ResolveBoundedParentHeight(
 		const authored = child.authored;
 		if (!authored.visible)
 			return Failed("hidden-child", child.node.id);
-		if (child.strategy.requiresArrangement && child.children.length > 0)
+		// A managed child with a completely fixed authored height is an
+		// opaque box to its parent. Its internal Grid/Wrap/Scroll placement
+		// need not be recovered to establish that outer vertical extent.
+		// The manager must still report its own unresolved layout separately.
+		if (child.strategy.requiresArrangement
+			&& (authored.sizeToContentHeight || authored.sizeToContentWidth || !authored.exactSizeY))
 			return Failed("managed-child-layout", child.node.id);
 		const align = authored.vAlign.trim().toLowerCase();
 		if (!authored.exactPositionY || (align !== "top_ref" && align !== "top")
