@@ -234,3 +234,34 @@ The old SDF preview line-breaking function is now `WrapPreviewText` in `TextFlow
 This cleanup proves consistency with NIH Studio's **current renderer**; it does not prove Workbench-equivalent text shaping, vertical baseline/ink alignment, ligatures, bidi scripts, font fallback, wrapping policy, scaling, or parent-child content extents. The native RTTI/vtable research documents the confirmed text-specific measurement override, but the full native glyph and alignment rules remain unresolved. In particular, neither the preview line-height multiplier nor the renderer's missing-glyph fallback should be asserted as Workbench native behavior.
 
 The code remains pure and decoupled from rendering resources; the current canvas still paints all glyphs as before. Run `npm run test:geometry-engine` to check the consolidated metric and preview-flow suites, plus `npm run build` for integration. Do not enable native content sizing globally from this checkpoint.
+
+
+## M2 constrained text height — width first, preview-only
+
+The engine now supports a deliberately restricted **constraint-dependent text height** experiment, separated from the existing parent-independent intrinsic measurements:
+
+```ts
+const prepared = MeasureLayoutTree(document.roots, {
+  constrainedText: CreateSdfPreviewTextPreparer((node) => {
+    // Resolve the actual source SDF font and display size from the project.
+    // Caller also explicitly chooses the current preview's lineHeight/wrap.
+    return resolvedSdfFontSource(node);
+  })
+});
+const snapshot = ArrangeMeasuredGeometry(
+  prepared,
+  { x: 0, y: 0, width: 1280, height: 720 },
+  1,
+  { constrainedTextPreview: true }
+);
+```
+
+`ConstrainedText.ts` prepares the actual SDF font source **once per layout document revision**. Its per-width `measure(width)` callback calls the already-shared `MeasurePreviewFlow`, with strict source glyph/metric validation. It returns only the height for the specific arranged width, line count, width used, and `sdf-preview-flow` provenance. A future true Workbench measurer can use the same width-constrained boundary without inheriting the preview policy.
+
+`LayoutMeasurement.ts` prepares this callback only for **leaf `TextWidgetClass`** with `Size To Content V=1` and `Size To Content H=0`. The horizontal size must already come from independent authored or parent-relative geometry. `GeometrySnapshot.ts` invokes the callback **after** horizontal arrangement, then recomputes vertical top/center/bottom alignment using the shared axis resolver. It checks finite positive height, positive line count and exact requested width before applying any result. `appliedConstrainedText` records all changes. If a source/axis is unsupported, an existing `unresolved-size-to-content` diagnostic remains, and authored geometry is retained.
+
+**Never** infer a size-to-content width from width-wrapped text height (circular dependency), silently override grid-allocated child slots, or use this for `RichTextWidgetClass`, `MultilineTextWidgetClass`, controls, or nodes with children. The native text routine's separate width/height gates, now documented in `workbench-native-widget-scope.md`, support this architectural separation but do **not** establish the preview's line-breaking algorithm, font metrics, or height multiplier as Workbench-native.
+
+`tests/constrained-text.test.mjs` verifies narrow/wide viewport heights, bottom reference realignment, unsupported horizontal feedback, missing font glyphs, zero width, parent/child and grid boundaries, optional mode isolation, source preparation reuse, precedence relative to independent metric sources, and stale/malformed measurement rejection.
+
+This is diagnostic infrastructure only: **no live Canvas layout switch, no new editor URL flag, and no changes to native saved layout geometry**. Workbench parity for text wrapping and size-to-content parents still requires direct comparison fixtures and deeper native tracing. Avoid resource caches until explicit invalidation on document/font changes is designed.
