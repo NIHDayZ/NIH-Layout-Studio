@@ -121,3 +121,14 @@ Re-inspected the pinned `WorkbenchApp.exe` with static `objdump` disassembly to 
 - The grid measurement routine `0x1408DFAE0` calls this shared spacer routine near `0x1408DFB66`, *then* reads edge insets/gaps and row/column counts. The wrap measurement routine `0x1408E0670` also calls the shared routine before its own child processing.
 
 **What this proves:** common dimension negotiation precedes container-specific measurement in these native code paths. **What it does not prove:** the mapping of byte offsets `+0x16A/+0x16B` to authored `Size To Content H/V`, nor a general rule that those dimensions must be copied for all widgets. That requires tracing the property setters and call context. The new M2 TypeScript pipeline therefore records unresolved native content sizing instead of using these flags speculatively.
+
+
+## Shared spacer property-loader defaults (sixth pass)
+
+Static disassembly of shared spacer property loader `0x1408DEEF0` supplies further concrete evidence:
+
+- `0x1408DEF40` loads immediate **2** into the default value register. `0x1408DEF50` writes this default or an explicitly loaded integer to `[widget+0x164]`. The next lookup uses the same default register and `0x1408DEF6F` writes it to `[widget+0x160]`. These are the native **inter-element spacing** and **outer inset** fields respectively, identified previously from grid arithmetic.
+- The bundled reflection metadata at file offsets `0x206ED40–0x206ED88` labels authored **`Padding`** as *Outer margin* and authored **`Margin`** as *Padding between elements*. The lookup ordering is consistent with `[widget+0x160] = Padding`, `[widget+0x164] = Margin`; when absent, both have **default 2** in this executable's loader.
+- The immediately following property lookups at `0x1408DEF75–0x1408DEFAF` store bytes at `[widget+0x16A]` and `[widget+0x16B]`. Reflection metadata at file offsets `0x206EDD8` and `0x206EE38` names the corresponding fields **`Size To Content H`** and **`Size To Content V`** and describes resizing to the bounds of the widget's children. This provides high-confidence mapping of the previously unresolved flags, although their full behavior under nested relative children and DPI scaling still needs control-flow validation.
+
+The current experimental `Canvas.tsx` constrained-grid code still uses zero as the fallback for `Padding` and `Margin`. This is an identified potential mismatch with **native defaults of 2**. Do not silently change production/experimental rendering based on this report: update a dedicated native spacer strategy and validate it against multiple Workbench layouts in the next stage. This refinement applies to the shared spacer property loader, **not** indiscriminately to every widget's padding or margin behavior.
