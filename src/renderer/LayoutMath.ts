@@ -1,11 +1,9 @@
 import type { LayoutNode } from "../model/LayoutTypes";
+import type { GeometryRect } from "./engine/GeometryCore.js";
+import { DecodeAuthoredGeometry, EncodeAuthoredRect, ResolveAuthoredRect } from "./engine/WidgetGeometry.js";
 
-export interface Rect {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-}
+/** Stable public type for existing renderer and editor callers. */
+export type Rect = GeometryRect;
 
 export interface TextStyleInfo {
 	hAlign: "left" | "center" | "right";
@@ -105,48 +103,13 @@ export function ParseColor(value?: string): string | undefined {
 	return `rgba(${Math.round(Math.max(0, Math.min(1, r)) * 255)}, ${Math.round(Math.max(0, Math.min(1, g)) * 255)}, ${Math.round(Math.max(0, Math.min(1, b)) * 255)}, ${Math.max(0, Math.min(1, a))})`;
 }
 
-function ResolveAxis(position: number, size: number, parentSize: number, exactPosition: boolean, align: string): number {
-	const offset = exactPosition ? position : parentSize * position;
-	const normalized = align.toLowerCase().trim();
-
-	// Enfusion has two related alignment forms:
-	//   *_ref : position is an offset from a parent reference point.
-	//   plain  : position is a coordinate in the parent, then the widget is aligned
-	//            around that coordinate. This distinction matters for proportional
-	//            positions such as `position 1 0; halign right`.
-	if (normalized.endsWith("_ref")) {
-		if (normalized.startsWith("right") || normalized.startsWith("bottom"))
-			return parentSize - offset - size;
-		if (normalized.startsWith("center"))
-			return parentSize * 0.5 + offset - size * 0.5;
-		return offset;
-	}
-
-	if (normalized === "right" || normalized === "bottom")
-		return offset - size;
-	if (normalized === "center")
-		return offset - size * 0.5;
-
-	return offset;
-}
-
+/**
+ * Compatibility boundary: the canvas and geometry editor use the same
+ * authored geometry rules as the new engine. Container-specific arrangement
+ * remains separate, and the live renderer behavior is unchanged.
+ */
 export function ResolveRect(node: LayoutNode, parent: Rect): Rect {
-	const [posX, posY] = GetNumberPair(node, "position", 0, 0);
-	const [sizeX, sizeY] = GetNumberPair(node, "size", 1, 1);
-	const exactPosX = GetFlag(node, "hexactpos");
-	const exactPosY = GetFlag(node, "vexactpos");
-	const exactSizeX = GetFlag(node, "hexactsize");
-	const exactSizeY = GetFlag(node, "vexactsize");
-
-	const width = exactSizeX ? sizeX : parent.width * sizeX;
-	const height = exactSizeY ? sizeY : parent.height * sizeY;
-	const hAlign = GetNodeProperty(node, "halign") ?? "left_ref";
-	const vAlign = GetNodeProperty(node, "valign") ?? "top_ref";
-
-	const x = ResolveAxis(posX, width, parent.width, exactPosX, hAlign);
-	const y = ResolveAxis(posY, height, parent.height, exactPosY, vAlign);
-
-	return { x, y, width, height };
+	return ResolveAuthoredRect(DecodeAuthoredGeometry(node), parent);
 }
 
 export function ResolveTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverride?: string): TextStyleInfo {
@@ -168,45 +131,7 @@ export function IsRenderableNode(node: LayoutNode): boolean {
 	return node.type.toLowerCase().includes("widgetclass");
 }
 
-function InverseResolvedAxis(resolvedStart: number, resolvedSize: number, parentSize: number, exactPosition: boolean, align: string): number {
-	const normalized = align.toLowerCase().trim();
-	let coordinate = resolvedStart;
-	if (normalized.endsWith("_ref")) {
-		if (normalized.startsWith("right") || normalized.startsWith("bottom"))
-			coordinate = parentSize - resolvedStart - resolvedSize;
-		else if (normalized.startsWith("center"))
-			coordinate = resolvedStart + resolvedSize * 0.5 - parentSize * 0.5;
-	} else {
-		if (normalized === "right" || normalized === "bottom")
-			coordinate = resolvedStart + resolvedSize;
-		else if (normalized === "center")
-			coordinate = resolvedStart + resolvedSize * 0.5;
-	}
-	return exactPosition ? coordinate : (parentSize > 0 ? coordinate / parentSize : 0);
-}
-
-function FormatLayoutNumber(value: number): string {
-	if (!Number.isFinite(value))
-		return "0";
-	const rounded = Math.abs(value) < 0.0000005 ? 0 : value;
-	return Number(rounded.toFixed(6)).toString();
-}
-
+/** Encode edits through the shared inverse geometry transform. */
 export function RectToLayoutGeometry(node: LayoutNode, parent: Rect, rect: Rect): { position: string; size: string } {
-	const exactPosX = GetFlag(node, "hexactpos");
-	const exactPosY = GetFlag(node, "vexactpos");
-	const exactSizeX = GetFlag(node, "hexactsize");
-	const exactSizeY = GetFlag(node, "vexactsize");
-	const hAlign = GetNodeProperty(node, "halign") ?? "left_ref";
-	const vAlign = GetNodeProperty(node, "valign") ?? "top_ref";
-
-	const posX = InverseResolvedAxis(rect.x, rect.width, parent.width, exactPosX, hAlign);
-	const posY = InverseResolvedAxis(rect.y, rect.height, parent.height, exactPosY, vAlign);
-	const sizeX = exactSizeX ? rect.width : (parent.width > 0 ? rect.width / parent.width : 0);
-	const sizeY = exactSizeY ? rect.height : (parent.height > 0 ? rect.height / parent.height : 0);
-
-	return {
-		position: `${FormatLayoutNumber(posX)} ${FormatLayoutNumber(posY)}`,
-		size: `${FormatLayoutNumber(sizeX)} ${FormatLayoutNumber(sizeY)}`
-	};
+	return EncodeAuthoredRect(DecodeAuthoredGeometry(node), parent, rect);
 }
