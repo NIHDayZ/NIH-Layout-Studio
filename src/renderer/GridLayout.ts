@@ -13,8 +13,12 @@ export interface GridPlan {
  rows: number;
 }
 
-/** Provisional editor grid model. Rows is a configured hint, not a hard child cap. */
-export function PlanGrid(children: GridRect[], columnsSetting: number, rowsSetting: number, gap: number): GridPlan {
+/** Provisional editor grid model. Rows is a hint, not a hard child cap.
+ * Optional measurement bounds exclude parent-relative dimensions from sizing
+ * without discarding their actual render dimensions. */
+export function PlanGrid(children: GridRect[], columnsSetting: number, rowsSetting: number, gap: number, measurementChildren: GridRect[] = children): GridPlan {
+ if (measurementChildren.length !== children.length)
+  throw new Error("Grid measurements must match the children being laid out.");
  const count = children.length;
  const safeColumns = Number.isFinite(columnsSetting) ? Math.floor(columnsSetting) : 0;
  const safeRows = Number.isFinite(rowsSetting) ? Math.floor(rowsSetting) : 0;
@@ -25,8 +29,8 @@ export function PlanGrid(children: GridRect[], columnsSetting: number, rowsSetti
  const rowHeights = Array(rows).fill(0) as number[];
  for (let i = 0; i < count; ++i) {
   const col = i % columns, row = Math.floor(i / columns);
-  columnWidths[col] = Math.max(columnWidths[col], Math.max(0, children[i].width));
-  rowHeights[row] = Math.max(rowHeights[row], Math.max(0, children[i].height));
+  columnWidths[col] = Math.max(columnWidths[col], Math.max(0, measurementChildren[i].width));
+  rowHeights[row] = Math.max(rowHeights[row], Math.max(0, measurementChildren[i].height));
  }
  const xOffsets = columnWidths.map((_, i) => columnWidths.slice(0, i).reduce((s, w) => s + w + spacing, 0));
  const yOffsets = rowHeights.map((_, i) => rowHeights.slice(0, i).reduce((s, h) => s + h + spacing, 0));
