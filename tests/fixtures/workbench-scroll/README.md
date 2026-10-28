@@ -33,9 +33,20 @@ the top toolbar has Root DPI scaling disabled. The relation of these UI controls
 to the native scrollbar thickness scaling path is unresolved. The unscaled
 `10`-unit math in the numeric comparator remains a **hypothesis**.
 
-**Next validation environment:** running DayZ UI, where scrollbar dragging,
-wheel movement, and runtime clip behavior can be tested. The engine has no
-runtime ScrollWidget implementation enabled yet.
+**Next validation environment:** running DayZ UI, where scrollbar movement,
+offset getters and actual clipping can be investigated. An optional standalone,
+**test-only** DayZ probe is provided in [runtime-mod/](runtime-mod/README.md).
+It calls supported native ScrollWidget getters and requests normalized scroll
+positions from the client. Its source has **not** been DayZ-compiled or run yet.
+The engine has no runtime ScrollWidget implementation enabled.
+
+**Numeric parity is now additionally gated by native scaling provenance.**
+The unscaled 10-unit predictions remain visible as hypotheses, but a fixture
+without independently established native scaling branch/context cannot PASS
+even if observed rectangles happen to match. Any case that could PASS also
+needs independent provenance for the actual native offsets, not just a
+zero-offset guess. The comparator cannot independently authenticate an
+evidence file or build identifier.
 
 ## Capture procedure on Windows
 
