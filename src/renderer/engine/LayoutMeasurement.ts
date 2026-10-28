@@ -2,6 +2,7 @@ import type { LayoutConstraints, MeasuredWidget } from "./GeometryCore.js";
 import { DecodeAuthoredGeometry, MeasureAuthoredSize, type AuthoredGeometry, type GeometryWidget } from "./WidgetGeometry.js";
 import { ResolveChildLayoutStrategy, type ChildLayoutStrategy } from "./WidgetStrategies.js";
 import { DecodeNativeGridSettings, type NativeGridSettings } from "./ConstrainedGrid.js";
+import { DecodeNativeWrapSettings, type NativeWrapSettings } from "./FixedWrap.js";
 import { ResolveIntrinsicMeasurement, type IntrinsicMeasurementProviders, type ResolvedIntrinsicMeasurement } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextPreparer, PreparedTextFlow } from "./ConstrainedText.js";
 
@@ -19,6 +20,8 @@ export interface MeasuredLayoutNode {
 	readonly strategy: ChildLayoutStrategy;
 	/** Grid-only native settings decoded once; absent for other widget classes. */
 	readonly nativeGrid: NativeGridSettings | null;
+	/** Wrap-only spacing and alignment, decoded once. */
+	readonly nativeWrap: NativeWrapSettings | null;
 	readonly measurement: MeasuredWidget;
 	/** Optional external resource measurements, never calculated from the widget rectangle. */
 	readonly intrinsic: ResolvedIntrinsicMeasurement | null;
@@ -69,6 +72,7 @@ export function MeasureLayoutTree(
 		const authored = DecodeAuthoredGeometry(node);
 		const strategy = ResolveChildLayoutStrategy(node.type);
 		const nativeGrid = strategy.kind === "grid" ? DecodeNativeGridSettings(node.properties) : null;
+		const nativeWrap = strategy.kind === "wrap" ? DecodeNativeWrapSettings(node.properties) : null;
 		const intrinsic = options.intrinsics && (authored.sizeToContentWidth || authored.sizeToContentHeight)
 			? ResolveIntrinsicMeasurement(node, options.intrinsics) : null;
 		const textFlow = options.constrainedText && node.type.trim().toLowerCase() === "textwidgetclass"
@@ -86,6 +90,7 @@ export function MeasureLayoutTree(
 			authored,
 			strategy,
 			nativeGrid,
+			nativeWrap,
 			measurement: MeasureAuthoredSize(authored),
 			intrinsic,
 			textFlow,
