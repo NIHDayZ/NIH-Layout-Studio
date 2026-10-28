@@ -42,16 +42,21 @@ class NIHContentSizingRuntimeProbe {
 
 		// Change the same text in multiple authored modes. Keep the other
 		// text and all Image/Frame/Panel cases untouched as controls.
-		ref array<string> names = {"TextFixed", "TextToTextH", "TextToTextV", "TextToTextBoth", "TextToContentBoth"};
-		foreach (string name : names) {
-			TextWidget textWidget = TextWidget.Cast(m_Root.FindAnyWidget(name));
-			if (textWidget)
-				textWidget.SetText(value);
-			else
-				Print("[NIH_LayoutStudio][ContentProbe] ERROR: missing text widget " + name);
-		}
+		SetOneText("TextFixed", value);
+		SetOneText("TextToTextH", value);
+		SetOneText("TextToTextV", value);
+		SetOneText("TextToTextBoth", value);
+		SetOneText("TextToContentBoth", value);
 		m_Root.Update();
 		Print("[NIH_LayoutStudio][ContentProbe] REQUEST sampleText=" + value);
+	}
+
+	protected void SetOneText(string name, string value) {
+		TextWidget textWidget = TextWidget.Cast(m_Root.FindAnyWidget(name));
+		if (textWidget)
+			textWidget.SetText(value);
+		else
+			Print("[NIH_LayoutStudio][ContentProbe] ERROR: missing text widget " + name);
 	}
 
 	void CaptureAll(string phase) {
