@@ -675,7 +675,7 @@ function GetSpacerDirection(node: LayoutNode): "row" | "column" {
 }
 
 function GetSpacerGap(node: LayoutNode): number {
-	const raw = Number(GetNodeProperty(node, "Spacing") ?? GetNodeProperty(node, "spacing") ?? GetNodeProperty(node, "Gap") ?? 0);
+	const raw = Number(GetNodeProperty(node, "Spacing") ?? GetNodeProperty(node, "spacing") ?? GetNodeProperty(node, "Gap") ?? GetNodeProperty(node, "Margin") ?? GetNodeProperty(node, "margin") ?? 0);
 	return Number.isFinite(raw) ? Math.max(0, raw) : 0;
 }
 
