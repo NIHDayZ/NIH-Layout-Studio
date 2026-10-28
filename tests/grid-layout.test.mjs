@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { PlanConstrainedGrid, PlanGrid } from "../.grid-layout-test-build/GridLayout.js";
+import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../.grid-layout-test-build/GridLayout.js";
 
 const rect = (width, height) => ({ x: 0, y: 0, width, height });
 
@@ -126,4 +126,18 @@ test("native constrained grid clamps impossible available sizes instead of emitt
  assert.equal(plan.rects[0].width, 0);
  assert.equal(plan.rects[0].height, 0);
  assert.ok(plan.rects.every((child) => Number.isFinite(child.x) && Number.isFinite(child.y)));
+});
+
+test("native grid loader defaults both omitted counts to three independently", () => {
+ assert.deepEqual(ResolveNativeGridCounts(0, 0), { columns: 3, rows: 3 });
+ assert.deepEqual(ResolveNativeGridCounts(2, 0), { columns: 2, rows: 3 });
+ assert.deepEqual(ResolveNativeGridCounts(0, 5), { columns: 3, rows: 5 });
+ assert.deepEqual(ResolveNativeGridCounts(1, 4), { columns: 1, rows: 4 });
+});
+
+test("native default grid leaves unoccupied cells without compressing rows", () => {
+ const { columns, rows } = ResolveNativeGridCounts(0, 0);
+ const plan = PlanConstrainedGrid(8, columns, rows, { width: 300, height: 300 }, 0);
+ assert.equal(plan.rects[7].y, 200);
+ assert.equal(plan.rects[7].height, 100);
 });
