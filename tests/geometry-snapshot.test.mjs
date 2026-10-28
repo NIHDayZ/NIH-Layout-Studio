@@ -18,6 +18,14 @@ test("read-only hierarchy records parent-local and absolute rectangles independe
  assert.deepEqual(snapshot.byId.get("label").localRect,{x:10,y:5,width:40,height:12});
  assert.deepEqual(snapshot.byId.get("label").absoluteRect,{x:490,y:545,width:40,height:12});
  assert.equal(snapshot.byId.get("label").parentId,"panel");
+ assert.deepEqual(snapshot.measuredById.get("label"),{
+  minWidth:0,minHeight:0,preferredWidth:40,preferredHeight:12,
+  dependsOnParentWidth:false,dependsOnParentHeight:false
+ });
+ assert.deepEqual(snapshot.measuredById.get("panel"),{
+  minWidth:0,minHeight:0,preferredWidth:0,preferredHeight:0,
+  dependsOnParentWidth:true,dependsOnParentHeight:true
+ });
  assert.deepEqual(snapshot.byId.get("label").clipRect,Root(1920,1080));
  assert.deepEqual(snapshot.issues,[]);
 });
@@ -61,6 +69,7 @@ test("document order, priorities and duplicate IDs remain inspectable", () => {
  assert.equal(snap.entries.length,2);
  assert.deepEqual(snap.entries.map(x=>x.sortOrder),[9,-2]);
  assert.equal(snap.byId.get("dup").sortOrder,9);
+ assert.equal(snap.measuredById.size,1);
  assert.equal(snap.issues.length,1);
  assert.equal(snap.issues[0].code,"duplicate-widget-id");
 });
