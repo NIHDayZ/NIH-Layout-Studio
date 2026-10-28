@@ -2,6 +2,7 @@ import type { LayoutConstraints, MeasuredWidget } from "./GeometryCore.js";
 import { DecodeAuthoredGeometry, MeasureAuthoredSize, type AuthoredGeometry, type GeometryWidget } from "./WidgetGeometry.js";
 import { ResolveChildLayoutStrategy, type ChildLayoutStrategy } from "./WidgetStrategies.js";
 import { DecodeNativeGridSettings, type NativeGridSettings } from "./ConstrainedGrid.js";
+import { ResolveIntrinsicMeasurement, type IntrinsicMeasurementProviders, type ResolvedIntrinsicMeasurement } from "./IntrinsicMeasurements.js";
 
 /**
  * A prepared layout node with geometry properties decoded exactly once.
@@ -18,6 +19,8 @@ export interface MeasuredLayoutNode {
 	/** Grid-only native settings decoded once; absent for other widget classes. */
 	readonly nativeGrid: NativeGridSettings | null;
 	readonly measurement: MeasuredWidget;
+	/** Optional external resource measurements, never calculated from the widget rectangle. */
+	readonly intrinsic: ResolvedIntrinsicMeasurement | null;
 	readonly unresolvedContentWidth: boolean;
 	readonly unresolvedContentHeight: boolean;
 	readonly children: readonly MeasuredLayoutNode[];
@@ -37,7 +40,14 @@ export interface MeasuredLayoutTree {
  * Content is requested, its extent depends on widget-specific measurement,
  * child alignment, visibility and possibly parent constraints.
  */
-export function MeasureLayoutTree(roots: readonly GeometryWidget[]): MeasuredLayoutTree {
+export interface MeasurementOptions {
+	intrinsics?: IntrinsicMeasurementProviders;
+}
+
+export function MeasureLayoutTree(
+	roots: readonly GeometryWidget[],
+	options: MeasurementOptions = {}
+): MeasuredLayoutTree {
 	let nodeCount = 0;
 	let unresolvedContentSizeCount = 0;
 	let managedContainerCount = 0;
@@ -54,6 +64,7 @@ export function MeasureLayoutTree(roots: readonly GeometryWidget[]): MeasuredLay
 		const authored = DecodeAuthoredGeometry(node);
 		const strategy = ResolveChildLayoutStrategy(node.type);
 		const nativeGrid = strategy.kind === "grid" ? DecodeNativeGridSettings(node.properties) : null;
+		const intrinsic = options.intrinsics ? ResolveIntrinsicMeasurement(node, options.intrinsics) : null;
 		const unresolvedContentWidth = authored.sizeToContentWidth;
 		const unresolvedContentHeight = authored.sizeToContentHeight;
 		++nodeCount;
@@ -67,6 +78,7 @@ export function MeasureLayoutTree(roots: readonly GeometryWidget[]): MeasuredLay
 			strategy,
 			nativeGrid,
 			measurement: MeasureAuthoredSize(authored),
+			intrinsic,
 			unresolvedContentWidth,
 			unresolvedContentHeight,
 			children
