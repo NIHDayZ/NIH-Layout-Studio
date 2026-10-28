@@ -6,6 +6,7 @@ import { ResolveAuthoredRect } from "./WidgetGeometry.js";
 import { EstimateUnscaledScrollViewport, type UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
 import { ScatterManagedRects, SelectManagedChildIndices } from "./ManagedVisibility.js";
+import type { NativeScrollOffsets } from "./ScrollOffset.js";
 
 /**
  * Explicitly enabled prototype strategies. Default (omitted) means
@@ -23,6 +24,8 @@ export interface ArrangementOptions {
 	scrollNativeExtentDiagnostics?: boolean;
 	/** Prototype unscaled scrollbar reservation and child viewport, never live Scroll clipping. */
 	scrollScrollbarViewportDiagnostics?: boolean;
+	/** Caller-supplied native Scroll state for read-only geometry comparisons. */
+	scrollOffsetSamples?: ReadonlyMap<string, NativeScrollOffsets>;
 	/**
 	 * Prototype only: consume a supplied independent intrinsic dimension for
 	 * leaf ImageWidget/TextWidget size-to-content. No native parity asserted.
