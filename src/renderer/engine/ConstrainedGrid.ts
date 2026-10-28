@@ -33,8 +33,9 @@ export function ResolveNativeGridCounts(columnsSetting: number, rowsSetting: num
  * The observed native routine divides available width by its horizontal
  * count and height by its vertical count after edge insets and cell gaps.
  *
- * How zero/absent counts are initialized is not recovered. Callers must
- * supply positive resolved counts rather than assuming a universal default.
+ * Native property loading defaults both count fields to three; see
+ * ResolveNativeGridCounts and DecodeNativeGridSettings below. Callers still
+ * supply resolved positive counts to keep this arithmetic side-effect free.
  */
 export function PlanConstrainedGrid(
 	childCount: number,
