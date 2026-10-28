@@ -159,3 +159,28 @@ Arrangement consumes parent width/height constraints top-down, maintaining inher
 The pinned Workbench disassembly supports a real distinction: shared spacer dimension negotiation at `0x1408E05D0` is called before the Grid and Wrap measurement routines process their specialized children. That does **not** yet establish how exact/relative content size should be determined for Text, Image, Scroll, or every other control. Widget-specific measurement handlers must be added only when their semantics have independent evidence.
 
 **Next validation gate:** trace authored flags to compiled measurement setters, and define a constrained strategy interface that accepts the shared measured tree and emits child rectangles with explicit evidence/confidence. Until that is verified, this remains a read-only authored-geometry pipeline.
+
+
+## Native-derived constrained grid strategy prototype (M3 preparation)
+
+The native GridSpacer arithmetic and default-count helpers were **moved**, not copied, from `src/renderer/GridLayout.ts` to `src/renderer/engine/ConstrainedGrid.ts`. The previous public exports remain available as re-exports, preserving the experimental renderer and existing grid tests. The engine now has one implementation of that arithmetic.
+
+`LayoutMeasurement.ts` decodes GridSpacer-only properties **once** into `nativeGrid` for a prepared node. The pinned Workbench binary supports default `Rows=3`, `Columns=3`, `Padding=2` (outer inset) and `Margin=2` (inter-cell spacing). These defaults are restricted to GridSpacer inheritance, not generalized to other widgets.
+
+`LayoutArrangers.ts` centralizes widget-specific strategy dispatch. `GeometrySnapshot.ts` only performs common hierarchy traversal and applies rectangles returned by the strategy. To test a native-derived fixed-cell grid **without affecting the live canvas**, call:
+
+```ts
+const measured = MeasureLayoutTree(document.roots);
+const preview = ArrangeMeasuredGeometry(
+  measured,
+  { x: 0, y: 0, width: 1920, height: 1080 },
+  1,
+  { constrainedGrid: true }
+);
+```
+
+**Default behavior is still authored-coordinate diagnostics.** This prototype supports a constrained GridSpacer with configured/default positive counts and no content-sized axes. It refuses unverified cases including hidden immediate children, more children than grid slots, content-sized axes, and invalid container geometry. In these cases the snapshot retains authored child geometry and emits an `unresolved-layout-strategy` issue rather than guessing native clipping/visibility/overflow behavior. Other managed widget types (Wrap, Scroll, Content, etc.) remain unresolved. `appliedStrategies` records which native-derived paths were actually used.
+
+`tests/native-grid-strategy.test.mjs` covers default and explicit settings, parity with the **same shared grid calculation**, nested child constraints, viewport resizing, unchanged default behavior, unsupported overflow and hidden children, and non-grid widget isolation. The existing `test:grid-layout` suite is also retained.
+
+**Not yet recovered:** full native text/image intrinsic measurement, content-size feedback, hidden-child filtering, DPI-dependent inset scaling, all grid child flags, and Wrap/Scroll arrangement. Until these have independent Workbench verification, neither production rendering nor the editor's saved output should be changed on the basis of this prototype. Do not remove experimental URL flags as part of this stage.
