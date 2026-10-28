@@ -170,3 +170,20 @@ the child block on Frame and Panel. It deliberately uses separate
 for these cases; the earlier v1/v2/property-matrix captures are
 preserved unchanged. Web CI validates only syntax input integrity
 and the log extractor, not DayZ's C++ loader.
+
+## Verified native parser-order finding — 2026-10-28
+
+The separate 12-case native syntax probe is complete:
+`"Size To Content V" 0` and deliberately unknown
+`"NIH_ProbeUnknown" 0` **before** the child block led
+to zero child widgets on tested Frame/Panel parents.
+The **same property after the block** preserved two children.
+A known `clipchildren` attribute kept two children in either
+position. All observations were stable after `Update`.
+
+This is a **native parser compatibility / ordering effect**,
+not evidence that content-sizing calculations should delete
+children. See
+[the controlled native results](2026-10-28-property-syntax-native-results.md).
+No exact C++ parser recovery or full widget capability registry
+is claimed.
