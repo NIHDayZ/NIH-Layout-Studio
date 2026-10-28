@@ -123,6 +123,14 @@ export function PlanGrid(
 }
 
 
+/** Defaults recovered at WorkbenchApp.exe image VA 0x1408DED50. */
+export function ResolveNativeGridCounts(columnsSetting: number, rowsSetting: number): { columns: number; rows: number } {
+	return {
+		columns: Number.isFinite(columnsSetting) && columnsSetting > 0 ? Math.max(1, Math.floor(columnsSetting)) : 3,
+		rows: Number.isFinite(rowsSetting) && rowsSetting > 0 ? Math.max(1, Math.floor(rowsSetting)) : 3
+	};
+}
+
 /**
  * Equal-cell arrangement reconstructed from the GridSpacerWidget native
  * arrangement loop (WorkbenchApp.exe RVA 0x8E0960).
