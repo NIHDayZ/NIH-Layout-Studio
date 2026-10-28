@@ -1,0 +1,159 @@
+FrameWidgetClass NIHCommonParity {
+	position 0 0
+	size 1120 460
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		FrameWidgetClass Frame_Exact {
+			position 20 20
+			size 330 210
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				PanelWidgetClass Panel_Relative {
+					position 0.1 0.15
+					size 0.6 0.5
+					{
+						TextWidgetClass Text_Exact {
+							position 12 14
+							size 110 26
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							text "COMMON TEXT"
+						}
+						ImageWidgetClass Image_RightRef {
+							position 14 6
+							size 40 40
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							halign right_ref
+						}
+						ButtonWidgetClass Button_CenterRef {
+							position 0 0
+							size 120 30
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							halign center_ref
+							valign center_ref
+							text "CENTER"
+						}
+					}
+				}
+				FrameWidgetClass Frame_Overhang {
+					position 290 165
+					size 140 90
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					clipchildren 1
+					{
+						ButtonWidgetClass Button_Overhang {
+							position 90 50
+							size 90 60
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							text "CLIP"
+						}
+					}
+				}
+			}
+		}
+		PanelWidgetClass Panel_RightBottom {
+			position 24 30
+			size 240 120
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			halign right_ref
+			valign bottom_ref
+			{
+				ImageWidgetClass Image_Relative {
+					position 0.2 0.25
+					size 0.3 0.4
+				}
+				TextWidgetClass Text_BottomRef {
+					position 12 8
+					size 110 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					halign right_ref
+					valign bottom_ref
+					text "BOTTOM"
+				}
+			}
+		}
+		PanelWidgetClass Panel_CenterRef {
+			position 0 0
+			size 0.25 0.3
+			hexactpos 1
+			vexactpos 1
+			halign center_ref
+			valign center_ref
+			{
+				TextWidgetClass Text_Relative {
+					position 0.1 0.2
+					size 0.6 0.4
+					text "RELATIVE"
+				}
+			}
+		}
+		ButtonWidgetClass Button_PlainRight {
+			position 480 290
+			size 130 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			halign right
+			valign bottom
+			text "PLAIN"
+		}
+		PanelWidgetClass Panel_Hidden {
+			position 40 290
+			size 200 80
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			visible 0
+			clipchildren 1
+			{
+				TextWidgetClass Text_HiddenDescendant {
+					position 10 10
+					size 110 30
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					visible 1
+					text "HIDDEN"
+				}
+			}
+		}
+		PanelWidgetClass Panel_Negative {
+			position -12 -9
+			size 120 70
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+		}
+	}
+}
