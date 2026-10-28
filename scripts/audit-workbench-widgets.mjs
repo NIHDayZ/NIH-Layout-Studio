@@ -75,8 +75,9 @@ export function CensusPboWidgets(buffer) {
 			++widgetDeclarations;
 			seen.add(type);
 			const samples = examples.get(type) ?? [];
-			if (samples.length < 3)
-				samples.push(entry.name.replaceAll("\\", "/"));
+			const samplePath = entry.name.replaceAll("\\", "/");
+			if (samples.length < 3 && !samples.includes(samplePath))
+				samples.push(samplePath);
 			examples.set(type, samples);
 		}
 		for (const type of seen)
