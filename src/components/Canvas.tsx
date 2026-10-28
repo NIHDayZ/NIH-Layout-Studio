@@ -679,6 +679,18 @@ function GetSpacerGap(node: LayoutNode): number {
 	return Number.isFinite(raw) ? Math.max(0, raw) : 0;
 }
 
+function GetGridPlan(node: LayoutNode, childParent: Rect) {
+	const children = node.children.map((child) => ResolveRect(child, childParent));
+	// Parent-relative children are rendered at their resolved sizes, but must
+	// not contribute that same parent-dependent size to intrinsic measurement.
+	const measured = children.map((childRect, index) => ({
+		...childRect,
+		width: GetFlag(node.children[index], "hexactsize") ? childRect.width : 0,
+		height: GetFlag(node.children[index], "vexactsize") ? childRect.height : 0
+	}));
+	return PlanGrid(children, GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), GetSpacerGap(node), measured);
+}
+
 function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | null, selectedIds: string[], onSelect: (node: LayoutNode, additive?: boolean) => void, onGeometryChange: RenderNodeProps["onGeometryChange"], zoom: number, debug: CanvasDebugOptions, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null, snapEnabled: boolean, snapSize: number, onContextMenu: RenderNodeProps["onContextMenu"]) {
 	const kind = GetWidgetKind(node);
 	const childParent: Rect = { x: 0, y: 0, width: Math.max(0, rect.width), height: Math.max(0, rect.height) };
@@ -695,9 +707,7 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 	const gap = GetSpacerGap(node);
 	const isGridSpacer = node.type.toLowerCase().includes("gridspacerwidget");
 	let cursor = 0;
-	const gridPlan = isGridSpacer && experimentalGridLayout
-		? PlanGrid(node.children.map((child) => ResolveRect(child, childParent)), GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), gap)
-		: null;
+	const gridPlan = isGridSpacer && experimentalGridLayout ? GetGridPlan(node, childParent) : null;
 	return node.children.map((child, index) => {
 		const natural = ResolveRect(child, childParent);
 		let childRect = natural;
@@ -756,17 +766,7 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 	// Opt-in sizing applies before child placement so bottom/center anchors stay
 	// attached to the same parent edge when content requires a larger grid.
 	if (experimentalGridLayout && kind.isSpacer && node.type.toLowerCase().includes("gridspacerwidget") && !dragRect) {
-		// Relative-size descendants depend on this container's dimensions. Do not
-		// feed their resulting size back into size-to-content measurement: that
-		// creates a positive feedback loop in nested grids.
-		const plan = PlanGrid(node.children.map((child) => {
-			const childRect = ResolveRect(child, { x: 0, y: 0, width: rect.width, height: rect.height });
-			return {
-				...childRect,
-				width: GetFlag(child, "hexactsize") ? childRect.width : 0,
-				height: GetFlag(child, "vexactsize") ? childRect.height : 0
-			};
-		}), GetNumber(node, "Columns", 0), GetNumber(node, "Rows", 0), GetSpacerGap(node));
+		const plan = GetGridPlan(node, { x: 0, y: 0, width: rect.width, height: rect.height });
 		const width = GetFlag(node, "Size To Content H") ? Math.max(rect.width, plan.contentWidth) : rect.width;
 		const height = GetFlag(node, "Size To Content V") ? Math.max(rect.height, plan.contentHeight) : rect.height;
 		const halign = (GetNodeProperty(node, "halign") ?? "").toLowerCase();
