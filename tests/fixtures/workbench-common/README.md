@@ -49,15 +49,18 @@ actual parsed `.layout`, then compares screen-space rectangles against
 It applies the same shared geometry to all supported ordinary widget classes,
 without per-type coordinate exceptions.
 
-The comparator accepts a separately observed parent root viewport
-`{x,y,width,height}`, a dictionary of native `screenRect` values for
-**every widget**, tolerance, and provenance containing
-`captureMethod`, `nativeBuild`, `evidenceFile`, and `viewportSource`.
-A root rectangle inferred from Studio's predicted output is not independent
-evidence. In a practical capture, use actual DayZ root-screen coordinates
-plus the physical parent workspace dimensions, recording how those
-dimensions were obtained. The two captured root sizes do not by themselves
-prove which native scale branch was selected.
+The comparator accepts the **native observed test root's screen rectangle**
+`{x,y,width,height}` as its `viewport`, a dictionary of native
+`screenRect` values for **all 16 descendants**, tolerance, and provenance
+containing `captureMethod`, `nativeBuild`, `evidenceFile`, and
+`viewportSource`. The root is deliberately excluded from comparison
+because the runtime harness uses `SetScreenSize` to override its authored
+relative size. This compares the reusable authored geometry behavior of
+its descendants under the **actual root size**, rather than incorrectly
+assuming the runtime-resized root still fills the physical workspace.
+A root rectangle inferred from Studio's predicted output is not
+independent evidence. The captured root sizes alone do not prove which
+native DPI scale branch was used.
 
 The comparator reports `PENDING` for missing observations or the parent
 viewport, `FAIL` for mismatched/invalid rectangles, `PASS` for all
