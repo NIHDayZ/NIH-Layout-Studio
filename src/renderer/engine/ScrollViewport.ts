@@ -1,4 +1,5 @@
 import type { GeometryRect } from "./GeometryCore.js";
+import { MeasureContentBounds } from "./ContentBounds.js";
 
 /**
  * An authored-coordinate diagnostic, NOT a native ScrollWidget layout.
@@ -23,28 +24,23 @@ export function MeasureAuthoredScrollViewport(
 	if (!Number.isFinite(container.width) || !Number.isFinite(container.height)
 		|| container.width <= 0 || container.height <= 0 || children.length === 0)
 		return null;
-	let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity;
-	for (const child of children) {
-		if (![child.x, child.y, child.width, child.height].every(Number.isFinite)
-			|| child.width <= 0 || child.height <= 0)
-			return null;
-		left = Math.min(left, child.x);
-		top = Math.min(top, child.y);
-		right = Math.max(right, child.x + child.width);
-		bottom = Math.max(bottom, child.y + child.height);
-	}
-	if (![left, top, right, bottom].every(Number.isFinite))
+	// Scroll's eligibility policy requires strictly positive child dimensions.
+	// The shared geometry helper does not decide visibility or native scroll
+	// semantics; the caller handles those before this bounds calculation.
+	const bounds = MeasureContentBounds(children);
+	if (!bounds)
 		return null;
+	const { left, top, right, bottom } = bounds;
 	return {
 		viewport: { x: 0, y: 0, width: container.width, height: container.height },
-		directChildBounds: { x: left, y: top, width: right - left, height: bottom - top },
+		directChildBounds: { x: left, y: top, width: bounds.width, height: bounds.height },
 		overhang: {
 			left: Math.max(0, -left),
 			right: Math.max(0, right - container.width),
 			top: Math.max(0, -top),
 			bottom: Math.max(0, bottom - container.height)
 		},
-		directChildCount: children.length,
+		directChildCount: bounds.childCount,
 		evidence: "authored-direct-child-bounds"
 	};
 }
