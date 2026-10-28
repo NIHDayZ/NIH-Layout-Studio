@@ -120,3 +120,21 @@ eligibility have been independently compared with the observations.
 
 See [runtime-mod/README.md](runtime-mod/README.md) for PowerShell
 preparation, local packaging and capture instructions.
+
+## v3 isolated native property comparison — prepared, not yet tested
+
+The earlier two native datasets are frozen. A **third, separate** layout
+`NIH_ContentProperty_Matrix.layout` and `NIH_PropertyMatrixRuntime.c`
+are now included in the same disposable mod. Fourteen controlled
+Frame/Panel/Wrap parent variants independently test whether a
+`Size To Content` property set to **0** differs from the same property
+set to **1**, with other controls for the sizing axis and a non-sizing
+property. The separate `[NIH_LayoutStudio][PropertyProbe]` logger
+captures each case immediately after widget creation, after an
+`Update()`, and after a root resize.
+
+The original four `[ContentProbe]` phases are retained, so the
+existing complete/partial v2 extractor and native JSON are unaffected.
+This third matrix is **source-verified only**, not compiled or observed
+in DayZ. See [the protocol and evidence boundaries](PROPERTY-MATRIX.md).
+
