@@ -15,7 +15,7 @@
     "VisibleChild",
     "HiddenChild"
   ],
-  "notes": "Observed screenRect, localRect, GetTextSize, flags and visibility are transcribed from real DayZ client output. Five authored descendants of content-sized Frame/Panel parents were absent from recursive GetChildren/GetSibling traversal in all four phases. No claim that native tree lacks these widgets until FindAnyWidget direct lookup is captured. Do not infer content-sized container child rules, image intrinsic sizes, DPI, or clipping. Text pixel dimensions are stored as width/height only; x=y=0 placeholder is a representation detail.",
+  "notes": "Observed screenRect, localRect, GetTextSize, flags and visibility are transcribed from real DayZ client output. Five authored descendants of content-sized Frame/Panel parents were absent from recursive GetChildren/GetSibling traversal in all four phases. No claim that native tree lacks these widgets until FindAnyWidget direct lookup is captured. Do not infer content-sized container child rules, image intrinsic sizes, DPI, or clipping. GetTextSize pixel dimensions use width and height only.",
   "phases": [
     {
       "phase": "baseline-1120x460",
@@ -60,8 +60,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -83,8 +81,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -106,8 +102,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -129,8 +123,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -152,8 +144,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -175,8 +165,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 235,
             "height": 16
           }
@@ -328,8 +316,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 9,
             "height": 16
           }
@@ -351,8 +337,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 9,
             "height": 16
           }
@@ -374,8 +358,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 9,
             "height": 16
           }
@@ -397,8 +379,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 9,
             "height": 16
           }
@@ -420,8 +400,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 9,
             "height": 16
           }
@@ -443,8 +421,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 235,
             "height": 16
           }
@@ -596,8 +572,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -619,8 +593,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -642,8 +614,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -665,8 +635,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -688,8 +656,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -711,8 +677,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 235,
             "height": 16
           }
@@ -864,8 +828,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -887,8 +849,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -910,8 +870,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -933,8 +891,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -956,8 +912,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 128,
             "height": 16
           }
@@ -979,8 +933,6 @@
           "flags": 545259583,
           "selfVisible": true,
           "textPixels": {
-            "x": 0,
-            "y": 0,
             "width": 235,
             "height": 16
           }
