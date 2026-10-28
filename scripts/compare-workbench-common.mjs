@@ -40,16 +40,23 @@ function NamedNodes(roots) {
 }
 
 /**
- * Root viewport must come from independent native workspace/capture data.
- * Rectangles are keyed by original layout widget NAME, not parser-assigned ID.
+ * The fixture ROOT is a runtime-resized harness viewport, not a
+ * comparison target. Read its actual GetScreenPos/GetScreenSize and compare
+ * the authored descendants relative to that measured root rectangle.
+ * Rectangles are keyed by original layout widget NAME, not parser IDs.
  */
 export function CompareCommonGeometryCaptures(data, roots) {
 	if (!data || data.schemaVersion !== 1 || !Array.isArray(data.cases) || !data.cases.length)
 		throw new Error("Expected schemaVersion=1 and a nonempty cases array");
-	if (!Array.isArray(roots) || !roots.length)
-		throw new Error("Missing parsed native layout roots");
-	const named = NamedNodes(roots);
-	const tree = MeasureLayoutTree(roots);
+	if (!Array.isArray(roots) || roots.length !== 1 || !roots[0].children?.length)
+		throw new Error("Expected one harness root with native geometry descendants");
+	// The runtime probe calls SetScreenSize on the fixture root. Treat its
+	// observed screen rectangle as the input constraint, not a prediction.
+	// This prevents the authored root's relative size from being mistaken
+	// for the native runtime override or the physical workspace dimensions.
+	const descendants = roots[0].children;
+	const named = NamedNodes(descendants);
+	const tree = MeasureLayoutTree(descendants);
 	if (tree.managedContainerCount !== 0 || tree.unresolvedContentSizeCount !== 0)
 		throw new Error("Common authored geometry comparator refuses managed/content-sized layouts");
 
@@ -75,7 +82,7 @@ export function CompareCommonGeometryCaptures(data, roots) {
 		}
 		if (!ValidRect(item.viewport)) {
 			reports.push({id:item.id, status:"pending", matched:0, total:named.size,
-				errors:["Native root/parent viewport was not independently measured"]});
+				errors:["Native fixture root screen rectangle was not independently measured"]});
 			continue;
 		}
 		if (!item.observed || typeof item.observed !== "object" || Array.isArray(item.observed))
