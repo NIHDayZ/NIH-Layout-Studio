@@ -184,3 +184,34 @@ const preview = ArrangeMeasuredGeometry(
 `tests/native-grid-strategy.test.mjs` covers default and explicit settings, parity with the **same shared grid calculation**, nested child constraints, viewport resizing, unchanged default behavior, unsupported overflow and hidden children, and non-grid widget isolation. The existing `test:grid-layout` suite is also retained.
 
 **Not yet recovered:** full native text/image intrinsic measurement, content-size feedback, hidden-child filtering, DPI-dependent inset scaling, all grid child flags, and Wrap/Scroll arrangement. Until these have independent Workbench verification, neither production rendering nor the editor's saved output should be changed on the basis of this prototype. Do not remove experimental URL flags as part of this stage.
+
+
+## Intrinsic image/text measurement boundary (M2 extension)
+
+The engine now accepts an optional `IntrinsicMeasurementProviders` callback pair in `MeasureLayoutTree(roots, { intrinsics: ... })`. The provider interface is **strictly leaf and class-specific**: `ImageWidgetClass` and `TextWidgetClass` only. No automatic measurement is assumed for Button, RichText, MultilineText, Scroll, Grid, other container widgets or arbitrary mod classes. Each provider returns independent width and/or height plus evidence provenance. Invalid or parent-dependent dimensions are ignored.
+
+`ProjectIntrinsicSources.ts` converts the existing project imageset resolver's `logicalWidth/logicalHeight` into an image measurement; it does **not** pretend that a direct texture with `1×1` placeholder UVs is a one-pixel image. It accepts a resolver callback so caller-specific project/dependency/vanilla precedence can remain in the project layer, separate from layout. Text is **not** measured using Canvas CSS fallbacks: font-aware glyph shaping/metrics and native wrap behavior must be provided deliberately, and are not yet implemented for general text.
+
+The two-stage diagnostic usage is:
+
+```ts
+const imageProvider = CreateImageIntrinsicProvider((reference) => {
+  // Caller resolves project → dependency → vanilla via ResolveProjectImage.
+  return resolveCurrentImageResource(reference);
+});
+const measured = MeasureLayoutTree(document.roots, {
+  intrinsics: { image: imageProvider, text: optionalMeasuredTextProvider }
+});
+const diagnostic = ArrangeMeasuredGeometry(
+  measured,
+  { x: 0, y: 0, width: 1920, height: 1080 },
+  1,
+  { providedIntrinsicContent: true }
+);
+```
+
+This optional preview ONLY applies provider measurements to a leaf `ImageWidgetClass` or `TextWidgetClass` that explicitly requests `Size To Content H/V`. Size-to-content axes are independent: the unsupported axis retains the authored size and a diagnostic; applied axes are labeled in `appliedIntrinsics` with their evidence. The **same** shared authored-geometry alignment formula recomputes right/center reference positions after a content-size change. Widgets with children, grid-allocated slots and other container types are excluded from this proto behavior.
+
+This is a **structural integration test of a supplied resource size**, not evidence that Workbench always sizes Image/Text widgets to raw logical sprite or font metrics. Native scaling, imageset styles, crop flags, kerning/shaping, empty text, wrapping, SDF/FNT3 size tiers, resource fallback and editor zoom still require independent Workbench verification. In particular, a `TextWidgetClass` metric provider is accepted only when the caller knows its dimensions are parent-constraint independent; don't guess a value from CSS fontSize or the authored widget height.
+
+The unchanged default snapshot and unchanged Canvas rendering protect current user layouts. Test coverage is in `tests/intrinsic-measurements.test.mjs`, including absence of provider, resource dimensions, partial axes, evidence tracking, alignment, and subclass isolation.
