@@ -49,7 +49,7 @@ to populate the capture JSON.
 | Plain right/bottom Button | (350,246,130,44) | Same |
 | Negative-position Panel | (-12,-9,120,70) | Same |
 
-The remaining four descendants (overhanging Frame and Button, bottom-ref
+The remaining five descendants (overhanging Frame and Button, bottom-ref
 Text, hidden Panel and hidden descendant Text) are included with all 16
 in the machine-readable JSON and tests. All **32 native descendant screen
 rectangles** agree with the shared authored-coordinate engine within
