@@ -62,6 +62,7 @@ interface SourceWidget {
 	readonly type: string;
 	readonly line?: number;
 	readonly sourceGroupLine?: number;
+	readonly sourceGroupParentId?: string;
 	readonly properties: readonly SourceProperty[];
 	readonly children: readonly SourceWidget[];
 }
@@ -157,7 +158,8 @@ export function InspectNativePropertyCompatibility(
 					const allGroupsKnown = source.children.every((child) =>
 						child.sourceGroupLine !== undefined &&
 						Number.isSafeInteger(child.sourceGroupLine) &&
-						child.sourceGroupLine > 0
+						child.sourceGroupLine > 0 &&
+						child.sourceGroupParentId === node.id
 					);
 					if (allGroupsKnown) {
 						code = "observed-native-safe-after-children";
