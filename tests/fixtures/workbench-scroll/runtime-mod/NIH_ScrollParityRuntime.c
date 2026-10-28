@@ -119,10 +119,10 @@ modded class MissionGameplay {
 			return;
 
 		m_NIH_LayoutScrollProbe = new NIHLayoutScrollRuntimeProbe();
-		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(m_NIHLayoutScrollRuntimeProbeStart, 250, false);
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(NIHLayoutScrollRuntimeProbeStart, 250, false);
 	}
 
-	protected void m_NIHLayoutScrollRuntimeProbeStart() {
+	protected void NIHLayoutScrollRuntimeProbeStart() {
 		if (m_NIH_LayoutScrollProbe)
 			m_NIH_LayoutScrollProbe.Start();
 	}
