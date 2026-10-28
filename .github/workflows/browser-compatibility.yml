@@ -6,6 +6,9 @@ on:
       - src/App.tsx
       - src/components/NativeCompatibilityWarnings.tsx
       - src/renderer/engine/NativePropertyCompatibility.ts
+      - src/parser/LayoutParser.ts
+      - src/model/LayoutTypes.ts
+      - tests/native-property-order-serialization.test.mjs
       - tests/browser/**
       - playwright.config.mjs
       - .github/workflows/browser-compatibility.yml
