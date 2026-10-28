@@ -17,6 +17,8 @@ export interface LayoutNode {
 	properties: LayoutProperty[];
 	children: LayoutNode[];
 	line: number;
+	/** Original containing child-group opening line; optional for synthesized nodes. */
+	sourceGroupLine?: number;
 }
 
 export interface LayoutDocument {
