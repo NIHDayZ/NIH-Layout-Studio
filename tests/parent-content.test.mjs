@@ -122,15 +122,28 @@ test("relative child heights and content-sized parent widths refuse a cyclic dep
  assert.match(snap.issues[0].detail,/parent-width-unresolved/);
 });
 
-test("managed container children and hidden children remain unresolved",()=>{
+test("fixed-height Grid, Wrap and Scroll contribute opaque outer boxes without asserting their child layout",()=>{
+ for(const type of ["GridSpacerWidgetClass","WrapSpacerWidgetClass","ScrollWidgetClass"]) {
+  const child=Node("container",type,[
+   ["position","0 7"],...ExactPosition,...Fixed(80,50)
+  ],[Child("grandchild",0,25)]);
+  const snap=ArrangeMeasuredGeometry(prep([Frame([child])]),Root(500),1,options);
+  assert.equal(snap.byId.get("frame").localRect.height,57);
+  assert.deepEqual(snap.appliedParentContent.map(x=>x.id),["frame"]);
+  assert.deepEqual(snap.issues.map(x=>x.code),["unresolved-layout-strategy"]);
+  assert.equal(snap.byId.get("container").localRect.height,50);
+ }
+});
+
+test("managed child own content height and invisible children remain unresolved",()=>{
  const managed=Node("grid","GridSpacerWidgetClass",[
- ["position","0 0"],...ExactPosition,...Fixed(80,50)
+  ["position","0 0"],...ExactPosition,...Fixed(80,50),...Content
  ],[Child("grandchild",0,25)]);
  let snap=ArrangeMeasuredGeometry(prep([Frame([managed])]),Root(500),1,options);
  assert.deepEqual(snap.appliedParentContent,[]);
  assert.match(snap.issues[0].detail,/managed-child-layout/);
  const hidden=Node("hidden","ImageWidgetClass",[
- ["position","0 0"],...ExactPosition,...Fixed(20,20),["visible","0"]
+  ["position","0 0"],...ExactPosition,...Fixed(20,20),["visible","0"]
  ]);
  snap=ArrangeMeasuredGeometry(prep([Frame([hidden])]),Root(500),1,options);
  assert.deepEqual(snap.appliedParentContent,[]);
