@@ -28,9 +28,9 @@ Get-ChildItem $output -Filter "*.pbo" | Select-Object Name,Length,LastWriteTime
 Expected packed test-only file:
 `P:\Mods\@NIH_ContentSizingProbe\addons\NIH_ContentSizingProbe.pbo`.
 Use `-Overwrite` when updating your existing **disposable** test folder.
-For the v3 property matrix the script replaces **five** files: the config,
-two client EnScript files, and two separate `.layout` resources;
-it does not create/sign/install the PBO. Check the Builder log again before
+For the current syntax-matrix probe, the script replaces **18 files**:
+config, three client EnScript files, two existing `.layout` resources,
+and 12 independently loadable syntax layouts. It does not create/sign/install the PBO. Check the Builder log again before
 testing. No production mod is touched.
 
 ## Run and collect
@@ -111,6 +111,8 @@ The probe runs after the existing content and property matrix
 captures, logs an after-create and post-update record per case,
 and does not modify any production mod. Its new extractor is
 `npm run extract:workbench-property-syntax -- $latest.FullName syntax-native.json`.
-The syntax tests **have not yet compiled or run inside DayZ**.
+The syntax tests **compiled and ran inside DayZ on 2026-10-28**.
+All 12 native resources loaded and both observation phases completed;
+see [native results](../2026-10-28-property-syntax-native-results.md).
 
 Full protocol: [PROPERTY-SYNTAX.md](../PROPERTY-SYNTAX.md).
