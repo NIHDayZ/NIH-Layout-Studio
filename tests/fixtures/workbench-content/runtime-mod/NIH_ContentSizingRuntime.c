@@ -153,6 +153,7 @@ class NIHContentSizingRuntimeProbe {
 
 modded class MissionGameplay {
 	protected ref NIHContentSizingRuntimeProbe m_NIH_ContentSizingProbe;
+	protected ref NIHPropertyMatrixRuntimeProbe m_NIH_PropertyMatrixProbe;
 
 	override void OnInit() {
 		super.OnInit();
@@ -160,11 +161,19 @@ modded class MissionGameplay {
 			return;
 
 		m_NIH_ContentSizingProbe = new NIHContentSizingRuntimeProbe();
+		m_NIH_PropertyMatrixProbe = new NIHPropertyMatrixRuntimeProbe();
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(NIHStartContentSizingProbe, 250, false);
+		// Run the separate property matrix after the original four phases.
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(NIHStartPropertyMatrixProbe, 7400, false);
 	}
 
 	protected void NIHStartContentSizingProbe() {
 		if (m_NIH_ContentSizingProbe)
 			m_NIH_ContentSizingProbe.Start();
+	}
+
+	protected void NIHStartPropertyMatrixProbe() {
+		if (m_NIH_PropertyMatrixProbe)
+			m_NIH_PropertyMatrixProbe.Start();
 	}
 }
