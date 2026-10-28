@@ -659,3 +659,56 @@ unknown. A safety warning is not permission to delete a widget
 subtree or automatically rewrite attributes. A future UI may present
 these findings to editors before export, but this increment does not
 change the production UI.
+
+
+## M2.4 read-only compatibility warnings in the Studio UI (2026-10-28)
+
+The existing **read-only native source-loader inspector** is now surfaced
+in the editor UI through `src/components/NativeCompatibilityWarnings.tsx`:
+
+- The **PROBLEMS** tab now includes independently verified
+  `observed-native-child-loss-risk` and
+  `serialization-order-risk` findings, with the affected widget name,
+  property name, original source line, bounded evidence statement,
+  and the fact that the exact native client build is unrecorded.
+  A formatting normalization action never claims to repair these risks.
+  Unverified class/property pairs are not shown as warnings, and
+  the UI does **not** pretend to know a complete native allowlist.
+- The analyzer reads **current `source` text**, not just the last
+  `document` parsed for the canvas. Thus editing text in the source
+  tab changes the warnings independently of whether the user has
+  refreshed the canvas. Warnings are computed using
+  `InspectNativePropertyCompatibility(parser.Parse(source).roots)`
+  in a memoized, read-only path.
+- The existing File menu's **Save**, **Export** (source-less save
+  fallback), **Export As**, and the **Ctrl+S** handler share one
+  preflight gate. When there is at least one verified high-severity
+  native compatibility warning, a modal review displays up to twelve
+  findings and asks the user to **Cancel** or **Continue Save/Export**.
+  The modal does not rewrite the source or call the serializer.
+  A source snapshot is checked on confirmation so a review of an
+  old source version cannot silently authorize a subsequently edited
+  source version.
+- When no verified native risk is present, the same Save/Export
+  behavior runs as before, without an extra step. Existing
+  `SaveCurrent` and `DownloadLayout` still save the exact source
+  string; none of the native diagnostics mutate parsed nodes,
+  reorder attributes, remove children, or infer geometry.
+  This is a **warning, not a block**.
+
+The UI follows the existing dark-neutral style with subdued warning
+accents. The new component is used both inline in PROBLEMS and in
+the export dialog. In addition to the native fixture tests,
+`tests/native-compatibility-ui.test.mjs` renders the component
+using React SSR to ensure the warning text, action buttons and
+accessibility roles exist. The production TypeScript/Vite build
+validates the App-level wiring, but browser interactions in a live
+DayZ/Workbench instance have **not** been independently validated
+for this increment.
+
+Because `LayoutParser.SerializeNode` may reorder a syntactically
+valid "unsupported property after children" file into a
+native-problematic "property before children" file, a future
+serializer order-preservation design remains a separate,
+explicitly approved change—not an automatic warning remediation.
+PR #47 remains draft and unmerged.
