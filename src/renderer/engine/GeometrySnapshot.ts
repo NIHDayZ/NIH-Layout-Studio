@@ -2,7 +2,7 @@ import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect
 import { ResolveAuthoredRect, ResolveAuthoredRectWithSize, type GeometryWidget } from "./WidgetGeometry.js";
 import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
 import { PlanManagedChildren, ProbeWrapContentHeight, ProbeScrollViewport, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
-import type { AuthoredScrollViewport } from "./ScrollViewport.js";
+import { EstimateNativeScrollExtent, type AuthoredScrollViewport, type NativeScrollExtentCandidate } from "./ScrollViewport.js";
 import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
@@ -65,6 +65,8 @@ export interface AuthoredGeometrySnapshot {
 	appliedWrapContent: readonly AppliedWrapContent[];
 	/** Authored-only Scroll viewport hints, never native offsets or scrollbars. */
 	scrollViewports: ReadonlyMap<string, AuthoredScrollViewport>;
+	/** Native-derived max extents ONLY; no scroll offset or scrollbar geometry. */
+	scrollExtentCandidates: ReadonlyMap<string, NativeScrollExtentCandidate>;
 	rootRect: GeometryRect;
 }
 
@@ -91,6 +93,7 @@ export function ArrangeMeasuredGeometry(
 	const appliedParentContent: AppliedParentContent[] = [];
 	const appliedWrapContent: AppliedWrapContent[] = [];
 	const scrollViewports = new Map<string, AuthoredScrollViewport>();
+	const scrollExtentCandidates = new Map<string, NativeScrollExtentCandidate>();
 	// Only the current arrangement pass owns these width-dependent metrics.
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
@@ -252,9 +255,20 @@ export function ArrangeMeasuredGeometry(
 					detail: `Native ${axes} size-to-content has not been measured; unresolved axes use authored size.`
 				});
 			}
-			const viewportDiagnostic = ProbeScrollViewport(prepared, absoluteRect, options);
-			if (viewportDiagnostic && !scrollViewports.has(node.id))
-				scrollViewports.set(node.id, viewportDiagnostic);
+			const wantsScrollInspection = options.scrollViewportDiagnostics || options.scrollNativeExtentDiagnostics;
+			const viewportDiagnostic = wantsScrollInspection
+				? ProbeScrollViewport(prepared, absoluteRect, {
+					...options, scrollViewportDiagnostics: true
+				}) : null;
+			if (viewportDiagnostic) {
+				if (options.scrollViewportDiagnostics && !scrollViewports.has(node.id))
+					scrollViewports.set(node.id, viewportDiagnostic);
+				if (options.scrollNativeExtentDiagnostics && !scrollExtentCandidates.has(node.id)) {
+					const candidate = EstimateNativeScrollExtent(viewportDiagnostic);
+					if (candidate)
+						scrollExtentCandidates.set(node.id, candidate);
+				}
+			}
 			const layoutPlan = PlanManagedChildren(prepared, absoluteRect, options, measuredWrapContent);
 			const childSlots = layoutPlan?.rects ?? null;
 			if (layoutPlan)
@@ -283,7 +297,7 @@ export function ArrangeMeasuredGeometry(
 		dpiScale
 	};
 	Visit(measured.roots, rootRect, rootConstraints, null, { ...rootRect }, true, null);
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, rootRect: { ...rootRect } };
 }
 
 /**
