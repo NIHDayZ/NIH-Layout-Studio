@@ -1,0 +1,218 @@
+FrameWidgetClass NIHNativeClipParity {
+	position 0 0
+	size 1280 720
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		FrameWidgetClass Frame_NoClip {
+			position 90 110
+			size 210 170
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ImageWidgetClass Frame_NoClip_RightOverhang {
+				position 135 0
+				size 150 160
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+				}
+				ImageWidgetClass Frame_NoClip_LeftBottomOverhang {
+				position -55 115
+				size 150 140
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+				}
+			}
+		}
+		FrameWidgetClass Frame_Clip {
+			position 380 110
+			size 210 170
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ImageWidgetClass Frame_Clip_RightOverhang {
+				position 135 0
+				size 150 160
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+				}
+				ImageWidgetClass Frame_Clip_LeftBottomOverhang {
+				position -55 115
+				size 150 140
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+				}
+			}
+		}
+		PanelWidgetClass Panel_NoClip {
+			position 670 110
+			size 210 170
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ImageWidgetClass Panel_NoClip_RightOverhang {
+				position 135 0
+				size 150 160
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+				}
+				ImageWidgetClass Panel_NoClip_LeftBottomOverhang {
+				position -55 115
+				size 150 140
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+				}
+			}
+		}
+		PanelWidgetClass Panel_Clip {
+			position 960 110
+			size 210 170
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ImageWidgetClass Panel_Clip_RightOverhang {
+				position 135 0
+				size 150 160
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+				}
+				ImageWidgetClass Panel_Clip_LeftBottomOverhang {
+				position -55 115
+				size 150 140
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+				}
+			}
+		}
+		PanelWidgetClass Nested_NoClip_Outer {
+			position 260 385
+			size 280 210
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				FrameWidgetClass Nested_NoClip_Inner {
+					position 20 25
+					size 145 110
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					clipchildren 0
+					{
+						ImageWidgetClass Nested_NoClip_Image {
+				position 90 20
+				size 155 150
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+						}
+					}
+				}
+			}
+		}
+		PanelWidgetClass Nested_Clip_Outer {
+			position 720 385
+			size 280 210
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				FrameWidgetClass Nested_Clip_Inner {
+					position 20 25
+					size 145 110
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					clipchildren 1
+					{
+						ImageWidgetClass Nested_Clip_Image {
+				position 90 20
+				size 155 150
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+				image0 "set:dayz_gui image:DayZLogo"
+				mode blend
+				"src alpha" 1
+				stretch 1
+						}
+					}
+				}
+			}
+		}
+	}
+}

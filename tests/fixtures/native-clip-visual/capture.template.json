@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-clipping-visual-pending",
+  "fixture": "tests/fixtures/native-clip-visual/NIH_NativeClip_Parity.layout",
+  "candidateResource": "set:dayz_gui image:DayZLogo",
+  "nativeScissorVerified": false,
+  "previewRoot": [
+    1280,
+    720
+  ],
+  "notes": "No observed Workbench/Studio screenshot evidence. Authored clip intersections are predictions, not sampled pixels. Verify identical loaded sprite in both editors. Do not use a DayZ GetScreenSize log as a substitute for native painted output.",
+  "cases": [
+    {
+      "id": "Frame_NoClip",
+      "nativePaint": null,
+      "studioPaint": null,
+      "observedResult": "pending",
+      "nativeScreenshot": null,
+      "studioScreenshot": null
+    },
+    {
+      "id": "Frame_Clip",
+      "nativePaint": null,
+      "studioPaint": null,
+      "observedResult": "pending",
+      "nativeScreenshot": null,
+      "studioScreenshot": null
+    },
+    {
+      "id": "Panel_NoClip",
+      "nativePaint": null,
+      "studioPaint": null,
+      "observedResult": "pending",
+      "nativeScreenshot": null,
+      "studioScreenshot": null
+    },
+    {
+      "id": "Panel_Clip",
+      "nativePaint": null,
+      "studioPaint": null,
+      "observedResult": "pending",
+      "nativeScreenshot": null,
+      "studioScreenshot": null
+    },
+    {
+      "id": "Nested_NoClip",
+      "nativePaint": null,
+      "studioPaint": null,
+      "observedResult": "pending",
+      "nativeScreenshot": null,
+      "studioScreenshot": null
+    },
+    {
+      "id": "Nested_Clip",
+      "nativePaint": null,
+      "studioPaint": null,
+      "observedResult": "pending",
+      "nativeScreenshot": null,
+      "studioScreenshot": null
+    }
+  ]
+}
