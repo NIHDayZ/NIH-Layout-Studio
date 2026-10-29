@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-font-line-origin-holdout-pending",
+  "sourceLayout": "tests/fixtures/native-font-line-origin/NIH_NativeFontBaselineHoldout.layout",
+  "text": "Hg9",
+  "viewport": [
+    1280,
+    720
+  ],
+  "researchCoefficient": 0.08,
+  "consoleFlags": "experimentalStandaloneFnt5=1&experimentalMsdf=1&experimentalFnt5Placement=1&experimentalFnt5Fit=height&experimentalFnt5LineOrigin=0.08&debugFnt5Sampling=1",
+  "status": "needs independent Workbench and Studio paired screenshot",
+  "nativeRuleConfirmed": false,
+  "cases": [
+    {
+      "id": "TextBook72_H24",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook72_H34",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook72_H68",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook72_H110",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook24_H24",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook24_H34",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook24_H68",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook24_H110",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextLight24_H24",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextLight24_H34",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextLight24_H68",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextLight24_H110",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook72_H24",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook72_H34",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook72_H68",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook72_H110",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook24_H24",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook24_H34",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook24_H68",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook24_H110",
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    }
+  ]
+}

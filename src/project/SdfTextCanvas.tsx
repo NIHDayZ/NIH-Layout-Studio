@@ -3,6 +3,7 @@ import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
 import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
 import { MsdfAlpha, MsdfAlphaWithBias, MsdfScaledSmoothing } from "./SdfMsdfMath";
 import { Fnt5Placement } from "./Fnt5Placement";
+import { ResolveExperimentalFnt5LineOrigin } from "../renderer/engine/Fnt5LineOriginExperiment";
 import { WrapPreviewText } from "../renderer/engine/TextFlow";
 
 export interface SdfFontResource {
@@ -23,6 +24,7 @@ const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
 const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Cells") === "1";
 const experimentalFnt5Placement = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Placement") === "1";
 const experimentalFnt5CellLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Layout") === "cell";
+const experimentalFnt5LineOrigin = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("experimentalFnt5LineOrigin") : null;
 const debugFnt5Clip = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Clip") === "1";
 const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const loggedGlyphs = new Set<string>();
@@ -44,7 +46,7 @@ const experimentalMsdfStroke = typeof window !== "undefined" && new URLSearchPar
 function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, character: string, mode: string, requestedFontSize: number, penX: number, baseY: number, drawX: number, drawY: number, drawWidth: number, drawHeight: number, widgetWidth: number, widgetHeight: number, clipPadding: number, sprite: HTMLCanvasElement) {
  if (!debugFnt5Sampling || loggedPlacements.size >= 120)
   return;
- const key = JSON.stringify([ResourceId(resource), glyph.codePoint, mode, requestedFontSize, widgetWidth, widgetHeight, baseY]);
+ const key = JSON.stringify([ResourceId(resource), glyph.codePoint, mode, requestedFontSize, widgetWidth, widgetHeight, baseY, penX]);
  if (loggedPlacements.has(key))
   return;
  loggedPlacements.add(key);
@@ -215,6 +217,8 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    const lines = WrapPreviewText(text, width, advance, wrap);
    const lineHeight = fontSize * 1.25;
    let baseY = vAlign === "center" ? (height - lines.length * lineHeight) / 2 : vAlign === "bottom" ? height - lines.length * lineHeight : 0;
+   // Research-only shared origin; does not affect default rendering or multiline text.
+   baseY = ResolveExperimentalFnt5LineOrigin(experimentalFnt5LineOrigin, height, baseY, !!resource.fnt5PixelMetrics, lines.length);
    const initialBaseY = baseY;
    // Render a tinted text layer first, then composite its shadow behind it.
    const layer = document.createElement("canvas");
