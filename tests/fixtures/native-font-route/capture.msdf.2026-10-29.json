@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-fnt5-median-msdf-metric-comparison",
+  "capturedDate": "2026-10-29",
+  "researchBranch": "research/native-font-source-selection",
+  "validatedAtCommit": "6d30fc54402bfaf85f20bf174280641ba067f840",
+  "experiment": {
+    "baselineFlags": "experimentalStandaloneFnt5=1&debugFnt5Sampling=1",
+    "experimentalFlags": "experimentalStandaloneFnt5=1&experimentalMsdf=1&debugFnt5Sampling=1",
+    "changedVariable": "SdfSampleAlpha(red) -> MsdfAlpha(median(R,G,B))",
+    "placementMode": "legacy",
+    "sourceSelection": "Standalone FNT5 cell",
+    "previewRoot": [
+      1280,
+      720
+    ],
+    "displayedZoomPercent": 68
+  },
+  "evidence": {
+    "redChannelLog": {
+      "file": "Pasted text(20261029-193622).txt",
+      "sha256": "da13b98d4deeb7c3eea23096137f20c3a65bd7a16795d9d34fed1cc13bfea2aa"
+    },
+    "medianMsdfLog": {
+      "file": "Pasted text (2)(1).txt",
+      "sha256": "c63398f1d885ae296b290f2b244762c22f63258eb63818adc33157a25768c07b"
+    },
+    "redChannelScreenshot": {
+      "file": "image(20261029-193632).png",
+      "sha256": "8a05d5a997d84ce5623b1d95bf5dc86a53e9f5ed309c1a9fbccfd5ffdb626f95"
+    },
+    "medianMsdfScreenshot": {
+      "file": "image(20261029-194739).png",
+      "sha256": "ce5a878a0dc7f1e1a42b8ee968e80c055c3f89c375e0790ddc87465aecf11a0e"
+    },
+    "windowsValidationLog": {
+      "file": "Pasted text(20261029-194536).txt",
+      "sha256": "82b47a76d442f95d43f91b7085fe911d1b18842abdd3adc4ffd5c70710dce923",
+      "geometry": {
+        "pass": 278,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      },
+      "typecheck": "pass",
+      "viteBuild": "pass"
+    }
+  },
+  "metricMethod": "For each unique font/character pair, retain first [FNT5 placement] entry in the actual browser console. Compute (abs(inkRect.width - metric.width) + abs(inkRect.height - metric.height)) / 2 from source logs. Ink threshold was 128, red or median shader as noted. Duplicate widget placements are not counted as extra glyphs. No Workbench pixels used.",
+  "glyphOrder": [
+    "A",
+    "B",
+    "C",
+    "0",
+    "1",
+    "2"
+  ],
+  "fonts": [
+    {
+      "font": "sdf_metronbook24",
+      "nominalSize": 24,
+      "atlas": [
+        1024,
+        1024
+      ],
+      "cellSize": 38,
+      "samples": 6,
+      "redDimensionErrors": [
+        7.5,
+        10,
+        3,
+        0.5,
+        15,
+        3.5
+      ],
+      "msdfDimensionErrors": [
+        1,
+        1,
+        1,
+        0.5,
+        1,
+        0.5
+      ]
+    },
+    {
+      "font": "sdf_metronlight24",
+      "nominalSize": 24,
+      "atlas": [
+        1024,
+        1024
+      ],
+      "cellSize": 38,
+      "samples": 6,
+      "redDimensionErrors": [
+        6.5,
+        10,
+        3,
+        1,
+        15,
+        3.5
+      ],
+      "msdfDimensionErrors": [
+        1,
+        1.5,
+        1,
+        1,
+        1.5,
+        1
+      ]
+    },
+    {
+      "font": "sdf_metronbook72",
+      "nominalSize": 72,
+      "atlas": [
+        4096,
+        2048
+      ],
+      "cellSize": 95,
+      "samples": 6,
+      "redDimensionErrors": [
+        18.5,
+        24.5,
+        8.5,
+        0,
+        36,
+        11.5
+      ],
+      "msdfDimensionErrors": [
+        1.5,
+        0,
+        1,
+        0,
+        1,
+        0.5
+      ]
+    }
+  ],
+  "combined": {
+    "glyphCount": 18,
+    "meanRedDimDeviation": 9.86111111111111,
+    "meanMsdfDimDeviation": 0.8888888888888888,
+    "relativeReduction": 0.9098591549295775
+  },
+  "conclusions": {
+    "experimentalMsdfShapeMetrics": "strong-improvement",
+    "resourceResolution": "pass",
+    "nativeWorkbenchGlyphPixelParity": "not established",
+    "placementAndScaling": "pending",
+    "readableGlyphs": "Book24 and Light24 legible; Book72 tall legible; Book72 short text invisible/clipped and button vertically clipped",
+    "recommendedNextControlledTest": "Keep experimentalStandaloneFnt5=1 and experimentalMsdf=1; toggle only experimentalFnt5Placement=1; compare screenshot and baseline/ink metrics"
+  },
+  "notes": "These measurements are calculated solely from Studio's debug ink bounding boxes versus FNT5 nominal extents. They are not independent native visual measurements. Width/height accuracy does not by itself certify origin, advance, widget-height behavior, threshold, alpha edge matching or text centering."
+}

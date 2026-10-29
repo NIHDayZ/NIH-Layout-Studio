@@ -105,3 +105,31 @@ test("October 29 user log confirms standalone FNT5 source selection without clai
 	assert.equal(observation.strictNativePixelComparison, false);
 	assert.equal(observation.localTestStatus.sameCommitChecksProvided, false);
 });
+
+test("captured median MSDF makes FNT5 glyph dimensions substantially closer to native TCRD extents", () => {
+	const captured = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-route/capture.msdf.2026-10-29.json", import.meta.url
+	), "utf8"));
+	assert.equal(captured.captureKind, "native-fnt5-median-msdf-metric-comparison");
+	assert.equal(captured.experiment.placementMode, "legacy");
+	assert.equal(captured.experiment.sourceSelection, "Standalone FNT5 cell");
+	assert.equal(captured.evidence.windowsValidationLog.geometry.pass, 278);
+	assert.equal(captured.fonts.length, 3);
+	const red = [];
+	const msdf = [];
+	for (const font of captured.fonts) {
+		assert.equal(font.samples, 6);
+		assert.equal(font.redDimensionErrors.length, 6);
+		assert.equal(font.msdfDimensionErrors.length, 6);
+		for (const value of font.redDimensionErrors) red.push(value);
+		for (const value of font.msdfDimensionErrors) msdf.push(value);
+	}
+	const redMean = red.reduce((a,b) => a+b, 0) / red.length;
+	const msdfMean = msdf.reduce((a,b) => a+b, 0) / msdf.length;
+	assert.equal(red.length, 18);
+	assert.ok(Math.abs(redMean - captured.combined.meanRedDimDeviation) < 1e-9);
+	assert.ok(Math.abs(msdfMean - captured.combined.meanMsdfDimDeviation) < 1e-9);
+	assert.ok(msdfMean < redMean / 10);
+	assert.equal(captured.conclusions.nativeWorkbenchGlyphPixelParity, "not established");
+	assert.equal(captured.conclusions.placementAndScaling, "pending");
+});
