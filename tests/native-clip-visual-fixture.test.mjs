@@ -103,3 +103,34 @@ test("visual capture template remains empty and diagnostic clip intersection can
 	assert.equal(authored.evidence, "authored-hierarchy-and-ancestor-clip-candidate");
 	assert.equal(template.nativeScissorVerified, false);
 });
+
+test("October 29 paired clipping screenshot observations match all six cases without asserting native scissor", () => {
+	const observation = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-clip-visual/capture.visual.2026-10-29.json", import.meta.url
+	), "utf8"));
+	assert.equal(observation.captureKind, "paired-workbench-studio-clipping-visual-observation");
+	assert.equal(observation.visualClippingAcceptedForTheseCases, true);
+	assert.equal(observation.strictPixelParityEstablished, false);
+	assert.equal(observation.nativeScissorImplementationEstablished, false);
+	assert.deepEqual(observation.cases.map(c => c.id), [
+		"Frame_NoClip", "Frame_Clip", "Panel_NoClip", "Panel_Clip",
+		"Nested_NoClip", "Nested_Clip"
+	]);
+	assert.ok(observation.cases.every(c => c.visualOutcome === "match" && c.sourceImageResolvedInBoth));
+	assert.deepEqual(observation.sourceImages.map(s => s.previewRoot), [[1280,720],[1280,720]]);
+	assert.deepEqual(observation.sourceImages.map(s => s.displayedZoomPercent), [68,68]);
+	assert.equal(observation.sourceLog.geometryTests.pass, 271);
+	assert.equal(observation.sourceLog.uvTests.pass, 11);
+	assert.ok(observation.analysis.wholeFixtureSilhouetteIou > 0.90);
+	const samples = observation.analysis.samples;
+	assert.equal(samples.length, 10);
+	for (const sample of samples) {
+		if (sample.expectedState === "visible") {
+			assert.ok(sample.workbenchWhitePixels > 0 && sample.studioWhitePixels > 0);
+		} else {
+			assert.equal(sample.expectedState, "not-visible");
+			assert.equal(sample.workbenchWhitePixels, 0);
+			assert.equal(sample.studioWhitePixels, 0);
+		}
+	}
+});

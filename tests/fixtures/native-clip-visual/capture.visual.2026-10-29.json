@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "paired-workbench-studio-clipping-visual-observation",
+  "capturedDate": "2026-10-29",
+  "fixture": "tests/fixtures/native-clip-visual/NIH_NativeClip_Parity.layout",
+  "resourceReference": "set:dayz_gui image:DayZLogo",
+  "sourceImages": [
+    {
+      "tool": "DayZ Tools Workbench",
+      "file": "image(20261029-181740).png",
+      "sha256": "392437c4599591b62b74fc8d228b82bede4f4cc17b290c33480b3eba18181420",
+      "screenshotSize": [
+        1919,
+        1030
+      ],
+      "canvasInteriorCropPixels": [
+        562,
+        206,
+        1439,
+        698
+      ],
+      "previewRoot": [
+        1280,
+        720
+      ],
+      "displayedZoomPercent": 68,
+      "rootDpiScalingEnabled": false
+    },
+    {
+      "tool": "NIH Layout Studio",
+      "file": "image(20261029-181752).png",
+      "sha256": "0e65426f1b3f5bc0b3ba200a987b32b0c42462253959664ac6161913299769ff",
+      "screenshotSize": [
+        1919,
+        1033
+      ],
+      "canvasInteriorCropPixels": [
+        308,
+        221,
+        1175,
+        709
+      ],
+      "previewRoot": [
+        1280,
+        720
+      ],
+      "displayedZoomPercent": 68,
+      "softwareVersion": "0.37.0"
+    }
+  ],
+  "sourceLog": {
+    "file": "Pasted text(20261029-181813).txt",
+    "sha256": "5cf3a959ce47e078bc2fd5bf520f681ef5992b84cb2507a61836cf13831fa865",
+    "validatedBranchHead": "d60631d1769b65cbd1c61a5e7ae8f93e22ee6163",
+    "geometryTests": {
+      "pass": 271,
+      "fail": 0,
+      "skipped": 0
+    },
+    "uvTests": {
+      "pass": 11,
+      "fail": 0,
+      "skipped": 0
+    },
+    "typecheck": "pass",
+    "build": "pass",
+    "vite": "7.3.7"
+  },
+  "analysis": {
+    "method": "For each 1919-pixel-wide screenshot, crop inside the exact 1280x720 logical fixture root. Identify white logo pixels where all three RGB channels >= 210; resize each binary mask to 1280x720 using nearest-neighbor, then compare. The observed source images were screenshot-sampled with Workbench gray and Studio black backdrops; the method does not establish RGB/alpha pixel accuracy.",
+    "thresholdAllRgbAtLeast": 210,
+    "resampleToLogical": [
+      1280,
+      720
+    ],
+    "resampleMethod": "nearest-neighbor",
+    "wholeFixtureSilhouetteIou": 0.91178468889035,
+    "nativeScissorReadbackAvailable": false,
+    "samples": [
+      {
+        "name": "Frame right unclipped overhang",
+        "logicalRectXYXY": [
+          305,
+          125,
+          375,
+          220
+        ],
+        "widgetCase": "Frame_NoClip",
+        "expectedState": "visible",
+        "workbenchWhitePixels": 3893,
+        "studioWhitePixels": 4014
+      },
+      {
+        "name": "Frame right clipped exterior",
+        "logicalRectXYXY": [
+          595,
+          125,
+          665,
+          220
+        ],
+        "widgetCase": "Frame_Clip",
+        "expectedState": "not-visible",
+        "workbenchWhitePixels": 0,
+        "studioWhitePixels": 0
+      },
+      {
+        "name": "Panel right unclipped overhang",
+        "logicalRectXYXY": [
+          885,
+          125,
+          955,
+          220
+        ],
+        "widgetCase": "Panel_NoClip",
+        "expectedState": "visible",
+        "workbenchWhitePixels": 3921,
+        "studioWhitePixels": 3997
+      },
+      {
+        "name": "Panel right clipped exterior",
+        "logicalRectXYXY": [
+          1175,
+          125,
+          1245,
+          220
+        ],
+        "widgetCase": "Panel_Clip",
+        "expectedState": "not-visible",
+        "workbenchWhitePixels": 0,
+        "studioWhitePixels": 0
+      },
+      {
+        "name": "Frame bottom unclipped overhang",
+        "logicalRectXYXY": [
+          35,
+          285,
+          185,
+          365
+        ],
+        "widgetCase": "Frame_NoClip",
+        "expectedState": "visible",
+        "workbenchWhitePixels": 5456,
+        "studioWhitePixels": 5697
+      },
+      {
+        "name": "Frame bottom clipped exterior",
+        "logicalRectXYXY": [
+          325,
+          285,
+          475,
+          365
+        ],
+        "widgetCase": "Frame_Clip",
+        "expectedState": "not-visible",
+        "workbenchWhitePixels": 0,
+        "studioWhitePixels": 0
+      },
+      {
+        "name": "Nested inner right unclipped overhang",
+        "logicalRectXYXY": [
+          430,
+          435,
+          525,
+          510
+        ],
+        "widgetCase": "Nested_NoClip",
+        "expectedState": "visible",
+        "workbenchWhitePixels": 4798,
+        "studioWhitePixels": 4933
+      },
+      {
+        "name": "Nested inner right clipped exterior",
+        "logicalRectXYXY": [
+          890,
+          435,
+          985,
+          510
+        ],
+        "widgetCase": "Nested_Clip",
+        "expectedState": "not-visible",
+        "workbenchWhitePixels": 0,
+        "studioWhitePixels": 0
+      },
+      {
+        "name": "Nested inner bottom unclipped overhang",
+        "logicalRectXYXY": [
+          370,
+          525,
+          525,
+          585
+        ],
+        "widgetCase": "Nested_NoClip",
+        "expectedState": "visible",
+        "workbenchWhitePixels": 3386,
+        "studioWhitePixels": 3536
+      },
+      {
+        "name": "Nested inner bottom clipped exterior",
+        "logicalRectXYXY": [
+          830,
+          525,
+          985,
+          585
+        ],
+        "widgetCase": "Nested_Clip",
+        "expectedState": "not-visible",
+        "workbenchWhitePixels": 0,
+        "studioWhitePixels": 0
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "Frame_NoClip",
+      "visualOutcome": "match",
+      "observation": "matching unclipped right and lower overhang",
+      "sourceImageResolvedInBoth": true
+    },
+    {
+      "id": "Frame_Clip",
+      "visualOutcome": "match",
+      "observation": "matching right and lower clipping",
+      "sourceImageResolvedInBoth": true
+    },
+    {
+      "id": "Panel_NoClip",
+      "visualOutcome": "match",
+      "observation": "matching unclipped right and lower overhang",
+      "sourceImageResolvedInBoth": true
+    },
+    {
+      "id": "Panel_Clip",
+      "visualOutcome": "match",
+      "observation": "matching right and lower clipping",
+      "sourceImageResolvedInBoth": true
+    },
+    {
+      "id": "Nested_NoClip",
+      "visualOutcome": "match",
+      "observation": "outer Panel clipped while inner Frame permits overhang",
+      "sourceImageResolvedInBoth": true
+    },
+    {
+      "id": "Nested_Clip",
+      "visualOutcome": "match",
+      "observation": "both outer Panel and inner Frame clip",
+      "sourceImageResolvedInBoth": true
+    }
+  ],
+  "visualClippingAcceptedForTheseCases": true,
+  "strictPixelParityEstablished": false,
+  "nativeScissorImplementationEstablished": false,
+  "unverified": [
+    "Other widget families and managed Scroll clipping",
+    "Clipping under alternate image draw modes, alpha, opacity and rotation",
+    "Device scaling/DPI and distinct native UI scale contexts",
+    "Pixel-perfect edge antialiasing and FNT5 glyph clipping"
+  ],
+  "notes": "Observed visual output matches in six fixture cases; all five sampled outside-clip regions have zero white-logo pixels in both screenshots whereas corresponding unclipped overhangs have positive white pixel counts. This does not prove the native scissor algorithm or every native paint path. The original screenshots remain outside GitHub. The separate capture.template.json remains pending by design."
+}
