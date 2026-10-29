@@ -133,3 +133,36 @@ test("captured median MSDF makes FNT5 glyph dimensions substantially closer to n
 	assert.equal(captured.conclusions.nativeWorkbenchGlyphPixelParity, "not established");
 	assert.equal(captured.conclusions.placementAndScaling, "pending");
 });
+
+test("captured bearing placement reduces FNT5 ink origin error without certifying native font sizing", () => {
+	const observation = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-route/capture.placement.2026-10-29.json", import.meta.url
+	), "utf8"));
+	assert.equal(observation.captureKind, "native-fnt5-bearing-placement-metric-comparison");
+	assert.deepEqual(observation.glyphErrors.map(f => f.font), [
+		"sdf_metronbook24", "sdf_metronlight24", "sdf_metronbook72"
+	]);
+	const meanError = (key) => {
+		let total = 0;
+		let count = 0;
+		for (const font of observation.glyphErrors) {
+			assert.equal(font.glyphs, "ABC012");
+			assert.equal(font[key].length, 6);
+			for (const [dx, dy] of font[key]) {
+				total += (Math.abs(dx) + Math.abs(dy)) / 2;
+				++count;
+			}
+		}
+		assert.equal(count, 18);
+		return total / count;
+	};
+	const before = meanError("legacy");
+	const after = meanError("bearing");
+	assert.ok(Math.abs(before - 15.25) < 1e-9);
+	assert.ok(Math.abs(after - 0.8611111111111112) < 1e-9);
+	assert.ok(Math.abs(before - observation.results.legacyMeanAbsoluteCoordinateError) < 1e-9);
+	assert.ok(Math.abs(after - observation.results.bearingMeanAbsoluteCoordinateError) < 1e-9);
+	assert.equal(observation.results.shortBook72Widget.inkOutsideWidget, true);
+	assert.equal(observation.gates.nativeWorkbenchPixelParity, "pending");
+	assert.equal(observation.gates.fontSizeAndVerticalLayout, "pending");
+});

@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-fnt5-bearing-placement-metric-comparison",
+  "date": "2026-10-29",
+  "branch": "research/native-font-source-selection",
+  "observedOnCommit": "f6ae5a050b44bbaa98a0d6be53586a2ab00fdd26",
+  "fixture": "tests/fixtures/native-font-route/NIH_NativeFontRoute_Parity.layout",
+  "captureEnvironment": {
+    "root": [
+      1280,
+      720
+    ],
+    "zoomPercent": 68,
+    "standaloneFnt5": true,
+    "msdf": true,
+    "experimentalFnt5Cells": false,
+    "fontSizeFit": false,
+    "previousPlacement": "legacy",
+    "newPlacement": "bearing"
+  },
+  "provenance": {
+    "baselineLog": {
+      "file": "Pasted text (2)(1).txt",
+      "sha256": "c63398f1d885ae296b290f2b244762c22f63258eb63818adc33157a25768c07b"
+    },
+    "bearingLog": {
+      "file": "Pasted text(20261029-195923).txt",
+      "sha256": "379fc21b016e8248263ee99e6d63fb14d8542ad17bdfaa29609147f42cd3753f"
+    },
+    "baselineScreenshot": {
+      "file": "image(20261029-194739).png",
+      "sha256": "ce5a878a0dc7f1e1a42b8ee968e80c055c3f89c375e0790ddc87465aecf11a0e"
+    },
+    "bearingScreenshot": {
+      "file": "image(20261029-195949).png",
+      "sha256": "f3eee5ccff9d6eb507c34db46801cd05283300e21472e9de6c83cd250061e48f"
+    }
+  },
+  "method": "For each (font, glyph) in ABC012, choose first [FNT5 placement] record in each uploaded browser log, avoiding repeated tall/Button widget instances. Compute expected ink origin x=penX+bearingX, y=baseY+nominalFontSize-bearingY. Record signed dx/dy from inkRect.x/y to expected origin; average (abs(dx)+abs(dy))/2 across all 18 distinct glyphs. All coordinates are from Studio instrumentation (not Workbench pixels).",
+  "glyphErrors": [
+    {
+      "font": "sdf_metronbook24",
+      "glyphs": "ABC012",
+      "legacy": [
+        [
+          10,
+          9
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          14,
+          10
+        ],
+        [
+          13,
+          9
+        ]
+      ],
+      "bearing": [
+        [
+          -1,
+          -1
+        ],
+        [
+          -0.5,
+          -0.5
+        ],
+        [
+          -0.5,
+          -1.5
+        ],
+        [
+          -0.5,
+          -1.5
+        ],
+        [
+          -0.5,
+          0
+        ],
+        [
+          -0.5,
+          -1.5
+        ]
+      ]
+    },
+    {
+      "font": "sdf_metronlight24",
+      "glyphs": "ABC012",
+      "legacy": [
+        [
+          11,
+          9
+        ],
+        [
+          11,
+          10
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          12,
+          9
+        ],
+        [
+          15,
+          10
+        ],
+        [
+          13,
+          9
+        ]
+      ],
+      "bearing": [
+        [
+          -0.5,
+          -1
+        ],
+        [
+          -1,
+          -0.5
+        ],
+        [
+          -0.5,
+          -1.5
+        ],
+        [
+          0,
+          -1.5
+        ],
+        [
+          0.5,
+          0
+        ],
+        [
+          0,
+          -1.5
+        ]
+      ]
+    },
+    {
+      "font": "sdf_metronbook72",
+      "glyphs": "ABC012",
+      "legacy": [
+        [
+          25,
+          20
+        ],
+        [
+          27,
+          21
+        ],
+        [
+          26,
+          20
+        ],
+        [
+          27,
+          20
+        ],
+        [
+          35,
+          21
+        ],
+        [
+          30,
+          20
+        ]
+      ],
+      "bearing": [
+        [
+          0.5,
+          -2
+        ],
+        [
+          -1.5,
+          -1.5
+        ],
+        [
+          0,
+          -1.5
+        ],
+        [
+          -1,
+          -1.5
+        ],
+        [
+          0,
+          -0.5
+        ],
+        [
+          -1,
+          -2
+        ]
+      ]
+    }
+  ],
+  "results": {
+    "glyphs": 18,
+    "legacyMeanAbsoluteCoordinateError": 15.25,
+    "bearingMeanAbsoluteCoordinateError": 0.8611111111111112,
+    "relativeReduction": 0.9435336976320583,
+    "shortBook72Widget": {
+      "nominalFont": 72,
+      "height": 34,
+      "inkAtBearingTop": 20,
+      "inkAtBearingHeight": 52,
+      "inkOutsideWidget": true
+    },
+    "book72Button": {
+      "height": 68,
+      "inkOutsideWidget": false
+    }
+  },
+  "gates": {
+    "resourceSelection": "pass",
+    "medianMsdfShapeMetrics": "improved",
+    "bearingAlignmentToMetadata": "pass-for-fixture",
+    "nativeWorkbenchPixelParity": "pending",
+    "fontSizeAndVerticalLayout": "pending"
+  },
+  "nextControlledTest": {
+    "flags": "experimentalStandaloneFnt5=1&experimentalMsdf=1&experimentalFnt5Placement=1&experimentalFnt5Fit=1&debugFnt5Sampling=1",
+    "onlyChangedVariable": "FNT5 requested font size limited to min(nominalSize, widgetHeight * 0.9) when no explicit authored font size",
+    "expectedSizes": [
+      {
+        "widget": "Text_Book72_Short",
+        "from": 72,
+        "to": 30.6
+      },
+      {
+        "widget": "Text_Book72_Tall",
+        "from": 72,
+        "to": 72
+      },
+      {
+        "widget": "Button_Book72",
+        "from": 72,
+        "to": 61.2
+      },
+      {
+        "widget": "Text_Book24",
+        "from": 24,
+        "to": 24
+      }
+    ],
+    "warning": "0.9 is an existing heuristic, not verified DayZ native behavior"
+  }
+}
