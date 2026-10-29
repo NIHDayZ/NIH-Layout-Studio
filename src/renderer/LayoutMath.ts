@@ -112,6 +112,34 @@ export function ResolveRect(node: LayoutNode, parent: Rect): Rect {
 	return ResolveAuthoredRect(DecodeAuthoredGeometry(node), parent);
 }
 
+/**
+ * A nominal generator size in an unresolved font name (e.g. MetronBook72)
+ * is not a usable CSS font size for a 12px-high native text widget.
+ *
+ * Only the CSS fallback without an indexed font invokes this policy.
+ * Explicitly authored text sizes, SDF, FNT3, and loaded webfont routes
+ * remain unchanged. This bounds overflow; it does NOT claim native
+ * Workbench glyph metric or FNT5 renderer parity.
+ */
+export function FitUnresolvedCssFontSize(node: LayoutNode, rect: Rect, inferredFontSize: number): number {
+	const explicitNames = ["exact text size", "exact size", "fontsize", "font size"];
+	for (const name of explicitNames) {
+		const raw = GetNodeProperty(node, name);
+		if (raw === undefined)
+			continue;
+		const explicitSize = Number(raw);
+		if (Number.isFinite(explicitSize) && explicitSize > 0)
+			return inferredFontSize;
+	}
+	if (!Number.isFinite(inferredFontSize) || inferredFontSize <= 0)
+		return inferredFontSize;
+	if (!Number.isFinite(rect.height) || rect.height <= 0)
+		return inferredFontSize;
+	// CSS text uses line-height: 1. Leave a small amount of vertical room
+	// for varying fallback font ascenders/descenders, not a native metric.
+	return Math.max(1, Math.min(inferredFontSize, rect.height * 0.9));
+}
+
 export function ResolveTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverride?: string): TextStyleInfo {
 	const [shadowOffsetX, shadowOffsetY] = GetNumberPair(node, "shadow offset", 0, 0);
 	return {
