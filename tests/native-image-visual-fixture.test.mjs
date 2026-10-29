@@ -31,10 +31,13 @@ test("actual image UV layout syntax includes four comparable ImageWidgets and on
 		assert.equal(Prop(node, "stretch"), "1");
 		assert.equal(Prop(node, "src alpha"), "1");
 		assert.equal(Prop(node, "fixaspect"), undefined);
-		const invariant = node.properties.filter(property =>
-			!["position", "flip u", "flip v"].includes(property.name.toLowerCase()));
-		const reference = roots[0].children[0].properties.filter(property =>
-			!["position", "flip u", "flip v"].includes(property.name.toLowerCase()));
+		// Ignore parser source-line/column provenance: compare only authored names and values.
+		const invariant = node.properties
+			.filter(property => !["position", "flip u", "flip v"].includes(property.name.toLowerCase()))
+			.map(property => [property.name.toLowerCase(), property.value]);
+		const reference = roots[0].children[0].properties
+			.filter(property => !["position", "flip u", "flip v"].includes(property.name.toLowerCase()))
+			.map(property => [property.name.toLowerCase(), property.value]);
 		assert.deepEqual(invariant, reference);
 	}
 });
