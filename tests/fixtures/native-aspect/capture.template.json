@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-fixaspect-pending",
+  "sourceLayout": "tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout",
+  "notes": "No native getter observations have been supplied. Do not use the synthetic 960x500 predictions as observed values. Capture the actual harness root screen rect and all nine descendants using Workbench inspector or the test-only DayZ runtime getter probe. Record native client/workbench build.",
+  "cases": [
+    {
+      "id": "native-aspect-root-960x500",
+      "viewport": null,
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    }
+  ]
+}
