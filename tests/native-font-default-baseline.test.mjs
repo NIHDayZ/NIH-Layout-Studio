@@ -98,3 +98,23 @@ test("paired default FNT5 baseline capture reveals common native Text and Button
 	const book24= capture.cases.filter(item=>item.widgetType==="ButtonWidget" && item.font==="sdf_MetronBook24");
 	assert.ok(book24.every(item=>item.deltaTop<0));
 });
+
+test("default baseline console confirms twenty SDF widgets but placement dedup loses Button baselines", () => {
+	const evidence=JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-default-baseline/capture.console.2026-10-29.json",import.meta.url
+	),"utf8"));
+	assert.equal(evidence.captureKind,"native-font-default-studio-console-observation");
+	assert.equal(evidence.indexing.eddsDecoded,203);
+	assert.equal(evidence.indexing.eddsFailed,0);
+	assert.equal(evidence.textRoutes.count,20);
+	assert.equal(evidence.textRoutes.route,"SDF");
+	assert.equal(evidence.sdfWidgets.count,20);
+	assert.equal(evidence.sdfWidgets.placementMode,"bearing");
+	assert.equal(evidence.sdfWidgets.experimentalMsdf,true);
+	assert.deepEqual(evidence.sdfWidgets.requestedSizeByEachRow,[24,34,68,110]);
+	assert.equal(evidence.placementLogs.count,36);
+	assert.deepEqual(evidence.placementLogs.allBaseY,0);
+	assert.equal(evidence.conclusions.textVsButtonPlacementInstrumented,"not-yet-complete");
+	assert.equal(evidence.conclusions.nativeVerticalAlignmentModel,"not-yet-recovered");
+	assert.equal(evidence.conclusions.fullRegressionAndBuildFromThisLog,"not-present");
+});

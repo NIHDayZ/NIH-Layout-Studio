@@ -22,3 +22,15 @@ The current `SdfTextCanvas` implementation sets `lineHeight = fontSize * 1.25` a
 **Recommended controlled next step:** opt-in route selecting the **same** effective default `center` alignment for FNT5 TextWidget and ButtonWidget, changing no other variables, to assess how much the current linebox default explains the differences. Anticipated caveat: the Book24 controls may require different ink/linebox metrics, so do not promote this simplification if it breaks them. A stronger follow-up is a shared glyph-ink vertical model using FNT5 bearings/ink extents; no production default is changed by this evidence commit.
 
 **Limitations:** white-ink bounding box threshold, small font antialiasing and different editor rasterization/alpha affect measurements. This is independent native **visual placement** evidence, not recovered Enfusion C++ glyph baseline logic. No new user-run Node/typecheck/build transcript accompanies these screenshots, so the additional evidence regression test remains pending local validation. PR #47 stays draft.
+
+## Companion Studio console evidence — 2026-10-29
+
+The user supplied `Pasted text(20261029-214809).txt` (SHA-256 `d7d5b4be91c5a2ab4c18f69c0d8ec24e508462616eb85976018a938560fc81b0`) from the same 20-control screenshot run. Structured log observations: `tests/fixtures/native-font-default-baseline/capture.console.2026-10-29.json`.
+
+**20/20** controls report the **SDF** text route and height-sized request (24/34/68/110px); `[SDF widget]` reports **median MSDF** and **bearing** mode, and the engine indexes 203 EDDS resources with zero decode failures. Eight SDF short names are available. The font resource/height mode is confirmed.
+
+The diagnostic `[FNT5 placement]` output contains **only 36 glyph records** (3 fonts × 4 heights × 'ABC') and **all have `baseY=0`**. This does **not** mean the ButtonWidgets use baseY=0. Source inspection shows the dedup key omits `baseY`, so later ButtonWidget samples for the same font/size are suppressed after the TextWidget; `[SDF widget]` still records both widget families. Fix the dedup **for diagnostics only** before attempting to infer the Studio ButtonWidget line origin from log output.
+
+Eight `inkOutsideWidget:true` entries are all the first 'A' glyph in Book24 and Light24 across four sizes; their ink extends slightly **left** of x=0, while their ink remains inside vertically. Avoid mistaking this for text-height clipping.
+
+The screenshots independently establish native TextWidget/ButtonWidget baseline agreement in the tested conditions. The console identifies the internal missing data needed for a more precise shared line-origin experiment. It does **not** contain a fresh local geometry suite or build transcript, and exact native engine baseline implementation is still unproven.

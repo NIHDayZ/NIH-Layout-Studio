@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-font-default-studio-console-observation",
+  "captureDate": "2026-10-29",
+  "sourceLog": {
+    "filename": "Pasted text(20261029-214809).txt",
+    "sha256": "d7d5b4be91c5a2ab4c18f69c0d8ec24e508462616eb85976018a938560fc81b0",
+    "bytes": 35733
+  },
+  "fixture": "tests/fixtures/native-font-default-baseline/NIH_NativeFontDefaultBaseline.layout",
+  "sourceImages": "tests/fixtures/native-font-default-baseline/capture.visual.2026-10-29.json",
+  "environment": {
+    "studioVersion": "0.37.0",
+    "modeFlags": [
+      "experimentalStandaloneFnt5=1",
+      "experimentalMsdf=1",
+      "experimentalFnt5Placement=1",
+      "experimentalFnt5Fit=height",
+      "debugFnt5Sampling=1"
+    ],
+    "preview": [
+      1280,
+      720
+    ],
+    "zoomPercent": 68
+  },
+  "indexing": {
+    "fileCount": 794,
+    "eddsIndexed": 203,
+    "eddsDecoded": 203,
+    "eddsFailed": 0,
+    "fnt5Inspected": 9,
+    "sdfGlyphsValidated": 96,
+    "sdfSidecarsParsed": 1,
+    "sdfShortNamesAvailable": 8,
+    "bitmapFontsParsed": 109,
+    "bitmapFontsUnsupported": 10,
+    "totalIndexingMs": 18631.9
+  },
+  "textRoutes": {
+    "count": 20,
+    "route": "SDF",
+    "resourceCount": 3,
+    "fontPaths": [
+      "gui/fonts/sdf_MetronBook72",
+      "gui/fonts/sdf_MetronBook24",
+      "gui/fonts/sdf_MetronLight24"
+    ]
+  },
+  "sdfWidgets": {
+    "count": 20,
+    "placementMode": "bearing",
+    "experimentalMsdf": true,
+    "requestedSizeByEachRow": [
+      24,
+      34,
+      68,
+      110
+    ],
+    "width": 270
+  },
+  "placementLogs": {
+    "count": 36,
+    "uniqueFontSizeGlyphs": 36,
+    "characters": "ABC",
+    "fonts": [
+      "sdf_metronbook24",
+      "sdf_metronlight24",
+      "sdf_metronbook72"
+    ],
+    "sizes": [
+      24,
+      34,
+      68,
+      110
+    ],
+    "allBaseY": 0,
+    "reasonNoButtonPlacements": "LogFnt5Placement uses JSON.stringify([ResourceId, glyph.codePoint, mode, requestedFontSize, widgetWidth, widgetHeight]) as a dedup key. It omits baseY (as well as vAlign and widget type), so same-font/same-size Button samples are suppressed after TextWidget samples.",
+    "glyphsOutsideWidgetByFont": {
+      "sdf_metronbook24": 4,
+      "sdf_metronlight24": 4,
+      "sdf_metronbook72": 0
+    },
+    "outsideCause": "For Book24 and Light24, the A inkRect.x is slightly negative at all four sizes; the inkRect bottom is inside widget bounds. This is a horizontal-bearing issue, not vertical glyph overflow."
+  },
+  "conclusions": {
+    "sdfResourceAndRequestedSize": "confirmed",
+    "standalonePixelMetricPath": "confirmed-from-earlier-capture",
+    "nativeVerticalAlignmentModel": "not-yet-recovered",
+    "textVsButtonPlacementInstrumented": "not-yet-complete",
+    "visualNativeTextButtonConcordance": "recorded-in-linked-screenshot-capture",
+    "fullRegressionAndBuildFromThisLog": "not-present"
+  },
+  "nextDebugOnlyChange": "Include baseY in placement log dedup key and vAlign in SDF widget log. Do not alter text painting defaults; collect both TextWidget and ButtonWidget placements."
+}
