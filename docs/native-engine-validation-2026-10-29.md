@@ -30,6 +30,8 @@ This is **not** evidence of Workbench image-pixel, font, content-size, or screen
 
 ## Subsequent work on this parity branch
 
-`research/native-visual-parity-gate` adds a new actual `.layout` fixture, a parser/geometry prediction test, and an empty native capture template. **These additions were not part of the validated baseline commit** and require `npm run test:geometry-engine` on this branch. The empty native capture template must remain `PENDING`; synthetic predictions must never be reported as native PASS.
+`research/native-visual-parity-gate` adds a native `.layout` fixture, parser/geometry predictions, and a **two-phase empty capture template**. It also includes a new disposable client-only probe under `tests/fixtures/native-aspect/runtime-mod/`, an original-log-to-JSON extractor, and fail-closed extraction regression tests. The new probe reuses the existing native getter pattern but **has not been compiled/run in DayZ yet**.
 
-Use the existing generic comparator with this fixture as an explicit layout argument, following `tests/fixtures/native-aspect/README.md`. Once real native measurements and build provenance are available, evaluate mismatches centrally rather than adding widget-specific CSS patches.
+**These additions were not part of the validated baseline commit.** Rerun `npm run test:geometry-engine`, `npm run test:native-image-uv`, TypeScript checks and the production build on this branch. The two empty native capture cases must remain `PENDING`; simulated extractor tests and Studio predictions must never be reported as native PASS.
+
+After a genuine client capture, use `scripts/extract-native-aspect-log.mjs` to convert the original log into a separate JSON evidence file, then run the existing generic comparator with this fixture as the explicit layout argument. See `tests/fixtures/native-aspect/README.md` and `runtime-mod/README.md`. Once real native measurements and client-build provenance are available, evaluate mismatches centrally rather than adding widget-specific CSS patches. Visual Workbench/Studio screenshot parity and textured ImageWidget UV parity are independent, still-open acceptance gates.
