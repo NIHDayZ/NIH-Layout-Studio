@@ -487,6 +487,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 					const structure = InspectFnt5(bytes);
 					if (structure && structure.glyphRecordCount > 0) {
 						++fnt5Inspected;
+						let standaloneFnt5Loaded = false;
 						// Sidecar-less FNT5 parsing is experimental and only enabled for local validation.
 						if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalStandaloneFnt5") === "1") {
 							const paths = Fnt5SiblingPaths(fontFile.path);
@@ -500,6 +501,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 								const key = paths.resourceKey;
 								sdfFonts.set(key, standalone);
 								sdfFonts.set(FileStem(fontFile.path), standalone);
+								standaloneFnt5Loaded = true;
 							}
 						}
 						}
@@ -514,7 +516,9 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 										sdfGlyphsValidated += glyphs.length;
 										const atlas = files.find((candidate) => candidate.extension === ".edds" && NormalizePath(candidate.path).toLowerCase() === NormalizePath(fontFile.path).replace(/\.fnt$/i, ".edds").toLowerCase());
 										const atlasUrl = atlas ? resourceObjectUrls.get(atlas.path) : undefined;
-										if (atlasUrl && metadata.sdfType === 2) {
+										// A real experimental FNT5 must not be overwritten by a later FSDF sidecar.
+										// Default (no standalone font loaded) retains the existing sidecar route.
+										if (atlasUrl && metadata.sdfType === 2 && !standaloneFnt5Loaded) {
 											const resource: SdfFontResource = { metadata, glyphs: new Map(glyphs.map((glyph) => [glyph.codePoint, glyph])), atlasUrl, fnt5Origins: ParseFnt5AtlasOrigins(bytes) ?? undefined, fnt5Name: FileStem(fontFile.path) };
 											const key = NormalizePath(fontFile.path).replace(/\.fnt$/i, "").toLowerCase();
 											sdfFonts.set(key, resource);

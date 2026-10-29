@@ -78,3 +78,11 @@ test("default and experimental FNT5 route observations remain pending until inde
 	assert.ok(template.studioModes.every(mode => mode.logEvidence === null && mode.visualEvidence === null));
 	assert.equal(template.conclusion, "pending");
 });
+
+test("experimental standalone resource is not overwritten by the subsequent FSDF sidecar", () => {
+	const source = readFileSync(new URL("../src/project/ProjectWorkspace.ts", import.meta.url), "utf8");
+	assert.match(source, /let standaloneFnt5Loaded = false;/);
+	assert.match(source, /standaloneFnt5Loaded = true;/);
+	assert.match(source, /if \(atlasUrl && metadata\.sdfType === 2 && !standaloneFnt5Loaded\)/);
+	// Structural regression only: actual FNT5 paint still requires a Workbench comparison.
+});
