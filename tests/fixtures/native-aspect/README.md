@@ -31,7 +31,7 @@ The mode-3 Button deliberately extends **66 logical pixels below its parent's 16
 1. Check out `research/native-visual-parity-gate`, open this exact `.layout` in **Workbench**, and open the same fixture in **NIH Layout Studio** running locally (see repo README for dev-server command).
 2. Use matching logical canvas/root dimensions, ideally 960×500. Record Workbench zoom percentage, Studio zoom, OS display scaling, application version, and the actual root screen rectangle. **Workbench zoom percentage is not itself the logical root size.**
 3. Inspect/select `Fill_Mode0`, `Text_Mode1`, `Image_Mode2`, `Button_Mode3`, and `ExactWidthBypass`. Record native X/Y/W/H from the Workbench inspector or independent DayZ `GetScreenPos/GetScreenSize`; take screenshots showing the entire canvas and selected widget. Keep native observations separate from the predictions above.
-4. For a native runtime getter capture, adapt the existing **working disposable client probe** in `../workbench-common/runtime-mod`, stage it under a **different mod name/prefix**, and point its layout resource path to this new fixture. Do not overwrite the established common-geometry PBO, alter production mods, or run both disposable MissionGameplay probes simultaneously.
+4. For a native runtime getter capture, use the dedicated disposable [AspectProbe](runtime-mod/README.md). Its structure reuses the previously working common-probe native getters but has a separate mod prefix. Do not overwrite the established common-geometry PBO or run both MissionGameplay probes simultaneously. The AspectProbe's EnScript still requires its first actual DayZ build/run validation.
 5. Compare each observed native rectangle against the Studio-predicted rectangle after accounting for the **actual recorded parent/root screen geometry**. A screenshot alone at unequal zoom is weaker evidence than the native X/Y/W/H getters.
 6. Separately, inspect ImageWidget `flip u` and `flip v` using a **known, resolved asymmetric texture/image-set** in both tools. Test none, U, V, both; compare image pixels without flipping the debug overlay. This geometry-only fixture cannot establish UV parity without a real texture source.
 
@@ -42,13 +42,13 @@ npm run test:geometry-engine
 npm run test:native-image-uv
 ```
 
-The existing generic Workbench-native rectangle comparator also accepts this fixture as an explicit second argument. For the empty capture template (expected `PENDING` rather than `PASS`):
+The existing generic Workbench-native rectangle comparator also accepts this fixture as an explicit second argument. For the empty two-case capture template (expected two `PENDING` results rather than `PASS`):
 
 ```powershell
 npm run compare:workbench-common -- tests/fixtures/native-aspect/capture.template.json tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout --allow-pending
 ```
 
-Once native getter observations and their provenance are recorded in a separate capture JSON (do not overwrite the template), supply that JSON instead. The comparator already rejects mismatched rectangles, guards against synthetic captures, and requires a native build identifier for a version-pinned PASS.
+Capture the native client log using the [disposable probe procedure](runtime-mod/README.md), then extract the complete two-phase capture with `node scripts/extract-native-aspect-log.mjs <client-script.log> <actual-client-build> <output.json>`. Use that separate JSON (do not overwrite the template). The comparator already rejects mismatched rectangles, guards against synthetic captures, and requires a native build identifier for a version-pinned PASS.
 
 The geometry suite parses the actual fixture and asserts the shared calculated rectangles. It is a **synthetic Studio prediction test**, not native parity proof. Passing it cannot be reported as Workbench-verified behavior.
 
