@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-font-route-visual-pending",
+  "fixture": "tests/fixtures/native-font-route/NIH_NativeFontRoute_Parity.layout",
+  "nativeGameVersion": "1.30.164.200.000000",
+  "workbenchVersion": "1.30.164200.56",
+  "sourceFonts": [
+    "gui/fonts/sdf_MetronBook72",
+    "gui/fonts/sdf_MetronBook24",
+    "gui/fonts/sdf_MetronLight24"
+  ],
+  "conclusion": "pending",
+  "notes": "This is an empty evidence template. Do not populate expected glyph pixels from predicted metrics. For each mode capture actual console Text route logs and screenshots with vanilla font resources loaded. Workbench font version and game version are historical reference; record new observed values if they differ.",
+  "studioModes": [
+    {
+      "id": "baseline",
+      "urlFlags": "debugFnt5Sampling=1",
+      "visualEvidence": null,
+      "logEvidence": null
+    },
+    {
+      "id": "standalone-fnt5",
+      "urlFlags": "experimentalStandaloneFnt5=1&debugFnt5Sampling=1",
+      "visualEvidence": null,
+      "logEvidence": null
+    }
+  ],
+  "cases": [
+    {
+      "id": "Text_Book72_Short",
+      "fontPath": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "workbenchPixels": null,
+      "studioBaselinePixels": null,
+      "studioExperimentalPixels": null,
+      "baselineRoute": null,
+      "experimentalRoute": null,
+      "fontAssetAvailableNative": null,
+      "fontAssetAvailableStudio": null,
+      "comparison": "pending"
+    },
+    {
+      "id": "Text_Book72_Tall",
+      "fontPath": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "workbenchPixels": null,
+      "studioBaselinePixels": null,
+      "studioExperimentalPixels": null,
+      "baselineRoute": null,
+      "experimentalRoute": null,
+      "fontAssetAvailableNative": null,
+      "fontAssetAvailableStudio": null,
+      "comparison": "pending"
+    },
+    {
+      "id": "Text_Book24",
+      "fontPath": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "workbenchPixels": null,
+      "studioBaselinePixels": null,
+      "studioExperimentalPixels": null,
+      "baselineRoute": null,
+      "experimentalRoute": null,
+      "fontAssetAvailableNative": null,
+      "fontAssetAvailableStudio": null,
+      "comparison": "pending"
+    },
+    {
+      "id": "Text_Light24",
+      "fontPath": "gui/fonts/sdf_MetronLight24",
+      "widgetType": "TextWidgetClass",
+      "workbenchPixels": null,
+      "studioBaselinePixels": null,
+      "studioExperimentalPixels": null,
+      "baselineRoute": null,
+      "experimentalRoute": null,
+      "fontAssetAvailableNative": null,
+      "fontAssetAvailableStudio": null,
+      "comparison": "pending"
+    },
+    {
+      "id": "Button_Book72",
+      "fontPath": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "workbenchPixels": null,
+      "studioBaselinePixels": null,
+      "studioExperimentalPixels": null,
+      "baselineRoute": null,
+      "experimentalRoute": null,
+      "fontAssetAvailableNative": null,
+      "fontAssetAvailableStudio": null,
+      "comparison": "pending"
+    },
+    {
+      "id": "Button_Book24",
+      "fontPath": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "workbenchPixels": null,
+      "studioBaselinePixels": null,
+      "studioExperimentalPixels": null,
+      "baselineRoute": null,
+      "experimentalRoute": null,
+      "fontAssetAvailableNative": null,
+      "fontAssetAvailableStudio": null,
+      "comparison": "pending"
+    },
+    {
+      "id": "Text_Default",
+      "fontPath": null,
+      "widgetType": "TextWidgetClass",
+      "workbenchPixels": null,
+      "studioBaselinePixels": null,
+      "studioExperimentalPixels": null,
+      "baselineRoute": null,
+      "experimentalRoute": null,
+      "fontAssetAvailableNative": null,
+      "fontAssetAvailableStudio": null,
+      "comparison": "pending"
+    }
+  ]
+}

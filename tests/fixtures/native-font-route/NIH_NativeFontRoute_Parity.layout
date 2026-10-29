@@ -1,0 +1,79 @@
+FrameWidgetClass NIHNativeFontRouteParity {
+	position 0 0
+	size 1280 720
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		TextWidgetClass Text_Book72_Short {
+			position 70 95
+			size 480 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			text "ABC012"
+			font "gui/fonts/sdf_MetronBook72"
+		}
+		TextWidgetClass Text_Book72_Tall {
+			position 70 165
+			size 480 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			text "ABC012"
+			font "gui/fonts/sdf_MetronBook72"
+		}
+		TextWidgetClass Text_Book24 {
+			position 70 325
+			size 480 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			text "ABC012"
+			font "gui/fonts/sdf_MetronBook24"
+		}
+		TextWidgetClass Text_Light24 {
+			position 70 415
+			size 480 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			text "ABC012"
+			font "gui/fonts/sdf_MetronLight24"
+		}
+		ButtonWidgetClass Button_Book72 {
+			position 670 95
+			size 480 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			text "ABC012"
+			font "gui/fonts/sdf_MetronBook72"
+		}
+		ButtonWidgetClass Button_Book24 {
+			position 670 205
+			size 480 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			text "ABC012"
+			font "gui/fonts/sdf_MetronBook24"
+		}
+		TextWidgetClass Text_Default {
+			position 670 325
+			size 480 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			text "ABC012"
+		}
+	}
+}
