@@ -3,6 +3,7 @@ import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
 import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../renderer/GridLayout";
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
+import { DecodeNativeImageWidgetFlags, NativeImageFlipCssTransform } from "../renderer/engine/NativeImageUv";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
@@ -430,7 +431,8 @@ function ModulatedImageSprite({
 	rect,
 	modulation,
 	description,
-	showName
+	showName,
+	flipFlags = 0
 }: {
 	resolved: NonNullable<ReturnType<typeof ResolveProjectImage>>;
 	destination: CSSProperties;
@@ -438,6 +440,7 @@ function ModulatedImageSprite({
 	modulation: [number, number, number, number];
 	description: string;
 	showName: boolean;
+	flipFlags?: number;
 }) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const destinationWidth = typeof destination.width === "number" ? destination.width : rect.width;
@@ -487,7 +490,7 @@ function ModulatedImageSprite({
 
 	return (
 		<div className="resolved-image" style={destination} title={description}>
-			<canvas ref={canvasRef} className="resolved-image-canvas" style={{ width: "100%", height: "100%", display: "block" }} />
+			<canvas ref={canvasRef} className="resolved-image-canvas" style={{ width: "100%", height: "100%", display: "block", transform: NativeImageFlipCssTransform(flipFlags) }} />
 			{showName && <span className="resolved-image-label">{description}</span>}
 		</div>
 	);
@@ -604,6 +607,7 @@ function RenderWidgetContent(node: LayoutNode, rect: Rect, visualState: WidgetVi
 		return RenderText(node, rect, project, dependencyProjects, vanillaProject);
 
 	if (kind.isImage) {
+		const flipFlags = DecodeNativeImageWidgetFlags(node.properties);
 		const candidates = GetImageCandidates(node);
 		const description = candidates[0] ?? null;
 		if (!description)
@@ -618,7 +622,7 @@ function RenderWidgetContent(node: LayoutNode, rect: Rect, visualState: WidgetVi
 			const destination = GetImageDestination(node, rect, resolved.width, resolved.height);
 			const modulation = ParseImageModulation(GetNodeProperty(node, "color"));
 			if (!IsNeutralImageModulation(modulation))
-				return <ModulatedImageSprite resolved={resolved} destination={destination} rect={rect} modulation={modulation} description={description} showName={debug.showNames} />;
+				return <ModulatedImageSprite resolved={resolved} destination={destination} rect={rect} modulation={modulation} description={description} showName={debug.showNames} flipFlags={flipFlags} />;
 
 			const isDirect = resolved.atlasWidth === 1 && resolved.atlasHeight === 1;
 			const destinationWidth = typeof destination.width === "number" ? destination.width : rect.width;
@@ -632,6 +636,20 @@ function RenderWidgetContent(node: LayoutNode, rect: Rect, visualState: WidgetVi
 					backgroundSize: `${destinationWidth * resolved.atlasWidth / Math.max(1, resolved.width)}px ${destinationHeight * resolved.atlasHeight / Math.max(1, resolved.height)}px`,
 					backgroundPosition: `${-resolved.x * destinationWidth / Math.max(1, resolved.width)}px ${-resolved.y * destinationHeight / Math.max(1, resolved.height)}px`
 				};
+			if (flipFlags !== 0) {
+				// Apply UV-equivalent mirroring to the image surface only, never to
+				// the editor-only label. Keep native aspect/layout sizing separate.
+				const flippedImageStyle: CSSProperties = {
+					...imageStyle, position: "absolute", inset: 0,
+					left: 0, top: 0, right: 0, bottom: 0,
+					width: "100%", height: "100%",
+					transform: NativeImageFlipCssTransform(flipFlags)
+				};
+				return <div className="resolved-image" style={destination} title={description}>
+					<div style={flippedImageStyle} />
+					{debug.showNames && <span className="resolved-image-label">{description}</span>}
+				</div>;
+			}
 			return <div className="resolved-image" style={imageStyle} title={description}>{debug.showNames && <span className="resolved-image-label">{description}</span>}</div>;
 		}
 		return (
