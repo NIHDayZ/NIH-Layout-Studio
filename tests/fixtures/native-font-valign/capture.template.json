@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-font-vertical-alignment-pending",
+  "sourceLayout": "tests/fixtures/native-font-valign/NIH_NativeFontVAlign_Parity.layout",
+  "preview": [
+    1280,
+    720
+  ],
+  "nativeAlignmentVerified": false,
+  "notes": "Do not populate from inferred Canvas text baselines or FNT5 metadata. Capture a Workbench image and a Studio experimental height-sized image; record actual screenshot zoom and native font availability. Default ButtonWidget alignment and authored text valign semantics must be observed.",
+  "cases": [
+    {
+      "id": "Text72Tall_Default",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": null,
+      "authoredRect": [
+        40,
+        80,
+        270,
+        110
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text72Tall_Top",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "top",
+      "authoredRect": [
+        350,
+        80,
+        270,
+        110
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text72Tall_Center",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "center",
+      "authoredRect": [
+        660,
+        80,
+        270,
+        110
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text72Tall_Bottom",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "bottom",
+      "authoredRect": [
+        970,
+        80,
+        270,
+        110
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text72Short_Default",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": null,
+      "authoredRect": [
+        40,
+        225,
+        270,
+        34
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text72Short_Top",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "top",
+      "authoredRect": [
+        350,
+        225,
+        270,
+        34
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text72Short_Center",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "center",
+      "authoredRect": [
+        660,
+        225,
+        270,
+        34
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text72Short_Bottom",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "bottom",
+      "authoredRect": [
+        970,
+        225,
+        270,
+        34
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text24_Default",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "alignment": null,
+      "authoredRect": [
+        40,
+        320,
+        270,
+        44
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text24_Top",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "alignment": "top",
+      "authoredRect": [
+        350,
+        320,
+        270,
+        44
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text24_Center",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "alignment": "center",
+      "authoredRect": [
+        660,
+        320,
+        270,
+        44
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Text24_Bottom",
+      "widget": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "alignment": "bottom",
+      "authoredRect": [
+        970,
+        320,
+        270,
+        44
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Button72_Default",
+      "widget": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": null,
+      "authoredRect": [
+        40,
+        435,
+        270,
+        68
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Button72_Top",
+      "widget": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "top",
+      "authoredRect": [
+        350,
+        435,
+        270,
+        68
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Button72_Center",
+      "widget": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "center",
+      "authoredRect": [
+        660,
+        435,
+        270,
+        68
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Button72_Bottom",
+      "widget": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "alignment": "bottom",
+      "authoredRect": [
+        970,
+        435,
+        270,
+        68
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Button24_Default",
+      "widget": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "alignment": null,
+      "authoredRect": [
+        40,
+        560,
+        270,
+        44
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Button24_Top",
+      "widget": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "alignment": "top",
+      "authoredRect": [
+        350,
+        560,
+        270,
+        44
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Button24_Center",
+      "widget": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "alignment": "center",
+      "authoredRect": [
+        660,
+        560,
+        270,
+        44
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    },
+    {
+      "id": "Button24_Bottom",
+      "widget": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "alignment": "bottom",
+      "authoredRect": [
+        970,
+        560,
+        270,
+        44
+      ],
+      "nativeInkBounds": null,
+      "studioInkBounds": null,
+      "nativeResult": "pending"
+    }
+  ]
+}

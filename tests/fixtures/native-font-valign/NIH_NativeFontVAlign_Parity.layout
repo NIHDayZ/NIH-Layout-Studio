@@ -1,0 +1,225 @@
+FrameWidgetClass NIHNativeFontVAlignParity {
+	position 0 0
+	size 1280 720
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		TextWidgetClass Text72Tall_Default {
+			position 40 80
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		TextWidgetClass Text72Tall_Top {
+			position 350 80
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" top
+		}
+		TextWidgetClass Text72Tall_Center {
+			position 660 80
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" center
+		}
+		TextWidgetClass Text72Tall_Bottom {
+			position 970 80
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" bottom
+		}
+		TextWidgetClass Text72Short_Default {
+			position 40 225
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		TextWidgetClass Text72Short_Top {
+			position 350 225
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" top
+		}
+		TextWidgetClass Text72Short_Center {
+			position 660 225
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" center
+		}
+		TextWidgetClass Text72Short_Bottom {
+			position 970 225
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" bottom
+		}
+		TextWidgetClass Text24_Default {
+			position 40 320
+			size 270 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		TextWidgetClass Text24_Top {
+			position 350 320
+			size 270 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+			"text valign" top
+		}
+		TextWidgetClass Text24_Center {
+			position 660 320
+			size 270 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+			"text valign" center
+		}
+		TextWidgetClass Text24_Bottom {
+			position 970 320
+			size 270 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+			"text valign" bottom
+		}
+		ButtonWidgetClass Button72_Default {
+			position 40 435
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		ButtonWidgetClass Button72_Top {
+			position 350 435
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" top
+		}
+		ButtonWidgetClass Button72_Center {
+			position 660 435
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" center
+		}
+		ButtonWidgetClass Button72_Bottom {
+			position 970 435
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+			"text valign" bottom
+		}
+		ButtonWidgetClass Button24_Default {
+			position 40 560
+			size 270 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		ButtonWidgetClass Button24_Top {
+			position 350 560
+			size 270 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+			"text valign" top
+		}
+		ButtonWidgetClass Button24_Center {
+			position 660 560
+			size 270 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+			"text valign" center
+		}
+		ButtonWidgetClass Button24_Bottom {
+			position 970 560
+			size 270 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+			"text valign" bottom
+		}
+	}
+}
