@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { LayoutParser } from "../.geometry-engine-test-build/LayoutParser.js";
 import { BuildAuthoredGeometrySnapshot } from "../.geometry-engine-test-build/GeometrySnapshot.js";
 import { DecodeAuthoredGeometry } from "../.geometry-engine-test-build/WidgetGeometry.js";
+import { CompareCommonGeometryCaptures } from "../scripts/compare-workbench-common.mjs";
 
 const source = readFileSync(new URL(
 	"./fixtures/native-aspect/NIH_NativeAspect_Parity.layout", import.meta.url
@@ -62,4 +63,18 @@ test("aspect fixture is a native parity *prediction*, not prepopulated native ev
 	const names = [...nodes.keys()];
 	assert.equal(names.length, 10);
 	assert.equal(source.includes("screenRect"), false);
+});
+
+test("native aspect capture template remains pending for both independently required root cases", () => {
+	const template = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-aspect/capture.template.json", import.meta.url
+	), "utf8"));
+	assert.deepEqual(template.cases.map(item => item.id), [
+		"root-960x500-origin", "root-1280x720-offset"
+	]);
+	assert.ok(template.cases.every(item =>
+		item.viewport === null && item.observed === null && item.provenance === null));
+	const report = CompareCommonGeometryCaptures(template, roots);
+	assert.deepEqual(report.summary, { pass: 0, fail: 0, pending: 2, synthetic: 0 });
+	assert.deepEqual(report.reports.map(item => item.total), [9, 9]);
 });
