@@ -70,3 +70,42 @@ export function ArrangeNativeImageUvQuadFromFlags(
 	const flips = DecodeNativeImageUvFlips(widgetFlags);
 	return ArrangeNativeImageUvQuad(corners, flips.horizontal, flips.vertical);
 }
+
+/**
+ * Property names verified in Workbench Run 11 registration:
+ * "flip u" -> token 0x146143A10, widget flag bit 26
+ * "flip v" -> token 0x146143A14, widget flag bit 27.
+ * Follow the authored first-property-wins convention.
+ */
+export function DecodeNativeImageWidgetFlags(
+	properties: readonly { name: string; value: string }[]
+): number {
+	let horizontal: boolean | undefined;
+	let vertical: boolean | undefined;
+	for (const property of properties) {
+		const name = property.name.toLowerCase().trim();
+		if (name === "flip u" && horizontal === undefined)
+			horizontal = property.value.trim() === "1";
+		else if (name === "flip v" && vertical === undefined)
+			vertical = property.value.trim() === "1";
+		if (horizontal !== undefined && vertical !== undefined)
+			break;
+	}
+	let flags = 0;
+	if (horizontal)
+		flags |= 0x04000000;
+	if (vertical)
+		flags |= 0x08000000;
+	return flags;
+}
+
+/**
+ * Axis-aligned Web canvas/CSS equivalent of native ImageWidget U/V flips.
+ * Applied only to the image surface, never to the widget's debug label.
+ */
+export function NativeImageFlipCssTransform(flags: number): string | undefined {
+	const { horizontal, vertical } = DecodeNativeImageUvFlips(flags);
+	if (!horizontal && !vertical)
+		return undefined;
+	return `scale(${horizontal ? -1 : 1}, ${vertical ? -1 : 1})`;
+}
