@@ -92,6 +92,28 @@ their children from loading in the DayZ test context. Do not treat
 those missing native children as an ordinary Studio renderer bug;
 refer to the isolated syntax-matrix controls first.
 
+## Progress — paired 1280 × 720 common geometry screenshots (2026-10-28)
+
+The user supplied side-by-side evidence from Studio and Workbench
+at 68% zoom. Widget placement is visually consistent for the nested
+top-left, centered and bottom-right groups, and the authored
+hidden descendants were not visibly painted. This is a **provisional
+common-geometry visual pass**, not a numeric comparison at identical
+native/DPI contexts.
+
+**Default-presentation gaps remain:** unassigned ImageWidgets are
+solid white in Workbench but debug-only placeholders in Studio,
+unstyled ButtonWidgets have a Studio-only colored fallback, and
+unresolved default fonts differ visibly. Workbench's gray editor
+backdrop and Studio's dark backdrop also differ (Studio already has
+a separate experimental backing-color toggle). No automatic
+production fallback change has been made.
+
+See [the dated paired-screenshot review](pr47-common-visual-acceptance-2026-10-28.md)
+for source-backed details. The next significant acceptance case is an
+actual font/imageset/style-backed project layout, not another
+geometry-only fixture. **Overall manual acceptance remains PENDING.**
+
 ## 4. Capture evidence without changing the project
 
 When a difference is visible, record:
