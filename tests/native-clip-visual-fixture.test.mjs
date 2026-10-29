@@ -58,7 +58,7 @@ test("all ten clipped/unclipped ImageWidgets resolve the same authored source an
 	assert.equal(images.length, 10);
 	const reference = images[0];
 	for (const image of images) {
-		assert.equal(Prop(image, "image0"), '"set:dayz_gui image:DayZLogo"');
+		assert.equal(Prop(image, "image0"), "set:dayz_gui image:DayZLogo");
 		for (const name of ["mode", "src alpha", "stretch"])
 			assert.equal(Prop(image, name), Prop(reference, name));
 		assert.equal(Prop(image, "fixaspect"), undefined);
