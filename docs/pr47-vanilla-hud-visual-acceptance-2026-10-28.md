@@ -120,3 +120,56 @@ No extra DayZ PBO is needed for the *first* font-render diagnosis.
 
 **Do not claim** recovery of the underlying C++ font renderer,
 nor treat placement matching as proof of glyph/native paint parity.
+
+## 2026-10-28 console diagnosis — confirmed font route
+
+The user supplied a `debugFnt5Sampling=1` browser console capture
+(`Pasted text(20261029-032746).txt`, preserved in conversation).
+
+**The affected HUD action labels are NOT rendered by SDF.** At least
+thirteen debug records cite `gui/fonts/sdf_MetronBook72`. The
+corresponding `[Text route]` objects explicitly report
+`resolvedSdf: null`, `resolvedBitmap: null`,
+`fontOverride: null`, `route: "CSS fallback"`, with affected text
+values including `#layout_hud_action_target_interact` and
+`#layout_hud_action_target_description`.
+
+The user environment indexed 794 files / 203 EDDS textures (203
+decoded, zero failed), inspected 9 FNT5 fonts, and parsed only **one
+FSDF sidecar** (96 validated SDF glyphs). Its sample `[SDF widget]`
+record pertains to an **empty** text widget using
+`sdf_metronbook24`, not the distorted ActionListItem labels.
+Therefore changing FNT5 raster placement before resolving the font
+is not a defensible fix for these observed HUD fragments.
+
+The source of the visible glyph fragments is now explainable:
+`LayoutMath.InferFontSize` derives the nominal **72px** generator
+size from `sdf_MetronBook72` even when the font is unresolved.
+CSS paints that 72px text in much smaller authored text-widget
+rectangles, whose `.widget-text` style uses `overflow: hidden`.
+This combination clips almost all of each letter; it is not proof of
+a failed SDF atlas decode.
+
+**Bounded production fallback correction:** shared helper
+`FitUnresolvedCssFontSize` limits only unresolved CSS fallback text
+to the widget height with a small line-height margin (0.9×).
+Explicit authored size properties, resolved SDF, resolved bitmap,
+and resolved browser font routes remain untouched.
+`tests/unresolved-css-font-size.test.mjs` verifies Metron72,
+MetronLight24, exact author size, and invalid sizes. A Chromium
+smoke test checks computed CSS font size and preserves source
+unchanged. This is a legibility safeguard, **not a Workbench glyph
+metric / typography-parity solution**.
+
+The indexed sidecar-less FNT5 resource parser exists behind the
+**opt-in** URL switch `experimentalStandaloneFnt5=1`. It is
+intentionally not promoted to production because font cell and
+baseline behavior need real Workbench comparison first. An
+independent local experiment with that flag should confirm if the
+MetronBook72 resource resolves and whether its SDF output improves
+or worsens native visual parity. Do not combine multiple
+experimental font flags on the initial comparison.
+
+**Acceptance stays blocked** until the real loaded Metron font
+rendering matches Workbench more closely and the font route no
+longer silently falls back.
