@@ -2,7 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
 	ArrangeNativeImageUvQuad, ArrangeNativeImageUvQuadFromFlags,
-	DecodeNativeImageUvFlips
+	DecodeNativeImageUvFlips,
+	DecodeNativeImageWidgetFlags, NativeImageFlipCssTransform
 } from "../.native-image-uv-test-build/NativeImageUv.js";
 
 // Nonrectangular UVs expose errors hidden by ordinary rectangular samples.
@@ -50,4 +51,31 @@ test("flipping V leaves U component selection unchanged", () => {
 	const vertical = ArrangeNativeImageUvQuad(uv, false, true);
 	for (const corner of ["topLeft", "topRight", "bottomLeft", "bottomRight"])
 		assert.equal(vertical[corner].u, normal[corner].u);
+});
+
+test("native image property decode: flip u/v independently", () => {
+	const props = entries => entries.map(([name, value]) => ({name, value}));
+	assert.equal(DecodeNativeImageWidgetFlags(props([])), 0);
+	assert.equal(DecodeNativeImageWidgetFlags(props([["flip u","1"]])), 0x04000000);
+	assert.equal(DecodeNativeImageWidgetFlags(props([["flip v","1"]])), 0x08000000);
+	assert.equal(DecodeNativeImageWidgetFlags(props([["flip u","1"],["flip v","1"]])), 0x0c000000);
+});
+test("native image property decode is case-insensitive and first value wins", () => {
+	const properties = [
+		{name:"FLIP U",value:"0"}, {name:"flip u",value:"1"},
+		{name:"Flip V",value:" 1 "}, {name:"flip v",value:"0"}
+	];
+	assert.equal(DecodeNativeImageWidgetFlags(properties), 0x08000000);
+});
+test("native image flags ignore unrelated and non-boolean values", () => {
+	const properties = [
+		{name:"stretch mode",value:"1"}, {name:"flip u",value:"true"}, {name:"flip v",value:"yes"}
+	];
+	assert.equal(DecodeNativeImageWidgetFlags(properties), 0);
+});
+test("canvas/CSS image flipping mirrors only requested axis", () => {
+	assert.equal(NativeImageFlipCssTransform(0), undefined);
+	assert.equal(NativeImageFlipCssTransform(0x04000000), "scale(-1, 1)");
+	assert.equal(NativeImageFlipCssTransform(0x08000000), "scale(1, -1)");
+	assert.equal(NativeImageFlipCssTransform(0x0c000000), "scale(-1, -1)");
 });
