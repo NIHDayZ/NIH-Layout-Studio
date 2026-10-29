@@ -570,37 +570,6 @@ function RenderStyleChrome(node: LayoutNode, rect: Rect, visualState: WidgetVisu
 	);
 }
 
-function GetImageDestination(node: LayoutNode, rect: Rect, sourceWidth: number, sourceHeight: number): CSSProperties {
-	const fixAspect = (GetNodeProperty(node, "fixaspect") ?? "").toLowerCase();
-	if (!fixAspect || sourceWidth <= 0 || sourceHeight <= 0 || rect.width <= 0 || rect.height <= 0)
-		return { position: "absolute", inset: 0 };
-
-	const sourceAspect = sourceWidth / sourceHeight;
-	let width = rect.width;
-	let height = rect.height;
-
-	if (fixAspect.includes("inside")) {
-		if (rect.width / rect.height > sourceAspect)
-			width = rect.height * sourceAspect;
-		else
-			height = rect.width / sourceAspect;
-	} else if (fixAspect.includes("fixwidth")) {
-		height = rect.width / sourceAspect;
-	} else if (fixAspect.includes("fixheight")) {
-		width = rect.height * sourceAspect;
-	} else {
-		return { position: "absolute", inset: 0 };
-	}
-
-	return {
-		position: "absolute",
-		left: (rect.width - width) * 0.5,
-		top: (rect.height - height) * 0.5,
-		width,
-		height
-	};
-}
-
 function RenderWidgetContent(node: LayoutNode, rect: Rect, visualState: WidgetVisualState, debug: CanvasDebugOptions, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
 	const kind = GetWidgetKind(node);
 	if (kind.isText || kind.isButton || kind.isEditBox || kind.isComboBox)
@@ -619,7 +588,9 @@ function RenderWidgetContent(node: LayoutNode, rect: Rect, visualState: WidgetVi
 				break;
 		}
 		if (resolved) {
-			const destination = GetImageDestination(node, rect, resolved.width, resolved.height);
+			// Native fixaspect is resolved for every widget by ResolveRect /
+			// WidgetGeometry, not by independently fitting an image texture.
+			const destination: CSSProperties = { position: "absolute", inset: 0 };
 			const modulation = ParseImageModulation(GetNodeProperty(node, "color"));
 			if (!IsNeutralImageModulation(modulation))
 				return <ModulatedImageSprite resolved={resolved} destination={destination} rect={rect} modulation={modulation} description={description} showName={debug.showNames} flipFlags={flipFlags} />;
