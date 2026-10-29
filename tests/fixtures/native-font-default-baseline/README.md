@@ -42,3 +42,7 @@ Compare per-control text ink top/bottom inset, width and height after mapping ea
 We should derive a shared vertical baseline model from repeated native measurements before touching Studio's font pipeline. Native `WidgetFlags.VCENTER` and `ButtonWidget.SetTextVerticalAlignment` are available in DayZ script, but **their presence does not establish that the rejected layout keyword is accepted by this Workbench build**. A separate native runtime API test can be prepared later if explicit alignment is required.
 
 **PR #47 stays draft, production Canvas remains unchanged.**
+
+## Captured default baseline evidence — October 29
+
+The new independent [20-case screenshot measurements](capture.visual.2026-10-29.json) establish an important cross-widget relationship: native Workbench's default **TextWidget** and **ButtonWidget** vertical ink placement agrees to less than one logical pixel for Book72 and Book24 at each tested height. Studio's TextWidget and ButtonWidget baselines diverge. Do not patch single named controls; inspect their shared linebox and bearing origin. See [research findings](../../../docs/native-font-default-baseline-validation-2026-10-29.md). This evidence is a visual baseline only and does not prove pixel-perfect alpha parity or a native C++ algorithm.

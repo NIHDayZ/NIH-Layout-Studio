@@ -77,3 +77,24 @@ test("native default font ink template is incomplete until paired native capture
 	assert.ok(capture.cases.every(c=>c.workbenchInkBounds===null &&
 		c.studioInkBounds===null && c.result==="pending"));
 });
+
+test("paired default FNT5 baseline capture reveals common native Text and Button ink origins, unlike Studio", () => {
+	const capture=JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-default-baseline/capture.visual.2026-10-29.json",import.meta.url
+	),"utf8"));
+	assert.equal(capture.captureKind,"native-font-default-workbench-studio-20case-visual");
+	assert.equal(capture.cases.length,20);
+	assert.equal(capture.matchedNativeTextButton.length,8);
+	assert.equal(capture.conclusions.strictPixelParity,"not established");
+	assert.equal(capture.conclusions.globalNativeGlyphBaselineFormula,"not recovered");
+	assert.equal(capture.conclusions.regressionSuiteAfterScreenshot,"not supplied");
+	assert.ok(capture.cases.every(item=>item.id && item.native.inkWidth>0 && item.studio.inkWidth>0));
+	for (const item of capture.matchedNativeTextButton) {
+		assert.ok(Math.abs(item.nativeTextVsButtonTop)<1,item.font+" "+item.height);
+	}
+	assert.ok(capture.cases.filter(item=>item.widgetType==="TextWidget").every(item=>item.deltaTop>1));
+	const book72= capture.cases.filter(item=>item.widgetType==="ButtonWidget" && item.font==="sdf_MetronBook72");
+	assert.ok(book72.every(item=>Math.abs(item.deltaTop)<2));
+	const book24= capture.cases.filter(item=>item.widgetType==="ButtonWidget" && item.font==="sdf_MetronBook24");
+	assert.ok(book24.every(item=>item.deltaTop<0));
+});

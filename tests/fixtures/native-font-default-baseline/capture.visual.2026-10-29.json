@@ -1,0 +1,757 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-font-default-workbench-studio-20case-visual",
+  "captureDate": "2026-10-29",
+  "fixture": "tests/fixtures/native-font-default-baseline/NIH_NativeFontDefaultBaseline.layout",
+  "originalFiles": [
+    {
+      "tool": "DayZ Tools Workbench",
+      "filename": "image(20261029-214337).png",
+      "sha256": "e5e3853e7c92afc06d58b633addabfde59dd69e5839fa933a07ac300e78e73d5",
+      "size": [
+        1919,
+        1032
+      ],
+      "rootPx": {
+        "x": 477,
+        "y": 138,
+        "width": 877,
+        "height": 494
+      },
+      "zoomLabelPercent": 68,
+      "version": "1.30.164200.56",
+      "observedLog": "No layout-specific unknown keyword shown in visible console; unrelated localization warnings remain; full native log not supplied"
+    },
+    {
+      "tool": "NIH Layout Studio",
+      "filename": "image(20261029-214344).png",
+      "sha256": "11a2a716a617b265929ac80f4ee147419681a079e8841030426d6471320be779",
+      "size": [
+        1919,
+        1033
+      ],
+      "rootPx": {
+        "x": 308,
+        "y": 220,
+        "width": 867,
+        "height": 489
+      },
+      "zoomLabelPercent": 68,
+      "version": "0.37.0",
+      "urlFlags": "experimentalStandaloneFnt5=1&experimentalMsdf=1&experimentalFnt5Placement=1&experimentalFnt5Fit=height&debugFnt5Sampling=1"
+    }
+  ],
+  "method": "Inside each exact authored 270xheight widget crop, threshold RGB channels all >170 to isolate white ink from gray/black backgrounds and Studio's blue Button chrome. Record inclusive screenshot XYXY bounds and project onto logical 1280x720 using screenshot root extents. This measures white-ink geometry, not alpha/shader pixel parity; small antialiased Light24 glyph widths are threshold-sensitive. Original screenshots retained by user, not committed.",
+  "rootLogical": [
+    1280,
+    720
+  ],
+  "thresholdAllChannelsGreaterThan": 170,
+  "measurementType": "white ink screenshot bounding rectangle",
+  "cases": [
+    {
+      "id": "TextBook72_H24",
+      "font": "sdf_MetronBook72",
+      "widgetType": "TextWidget",
+      "widgetHeight": 24,
+      "workbenchBboxXYXY": [
+        504,
+        186,
+        536,
+        197
+      ],
+      "studioBboxXYXY": [
+        336,
+        270,
+        366,
+        279
+      ],
+      "native": {
+        "inkWidth": 48.164,
+        "inkHeight": 17.49,
+        "topInset": 4.96,
+        "bottomInset": 1.551
+      },
+      "studio": {
+        "inkWidth": 45.767,
+        "inkHeight": 14.724,
+        "topInset": 8.62,
+        "bottomInset": 0.656
+      },
+      "deltaTop": 3.66,
+      "widthPercent": -4.977
+    },
+    {
+      "id": "TextBook72_H34",
+      "font": "sdf_MetronBook72",
+      "widgetType": "TextWidget",
+      "widgetHeight": 34,
+      "workbenchBboxXYXY": [
+        717,
+        187,
+        762,
+        203
+      ],
+      "studioBboxXYXY": [
+        545,
+        271,
+        589,
+        286
+      ],
+      "native": {
+        "inkWidth": 67.138,
+        "inkHeight": 24.777,
+        "topInset": 6.417,
+        "bottomInset": 2.806
+      },
+      "studio": {
+        "inkWidth": 66.436,
+        "inkHeight": 23.558,
+        "topInset": 10.092,
+        "bottomInset": 0.35
+      },
+      "deltaTop": 3.675,
+      "widthPercent": -1.046
+    },
+    {
+      "id": "TextBook72_H68",
+      "font": "sdf_MetronBook72",
+      "widgetType": "TextWidget",
+      "widgetHeight": 68,
+      "workbenchBboxXYXY": [
+        930,
+        190,
+        1021,
+        224
+      ],
+      "studioBboxXYXY": [
+        756,
+        278,
+        844,
+        309
+      ],
+      "native": {
+        "inkWidth": 134.276,
+        "inkHeight": 51.012,
+        "topInset": 10.789,
+        "bottomInset": 6.198
+      },
+      "studio": {
+        "inkWidth": 131.396,
+        "inkHeight": 47.117,
+        "topInset": 20.399,
+        "bottomInset": 0.485
+      },
+      "deltaTop": 9.61,
+      "widthPercent": -2.145
+    },
+    {
+      "id": "TextBook72_H110",
+      "font": "sdf_MetronBook72",
+      "widgetType": "TextWidget",
+      "widgetHeight": 110,
+      "workbenchBboxXYXY": [
+        1143,
+        195,
+        1290,
+        250
+      ],
+      "studioBboxXYXY": [
+        966,
+        285,
+        1110,
+        338
+      ],
+      "native": {
+        "inkWidth": 216.009,
+        "inkHeight": 81.619,
+        "topInset": 18.077,
+        "bottomInset": 10.304
+      },
+      "studio": {
+        "inkWidth": 214.072,
+        "inkHeight": 79.509,
+        "topInset": 30.706,
+        "bottomInset": -0.215
+      },
+      "deltaTop": 12.629,
+      "widthPercent": -0.897
+    },
+    {
+      "id": "TextBook24_H24",
+      "font": "sdf_MetronBook24",
+      "widgetType": "TextWidget",
+      "widgetHeight": 24,
+      "workbenchBboxXYXY": [
+        504,
+        275,
+        536,
+        287
+      ],
+      "studioBboxXYXY": [
+        335,
+        357,
+        364,
+        368
+      ],
+      "native": {
+        "inkWidth": 48.164,
+        "inkHeight": 18.947,
+        "topInset": 4.676,
+        "bottomInset": 0.377
+      },
+      "studio": {
+        "inkWidth": 44.291,
+        "inkHeight": 17.669,
+        "topInset": 6.718,
+        "bottomInset": -0.387
+      },
+      "deltaTop": 2.042,
+      "widthPercent": -8.041
+    },
+    {
+      "id": "TextBook24_H34",
+      "font": "sdf_MetronBook24",
+      "widgetType": "TextWidget",
+      "widgetHeight": 34,
+      "workbenchBboxXYXY": [
+        717,
+        276,
+        761,
+        293
+      ],
+      "studioBboxXYXY": [
+        545,
+        359,
+        587,
+        375
+      ],
+      "native": {
+        "inkWidth": 65.678,
+        "inkHeight": 26.235,
+        "topInset": 6.134,
+        "bottomInset": 1.632
+      },
+      "studio": {
+        "inkWidth": 63.483,
+        "inkHeight": 25.031,
+        "topInset": 9.663,
+        "bottomInset": -0.693
+      },
+      "deltaTop": 3.529,
+      "widthPercent": -3.342
+    },
+    {
+      "id": "TextBook24_H68",
+      "font": "sdf_MetronBook24",
+      "widgetType": "TextWidget",
+      "widgetHeight": 68,
+      "workbenchBboxXYXY": [
+        929,
+        280,
+        1019,
+        314
+      ],
+      "studioBboxXYXY": [
+        755,
+        364,
+        841,
+        397
+      ],
+      "native": {
+        "inkWidth": 132.816,
+        "inkHeight": 51.012,
+        "topInset": 11.964,
+        "bottomInset": 5.024
+      },
+      "studio": {
+        "inkWidth": 128.443,
+        "inkHeight": 50.061,
+        "topInset": 17.025,
+        "bottomInset": 0.914
+      },
+      "deltaTop": 5.061,
+      "widthPercent": -3.293
+    },
+    {
+      "id": "TextBook24_H110",
+      "font": "sdf_MetronBook24",
+      "widgetType": "TextWidget",
+      "widgetHeight": 110,
+      "workbenchBboxXYXY": [
+        1142,
+        285,
+        1288,
+        341
+      ],
+      "studioBboxXYXY": [
+        966,
+        371,
+        1105,
+        425
+      ],
+      "native": {
+        "inkWidth": 214.55,
+        "inkHeight": 83.077,
+        "topInset": 19.251,
+        "bottomInset": 7.672
+      },
+      "studio": {
+        "inkWidth": 206.69,
+        "inkHeight": 80.982,
+        "topInset": 27.331,
+        "bottomInset": 1.687
+      },
+      "deltaTop": 8.08,
+      "widthPercent": -3.663
+    },
+    {
+      "id": "TextLight24_H24",
+      "font": "sdf_MetronLight24",
+      "widgetType": "TextWidget",
+      "widgetHeight": 24,
+      "workbenchBboxXYXY": [
+        504,
+        364,
+        536,
+        376
+      ],
+      "studioBboxXYXY": [
+        335,
+        445,
+        363,
+        456
+      ],
+      "native": {
+        "inkWidth": 48.164,
+        "inkHeight": 18.947,
+        "topInset": 4.393,
+        "bottomInset": 0.66
+      },
+      "studio": {
+        "inkWidth": 42.814,
+        "inkHeight": 17.669,
+        "topInset": 6.288,
+        "bottomInset": 0.043
+      },
+      "deltaTop": 1.895,
+      "widthPercent": -11.108
+    },
+    {
+      "id": "TextLight24_H34",
+      "font": "sdf_MetronLight24",
+      "widgetType": "TextWidget",
+      "widgetHeight": 34,
+      "workbenchBboxXYXY": [
+        717,
+        365,
+        761,
+        382
+      ],
+      "studioBboxXYXY": [
+        545,
+        447,
+        587,
+        463
+      ],
+      "native": {
+        "inkWidth": 65.678,
+        "inkHeight": 26.235,
+        "topInset": 5.85,
+        "bottomInset": 1.915
+      },
+      "studio": {
+        "inkWidth": 63.483,
+        "inkHeight": 25.031,
+        "topInset": 9.233,
+        "bottomInset": -0.264
+      },
+      "deltaTop": 3.383,
+      "widthPercent": -3.342
+    },
+    {
+      "id": "TextLight24_H68",
+      "font": "sdf_MetronLight24",
+      "widgetType": "TextWidget",
+      "widgetHeight": 68,
+      "workbenchBboxXYXY": [
+        930,
+        369,
+        1019,
+        403
+      ],
+      "studioBboxXYXY": [
+        756,
+        452,
+        841,
+        485
+      ],
+      "native": {
+        "inkWidth": 131.357,
+        "inkHeight": 51.012,
+        "topInset": 11.68,
+        "bottomInset": 5.308
+      },
+      "studio": {
+        "inkWidth": 126.967,
+        "inkHeight": 50.061,
+        "topInset": 16.595,
+        "bottomInset": 1.344
+      },
+      "deltaTop": 4.915,
+      "widthPercent": -3.342
+    },
+    {
+      "id": "TextLight24_H110",
+      "font": "sdf_MetronLight24",
+      "widgetType": "TextWidget",
+      "widgetHeight": 110,
+      "workbenchBboxXYXY": [
+        1142,
+        375,
+        1287,
+        430
+      ],
+      "studioBboxXYXY": [
+        966,
+        459,
+        1105,
+        513
+      ],
+      "native": {
+        "inkWidth": 213.09,
+        "inkHeight": 81.619,
+        "topInset": 20.425,
+        "bottomInset": 7.955
+      },
+      "studio": {
+        "inkWidth": 206.69,
+        "inkHeight": 80.982,
+        "topInset": 26.902,
+        "bottomInset": 2.117
+      },
+      "deltaTop": 6.477,
+      "widthPercent": -3.003
+    },
+    {
+      "id": "ButtonBook72_H24",
+      "font": "sdf_MetronBook72",
+      "widgetType": "ButtonWidget",
+      "widgetHeight": 24,
+      "workbenchBboxXYXY": [
+        580,
+        453,
+        612,
+        465
+      ],
+      "studioBboxXYXY": [
+        410,
+        532,
+        441,
+        543
+      ],
+      "native": {
+        "inkWidth": 48.164,
+        "inkHeight": 18.947,
+        "topInset": 4.109,
+        "bottomInset": 0.943
+      },
+      "studio": {
+        "inkWidth": 47.243,
+        "inkHeight": 17.669,
+        "topInset": 4.387,
+        "bottomInset": 1.945
+      },
+      "deltaTop": 0.278,
+      "widthPercent": -1.912
+    },
+    {
+      "id": "ButtonBook72_H34",
+      "font": "sdf_MetronBook72",
+      "widgetType": "ButtonWidget",
+      "widgetHeight": 34,
+      "workbenchBboxXYXY": [
+        786,
+        454,
+        831,
+        471
+      ],
+      "studioBboxXYXY": [
+        614,
+        533,
+        658,
+        549
+      ],
+      "native": {
+        "inkWidth": 67.138,
+        "inkHeight": 26.235,
+        "topInset": 5.567,
+        "bottomInset": 2.198
+      },
+      "studio": {
+        "inkWidth": 66.436,
+        "inkHeight": 25.031,
+        "topInset": 5.859,
+        "bottomInset": 3.11
+      },
+      "deltaTop": 0.292,
+      "widthPercent": -1.046
+    },
+    {
+      "id": "ButtonBook72_H68",
+      "font": "sdf_MetronBook72",
+      "widgetType": "ButtonWidget",
+      "widgetHeight": 68,
+      "workbenchBboxXYXY": [
+        976,
+        458,
+        1067,
+        491
+      ],
+      "studioBboxXYXY": [
+        801,
+        536,
+        890,
+        569
+      ],
+      "native": {
+        "inkWidth": 134.276,
+        "inkHeight": 49.555,
+        "topInset": 11.397,
+        "bottomInset": 7.049
+      },
+      "studio": {
+        "inkWidth": 132.872,
+        "inkHeight": 50.061,
+        "topInset": 10.276,
+        "bottomInset": 7.663
+      },
+      "deltaTop": -1.121,
+      "widthPercent": -1.046
+    },
+    {
+      "id": "ButtonBook72_H110",
+      "font": "sdf_MetronBook72",
+      "widgetType": "ButtonWidget",
+      "widgetHeight": 110,
+      "workbenchBboxXYXY": [
+        1160,
+        462,
+        1308,
+        517
+      ],
+      "studioBboxXYXY": [
+        983,
+        540,
+        1127,
+        593
+      ],
+      "native": {
+        "inkWidth": 217.469,
+        "inkHeight": 81.619,
+        "topInset": 17.227,
+        "bottomInset": 11.154
+      },
+      "studio": {
+        "inkWidth": 214.072,
+        "inkHeight": 79.509,
+        "topInset": 16.166,
+        "bottomInset": 14.325
+      },
+      "deltaTop": -1.061,
+      "widthPercent": -1.562
+    },
+    {
+      "id": "ButtonBook24_H24",
+      "font": "sdf_MetronBook24",
+      "widgetType": "ButtonWidget",
+      "widgetHeight": 24,
+      "workbenchBboxXYXY": [
+        581,
+        542,
+        612,
+        554
+      ],
+      "studioBboxXYXY": [
+        410,
+        619,
+        440,
+        630
+      ],
+      "native": {
+        "inkWidth": 46.705,
+        "inkHeight": 18.947,
+        "topInset": 3.826,
+        "bottomInset": 1.227
+      },
+      "studio": {
+        "inkWidth": 45.767,
+        "inkHeight": 17.669,
+        "topInset": 2.485,
+        "bottomInset": 3.847
+      },
+      "deltaTop": -1.341,
+      "widthPercent": -2.008
+    },
+    {
+      "id": "ButtonBook24_H34",
+      "font": "sdf_MetronBook24",
+      "widgetType": "ButtonWidget",
+      "widgetHeight": 34,
+      "workbenchBboxXYXY": [
+        787,
+        544,
+        832,
+        560
+      ],
+      "studioBboxXYXY": [
+        614,
+        620,
+        657,
+        636
+      ],
+      "native": {
+        "inkWidth": 67.138,
+        "inkHeight": 24.777,
+        "topInset": 6.741,
+        "bottomInset": 2.482
+      },
+      "studio": {
+        "inkWidth": 64.96,
+        "inkHeight": 25.031,
+        "topInset": 3.957,
+        "bottomInset": 5.012
+      },
+      "deltaTop": -2.784,
+      "widthPercent": -3.244
+    },
+    {
+      "id": "ButtonBook24_H68",
+      "font": "sdf_MetronBook24",
+      "widgetType": "ButtonWidget",
+      "widgetHeight": 68,
+      "workbenchBboxXYXY": [
+        976,
+        548,
+        1066,
+        581
+      ],
+      "studioBboxXYXY": [
+        800,
+        623,
+        888,
+        656
+      ],
+      "native": {
+        "inkWidth": 132.816,
+        "inkHeight": 49.555,
+        "topInset": 12.571,
+        "bottomInset": 5.874
+      },
+      "studio": {
+        "inkWidth": 131.396,
+        "inkHeight": 50.061,
+        "topInset": 8.374,
+        "bottomInset": 9.564
+      },
+      "deltaTop": -4.197,
+      "widthPercent": -1.069
+    },
+    {
+      "id": "ButtonBook24_H110",
+      "font": "sdf_MetronBook24",
+      "widgetType": "ButtonWidget",
+      "widgetHeight": 110,
+      "workbenchBboxXYXY": [
+        1160,
+        553,
+        1307,
+        608
+      ],
+      "studioBboxXYXY": [
+        981,
+        626,
+        1124,
+        680
+      ],
+      "native": {
+        "inkWidth": 216.009,
+        "inkHeight": 81.619,
+        "topInset": 19.858,
+        "bottomInset": 8.522
+      },
+      "studio": {
+        "inkWidth": 212.595,
+        "inkHeight": 80.982,
+        "topInset": 12.791,
+        "bottomInset": 16.227
+      },
+      "deltaTop": -7.067,
+      "widthPercent": -1.58
+    }
+  ],
+  "matchedNativeTextButton": [
+    {
+      "font": "sdf_MetronBook72",
+      "height": 24,
+      "nativeTextVsButtonTop": 0.851,
+      "studioTextVsButtonTop": 4.233
+    },
+    {
+      "font": "sdf_MetronBook72",
+      "height": 34,
+      "nativeTextVsButtonTop": 0.85,
+      "studioTextVsButtonTop": 4.233
+    },
+    {
+      "font": "sdf_MetronBook72",
+      "height": 68,
+      "nativeTextVsButtonTop": -0.608,
+      "studioTextVsButtonTop": 10.123
+    },
+    {
+      "font": "sdf_MetronBook72",
+      "height": 110,
+      "nativeTextVsButtonTop": 0.85,
+      "studioTextVsButtonTop": 14.54
+    },
+    {
+      "font": "sdf_MetronBook24",
+      "height": 24,
+      "nativeTextVsButtonTop": 0.85,
+      "studioTextVsButtonTop": 4.233
+    },
+    {
+      "font": "sdf_MetronBook24",
+      "height": 34,
+      "nativeTextVsButtonTop": -0.607,
+      "studioTextVsButtonTop": 5.706
+    },
+    {
+      "font": "sdf_MetronBook24",
+      "height": 68,
+      "nativeTextVsButtonTop": -0.607,
+      "studioTextVsButtonTop": 8.651
+    },
+    {
+      "font": "sdf_MetronBook24",
+      "height": 110,
+      "nativeTextVsButtonTop": -0.607,
+      "studioTextVsButtonTop": 14.54
+    }
+  ],
+  "conclusions": {
+    "nativeDefaultTextButtonVerticalInkConcordance": "pass-for-Book72-and-Book24-eight-size-pairs",
+    "nativeTextButtonMaxTopInsetDifferenceLogical": 0.851,
+    "studioTextButtonMinMaxTopInsetDifferenceLogical": [
+      4.233,
+      14.54
+    ],
+    "studioTextWidgetTopBelowNative": "all-12-tested-text-widgets",
+    "studioButtonBook72CloseToNative": "four-widget-cases",
+    "studioButtonBook24AboveNative": "all-four-widget-cases",
+    "globalNativeGlyphBaselineFormula": "not recovered",
+    "strictPixelParity": "not established",
+    "regressionSuiteAfterScreenshot": "not supplied"
+  }
+}
