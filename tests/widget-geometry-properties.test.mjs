@@ -93,3 +93,40 @@ test("fractional geometry preserves exact position but parent-relative size and 
  assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(n),parent),
   {x:15,y:-40,width:400,height:60});
 });
+
+test("native fixaspect property maps through shared widget geometry, not a widget-specific renderer", () => {
+ const parent={width:1000,height:400};
+ const widget = mode => Widget([["size","0.4 0.2"],["fixaspect",String(mode)]]);
+ assert.equal(DecodeAuthoredGeometry(widget(0)).fixAspectMode,0);
+ assert.equal(DecodeAuthoredGeometry(widget(1)).fixAspectMode,1);
+ assert.equal(DecodeAuthoredGeometry(widget(2)).fixAspectMode,2);
+ assert.equal(DecodeAuthoredGeometry(widget(3)).fixAspectMode,3);
+ assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(widget(0)),parent),
+  {x:0,y:0,width:400,height:80});
+ assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(widget(1)),parent),
+  {x:0,y:0,width:160,height:80});
+ assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(widget(2)),parent),
+  {x:0,y:0,width:800,height:400});
+ assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(widget(3)),parent),
+  {x:0,y:0,width:1000,height:500});
+});
+
+test("native aspect size is applied before reference-edge alignment and bypassed by exact size", () => {
+ const parent={width:1000,height:400};
+ const right=Widget([["size","0.4 0.2"],["fixaspect","2"],["halign","right_ref"]]);
+ assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(right),parent),
+  {x:200,y:0,width:800,height:400});
+ const exact=Widget([["size","200 0.2"],["hexactsize","1"],["fixaspect","3"]]);
+ assert.deepEqual(ResolveAuthoredRect(DecodeAuthoredGeometry(exact),parent),
+  {x:0,y:0,width:200,height:80});
+});
+
+test("native fixaspect property honors first-occurrence and low two-bit semantics", () => {
+ const parent={width:1000,height:400};
+ const duplicate=Widget([["size","0.4 0.2"],["fixaspect","6"],["FIXASPECT","0"]]);
+ const decoded=DecodeAuthoredGeometry(duplicate);
+ assert.equal(decoded.fixAspectMode,2);
+ assert.deepEqual(ResolveAuthoredRect(decoded,parent),{x:0,y:0,width:800,height:400});
+ const bad=DecodeAuthoredGeometry(Widget([["fixaspect","invalid"]]));
+ assert.equal(bad.fixAspectMode,0);
+});
