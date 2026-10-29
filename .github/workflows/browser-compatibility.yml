@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - src/App.tsx
+      - src/components/Canvas.tsx
+      - src/renderer/LayoutMath.ts
       - src/components/NativeCompatibilityWarnings.tsx
       - src/renderer/engine/NativePropertyCompatibility.ts
       - src/parser/LayoutParser.ts
