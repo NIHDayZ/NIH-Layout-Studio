@@ -78,3 +78,37 @@ test("native aspect capture template remains pending for both independently requ
 	assert.deepEqual(report.summary, { pass: 0, fail: 0, pending: 2, synthetic: 0 });
 	assert.deepEqual(report.reports.map(item => item.total), [9, 9]);
 });
+
+test("independent October 29 native fixaspect capture matches 18 descendant rectangles with no measured delta", () => {
+	const native = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-aspect/capture.runtime.2026-10-29.json", import.meta.url
+	), "utf8"));
+	assert.equal(native.captureKind, "native-dayz-client-fixaspect");
+	assert.equal(native.rootName, "NIHNativeAspectParity");
+	assert.deepEqual(native.cases.map(item => item.id), [
+		"root-960x500-origin", "root-1280x720-offset"
+	]);
+	assert.deepEqual(native.cases.map(item => item.viewport), [
+		{ x: 0, y: 0, width: 960, height: 500 },
+		{ x: 31, y: 19, width: 1280, height: 720 }
+	]);
+	assert.ok(native.cases.every(item =>
+		item.provenance.captureMethod === "dayz-client-script-getters" &&
+		item.provenance.versionDefine === "DAYZ_1_30" &&
+		item.provenance.nativeBuild === null));
+	const compared = CompareCommonGeometryCaptures(native, roots);
+	assert.deepEqual(compared.summary, { pass: 0, fail: 0, pending: 2, synthetic: 0 });
+	assert.deepEqual(compared.reports.map(item => item.matched), [9, 9]);
+	assert.ok(compared.reports.every(item =>
+		item.errors.length === 1 && /client build identifier was not captured/i.test(item.errors[0])));
+});
+
+test("native aspect mismatch still fails, even when exact client build is unknown", () => {
+	const native = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-aspect/capture.runtime.2026-10-29.json", import.meta.url
+	), "utf8"));
+	native.cases[0].observed.Text_Mode1.width += 1;
+	const report = CompareCommonGeometryCaptures(native, roots);
+	assert.deepEqual(report.summary, { pass: 0, fail: 1, pending: 1, synthetic: 0 });
+	assert.match(report.reports[0].errors.join(" "), /Text_Mode1\.width/);
+});

@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-dayz-client-fixaspect",
+  "sourceLayout": "tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout",
+  "rootName": "NIHNativeAspectParity",
+  "captureDate": "2026-10-29",
+  "notes": "Independent native DayZ client getter capture. Exact executable/client build number not present; DAYZ_1_30 is a script define, not proof of a precise build. Both phases have all 9 descendants; 18/18 rectangles match shared geometry with zero numeric difference, but version-pinned comparator remains PENDING. Original full log retained by uploader; raw log and private local paths are not committed. Visual clipping, text ink and image UV pixel parity remain untested.",
+  "cases": [
+    {
+      "id": "root-960x500-origin",
+      "viewport": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 500
+      },
+      "requestedRootRect": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 500
+      },
+      "rootLocalRect": {
+        "x": 0,
+        "y": 0,
+        "width": 0.5,
+        "height": 0.462963
+      },
+      "tolerance": 0.5,
+      "observed": {
+        "Parent_Mode0": {
+          "x": 24,
+          "y": 24,
+          "width": 420,
+          "height": 160
+        },
+        "Fill_Mode0": {
+          "x": 45,
+          "y": 40,
+          "width": 168,
+          "height": 32
+        },
+        "ExactWidthBypass": {
+          "x": 32,
+          "y": 118,
+          "width": 200,
+          "height": 32
+        },
+        "Parent_Mode1": {
+          "x": 500,
+          "y": 24,
+          "width": 420,
+          "height": 160
+        },
+        "Text_Mode1": {
+          "x": 521,
+          "y": 40,
+          "width": 64,
+          "height": 32
+        },
+        "Parent_Mode2": {
+          "x": 24,
+          "y": 264,
+          "width": 420,
+          "height": 160
+        },
+        "Image_Mode2": {
+          "x": 45,
+          "y": 280,
+          "width": 320,
+          "height": 160
+        },
+        "Parent_Mode3": {
+          "x": 500,
+          "y": 264,
+          "width": 420,
+          "height": 160
+        },
+        "Button_Mode3": {
+          "x": 521,
+          "y": 280,
+          "width": 420,
+          "height": 210
+        }
+      },
+      "observedLocal": {
+        "Parent_Mode0": {
+          "x": 24,
+          "y": 24,
+          "width": 420,
+          "height": 160
+        },
+        "Fill_Mode0": {
+          "x": 0.05,
+          "y": 0.1,
+          "width": 0.4,
+          "height": 0.2
+        },
+        "ExactWidthBypass": {
+          "x": 8,
+          "y": 94,
+          "width": 200,
+          "height": 0.2
+        },
+        "Parent_Mode1": {
+          "x": 500,
+          "y": 24,
+          "width": 420,
+          "height": 160
+        },
+        "Text_Mode1": {
+          "x": 0.05,
+          "y": 0.1,
+          "width": 0.4,
+          "height": 0.2
+        },
+        "Parent_Mode2": {
+          "x": 24,
+          "y": 264,
+          "width": 420,
+          "height": 160
+        },
+        "Image_Mode2": {
+          "x": 0.05,
+          "y": 0.1,
+          "width": 0.4,
+          "height": 0.2
+        },
+        "Parent_Mode3": {
+          "x": 500,
+          "y": 264,
+          "width": 420,
+          "height": 160
+        },
+        "Button_Mode3": {
+          "x": 0.05,
+          "y": 0.1,
+          "width": 0.4,
+          "height": 0.2
+        }
+      },
+      "provenance": {
+        "captureMethod": "dayz-client-script-getters",
+        "nativeBuild": null,
+        "versionDefine": "DAYZ_1_30",
+        "evidenceFile": "script_2026-10-29_09-34-51.log",
+        "evidenceSha256": "704346403ff69d2ce0080197802dcc8e284e53c8acfbce04e6804ef894ce91cc",
+        "viewportSource": "NIHNativeAspectParity native GetScreenPos/GetScreenSize after SetScreenSize",
+        "observedAtLocal": "2026-10-29 09:35:31.675",
+        "nativeTypeByName": {
+          "Parent_Mode0": "PanelWidget",
+          "Fill_Mode0": "PanelWidget",
+          "ExactWidthBypass": "PanelWidget",
+          "Parent_Mode1": "PanelWidget",
+          "Text_Mode1": "TextWidget",
+          "Parent_Mode2": "PanelWidget",
+          "Image_Mode2": "ImageWidget",
+          "Parent_Mode3": "PanelWidget",
+          "Button_Mode3": "ButtonWidget"
+        }
+      }
+    },
+    {
+      "id": "root-1280x720-offset",
+      "viewport": {
+        "x": 31,
+        "y": 19,
+        "width": 1280,
+        "height": 720
+      },
+      "requestedRootRect": {
+        "x": 31,
+        "y": 19,
+        "width": 1280,
+        "height": 720
+      },
+      "rootLocalRect": {
+        "x": 0.0161458,
+        "y": 0.0175926,
+        "width": 0.666667,
+        "height": 0.666667
+      },
+      "tolerance": 0.5,
+      "observed": {
+        "Parent_Mode0": {
+          "x": 55,
+          "y": 43,
+          "width": 420,
+          "height": 160
+        },
+        "Fill_Mode0": {
+          "x": 76,
+          "y": 59,
+          "width": 168,
+          "height": 32
+        },
+        "ExactWidthBypass": {
+          "x": 63,
+          "y": 137,
+          "width": 200,
+          "height": 32
+        },
+        "Parent_Mode1": {
+          "x": 531,
+          "y": 43,
+          "width": 420,
+          "height": 160
+        },
+        "Text_Mode1": {
+          "x": 552,
+          "y": 59,
+          "width": 64,
+          "height": 32
+        },
+        "Parent_Mode2": {
+          "x": 55,
+          "y": 283,
+          "width": 420,
+          "height": 160
+        },
+        "Image_Mode2": {
+          "x": 76,
+          "y": 299,
+          "width": 320,
+          "height": 160
+        },
+        "Parent_Mode3": {
+          "x": 531,
+          "y": 283,
+          "width": 420,
+          "height": 160
+        },
+        "Button_Mode3": {
+          "x": 552,
+          "y": 299,
+          "width": 420,
+          "height": 210
+        }
+      },
+      "observedLocal": {
+        "Parent_Mode0": {
+          "x": 24,
+          "y": 24,
+          "width": 420,
+          "height": 160
+        },
+        "Fill_Mode0": {
+          "x": 0.05,
+          "y": 0.1,
+          "width": 0.4,
+          "height": 0.2
+        },
+        "ExactWidthBypass": {
+          "x": 8,
+          "y": 94,
+          "width": 200,
+          "height": 0.2
+        },
+        "Parent_Mode1": {
+          "x": 500,
+          "y": 24,
+          "width": 420,
+          "height": 160
+        },
+        "Text_Mode1": {
+          "x": 0.05,
+          "y": 0.1,
+          "width": 0.4,
+          "height": 0.2
+        },
+        "Parent_Mode2": {
+          "x": 24,
+          "y": 264,
+          "width": 420,
+          "height": 160
+        },
+        "Image_Mode2": {
+          "x": 0.05,
+          "y": 0.1,
+          "width": 0.4,
+          "height": 0.2
+        },
+        "Parent_Mode3": {
+          "x": 500,
+          "y": 264,
+          "width": 420,
+          "height": 160
+        },
+        "Button_Mode3": {
+          "x": 0.05,
+          "y": 0.1,
+          "width": 0.4,
+          "height": 0.2
+        }
+      },
+      "provenance": {
+        "captureMethod": "dayz-client-script-getters",
+        "nativeBuild": null,
+        "versionDefine": "DAYZ_1_30",
+        "evidenceFile": "script_2026-10-29_09-34-51.log",
+        "evidenceSha256": "704346403ff69d2ce0080197802dcc8e284e53c8acfbce04e6804ef894ce91cc",
+        "viewportSource": "NIHNativeAspectParity native GetScreenPos/GetScreenSize after SetScreenSize",
+        "observedAtLocal": "2026-10-29 09:35:33.030",
+        "nativeTypeByName": {
+          "Parent_Mode0": "PanelWidget",
+          "Fill_Mode0": "PanelWidget",
+          "ExactWidthBypass": "PanelWidget",
+          "Parent_Mode1": "PanelWidget",
+          "Text_Mode1": "TextWidget",
+          "Parent_Mode2": "PanelWidget",
+          "Image_Mode2": "ImageWidget",
+          "Parent_Mode3": "PanelWidget",
+          "Button_Mode3": "ButtonWidget"
+        }
+      }
+    }
+  ]
+}

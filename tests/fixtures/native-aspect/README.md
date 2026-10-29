@@ -8,7 +8,7 @@
 
 The ImageWidget deliberately does **not** specify a texture; this fixture compares its widget rectangle, not image pixels. Workbench may show only its selection outline. If a resource is missing, don't infer geometry from an absent image or style.
 
-### Studio predicted rectangles (not yet independent native evidence)
+### Studio predicted rectangles (independently matched for these native client cases)
 
 All values are root-local `x, y, width, height` in logical pixels. The prediction assumes the root is exactly **960 × 500** and scale=1. If Workbench reports a different actual root rectangle, use that observed rectangle when comparing—do not force native values to match this table.
 
@@ -56,4 +56,15 @@ The geometry suite parses the actual fixture and asserts the shared calculated r
 
 Promote to PR #47 only after (a) full local build/test checks pass, (b) native aspect modes and exact-size bypass are independently observed, and (c) ImageWidget UV comparison passes with a known resource. Record failures by widget and property, not by ad-hoc CSS changes. Font metrics, safe-area/DPI behavior, container content measurement, and scissor/clipping remain separate scope.
 
-The parent consolidation commit `f6d5b106bef400c953f0a11fd4e7372497adc26f` passed 299 local tests in the user's 2026-10-29 09:16 PDT validation. The fixture/test additions on **this new branch** still require a new local run.
+### Independent native client capture (October 29, 2026)
+
+The disposable probe has now compiled and executed successfully in a DayZ client. Its independent [structured capture](capture.runtime.2026-10-29.json) reports **18/18 matching descendant rectangles** across both root sizes, including all numeric aspect modes and exact-width bypass. The exact client executable build is not in the log (`DAYZ_1_30` is only a script define), so the generic comparator correctly returns **2 PENDING (9/9 numerically matched in each)**, not a version-pinned PASS.
+
+```powershell
+npm run test:geometry-engine
+npm run compare:workbench-common -- tests/fixtures/native-aspect/capture.runtime.2026-10-29.json tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout --allow-pending
+```
+
+The new capture test asserts both matching numeric cases and the pending metadata gate. The untouched template must continue returning PENDING. Actual ImageWidget pixel UVs, clipping, fonts, and Workbench screenshot matching remain separate, open visual gates.
+
+The parent consolidation commit `f6d5b106bef400c953f0a11fd4e7372497adc26f` passed 299 local tests in the user's 2026-10-29 09:16 PDT validation. The initial fixture additions passed the user's local run; the newly committed native capture regression cases require a fresh local run.
