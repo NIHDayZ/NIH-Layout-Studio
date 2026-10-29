@@ -44,7 +44,7 @@ const experimentalMsdfStroke = typeof window !== "undefined" && new URLSearchPar
 function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, character: string, mode: string, requestedFontSize: number, penX: number, baseY: number, drawX: number, drawY: number, drawWidth: number, drawHeight: number, widgetWidth: number, widgetHeight: number, clipPadding: number, sprite: HTMLCanvasElement) {
  if (!debugFnt5Sampling || loggedPlacements.size >= 120)
   return;
- const key = JSON.stringify([ResourceId(resource), glyph.codePoint, mode, requestedFontSize, widgetWidth, widgetHeight]);
+ const key = JSON.stringify([ResourceId(resource), glyph.codePoint, mode, requestedFontSize, widgetWidth, widgetHeight, baseY]);
  if (loggedPlacements.has(key))
   return;
  loggedPlacements.add(key);
@@ -191,7 +191,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    const key = JSON.stringify([ResourceId(resource), text, fontSize, width, height, hAlign, vAlign]);
    if (!loggedWidgets.has(key)) {
     loggedWidgets.add(key);
-    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, resourceId: ResourceId(resource), text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf, placementMode: resource.fnt5PixelMetrics && resource.fnt5CellSize ? (experimentalFnt5CellLayout ? "cell" : experimentalFnt5Placement ? "bearing" : "legacy") : "legacy", requestedFontSize: fontSize, nominalFontSize: resource.metadata.fontSize, widgetSize: [width, height], debugExpandedCanvas: debugFnt5Clip && !!resource.fnt5PixelMetrics });
+    console.info("[NIH Layout Studio][SDF widget]", { font: resource.fnt5Name ?? resource.metadata.fontFile, resourceId: ResourceId(resource), text: text.slice(0, 120), originCount: resource.fnt5Origins?.size ?? 0, experimentalFnt5Cells, experimentalMsdf, placementMode: resource.fnt5PixelMetrics && resource.fnt5CellSize ? (experimentalFnt5CellLayout ? "cell" : experimentalFnt5Placement ? "bearing" : "legacy") : "legacy", requestedFontSize: fontSize, nominalFontSize: resource.metadata.fontSize, widgetSize: [width, height], hAlign, vAlign, debugExpandedCanvas: debugFnt5Clip && !!resource.fnt5PixelMetrics });
    }
   }
   void LoadAtlas(resource).then((atlas) => {

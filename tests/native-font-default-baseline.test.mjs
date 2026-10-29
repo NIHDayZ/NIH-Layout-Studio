@@ -118,3 +118,11 @@ test("default baseline console confirms twenty SDF widgets but placement dedup l
 	assert.equal(evidence.conclusions.nativeVerticalAlignmentModel,"not-yet-recovered");
 	assert.equal(evidence.conclusions.fullRegressionAndBuildFromThisLog,"not-present");
 });
+
+test("debug FNT5 placement dedup distinguishes same font and size with different baseline origins", () => {
+	const source=readFileSync(new URL("../src/project/SdfTextCanvas.tsx",import.meta.url),"utf8");
+	assert.match(source,
+		/JSON\.stringify\(\[ResourceId\(resource\), glyph\.codePoint, mode, requestedFontSize, widgetWidth, widgetHeight, baseY\]\)/);
+	assert.match(source,/widgetSize: \[width, height\], hAlign, vAlign, debugExpandedCanvas:/);
+	// Only log-key/fields are under test. Glyph draw position and native baseline parity are unchanged.
+});
