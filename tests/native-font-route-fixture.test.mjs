@@ -86,3 +86,22 @@ test("experimental standalone resource is not overwritten by the subsequent FSDF
 	assert.match(source, /if \(atlasUrl && metadata\.sdfType === 2 && !standaloneFnt5Loaded\)/);
 	// Structural regression only: actual FNT5 paint still requires a Workbench comparison.
 });
+
+test("October 29 user log confirms standalone FNT5 source selection without claiming native glyph parity", () => {
+	const observation = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-route/capture.source-selection.2026-10-29.json", import.meta.url
+	), "utf8"));
+	assert.equal(observation.captureKind, "native-fnt5-standalone-source-selection");
+	assert.equal(observation.sources.length, 3);
+	assert.deepEqual(observation.sources.map(item => item.font), [
+		"sdf_metronbook24", "sdf_metronlight24", "sdf_metronbook72"
+	]);
+	assert.ok(observation.sources.every(item =>
+		item.samples === 6 && item.selected === "Standalone FNT5 cell"));
+	assert.deepEqual(observation.sources.map(item => item.cellSize), [38,38,95]);
+	assert.equal(observation.rendering.msdfEnabled, false);
+	assert.equal(observation.rendering.placementMode, "legacy");
+	assert.equal(observation.rendering.nativeWorkBenchGlyphParity, "fail");
+	assert.equal(observation.strictNativePixelComparison, false);
+	assert.equal(observation.localTestStatus.sameCommitChecksProvided, false);
+});

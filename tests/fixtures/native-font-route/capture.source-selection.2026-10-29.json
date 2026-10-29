@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-fnt5-standalone-source-selection",
+  "date": "2026-10-29",
+  "fixture": "tests/fixtures/native-font-route/NIH_NativeFontRoute_Parity.layout",
+  "researchBranch": "research/native-font-source-selection",
+  "observedOnCommit": "2e32e82add968f864ac8082cddf0ab876e1fc68e",
+  "evidence": {
+    "screenshot": {
+      "name": "image(20261029-193632).png",
+      "sha256": "8a05d5a997d84ce5623b1d95bf5dc86a53e9f5ed309c1a9fbccfd5ffdb626f95"
+    },
+    "console": {
+      "name": "Pasted text(20261029-193622).txt",
+      "sha256": "da13b98d4deeb7c3eea23096137f20c3a65bd7a16795d9d34fed1cc13bfea2aa"
+    },
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "zoomPercent": 68,
+    "environment": "Studio v0.37.0, experimentalStandaloneFnt5=1&debugFnt5Sampling=1"
+  },
+  "sources": [
+    {
+      "font": "sdf_metronbook24",
+      "characters": "ABC012",
+      "samples": 6,
+      "selected": "Standalone FNT5 cell",
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "cellSize": 38,
+      "aOrigin": [
+        267,
+        39
+      ],
+      "nominalSize": 24
+    },
+    {
+      "font": "sdf_metronlight24",
+      "characters": "ABC012",
+      "samples": 6,
+      "selected": "Standalone FNT5 cell",
+      "atlasSize": [
+        1024,
+        1024
+      ],
+      "cellSize": 38,
+      "aOrigin": [
+        267,
+        39
+      ],
+      "nominalSize": 24
+    },
+    {
+      "font": "sdf_metronbook72",
+      "characters": "ABC012",
+      "samples": 6,
+      "selected": "Standalone FNT5 cell",
+      "atlasSize": [
+        4096,
+        2048
+      ],
+      "cellSize": 95,
+      "aOrigin": [
+        3136,
+        1
+      ],
+      "nominalSize": 72
+    }
+  ],
+  "textRoutes": {
+    "sdf": 6,
+    "cssFallback": 1
+  },
+  "sdfNamesAvailable": 8,
+  "rendering": {
+    "alphaMode": "red-channel legacy",
+    "msdfEnabled": false,
+    "placementMode": "legacy",
+    "nativeWorkBenchGlyphParity": "fail",
+    "observation": "Book24 now recognizable rather than fragmented FSDF samples, but multiple glyph strokes remain malformed; Book72 remains clipped. Standalone sampling success does not prove atlas channel or glyph placement fidelity."
+  },
+  "strictNativePixelComparison": false,
+  "localTestStatus": {
+    "sameCommitChecksProvided": false,
+    "precedingBranchGeometryPassed": 276,
+    "precedingBranchUvPassed": 11,
+    "expectedNextGeometryTestCount": 278
+  },
+  "nextExperiment": {
+    "queryFlags": "experimentalStandaloneFnt5=1&experimentalMsdf=1&debugFnt5Sampling=1",
+    "onlyAlteredVariable": "alpha channel reconstruction: red SDF to median MSDF",
+    "unchanged": [
+      "source selection",
+      "placement mode legacy",
+      "font scaling",
+      "widget geometry"
+    ],
+    "acceptance": "Record sampling mode, screenshot and any improvement/degradation relative to the original same-branch capture"
+  }
+}
