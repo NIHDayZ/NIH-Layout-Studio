@@ -48,3 +48,27 @@ test("holdout contains no invented native baseline measurements", () => {
 	assert.equal(obs.cases.length,20);
 	assert.ok(obs.cases.every(v=>v.result==="pending"&&v.nativeInkBounds===null&&v.studioInkBounds===null));
 });
+
+test("independent Hg9 holdout supports shared FNT5 origin while preserving native parity limitations", () => {
+	const evidence=JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-line-origin/capture.holdout.2026-10-29.json",import.meta.url
+	),"utf8"));
+	assert.equal(evidence.captureKind,"native-font-shared-origin-Hg9-independent-visual-holdout");
+	assert.equal(evidence.layout,"tests/fixtures/native-font-line-origin/NIH_NativeFontBaselineHoldout.layout");
+	assert.equal(evidence.comparison.holdoutCases,20);
+	assert.equal(evidence.cases.length,20);
+	assert.deepEqual(evidence.sources.workbench.rootPixelRect,{x:472,y:134,width:876,height:493});
+	assert.deepEqual(evidence.sources.studio.rootPixelRect,{x:308,y:221,width:867,height:488});
+	const meanAbs=(values)=>values.reduce((a,b)=>a+Math.abs(b),0)/values.length;
+	const current=meanAbs(evidence.cases.map(item=>item.studioTop-item.workbenchTop));
+	const projected=meanAbs(evidence.cases.map(item=>item.studioTop-item.workbenchTop+
+		(item.id.startsWith("Text") ? item.height*0.08 : item.height*-0.045)));
+	assert.ok(Math.abs(current-evidence.comparison.currentMeanAbsGlyphTopError)<1e-9);
+	assert.ok(Math.abs(projected-evidence.comparison.projectedLegacyMeanAbsGlyphTopError)<1e-9);
+	assert.ok(current<projected*0.55);
+	assert.equal(evidence.browserLog.fnt5PlacementRecords,60);
+	assert.equal(evidence.browserLog.rawInkOutsideWidgetCount,20);
+	assert.equal(evidence.browserLog.outsideWidgetCharacter,"g");
+	assert.equal(evidence.disposition.nativePixelParity,"not-established");
+	assert.equal(evidence.comparison.nativeRuleRecovered,false);
+});

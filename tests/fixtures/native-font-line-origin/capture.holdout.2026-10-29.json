@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-font-shared-origin-Hg9-independent-visual-holdout",
+  "captureDate": "2026-10-29",
+  "layout": "tests/fixtures/native-font-line-origin/NIH_NativeFontBaselineHoldout.layout",
+  "previewLogical": [
+    1280,
+    720
+  ],
+  "zoomPercent": 68,
+  "sources": {
+    "workbench": {
+      "filename": "image(20261029-225457).png",
+      "sha256": "a36abcb24715623fa0eadfbd249f11c4e23d5b51bf780443f59dfe5b05a386f3",
+      "pixelSize": [
+        1919,
+        1033
+      ],
+      "rootPixelRect": {
+        "x": 472,
+        "y": 134,
+        "width": 876,
+        "height": 493
+      },
+      "version": "1.30.164200.56"
+    },
+    "studio": {
+      "filename": "image(20261029-225507).png",
+      "sha256": "e30ba554890b9dde279ccafc5acbaff67c88c40dfd5d9799a41a732ade5a44c6",
+      "pixelSize": [
+        1919,
+        1033
+      ],
+      "rootPixelRect": {
+        "x": 308,
+        "y": 221,
+        "width": 867,
+        "height": 488
+      },
+      "version": "0.37.0"
+    },
+    "console": {
+      "filename": "Pasted text(20261029-225629).txt",
+      "sha256": "f5ffec1def150e570743931fac97c128178020602eb9684131c505cbd3f7b7a9",
+      "lines": 133
+    }
+  },
+  "method": "Map each independently observed preview root to 1280x720 logical dimensions, crop each authored [x,y,270,height] widget, select screenshot pixels with R,G,B each strictly greater than 170, measure bounding box of white ink. Workbench 130 gray background and Studio dark/blue button chrome are excluded. Values rounded to 0.01 logical px. Native pixel fidelity not asserted. Screenshot root borders may introduce +/- ~1-2px sampling uncertainty. The no-experiment baseline is reconstructed by undoing known baseY translations; it is not a second independent Hg9 screenshot.",
+  "cases": [
+    {
+      "id": "TextBook72_H24",
+      "height": 24,
+      "workbenchTop": 5.1,
+      "studioTop": 4.34,
+      "workbenchWidth": 45.3,
+      "studioWidth": 42.81
+    },
+    {
+      "id": "TextBook72_H34",
+      "height": 34,
+      "workbenchTop": 6.56,
+      "studioTop": 7.3,
+      "workbenchWidth": 62.83,
+      "studioWidth": 62.01
+    },
+    {
+      "id": "TextBook72_H68",
+      "height": 68,
+      "workbenchTop": 10.94,
+      "studioTop": 13.2,
+      "workbenchWidth": 127.12,
+      "studioWidth": 125.49
+    },
+    {
+      "id": "TextBook72_H110",
+      "height": 110,
+      "workbenchTop": 18.25,
+      "studioTop": 20.57,
+      "workbenchWidth": 206.03,
+      "studioWidth": 203.74
+    },
+    {
+      "id": "TextBook24_H24",
+      "height": 24,
+      "workbenchTop": 5.08,
+      "studioTop": 4.18,
+      "workbenchWidth": 43.84,
+      "studioWidth": 42.81
+    },
+    {
+      "id": "TextBook24_H34",
+      "height": 34,
+      "workbenchTop": 6.54,
+      "studioTop": 5.66,
+      "workbenchWidth": 62.83,
+      "studioWidth": 60.53
+    },
+    {
+      "id": "TextBook24_H68",
+      "height": 68,
+      "workbenchTop": 12.38,
+      "studioTop": 10.08,
+      "workbenchWidth": 124.2,
+      "studioWidth": 122.54
+    },
+    {
+      "id": "TextBook24_H110",
+      "height": 110,
+      "workbenchTop": 19.69,
+      "studioTop": 17.46,
+      "workbenchWidth": 201.64,
+      "studioWidth": 196.36
+    },
+    {
+      "id": "TextLight24_H24",
+      "height": 24,
+      "workbenchTop": 5.06,
+      "studioTop": 5.49,
+      "workbenchWidth": 43.84,
+      "studioWidth": 42.81
+    },
+    {
+      "id": "TextLight24_H34",
+      "height": 34,
+      "workbenchTop": 6.52,
+      "studioTop": 5.49,
+      "workbenchWidth": 61.37,
+      "studioWidth": 62.01
+    },
+    {
+      "id": "TextLight24_H68",
+      "height": 68,
+      "workbenchTop": 12.36,
+      "studioTop": 11.39,
+      "workbenchWidth": 124.2,
+      "studioWidth": 121.06
+    },
+    {
+      "id": "TextLight24_H110",
+      "height": 110,
+      "workbenchTop": 21.13,
+      "studioTop": 17.3,
+      "workbenchWidth": 197.26,
+      "studioWidth": 197.83
+    },
+    {
+      "id": "ButtonBook72_H24",
+      "height": 24,
+      "workbenchTop": 5.04,
+      "studioTop": 5.33,
+      "workbenchWidth": 45.3,
+      "studioWidth": 42.81
+    },
+    {
+      "id": "ButtonBook72_H34",
+      "height": 34,
+      "workbenchTop": 6.5,
+      "studioTop": 6.8,
+      "workbenchWidth": 64.29,
+      "studioWidth": 63.48
+    },
+    {
+      "id": "ButtonBook72_H68",
+      "height": 68,
+      "workbenchTop": 10.88,
+      "studioTop": 12.7,
+      "workbenchWidth": 127.12,
+      "studioWidth": 125.49
+    },
+    {
+      "id": "ButtonBook72_H110",
+      "height": 110,
+      "workbenchTop": 18.18,
+      "studioTop": 21.56,
+      "workbenchWidth": 206.03,
+      "studioWidth": 202.26
+    },
+    {
+      "id": "ButtonBook24_H24",
+      "height": 24,
+      "workbenchTop": 5.02,
+      "studioTop": 3.69,
+      "workbenchWidth": 43.84,
+      "studioWidth": 44.29
+    },
+    {
+      "id": "ButtonBook24_H34",
+      "height": 34,
+      "workbenchTop": 7.94,
+      "studioTop": 5.16,
+      "workbenchWidth": 62.83,
+      "studioWidth": 60.53
+    },
+    {
+      "id": "ButtonBook24_H68",
+      "height": 68,
+      "workbenchTop": 13.78,
+      "studioTop": 11.07,
+      "workbenchWidth": 124.2,
+      "studioWidth": 121.06
+    },
+    {
+      "id": "ButtonBook24_H110",
+      "height": 110,
+      "workbenchTop": 21.09,
+      "studioTop": 16.97,
+      "workbenchWidth": 200.18,
+      "studioWidth": 197.83
+    }
+  ],
+  "comparison": {
+    "holdoutCases": 20,
+    "visualThresholdRGB": 170,
+    "currentMeanAbsGlyphTopError": 1.7689999999999997,
+    "projectedLegacyMeanAbsGlyphTopError": 3.7939999999999996,
+    "relativeImprovement": 0.5337374802319452,
+    "meanAbsWidthDifferencePercent": 2.181406785621051,
+    "sensitivity": {
+      "thresholdRGB190": {
+        "currentMeanAbsGlyphTopError": 1.912,
+        "projectedLegacyMeanAbsGlyphTopError": 3.871
+      }
+    },
+    "nativeUnknownKeywordErrorsForFixture": "none visible",
+    "nativeGlyphTopMatchedAcrossFamilies": "approximate",
+    "nativeRuleRecovered": false
+  },
+  "browserLog": {
+    "fnt5PlacementRecords": 60,
+    "sdfWidgetRecords": 20,
+    "standaloneFnt5": true,
+    "medianMsdf": true,
+    "placement": "bearing",
+    "fontSizeMode": "height",
+    "lineOriginCoefficient": 0.08,
+    "baseYByWidgetHeight": {
+      "24": -1.92,
+      "34": -2.72,
+      "68": -5.44,
+      "110": -8.8
+    },
+    "rawInkOutsideWidgetCount": 20,
+    "outsideWidgetCharacter": "g",
+    "allOtherCharactersOutside": false
+  },
+  "clippingBoundaryObservation": {
+    "nativeWhiteSamplesNearComputedBottom": "All 20 controls show a small group of white pixels in the first 1-2 raster rows after the rounded widget-bottom coordinate",
+    "studioWhiteSamplesNearComputedBottom": "No white pixels detected in the 15 logical pixel region beyond the rounded widget-bottom coordinates",
+    "interpretation": "A tiny boundary/rasterization difference, potentially influenced by screenshot pixel rounding. Does not establish a native no-clipping rule or justify changing overflow behavior."
+  },
+  "disposition": {
+    "fontTopAlignmentHoldout": "supports-shared-coefficient-as-opt-in",
+    "fontWidth": "near-native-in-tested-cases",
+    "nativePixelParity": "not-established",
+    "descenderClipping": "needs-native-boundary-isolation",
+    "productionDefaults": "unchanged",
+    "nextGate": "Independent behavior for descenders and text attributes across other native widgets, without per-font offsets"
+  }
+}
