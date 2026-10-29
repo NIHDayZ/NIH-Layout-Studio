@@ -1,0 +1,35 @@
+FrameWidgetClass NIH_SyntaxRoot {
+	position 0 0
+	size 1 1
+	hexactpos 1
+	vexactpos 1
+	{
+		PanelWidgetClass PanelContentBefore0 {
+			position 20 20
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 0
+			{
+			PanelWidgetClass PanelContentBefore0_Top {
+				position 4 6
+				size 60 24
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+			}
+			PanelWidgetClass PanelContentBefore0_Bottom {
+				position 10 45
+				size 90 28
+				hexactpos 1
+				vexactpos 1
+				hexactsize 1
+				vexactsize 1
+			}
+			}
+		}
+	}
+}

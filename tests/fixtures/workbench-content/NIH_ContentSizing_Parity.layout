@@ -1,0 +1,266 @@
+FrameWidgetClass NIHContentParity {
+	position 0 0
+	size 1 1
+	hexactpos 1
+	vexactpos 1
+	{
+		TextWidgetClass TextFixed {
+			position 20 20
+			size 220 40
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/metron16"
+			"exact text" 1
+			text "TEST 0123456789"
+		}
+		TextWidgetClass TextToTextH {
+			position 20 75
+			size 220 36
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to text h" 1
+			font "gui/fonts/metron16"
+			"exact text" 1
+			text "TEST 0123456789"
+		}
+		TextWidgetClass TextToTextV {
+			position 20 130
+			size 180 36
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to text v" 1
+			font "gui/fonts/metron16"
+			"exact text" 1
+			text "TEST 0123456789"
+		}
+		TextWidgetClass TextToTextBoth {
+			position 20 185
+			size 220 36
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to text h" 1
+			"size to text v" 1
+			font "gui/fonts/metron16"
+			"exact text" 1
+			text "TEST 0123456789"
+		}
+		TextWidgetClass TextToContentBoth {
+			position 20 240
+			size 220 36
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to content h" 1
+			"size to content v" 1
+			font "gui/fonts/metron16"
+			"exact text" 1
+			text "TEST 0123456789"
+		}
+		TextWidgetClass TextLongNarrow {
+			position 20 295
+			size 140 36
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to text v" 1
+			wrap 1
+			font "gui/fonts/metron16"
+			"exact text" 1
+			text "LONG TEXT LONG TEXT LONG TEXT"
+		}
+		ImageWidgetClass ImageFixed {
+			position 330 20
+			size 90 55
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			image0 "set:dayz_gui image:Expand"
+		}
+		ImageWidgetClass ImageContentBoth {
+			position 330 95
+			size 90 55
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to content h" 1
+			"size to content v" 1
+			image0 "set:dayz_gui image:Expand"
+		}
+		ImageWidgetClass ImageContentWide {
+			position 330 170
+			size 90 55
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to content h" 1
+			"size to content v" 1
+			image0 "set:dayz_gui image:Gradient"
+		}
+		FrameWidgetClass FrameContentHeight {
+			position 500 20
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to content v" 1
+			{
+				PanelWidgetClass FrameChildTop {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass FrameChildBottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		PanelWidgetClass PanelContentBoth {
+			position 500 150
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to content h" 1
+			"size to content v" 1
+			{
+				PanelWidgetClass PanelChild {
+					position 12 18
+					size 115 38
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass FrameContentHidden {
+			position 500 265
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"size to content v" 1
+			{
+				PanelWidgetClass VisibleChild {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass HiddenChild {
+					visible 0
+					position 8 95
+					size 80 40
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass FrameFixedControl {
+			position 500 350
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass FixedFrameTop {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass FixedFrameBottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass FrameContentUpper {
+			position 310 265
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass UpperFrameTop {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass UpperFrameBottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		WrapSpacerWidgetClass WrapContentUpper {
+			position 310 350
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 1
+			Padding 0
+			Margin 0
+			content_halign left
+			content_valign top
+			{
+				PanelWidgetClass WrapItemOne {
+					size 60 24
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass WrapItemTwo {
+					size 90 28
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+	}
+}

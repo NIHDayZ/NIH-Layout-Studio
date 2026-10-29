@@ -1,0 +1,457 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-dayz-client-script-getters",
+  "date": "2026-10-28",
+  "sourceLayout": "NIH_Scroll_Parity.layout",
+  "provenance": {
+    "captureMethod": "client MissionGameplay script probe with native ScrollWidget/Widget API getters",
+    "source": "user-provided filtered client script log in project conversation",
+    "clientScriptLog": "script_2026-10-28_11-56-52.log",
+    "observedWindow": "11:57:32–11:57:47 local log clock",
+    "runtimeBuild": "not captured by probe",
+    "logger": "NIHLayoutScrollRuntimeProbe",
+    "scrollInput": "programmatic normalized setter requests 0, 0.5, 1, 0"
+  },
+  "missingObservations": {
+    "nativeScrollbarScaleBranchAndContext": null,
+    "nativeChildViewportRect": null,
+    "nativeChildContextRect": null,
+    "nativeClipRect": null,
+    "userWheelOrDragInput": null
+  },
+  "notes": "Coordinates and getter values transcribed from actual DayZ client output, not calculated from renderer predictions. Child screen positions are NOT viewport or clipping rectangles. The observed scrollbar width is effective width, not proof of scaling branch. Standalone diagnostic; capture.template.json stays pending.",
+  "cases": [
+    {
+      "id": "ScrollNone",
+      "outerScreenRect": [
+        20,
+        78,
+        240,
+        180
+      ],
+      "settings": {
+        "horizontal": false,
+        "vertical": false,
+        "verticalLeft": false
+      },
+      "isScrollbarVisible": false,
+      "samples": [
+        {
+          "phase": "initial",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            20,
+            78
+          ],
+          "overhangScreenPos": [
+            205,
+            228
+          ]
+        },
+        {
+          "phase": "half",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            20,
+            78
+          ],
+          "overhangScreenPos": [
+            205,
+            228
+          ]
+        },
+        {
+          "phase": "end",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            20,
+            78
+          ],
+          "overhangScreenPos": [
+            205,
+            228
+          ]
+        },
+        {
+          "phase": "reset",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            20,
+            78
+          ],
+          "overhangScreenPos": [
+            205,
+            228
+          ]
+        }
+      ],
+      "scrollbarWidth": 10,
+      "contentSize": [
+        295,
+        220
+      ],
+      "childSizes": {
+        "origin": [
+          170,
+          48
+        ],
+        "overhang": [
+          110,
+          70
+        ]
+      }
+    },
+    {
+      "id": "ScrollVertical",
+      "outerScreenRect": [
+        300,
+        78,
+        240,
+        180
+      ],
+      "settings": {
+        "horizontal": false,
+        "vertical": true,
+        "verticalLeft": false
+      },
+      "isScrollbarVisible": true,
+      "samples": [
+        {
+          "phase": "initial",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            300,
+            78
+          ],
+          "overhangScreenPos": [
+            485,
+            228
+          ]
+        },
+        {
+          "phase": "half",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 20
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0.5
+          },
+          "originScreenPos": [
+            300,
+            58
+          ],
+          "overhangScreenPos": [
+            485,
+            208
+          ]
+        },
+        {
+          "phase": "end",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 40
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 1
+          },
+          "originScreenPos": [
+            300,
+            38
+          ],
+          "overhangScreenPos": [
+            485,
+            188
+          ]
+        },
+        {
+          "phase": "reset",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            300,
+            78
+          ],
+          "overhangScreenPos": [
+            485,
+            228
+          ]
+        }
+      ],
+      "scrollbarWidth": 10,
+      "contentSize": [
+        295,
+        220
+      ],
+      "childSizes": {
+        "origin": [
+          170,
+          48
+        ],
+        "overhang": [
+          110,
+          70
+        ]
+      }
+    },
+    {
+      "id": "ScrollBoth",
+      "outerScreenRect": [
+        580,
+        78,
+        240,
+        180
+      ],
+      "settings": {
+        "horizontal": true,
+        "vertical": true,
+        "verticalLeft": false
+      },
+      "isScrollbarVisible": true,
+      "samples": [
+        {
+          "phase": "initial",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            580,
+            78
+          ],
+          "overhangScreenPos": [
+            765,
+            228
+          ]
+        },
+        {
+          "phase": "half",
+          "offsets": {
+            "horizontal": 32.5,
+            "vertical": 25
+          },
+          "normalized": {
+            "horizontal": 0.5,
+            "vertical": 0.5
+          },
+          "originScreenPos": [
+            547.5,
+            53
+          ],
+          "overhangScreenPos": [
+            732.5,
+            203
+          ]
+        },
+        {
+          "phase": "end",
+          "offsets": {
+            "horizontal": 65,
+            "vertical": 50
+          },
+          "normalized": {
+            "horizontal": 1,
+            "vertical": 1
+          },
+          "originScreenPos": [
+            515,
+            28
+          ],
+          "overhangScreenPos": [
+            700,
+            178
+          ]
+        },
+        {
+          "phase": "reset",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            580,
+            78
+          ],
+          "overhangScreenPos": [
+            765,
+            228
+          ]
+        }
+      ],
+      "scrollbarWidth": 10,
+      "contentSize": [
+        295,
+        220
+      ],
+      "childSizes": {
+        "origin": [
+          170,
+          48
+        ],
+        "overhang": [
+          110,
+          70
+        ]
+      }
+    },
+    {
+      "id": "ScrollLeft",
+      "outerScreenRect": [
+        860,
+        78,
+        240,
+        180
+      ],
+      "settings": {
+        "horizontal": true,
+        "vertical": true,
+        "verticalLeft": true
+      },
+      "isScrollbarVisible": true,
+      "samples": [
+        {
+          "phase": "initial",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            870,
+            78
+          ],
+          "overhangScreenPos": [
+            1055,
+            228
+          ]
+        },
+        {
+          "phase": "half",
+          "offsets": {
+            "horizontal": 32.5,
+            "vertical": 25
+          },
+          "normalized": {
+            "horizontal": 0.5,
+            "vertical": 0.5
+          },
+          "originScreenPos": [
+            837.5,
+            53
+          ],
+          "overhangScreenPos": [
+            1022.5,
+            203
+          ]
+        },
+        {
+          "phase": "end",
+          "offsets": {
+            "horizontal": 65,
+            "vertical": 50
+          },
+          "normalized": {
+            "horizontal": 1,
+            "vertical": 1
+          },
+          "originScreenPos": [
+            805,
+            28
+          ],
+          "overhangScreenPos": [
+            990,
+            178
+          ]
+        },
+        {
+          "phase": "reset",
+          "offsets": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "normalized": {
+            "horizontal": 0,
+            "vertical": 0
+          },
+          "originScreenPos": [
+            870,
+            78
+          ],
+          "overhangScreenPos": [
+            1055,
+            228
+          ]
+        }
+      ],
+      "scrollbarWidth": 10,
+      "contentSize": [
+        295,
+        220
+      ],
+      "childSizes": {
+        "origin": [
+          170,
+          48
+        ],
+        "overhang": [
+          110,
+          70
+        ]
+      }
+    }
+  ]
+}

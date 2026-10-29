@@ -1,0 +1,61 @@
+name: Browser compatibility smoke
+
+on:
+  pull_request:
+    paths:
+      - src/App.tsx
+      - src/components/Canvas.tsx
+      - src/renderer/LayoutMath.ts
+      - src/components/NativeCompatibilityWarnings.tsx
+      - src/renderer/engine/NativePropertyCompatibility.ts
+      - src/parser/LayoutParser.ts
+      - src/model/LayoutTypes.ts
+      - tests/native-property-order-serialization.test.mjs
+      - tests/browser/**
+      - playwright.config.mjs
+      - .github/workflows/browser-compatibility.yml
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  chromium-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install application dependencies
+        run: npm ci
+
+      - name: Install pinned browser test runner without modifying package lock
+        run: npm install --no-save --package-lock=false @playwright/test@1.56.1
+
+      - name: Install Chromium and Linux prerequisites
+        run: npx playwright install --with-deps chromium
+
+      - name: Chromium UI smoke tests
+        run: npx playwright test --config=playwright.config.mjs
+
+      - name: Upload browser failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-compatibility-browser-failures
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 5

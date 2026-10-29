@@ -3,6 +3,7 @@ import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
 import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
 import { MsdfAlpha, MsdfAlphaWithBias, MsdfScaledSmoothing } from "./SdfMsdfMath";
 import { Fnt5Placement } from "./Fnt5Placement";
+import { WrapPreviewText } from "../renderer/engine/TextFlow";
 
 export interface SdfFontResource {
  metadata: SdfFontMetadata;
@@ -165,38 +166,6 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  atlas.glyphs.set(cacheKey, canvas);
  return canvas;
 }
-function WrapLines(text: string, width: number, advance: (text: string) => number, enabled: boolean): string[] {
- if (!enabled || width <= 0)
-  return text.split("\n");
- const result: string[] = [];
- for (const paragraph of text.split("\n")) {
-  const paragraphStart = result.length;
-  let line = "";
-  for (const token of paragraph.match(/\s+|\S+/g) ?? []) {
-   if (line && advance(line + token) > width) {
-    result.push(line.trimEnd());
-    line = token.trimStart();
-   } else {
-    line += token;
-   }
-   // Handle unbroken identifiers that cannot fit on one line.
-   if (line && advance(line) > width) {
-    let fragment = "";
-    for (const letter of Array.from(line)) {
-     if (fragment && advance(fragment + letter) > width) {
-      result.push(fragment);
-      fragment = "";
-     }
-     fragment += letter;
-    }
-    line = fragment;
-   }
-  }
-  if (line || result.length === paragraphStart)
-   result.push(line.trimEnd());
- }
- return result;
-}
 export function SdfTextCanvas({ resource, text, color, fontSize, width, height, hAlign, vAlign, wrap, shadowSize, shadowOffsetX, shadowOffsetY, shadowColor }: {
  resource: SdfFontResource;
  text: string;
@@ -243,7 +212,7 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
     const glyph = resource.glyphs.get(letter.codePointAt(0) ?? 0);
     return sum + (glyph ? (resource.fnt5PixelMetrics ? glyph.advance * scale : SdfGlyphAdvance(glyph.advance, fontSize)) : fontSize / 2);
    }, 0);
-   const lines = WrapLines(text, width, advance, wrap);
+   const lines = WrapPreviewText(text, width, advance, wrap);
    const lineHeight = fontSize * 1.25;
    let baseY = vAlign === "center" ? (height - lines.length * lineHeight) / 2 : vAlign === "bottom" ? height - lines.length * lineHeight : 0;
    const initialBaseY = baseY;

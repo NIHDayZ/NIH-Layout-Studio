@@ -68,7 +68,8 @@ export class LayoutParser {
 		return { roots, source };
 	}
 
-	AnalyzeFormatting(source: string): LayoutProblem[] {
+	/** Optionally reuse a previously parsed copy of the same source text. */
+	AnalyzeFormatting(source: string, parsedDocument?: LayoutDocument): LayoutProblem[] {
 		const problems: LayoutProblem[] = [];
 		const lines = source.replace(/\r\n/g, "\n").split("\n");
 		for (let i = 0; i < lines.length; ++i) {
@@ -82,7 +83,7 @@ export class LayoutParser {
 			}
 		}
 
-		const document = this.Parse(source);
+		const document = parsedDocument?.source === source ? parsedDocument : this.Parse(source);
 		const walk = (nodes: LayoutNode[]) => {
 			for (const node of nodes) {
 				const seen = new Map<string, LayoutProperty>();
@@ -163,6 +164,7 @@ export class LayoutParser {
 			}
 
 			if (text === "{") {
+				const childGroupLine = token.line;
 				++index;
 				while (index < tokens.length && tokens[index].text !== "}") {
 					const childDecl = this.TryParseDeclaration(tokens[index].text);
@@ -171,6 +173,8 @@ export class LayoutParser {
 						continue;
 					}
 					const child = this.ParseNode(tokens, index, childDecl.type, childDecl.name);
+					child.node.sourceGroupLine = childGroupLine;
+					child.node.sourceGroupParentId = node.id;
 					node.children.push(child.node);
 					index = child.nextIndex;
 				}
@@ -182,6 +186,8 @@ export class LayoutParser {
 			const declaration = this.TryParseDeclaration(text);
 			if (declaration) {
 				const child = this.ParseNode(tokens, index, declaration.type, declaration.name);
+				child.node.sourceGroupLine = token.line;
+				child.node.sourceGroupParentId = node.id;
 				node.children.push(child.node);
 				index = child.nextIndex;
 				continue;
@@ -201,14 +207,70 @@ export class LayoutParser {
 		const propertyIndent = "\t".repeat(depth + 1);
 		let output = `${indent}${node.type} ${node.name} {\n`;
 
-		for (const property of node.properties)
-			output += `${propertyIndent}${property.rawName} ${property.rawValue}\n`;
+		// Keep the original property / child-group order when source provenance
+		// exists. This is syntax preservation, not a widget-family exception.
+		const entries: Array<{
+			line: number;
+			order: number;
+			property?: LayoutProperty;
+			children?: LayoutNode[];
+		}> = [];
+		for (let i = 0; i < node.properties.length; ++i) {
+			const property = node.properties[i];
+			let line = Number.MAX_SAFE_INTEGER - 1;
+			if (Number.isSafeInteger(property.line) && property.line > 0)
+				line = property.line;
+			entries.push({ line, order: i, property });
+		}
 
-		if (node.children.length > 0) {
-			output += `${propertyIndent}{\n`;
-			for (const child of node.children)
-				output += this.SerializeNode(child, depth + 2) + "\n";
-			output += `${propertyIndent}}\n`;
+		const grouped = new Map<number, LayoutNode[]>();
+		const synthesized: LayoutNode[] = [];
+		for (const child of node.children) {
+			const groupLine = child.sourceGroupLine;
+			if (child.sourceGroupParentId !== node.id ||
+				groupLine === undefined || !Number.isSafeInteger(groupLine) || groupLine <= 0) {
+				synthesized.push(child);
+				continue;
+			}
+			let group = grouped.get(groupLine);
+			if (!group) {
+				group = [];
+				grouped.set(groupLine, group);
+			}
+			group.push(child);
+		}
+
+		// New/reparented children have no trustworthy original group line.
+		// Join the last known child group rather than placing children after
+		// a source-authored trailing property that native DayZ may reject.
+		if (synthesized.length > 0 && grouped.size > 0) {
+			const lastGroup = Array.from(grouped.values()).at(-1);
+			if (lastGroup)
+				lastGroup.push(...synthesized);
+		}
+
+		let groupIndex = 0;
+		for (const [line, children] of grouped)
+			entries.push({ line, order: node.properties.length + groupIndex++, children });
+		if (synthesized.length > 0 && grouped.size === 0)
+			entries.push({ line: Number.MAX_SAFE_INTEGER, order: node.properties.length + groupIndex, children: synthesized });
+
+		entries.sort((left, right) => {
+			if (left.line !== right.line)
+				return left.line - right.line;
+			return left.order - right.order;
+		});
+		for (const entry of entries) {
+			if (entry.property) {
+				output += `${propertyIndent}${entry.property.rawName} ${entry.property.rawValue}\n`;
+				continue;
+			}
+			if (entry.children && entry.children.length > 0) {
+				output += `${propertyIndent}{\n`;
+				for (const child of entry.children)
+					output += this.SerializeNode(child, depth + 2) + "\n";
+				output += `${propertyIndent}}\n`;
+			}
 		}
 
 		output += `${indent}}`;

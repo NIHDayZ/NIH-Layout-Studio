@@ -1,0 +1,396 @@
+FrameWidgetClass NIHPropertyParity {
+	position 0 0
+	size 1 1
+	hexactpos 1
+	vexactpos 1
+	{
+		FrameWidgetClass PFrameNoFlag {
+			position 20 16
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass PFrameNoFlag_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PFrameNoFlag_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass PFrameFlagZero {
+			position 300 16
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 0
+			{
+				PanelWidgetClass PFrameFlagZero_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PFrameFlagZero_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass PFrameFlagOne {
+			position 580 16
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass PFrameFlagOne_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PFrameFlagOne_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass PFrameHorizontalOne {
+			position 860 16
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content H" 1
+			{
+				PanelWidgetClass PFrameHorizontalOne_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PFrameHorizontalOne_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass PFrameBothOne {
+			position 20 158
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass PFrameBothOne_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PFrameBothOne_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass PFrameTextOne {
+			position 300 158
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Text V" 1
+			{
+				PanelWidgetClass PFrameTextOne_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PFrameTextOne_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		FrameWidgetClass PFrameClipped {
+			position 580 158
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				PanelWidgetClass PFrameClipped_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PFrameClipped_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		PanelWidgetClass PPanelNoFlag {
+			position 860 158
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass PPanelNoFlag_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PPanelNoFlag_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		PanelWidgetClass PPanelFlagZero {
+			position 20 300
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 0
+			{
+				PanelWidgetClass PPanelFlagZero_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PPanelFlagZero_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		PanelWidgetClass PPanelFlagOne {
+			position 300 300
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass PPanelFlagOne_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PPanelFlagOne_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		PanelWidgetClass PPanelHorizontalOne {
+			position 580 300
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			"Size To Content H" 1
+			{
+				PanelWidgetClass PPanelHorizontalOne_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PPanelHorizontalOne_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		WrapSpacerWidgetClass PWrapNoFlag {
+			position 860 300
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			Padding 0
+			Margin 0
+			content_halign left
+			content_valign top
+			{
+				PanelWidgetClass PWrapNoFlag_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PWrapNoFlag_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		WrapSpacerWidgetClass PWrapFlagZero {
+			position 20 442
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			Padding 0
+			Margin 0
+			content_halign left
+			content_valign top
+			"Size To Content V" 0
+			{
+				PanelWidgetClass PWrapFlagZero_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PWrapFlagZero_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		WrapSpacerWidgetClass PWrapFlagOne {
+			position 300 442
+			size 190 20
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			Padding 0
+			Margin 0
+			content_halign left
+			content_valign top
+			"Size To Content V" 1
+			{
+				PanelWidgetClass PWrapFlagOne_Top {
+					position 4 6
+					size 60 24
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass PWrapFlagOne_Bottom {
+					position 10 45
+					size 90 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+	}
+}

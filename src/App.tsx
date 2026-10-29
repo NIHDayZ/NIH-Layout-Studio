@@ -5,6 +5,8 @@ import { ProjectPanel } from "./components/ProjectPanel";
 import { PropertyInspector, type FontResourceOption, type ImageSetResourceOption, type StyleResourceOption } from "./components/PropertyInspector";
 import { ImageSetInspector } from "./components/ImageSetInspector";
 import { RenderStatus } from "./components/RenderStatus";
+import { NativeCompatibilityReview, NativeCompatibilityWarnings } from "./components/NativeCompatibilityWarnings";
+import { InspectNativePropertyCompatibility } from "./renderer/engine/NativePropertyCompatibility";
 import { WidgetTree } from "./components/WidgetTree";
 import type { LayoutDocument, LayoutNode, LayoutProperty, LayoutProblem } from "./model/LayoutTypes";
 import { RectToLayoutGeometry, ResolveRect, type Rect } from "./renderer/LayoutMath";
@@ -658,6 +660,7 @@ export default function App() {
 	const sourceAccessSupported = typeof window !== "undefined" && "showDirectoryPicker" in window && "showOpenFilePicker" in window;
 	const [source, setSource] = useState("");
 	const [sourceTab, setSourceTab] = useState<"source" | "problems">("source");
+	const [pendingLayoutOutput, setPendingLayoutOutput] = useState<{ action: "save" | "download"; sourceSnapshot: string } | null>(null);
 	const [document, setDocument] = useState<LayoutDocument>(() => parser.Parse(""));
 	const [selected, setSelected] = useState<LayoutNode | null>(null);
 	const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -775,6 +778,19 @@ export default function App() {
 	const previewRef = useRef<HTMLDivElement>(null);
 	const resolution = resolutions[resolutionIndex];
 
+	// Share one read-only SOURCE parse between native compatibility and formatting.
+	// The Canvas document can be stale while SOURCE text is edited directly.
+	const liveSourceDocument = useMemo(() => {
+		try { return parser.Parse(source); }
+		catch { return null; }
+	}, [source, parser]);
+	const nativeCompatibilityWarnings = useMemo(() => {
+		if (!liveSourceDocument)
+			return [];
+		return InspectNativePropertyCompatibility(liveSourceDocument.roots)
+			.filter((finding) => finding.severity === "warning");
+	}, [liveSourceDocument]);
+
 	useEffect(() => () => DisposeProjectWorkspace(project), [project]);
 	useEffect(() => () => DisposeProjectWorkspace(vanillaProject), [vanillaProject]);
 	useEffect(() => { dependencyProjectsRef.current = dependencyProjects; }, [dependencyProjects]);
@@ -788,11 +804,18 @@ export default function App() {
 
 	useEffect(() => {
 		function OnKeyDown(event: KeyboardEvent) {
+			if (pendingLayoutOutput)
+				return;
+			// Save must work even when the user is editing the SOURCE textarea.
+			if (event.ctrlKey && event.key.toLowerCase() === "s") {
+				event.preventDefault();
+				RequestLayoutOutput("save");
+				return;
+			}
 			const target = event.target as HTMLElement | null;
 			if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT"))
 				return;
-			if (event.ctrlKey && event.key.toLowerCase() === "s") { event.preventDefault(); void SaveCurrent(); }
-			else if (event.ctrlKey && event.key.toLowerCase() === "z") { event.preventDefault(); Undo(); }
+			if (event.ctrlKey && event.key.toLowerCase() === "z") { event.preventDefault(); Undo(); }
 			else if (event.ctrlKey && event.key.toLowerCase() === "y") { event.preventDefault(); Redo(); }
 			else if (event.ctrlKey && event.key.toLowerCase() === "c" && selected) { event.preventDefault(); CopySelected(); }
 			else if (event.ctrlKey && event.key.toLowerCase() === "v" && selected && copiedWidget) { event.preventDefault(); PasteWidgetAsSibling(); }
@@ -805,7 +828,7 @@ export default function App() {
 		}
 		window.addEventListener("keydown", OnKeyDown);
 		return () => window.removeEventListener("keydown", OnKeyDown);
-	}, [undoStack, redoStack, selected, selectedIds, document, source, dirty, localSourceMode, copiedWidget]);
+	}, [undoStack, redoStack, selected, selectedIds, document, source, dirty, localSourceMode, copiedWidget, pendingLayoutOutput, nativeCompatibilityWarnings]);
 
 	function ParseSource(nextSource = source) {
 		try {
@@ -1071,9 +1094,11 @@ export default function App() {
 	}
 
 	const layoutProblems = useMemo<LayoutProblem[]>(() => {
-		try { return parser.AnalyzeFormatting(source); }
+		if (!liveSourceDocument)
+			return [{ type: "parse", severity: "error", line: 1, message: "Layout could not be analyzed." }];
+		try { return parser.AnalyzeFormatting(source, liveSourceDocument); }
 		catch { return [{ type: "parse", severity: "error", line: 1, message: "Layout could not be analyzed." }]; }
-	}, [source]);
+	}, [source, parser, liveSourceDocument]);
 
 	function NormalizeProblem(problem: LayoutProblem) {
 		if (!problem.canNormalize) return;
@@ -1624,6 +1649,33 @@ export default function App() {
 		}
 	}
 
+	function RequestLayoutOutput(action: "save" | "download") {
+		if (nativeCompatibilityWarnings.length > 0) {
+			setPendingLayoutOutput({ action, sourceSnapshot: source });
+			return;
+		}
+		if (action === "save")
+			void SaveCurrent();
+		else
+			DownloadLayout();
+	}
+
+	function ContinueLayoutOutput() {
+		const pending = pendingLayoutOutput;
+		setPendingLayoutOutput(null);
+		if (!pending)
+			return;
+		// Never allow an earlier review to authorize a subsequently edited file.
+		if (source !== pending.sourceSnapshot) {
+			RequestLayoutOutput(pending.action);
+			return;
+		}
+		if (pending.action === "save")
+			void SaveCurrent();
+		else
+			DownloadLayout();
+	}
+
 	async function SaveCurrent() {
 		try {
 			parser.Parse(source);
@@ -1787,8 +1839,8 @@ export default function App() {
 						<button onClick={() => { CloseToolbarMenus(); void OpenLocalVanillaGui(); }} disabled={vanillaLoading || !!vanillaProject || !sourceAccessSupported} title={!sourceAccessSupported ? "Source mode requires the File System Access API. Use Upload mode in this browser." : undefined}>Vanilla GUI (Source)…<span className="menu-shortcut">P:\gui</span></button>
 						{vanillaProject && <button onClick={() => { CloseToolbarMenus(); setVanillaProject(null); }}>Unload Vanilla GUI</button>}
 						<div className="toolbar-menu-separator" />
-						<button onClick={() => { CloseToolbarMenus(); void SaveCurrent(); }} disabled={!dirty}>{localSourceMode ? "Save" : "Export"}<span className="menu-shortcut">Ctrl+S</span></button>
-						<button onClick={() => { CloseToolbarMenus(); DownloadLayout(); }}>Export As…</button>
+						<button onClick={() => { CloseToolbarMenus(); RequestLayoutOutput("save"); }} disabled={!dirty}>{localSourceMode ? "Save" : "Export"}<span className="menu-shortcut">Ctrl+S</span></button>
+						<button onClick={() => { CloseToolbarMenus(); RequestLayoutOutput("download"); }}>Export As…</button>
 					</div>
 				</details>
 				<input
@@ -1956,7 +2008,7 @@ export default function App() {
 						<div className="panel-title source-title source-tabs">
 							<div className="source-tab-buttons">
 								<button className={sourceTab === "source" ? "active" : ""} onClick={() => setSourceTab("source")}>SOURCE</button>
-								<button className={sourceTab === "problems" ? "active" : ""} onClick={() => setSourceTab("problems")}>PROBLEMS {layoutProblems.length > 0 ? `(${layoutProblems.length})` : ""}</button>
+								<button className={sourceTab === "problems" ? "active" : ""} onClick={() => setSourceTab("problems")}>PROBLEMS {layoutProblems.length + nativeCompatibilityWarnings.length > 0 ? `(${layoutProblems.length + nativeCompatibilityWarnings.length})` : ""}</button>
 							</div>
 							<span>{activeProjectPath ?? fileName}</span>
 						</div>
@@ -1964,12 +2016,21 @@ export default function App() {
 							<textarea value={source} onChange={(event) => { setSource(event.target.value); setDirty(event.target.value !== savedSourceRef.current); }} spellCheck={false} />
 							{parseError && <div className="error">{parseError}</div>}
 						</> : <div className="problems-pane">
-							<div className="problems-toolbar"><span>{layoutProblems.length === 0 ? "No formatting problems detected." : `${layoutProblems.length} problem${layoutProblems.length === 1 ? "" : "s"}`}</span><button disabled={!layoutProblems.some((problem) => problem.canNormalize)} onClick={NormalizeAllFormatting}>Normalize All</button></div>
+							<div className="problems-toolbar"><span>{layoutProblems.length + nativeCompatibilityWarnings.length === 0 ? "No issues detected by current checks." : `${layoutProblems.length} formatting · ${nativeCompatibilityWarnings.length} native compatibility`}</span><button disabled={!layoutProblems.some((problem) => problem.canNormalize)} onClick={NormalizeAllFormatting}>Normalize All</button></div>
 							{layoutProblems.map((problem, index) => <div className={`problem-row ${problem.severity}`} key={`${problem.line}-${problem.message}-${index}`}>
 								<div className="problem-main"><b>Line {problem.line}</b><span>{problem.message}</span></div>
 								{problem.detail && <div className="problem-detail">{problem.detail}</div>}
 								{problem.canNormalize && <button onClick={() => NormalizeProblem(problem)}>Normalize Line</button>}
 							</div>)}
+							{nativeCompatibilityWarnings.length > 0 && (
+								<section className="native-compatibility-problems" aria-label="Native compatibility warnings">
+									<div className="native-compatibility-problems-heading">
+										Native loader compatibility · {nativeCompatibilityWarnings.length} warning{nativeCompatibilityWarnings.length === 1 ? "" : "s"}
+									</div>
+									<p>Native DayZ tests found class/property-order risks. These findings are read-only. Normalizing formatting does not repair them.</p>
+									<NativeCompatibilityWarnings warnings={nativeCompatibilityWarnings} />
+								</section>
+							)}
 						</div>}
 					</div>
 				
@@ -2019,6 +2080,14 @@ export default function App() {
 				</div>
 			)}
 
+			{pendingLayoutOutput && (
+				<NativeCompatibilityReview
+					actionLabel={pendingLayoutOutput.action === "save" && localSourceMode ? "Save" : "Export"}
+					warnings={nativeCompatibilityWarnings}
+					onCancel={() => setPendingLayoutOutput(null)}
+					onContinue={ContinueLayoutOutput}
+				/>
+			)}
 			{imageSetInspector && <ImageSetInspector
 				path={imageSetInspector.file.path}
 				source={imageSetInspector.source}

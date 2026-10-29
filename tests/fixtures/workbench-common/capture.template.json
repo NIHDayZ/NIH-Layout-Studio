@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-common-geometry-pending",
+  "sourceLayout": "tests/fixtures/workbench-common/NIH_Common_Geometry_Parity.layout",
+  "notes": "Empty capture template retained for future builds. Actual observations are in capture.runtime.2026-10-28.json. The captured DayZ client build is missing, so version-pinned PASS remains pending even though all 32 observed descendant rectangles match. Use independently observed root GetScreenPos/GetScreenSize for viewport; do not manufacture workspace values.",
+  "cases": [
+    {
+      "id": "viewport-1120x460",
+      "viewport": null,
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    },
+    {
+      "id": "viewport-1440x900",
+      "viewport": null,
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    }
+  ]
+}

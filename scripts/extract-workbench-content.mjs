@@ -1,0 +1,234 @@
+#!/usr/bin/env node
+/**
+ * Extract native getter facts from a DayZ ContentProbe client log.
+ * This parser never infers font/image intrinsic dimensions from widget size
+ * or converts a complete capture into a native geometry-parity PASS.
+ */
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const PREFIX = "[NIH_LayoutStudio][ContentProbe]";
+const RECT_FIELDS = ["x", "y", "width", "height"];
+export const EXPECTED_CONTENT_PHASES = [
+	"baseline-1120x460", "short-text-1120x460",
+	"restored-1120x460", "baseline-720x460"
+];
+/** The expected fixture roster is capture validation, not an engine widget registry. */
+export const EXPECTED_CONTENT_WIDGETS = [
+	"NIHContentParity",
+	"TextFixed", "TextToTextH", "TextToTextV", "TextToTextBoth",
+	"TextToContentBoth", "TextLongNarrow",
+	"ImageFixed", "ImageContentBoth", "ImageContentWide",
+	"FrameContentHeight", "FrameChildTop", "FrameChildBottom",
+	"PanelContentBoth", "PanelChild",
+	"FrameContentHidden", "VisibleChild", "HiddenChild",
+	"FrameFixedControl", "FixedFrameTop", "FixedFrameBottom",
+	"FrameContentUpper", "UpperFrameTop", "UpperFrameBottom",
+	"WrapContentUpper", "WrapItemOne", "WrapItemTwo"
+].sort();
+
+function ReadNumbers(raw, count, context) {
+	const values = raw.split(",").map(Number);
+	if (values.length !== count || values.some(value => !Number.isFinite(value)))
+		throw new Error("Malformed native getter in " + context + ": " + raw);
+	return values;
+}
+
+function Rect(raw, context) {
+	const values = ReadNumbers(raw, 4, context);
+	return Object.fromEntries(RECT_FIELDS.map((field, i) => [field, values[i]]));
+}
+
+function Case(phase) {
+	return { phase, complete: false, widgets: {}, lookups: {}, parentChildCounts: {}, requests: [] };
+}
+
+function RejectDuplicate(widget, key, phase, name) {
+	if (widget[key] !== undefined)
+		throw new Error("Duplicate " + key + " for " + phase + "/" + name);
+}
+
+/**
+ * Accept the full client log or the user's filtered ContentProbe lines.
+ * Every phase needs paired BEGIN/END and each widget a native screen and
+ * local record; text widgets additionally require GetTextSize pixels.
+ */
+export function ParseNativeContentProbe(log, sourceName = "unrecorded-log", options = {}) {
+	const allowPartial = options.allowPartial === true;
+	if (typeof log !== "string" || !log.trim())
+		throw new Error("Empty native content log");
+	const cases = [];
+	const byPhase = new Map();
+	const globalRequests = [];
+	let current = null;
+
+	for (const line of log.split(/\r?\n/)) {
+		const marker = line.indexOf(PREFIX);
+		if (marker < 0)
+			continue;
+		const data = line.slice(marker + PREFIX.length).trim();
+		// A filtered/pasted log can leave an empty prefix-only line.
+		// It does not close a capture or substitute for a missing END.
+		if (!data)
+			continue;
+		if (data.startsWith("ERROR:"))
+			throw new Error("DayZ probe error: " + data);
+
+		if (data.startsWith("REQUEST ")) {
+			if (current)
+				current.requests.push(data.slice(8));
+			else
+				globalRequests.push(data.slice(8));
+			continue;
+		}
+		if (data.startsWith("BEGIN ")) {
+			const phase = data.slice(6);
+			if (!EXPECTED_CONTENT_PHASES.includes(phase) || byPhase.has(phase) || current)
+				throw new Error("Unexpected, duplicate, or overlapping content capture: " + phase);
+			current = Case(phase);
+			byPhase.set(phase, current);
+			cases.push(current);
+			continue;
+		}
+		if (data.startsWith("END ")) {
+			const phase = data.slice(4);
+			if (!current || current.phase !== phase)
+				throw new Error("Unexpected native capture END: " + phase);
+			current.complete = true;
+			current = null;
+			continue;
+		}
+		let match = /^phase=(\S+) lookup=(\S+) found=([01])$/.exec(data);
+		if (match) {
+			const [, phase, name, present] = match;
+			if (!current || current.phase !== phase)
+				throw new Error("Native lookup outside active phase: " + phase + "/" + name);
+			if (current.lookups[name] !== undefined)
+				throw new Error("Duplicate native lookup: " + phase + "/" + name);
+			current.lookups[name] = present === "1";
+			continue;
+		}
+		match = /^phase=(\S+) parent=(\S+) childCount=(\d+)$/.exec(data);
+		if (match) {
+			const [, phase, name, count] = match;
+			if (!current || current.phase !== phase)
+				throw new Error("Native child count outside active phase: " + phase + "/" + name);
+			if (current.parentChildCounts[name] !== undefined)
+				throw new Error("Duplicate native child count: " + phase + "/" + name);
+			const value = Number(count);
+			if (!Number.isSafeInteger(value))
+				throw new Error("Invalid child count: " + phase + "/" + name);
+			current.parentChildCounts[name] = value;
+			continue;
+		}
+		const sample = /^phase=(\S+) name=(\S+) (.*)$/.exec(data);
+		if (!sample)
+			throw new Error("Unknown native ContentProbe record: " + data);
+		const [, phase, name, payload] = sample;
+		if (!current || current.phase !== phase)
+			throw new Error("Native getter outside active phase: " + phase + "/" + name);
+		let widget = current.widgets[name];
+		if (!widget) {
+			widget = {};
+			current.widgets[name] = widget;
+		}
+		match = /^type=(\S+) screenRect=(\S+)$/.exec(payload);
+		if (match) {
+			RejectDuplicate(widget, "screenRect", phase, name);
+			widget.type = match[1];
+			widget.screenRect = Rect(match[2], phase + "/" + name + "/screenRect");
+			continue;
+		}
+		match = /^localRect=(\S+) flags=(-?\d+) selfVisible=([01])$/.exec(payload);
+		if (match) {
+			RejectDuplicate(widget, "localRect", phase, name);
+			widget.localRect = Rect(match[1], phase + "/" + name + "/localRect");
+			widget.flags = Number(match[2]);
+			widget.selfVisible = match[3] === "1";
+			continue;
+		}
+		match = /^textPixels=(\S+)$/.exec(payload);
+		if (match) {
+			RejectDuplicate(widget, "textPixels", phase, name);
+			const [width, height] = ReadNumbers(match[1], 2, phase + "/" + name + "/textPixels");
+			if (width < 0 || height < 0)
+				throw new Error("Negative native text pixel size: " + phase + "/" + name);
+			widget.textPixels = {width, height};
+			continue;
+		}
+		throw new Error("Unknown native getter: " + payload);
+	}
+	if (current)
+		throw new Error("Unclosed native content capture: " + current.phase);
+	if (cases.length !== EXPECTED_CONTENT_PHASES.length ||
+		cases.some((item, index) => item.phase !== EXPECTED_CONTENT_PHASES[index] || !item.complete))
+		throw new Error("Missing or unordered native capture phases");
+
+	let incomplete = false;
+	const firstNames = Object.keys(cases[0].widgets).sort();
+	for (const item of cases) {
+		const names = Object.keys(item.widgets).sort();
+		const unexpected = names.filter(name => !EXPECTED_CONTENT_WIDGETS.includes(name));
+		if (unexpected.length)
+			throw new Error("Unknown fixture widget records in " + item.phase + ": " + unexpected.join(", "));
+		if (!names.includes("NIHContentParity"))
+			throw new Error("Missing native fixture root in " + item.phase);
+		if (names.length !== firstNames.length ||
+			names.some((name, i) => name !== firstNames[i]))
+			throw new Error("Inconsistent native widget roster across capture phases: " + item.phase);
+		const missing = EXPECTED_CONTENT_WIDGETS.filter(name => !Object.hasOwn(item.widgets, name));
+		if (missing.length > 0) {
+			incomplete = true;
+			if (!allowPartial)
+				throw new Error("Missing or extra fixture widget records in " + item.phase);
+		}
+		item.expectedWidgetCount = EXPECTED_CONTENT_WIDGETS.length;
+		item.observedWidgetCount = names.length;
+		item.missingWidgetNames = missing;
+		for (const [name, widget] of Object.entries(item.widgets)) {
+			if (!widget.screenRect || !widget.localRect ||
+				(widget.type === "TextWidget" && !widget.textPixels))
+				throw new Error("Incomplete native getter records: " + item.phase + "/" + name);
+		}
+	}
+
+	return {
+		schemaVersion: 1,
+		captureKind: "native-dayz-client-text-image-content-getters",
+		sourceLog: sourceName,
+		nativeClientBuild: null,
+		status: incomplete ? "incomplete-native-capture" : "captured-unversioned-not-native-parity",
+		expectedWidgetCount: EXPECTED_CONTENT_WIDGETS.length,
+		observedWidgetCount: firstNames.length,
+		missingWidgetNames: EXPECTED_CONTENT_WIDGETS.filter(name => !firstNames.includes(name)),
+		notes: "GetTextSize reports native pixel metrics; screenRect reports widget bounds. ImageWidget screen rectangles are not evidence of imageset intrinsic dimensions. Missing native children cannot be predicted from authored layout. No native clipping or DPI branch measured.",
+		requests: globalRequests,
+		cases
+	};
+}
+
+const directly = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (directly) {
+	if (process.argv.length < 3 || process.argv.length > 5) {
+		console.error("Usage: node scripts/extract-workbench-content.mjs <client-script.log> [output.json] [--allow-partial]");
+		process.exitCode = 2;
+	} else {
+		try {
+			const input = process.argv[2];
+			const allowPartial = process.argv.includes("--allow-partial");
+			const output = process.argv.slice(3).find(arg => arg !== "--allow-partial");
+			const report = ParseNativeContentProbe(readFileSync(input, "utf8"), input, {allowPartial});
+			const serialized = JSON.stringify(report, null, 2) + "\n";
+			if (output) {
+				writeFileSync(output, serialized, "utf8");
+				console.log("Native getter record written to " + output);
+			} else {
+				console.log(serialized);
+			}
+		} catch (error) {
+			console.error(error instanceof Error ? error.message : String(error));
+			process.exitCode = 1;
+		}
+	}
+}

@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "notes": "Capture template only: observed=null means no native measurement has been supplied. nativeScale=null means the actual native scale branch/context has NOT been identified. The unscaled predicted values are hypotheses, not golden results. Do not invent observed values, native scale context, or scroll offsets.",
+  "sourceLayout": "tests/fixtures/workbench-scroll/NIH_Scroll_Parity.layout",
+  "workbenchArchiveExample": "gui/layouts/examples/ScrollTest.layout",
+  "cases": [
+    {
+      "id": "ScrollNone",
+      "container": {
+        "width": 240,
+        "height": 180
+      },
+      "settings": {
+        "horizontal": false,
+        "vertical": false,
+        "verticalLeft": false
+      },
+      "nativeScale": null,
+      "offsets": {
+        "horizontal": 0,
+        "vertical": 0
+      },
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    },
+    {
+      "id": "ScrollVertical",
+      "container": {
+        "width": 240,
+        "height": 180
+      },
+      "settings": {
+        "horizontal": false,
+        "vertical": true,
+        "verticalLeft": false
+      },
+      "nativeScale": null,
+      "offsets": {
+        "horizontal": 0,
+        "vertical": 0
+      },
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    },
+    {
+      "id": "ScrollBoth",
+      "container": {
+        "width": 240,
+        "height": 180
+      },
+      "settings": {
+        "horizontal": true,
+        "vertical": true,
+        "verticalLeft": false
+      },
+      "nativeScale": null,
+      "offsets": {
+        "horizontal": 0,
+        "vertical": 0
+      },
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    },
+    {
+      "id": "ScrollLeft",
+      "container": {
+        "width": 240,
+        "height": 180
+      },
+      "settings": {
+        "horizontal": true,
+        "vertical": true,
+        "verticalLeft": true
+      },
+      "nativeScale": null,
+      "offsets": {
+        "horizontal": 0,
+        "vertical": 0
+      },
+      "tolerance": 0.5,
+      "observed": null,
+      "provenance": null
+    }
+  ]
+}

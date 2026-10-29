@@ -1289,3 +1289,119 @@ input[type="checkbox"] { accent-color: var(--nih-accent); }
 	overscroll-behavior: contain;
 	scrollbar-gutter: stable;
 }
+
+
+/* Native property compatibility: read-only warnings, never a layout mutation. */
+.native-compatibility-problems {
+	border-top: 1px solid #344455;
+	padding: 9px 10px 12px;
+}
+.native-compatibility-problems-heading {
+	color: #c8d3de;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .2px;
+}
+.native-compatibility-problems > p {
+	margin: 6px 0 9px;
+	color: #8999a8;
+	font-size: 11px;
+	line-height: 1.4;
+}
+.native-compatibility-list {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+	min-width: 0;
+}
+.native-compatibility-entry {
+	min-width: 0;
+	padding: 9px 10px;
+	background: #101923;
+	border: 1px solid #2e3c49;
+	border-left: 2px solid #6d7c8c;
+	border-radius: 4px;
+	font-size: 11px;
+	line-height: 1.45;
+}
+.native-compatibility-entry.warning {
+	border-left-color: #cda865;
+}
+.native-compatibility-entry-heading {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 10px;
+}
+.native-compatibility-entry-title {
+	min-width: 0;
+	overflow-wrap: anywhere;
+	font-weight: 650;
+	color: #d5e0ea;
+}
+.native-compatibility-entry-line {
+	flex: 0 0 auto;
+	color: #91a0af;
+	font-family: "Cascadia Code", Consolas, monospace;
+	font-size: 10px;
+}
+.native-compatibility-entry-detail {
+	margin-top: 5px;
+	color: #b1beca;
+	overflow-wrap: anywhere;
+}
+.native-compatibility-entry-basis,
+.native-compatibility-remaining {
+	margin-top: 5px;
+	color: #7c8d9d;
+	font-size: 10px;
+}
+.native-compatibility-dialog {
+	width: min(620px, calc(100vw - 32px));
+	max-height: min(86vh, 800px);
+	overflow: auto;
+	padding: 17px;
+	background: #101821;
+	border: 1px solid #43505e;
+	border-radius: 6px;
+	box-shadow: 0 18px 60px rgba(0,0,0,.55);
+}
+.native-compatibility-dialog-heading {
+	font-weight: 700;
+	font-size: 15px;
+	color: #dce6ef;
+}
+.native-compatibility-dialog > p {
+	color: #aab9c6;
+	line-height: 1.5;
+	font-size: 12px;
+	margin: 9px 0 12px;
+}
+.native-compatibility-dialog .native-compatibility-list {
+	max-height: 45vh;
+	overflow: auto;
+	padding-right: 4px;
+}
+.native-compatibility-dialog-footnote {
+	font-size: 11px;
+	line-height: 1.45;
+	margin-top: 12px;
+	color: #9daebb;
+}
+.native-compatibility-dialog-actions {
+	margin-top: 15px;
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+.native-compatibility-dialog-actions button {
+	font-size: 12px;
+}
+.native-compatibility-dialog-actions .native-compatibility-continue {
+	background: #293849;
+	border-color: #516175;
+	color: #dfe8f2;
+}
+.native-compatibility-dialog-actions .native-compatibility-continue:hover {
+	background: #344b63;
+}

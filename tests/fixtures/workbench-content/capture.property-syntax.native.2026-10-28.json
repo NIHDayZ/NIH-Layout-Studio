@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "dayz-native-layout-property-syntax",
+  "status": "native-loader-syntax-diagnostic-not-cpp-parser-proof",
+  "sourceLog": "script_2026-10-28_15-13-19.log",
+  "captureDate": "2026-10-28",
+  "provenance": {
+    "captureMethod": "DayZ client MissionGameplay GetWorkspace().CreateWidgets native getter calls",
+    "gameScriptDefine": "DAYZ_1_30",
+    "nativeClientBuild": null,
+    "source": "user-uploaded complete DayZ client log; only original SyntaxProbe lines retained",
+    "integrity": "12 independent layout resources; 24 complete case-phase records with parent and native size getters"
+  },
+  "nativeClientBuild": null,
+  "expectedCaseCount": 12,
+  "notes": "Unknown property and unsupported Size To Content V=0 before nested child blocks correlated with absent children in Frame/Panel; moving the same property after child block retained both. Recognized clipchildren preserved children in either order (Frame). All observations unchanged after Update. This does not recover C++ parser control flow.",
+  "cases": {
+    "FrameBase": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "FrameContentBefore0": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 0,
+        "topFound": false,
+        "bottomFound": false,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 0,
+        "topFound": false,
+        "bottomFound": false,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "FrameContentAfter0": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "FrameUnknownBefore0": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 0,
+        "topFound": false,
+        "bottomFound": false,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 0,
+        "topFound": false,
+        "bottomFound": false,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "FrameUnknownAfter0": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "FrameClipBefore1": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "FrameClipAfter1": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "PanelBase": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "PanelContentBefore0": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 0,
+        "topFound": false,
+        "bottomFound": false,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 0,
+        "topFound": false,
+        "bottomFound": false,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "PanelContentAfter0": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "PanelUnknownBefore0": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 0,
+        "topFound": false,
+        "bottomFound": false,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 0,
+        "topFound": false,
+        "bottomFound": false,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    },
+    "PanelUnknownAfter0": {
+      "after-create": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      },
+      "post-update": {
+        "rootPresent": true,
+        "parentPresent": true,
+        "childCount": 2,
+        "topFound": true,
+        "bottomFound": true,
+        "screenSize": {
+          "width": 190,
+          "height": 20
+        },
+        "localSize": {
+          "width": 190,
+          "height": 20
+        }
+      }
+    }
+  }
+}

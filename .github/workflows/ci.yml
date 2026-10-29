@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
@@ -43,6 +47,9 @@ jobs:
 
       - name: Native-derived grid layout regression tests
         run: npm run test:grid-layout
+
+      - name: Unified layout geometry primitives
+        run: npm run test:geometry-engine
 
       - name: Workbench widget census regression tests
         run: npm run test:widget-census

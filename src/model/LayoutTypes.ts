@@ -17,6 +17,10 @@ export interface LayoutNode {
 	properties: LayoutProperty[];
 	children: LayoutNode[];
 	line: number;
+	/** Original containing child-group opening line; optional for synthesized nodes. */
+	sourceGroupLine?: number;
+	/** Parent node ID at parse time; stops stale source coordinates after reparenting. */
+	sourceGroupParentId?: string;
 }
 
 export interface LayoutDocument {

@@ -1,0 +1,641 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "dayz-native-property-matrix-getters",
+  "status": "native-diagnostic-not-algorithm-parity",
+  "sourceLog": "script_2026-10-28_14-50-18.log",
+  "captureDate": "2026-10-28",
+  "provenance": {
+    "captureMethod": "DayZ client MissionGameplay script native widget getters",
+    "buildDefine": "DAYZ_1_30",
+    "nativeClientBuild": null,
+    "source": "user-uploaded full DayZ client log; stored evidence is filtered to PropertyProbe lines",
+    "observedPhaseCount": 3,
+    "expectedCaseCount": 14
+  },
+  "expectedCaseCount": 14,
+  "note": "All three phases complete. The matrix distinguishes property present with zero value from property absent; native child creation is observed immediately after CreateWidgets, before explicit update. This is native evidence of hierarchy state for these fixtures, not recovery of the internal C++ parser algorithm.",
+  "requests": [
+    "viewport=1120,720",
+    "viewport=1120,620"
+  ],
+  "phases": [
+    {
+      "phase": "after-create",
+      "complete": true,
+      "rootScreenSize": {
+        "width": 1920,
+        "height": 1080
+      },
+      "cases": {
+        "PFrameNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameFlagZero": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameFlagOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameHorizontalOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameBothOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameTextOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameClipped": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelFlagZero": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelFlagOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelHorizontalOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapFlagZero": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapFlagOne": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 28
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        }
+      }
+    },
+    {
+      "phase": "post-update",
+      "complete": true,
+      "rootScreenSize": {
+        "width": 1120,
+        "height": 720
+      },
+      "cases": {
+        "PFrameNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameFlagZero": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameFlagOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameHorizontalOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameBothOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameTextOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameClipped": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelFlagZero": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelFlagOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelHorizontalOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapFlagZero": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapFlagOne": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 28
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        }
+      }
+    },
+    {
+      "phase": "after-resize",
+      "complete": true,
+      "rootScreenSize": {
+        "width": 1120,
+        "height": 620
+      },
+      "cases": {
+        "PFrameNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameFlagZero": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameFlagOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameHorizontalOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameBothOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameTextOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PFrameClipped": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelFlagZero": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelFlagOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PPanelHorizontalOne": {
+          "parentPresent": true,
+          "childCount": 0,
+          "topFound": false,
+          "bottomFound": false,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapNoFlag": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapFlagZero": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 20
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        },
+        "PWrapFlagOne": {
+          "parentPresent": true,
+          "childCount": 2,
+          "topFound": true,
+          "bottomFound": true,
+          "screenSize": {
+            "width": 190,
+            "height": 28
+          },
+          "localSize": {
+            "width": 190,
+            "height": 20
+          }
+        }
+      }
+    }
+  ]
+}
