@@ -1,4 +1,5 @@
 import type { GeometryRect, MeasuredWidget } from "./GeometryCore.js";
+import { DecodeNativeAspectMode, ResolveNativeAspectSize, type NativeAspectMode } from "./NativeAspectSizing.js";
 
 /** Minimal structural widget shape accepted by layout parsing and test fixtures. */
 export interface GeometryProperty {
@@ -35,6 +36,8 @@ export interface AuthoredGeometry {
 	/** Native content sizing still requires specialized measurement. */
 	sizeToContentWidth: boolean;
 	sizeToContentHeight: boolean;
+	/** Native fixaspect property: verified Workbench flags bits 13:12. */
+	fixAspectMode: NativeAspectMode;
 	sortOrder: number;
 }
 
@@ -82,6 +85,7 @@ export function DecodeAuthoredGeometry(node: Pick<GeometryWidget, "properties">)
 		clipChildren: properties.get("clipchildren") === "1",
 		sizeToContentWidth: properties.get("size to content h") === "1",
 		sizeToContentHeight: properties.get("size to content v") === "1",
+		fixAspectMode: DecodeNativeAspectMode(properties.get("fixaspect")),
 		sortOrder: NumberOr(properties.get("priority"), 0)
 	};
 }
@@ -150,7 +154,12 @@ export function ResolveAuthoredRectWithSize(
 export function ResolveAuthoredRect(geometry: AuthoredGeometry, parent: Pick<GeometryRect, "width" | "height">): GeometryRect {
 	const width = geometry.exactSizeX ? geometry.sizeX : parent.width * geometry.sizeX;
 	const height = geometry.exactSizeY ? geometry.sizeY : parent.height * geometry.sizeY;
-	return ResolveAuthoredRectWithSize(geometry, parent, { width, height });
+	const size = ResolveNativeAspectSize(
+		{ width: geometry.sizeX, height: geometry.sizeY },
+		{ width, height }, parent, geometry.fixAspectMode,
+		geometry.exactSizeX, geometry.exactSizeY
+	);
+	return ResolveAuthoredRectWithSize(geometry, parent, size);
 }
 
 function InvertAxis(start: number, size: number, parentSize: number, exact: boolean, align: string): number {
