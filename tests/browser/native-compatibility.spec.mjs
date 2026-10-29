@@ -115,3 +115,40 @@ test("format normalization and native compatibility warnings remain independent 
 	expect(normalized).toContain("size 190 20");
 	expect(normalized).toContain("visible 1");
 });
+
+
+test("unresolved large-nominal fonts render legible sized CSS in a short widget without modifying authored source",async ({page})=>{
+	const layout=[
+		"FrameWidgetClass Root {",
+		" position 0 0",
+		" size 1 1",
+		" hexactpos 1",
+		" vexactpos 1",
+		" {",
+		"  TextWidgetClass SmallMissingFont {",
+		"   position 30 30",
+		"   size 300 12",
+		"   hexactpos 1",
+		"   vexactpos 1",
+		"   hexactsize 1",
+		"   vexactsize 1",
+		'   font "gui/fonts/sdf_MetronBook72"',
+		'   text "FONTTEST"',
+		"  }",
+		" }",
+		"}"
+	].join("\n");
+	await page.goto("/");
+	await page.locator('input[accept=".layout,text/plain"]').setInputFiles({
+		name:"unresolved-font-control.layout",
+		mimeType:"text/plain",
+		buffer:Buffer.from(layout,"utf8")
+	});
+	await expect(page.locator(".source-pane textarea")).toHaveValue(layout);
+	const text=page.locator(".canvas .widget-text").filter({hasText:"FONTTEST"}).first();
+	await expect(text).toBeVisible();
+	const computedSize=await text.evaluate((element)=>parseFloat(getComputedStyle(element).fontSize));
+	expect(computedSize).toBeGreaterThanOrEqual(9);
+	expect(computedSize).toBeLessThanOrEqual(12);
+	await expect(page.locator(".source-pane textarea")).toHaveValue(layout);
+});
