@@ -23,7 +23,8 @@
     "compare:workbench-common": "node scripts/compare-workbench-common.mjs",
     "extract:workbench-content": "node scripts/extract-workbench-content.mjs",
     "extract:workbench-property-matrix": "node scripts/extract-workbench-property-matrix.mjs",
-    "extract:workbench-property-syntax": "node scripts/extract-workbench-property-syntax.mjs"
+    "extract:workbench-property-syntax": "node scripts/extract-workbench-property-syntax.mjs",
+    "test:native-image-uv": "tsc src/renderer/engine/NativeImageUv.ts --strict --target es2022 --module nodenext --moduleResolution nodenext --skipLibCheck --outDir .native-image-uv-test-build && node --test tests/native-image-uv.test.mjs"
   },
   "dependencies": {
     "react": "^19.1.1",
