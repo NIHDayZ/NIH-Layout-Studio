@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-fnt5-workbench-height-sizing-hypothesis",
+  "observedDate": "2026-10-29",
+  "notes": "Paired Workbench and Studio screenshot thresholded white-ink width/height measurements. FNT5 height-based auto sizing is a hypothesis inferred from native image output, not a recovered engine rule. The screenshot zoom labels are both 68%, but actual preview root pixel widths differ slightly. Studio used experimentalFnt5Fit=1 (0.9 widget-height ratio, capped at nominal font size). Text_Default omitted because it does not use a named FNT5 font. No further Workbench captures are being represented as tested.",
+  "images": [
+    {
+      "tool": "Workbench",
+      "filename": "image(20261029-191539).png",
+      "sha256": "51bf3e6f5fb4d955ec36f04b5d2f625d6bf8a8e00ce212977c3043a870d03fbd",
+      "size": [
+        1919,
+        1033
+      ],
+      "rootPixelRect": {
+        "x": 577,
+        "y": 193,
+        "width": 876,
+        "height": 493
+      },
+      "previewLogical": [
+        1280,
+        720
+      ],
+      "reportedZoomPercent": 68
+    },
+    {
+      "tool": "Studio fit",
+      "filename": "image(20261029-203254).png",
+      "sha256": "ddd2c415b0fa0d77f1f04a3dc481f3736b0f66184a4f9e77344624fe46b6e577",
+      "size": [
+        1919,
+        1029
+      ],
+      "rootPixelRect": {
+        "x": 308,
+        "y": 221,
+        "width": 867,
+        "height": 488
+      },
+      "previewLogical": [
+        1280,
+        720
+      ],
+      "reportedZoomPercent": 68
+    }
+  ],
+  "log": {
+    "filename": "Pasted text(20261029-203245).txt",
+    "sha256": "62fcd3cba3086c5f22d0a496ba574a749ca6f0948787b9c0a9f95fe7659ed2c7",
+    "observed": {
+      "standaloneFnt5": true,
+      "msdf": true,
+      "placement": "bearing",
+      "shortBook72RequestedFontSize": 30.6,
+      "tallBook72RequestedFontSize": 72,
+      "buttonBook72RequestedFontSize": 61.2,
+      "shortBook72InkOutsideWidget": false
+    },
+    "newAutomatedTestRunProvided": false
+  },
+  "measurementMethod": "Extract white pixels where all RGB channels are >190, limited to each authored 480px-wide text/button rectangle, using screenshot 1280x720 logical root alignment. Compute min/max white-ink bounding box. Infer native requested size from width proportionality as studioRequestedSize * nativeWhiteInkWidth/studioWhiteInkWidth * studioRootPhysicalWidth/nativeRootPhysicalWidth. Approximate and subject to anti-aliasing, font style, paint clipping and zoom differences.",
+  "cases": [
+    {
+      "id": "Text_Book72_Short",
+      "font": "sdf_MetronBook72",
+      "widgetHeight": 34,
+      "studioRequestedSize": 30.6,
+      "workbenchWhiteInkWidth": 88,
+      "workbenchWhiteInkHeight": 17,
+      "studioWhiteInkWidth": 79,
+      "studioWhiteInkHeight": 15,
+      "inferredRequestedFontSize": 33.73587653892838,
+      "ratioToWidgetHeight": 0.9922316629096583
+    },
+    {
+      "id": "Text_Book72_Tall",
+      "font": "sdf_MetronBook72",
+      "widgetHeight": 110,
+      "studioRequestedSize": 72,
+      "workbenchWhiteInkWidth": 285,
+      "workbenchWhiteInkHeight": 56,
+      "studioWhiteInkWidth": 184,
+      "studioWhiteInkHeight": 35,
+      "inferredRequestedFontSize": 110.37596783799881,
+      "ratioToWidgetHeight": 1.0034178894363528
+    },
+    {
+      "id": "Text_Book24",
+      "font": "sdf_MetronBook24",
+      "widgetHeight": 44,
+      "studioRequestedSize": 24,
+      "workbenchWhiteInkWidth": 114,
+      "workbenchWhiteInkHeight": 22,
+      "studioWhiteInkWidth": 61,
+      "studioWhiteInkHeight": 12,
+      "inferredRequestedFontSize": 44.39164608129351,
+      "ratioToWidgetHeight": 1.0089010473021252
+    },
+    {
+      "id": "Text_Light24",
+      "font": "sdf_MetronLight24",
+      "widgetHeight": 44,
+      "studioRequestedSize": 24,
+      "workbenchWhiteInkWidth": 111,
+      "workbenchWhiteInkHeight": 22,
+      "studioWhiteInkWidth": 57,
+      "studioWhiteInkHeight": 11,
+      "inferredRequestedFontSize": 46.25666906993511,
+      "ratioToWidgetHeight": 1.0512879334076162
+    },
+    {
+      "id": "Button_Book72",
+      "font": "sdf_MetronBook72",
+      "widgetHeight": 68,
+      "studioRequestedSize": 61.2,
+      "workbenchWhiteInkWidth": 177,
+      "workbenchWhiteInkHeight": 35,
+      "studioWhiteInkWidth": 157,
+      "studioWhiteInkHeight": 30,
+      "inferredRequestedFontSize": 68.28731349794955,
+      "ratioToWidgetHeight": 1.004225198499258
+    },
+    {
+      "id": "Button_Book24",
+      "font": "sdf_MetronBook24",
+      "widgetHeight": 44,
+      "studioRequestedSize": 24,
+      "workbenchWhiteInkWidth": 115,
+      "workbenchWhiteInkHeight": 22,
+      "studioWhiteInkWidth": 61,
+      "studioWhiteInkHeight": 11,
+      "inferredRequestedFontSize": 44.78104648551539,
+      "ratioToWidgetHeight": 1.0177510564889862
+    }
+  ],
+  "results": {
+    "sixCasesMeasured": 6,
+    "within2PercentWidgetHeight": 5,
+    "within6PercentWidgetHeight": 6,
+    "nativeRuleConfirmed": false,
+    "nextTestMode": "experimentalFnt5Fit=height",
+    "nextModeFormula": "requestedFontSize = widgetHeight, only if standalone FNT5 pixel metrics and no explicit text size",
+    "currentHeuristic": "experimentalFnt5Fit=1 => Math.min(nominalFontSize, widgetHeight * 0.9)",
+    "expectedUncappedRequests": [
+      {
+        "id": "Text_Book72_Short",
+        "requestedFontSize": 34
+      },
+      {
+        "id": "Text_Book72_Tall",
+        "requestedFontSize": 110
+      },
+      {
+        "id": "Text_Book24",
+        "requestedFontSize": 44
+      },
+      {
+        "id": "Text_Light24",
+        "requestedFontSize": 44
+      },
+      {
+        "id": "Button_Book72",
+        "requestedFontSize": 68
+      },
+      {
+        "id": "Button_Book24",
+        "requestedFontSize": 44
+      }
+    ]
+  },
+  "status": "hypothesis-awaiting-uncapped-height-mode-visual-comparison"
+}

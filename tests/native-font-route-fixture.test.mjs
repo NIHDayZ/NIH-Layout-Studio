@@ -166,3 +166,22 @@ test("captured bearing placement reduces FNT5 ink origin error without certifyin
 	assert.equal(observation.gates.nativeWorkbenchPixelParity, "pending");
 	assert.equal(observation.gates.fontSizeAndVerticalLayout, "pending");
 });
+
+test("native screenshot font widths support experimental widget-height hypothesis without claiming native sizing rule", () => {
+	const evidence = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-route/capture.fit.2026-10-29.json", import.meta.url
+	), "utf8"));
+	assert.equal(evidence.captureKind, "native-fnt5-workbench-height-sizing-hypothesis");
+	assert.equal(evidence.results.nativeRuleConfirmed, false);
+	assert.equal(evidence.log.newAutomatedTestRunProvided, false);
+	assert.equal(evidence.cases.length, 6);
+	assert.equal(evidence.results.within2PercentWidgetHeight, 5);
+	assert.equal(evidence.results.within6PercentWidgetHeight, 6);
+	for (const c of evidence.cases) {
+		const inferred = c.studioRequestedSize *
+			(c.workbenchWhiteInkWidth / c.studioWhiteInkWidth) *
+			(evidence.images[1].rootPixelRect.width / evidence.images[0].rootPixelRect.width);
+		assert.ok(Math.abs(inferred - c.inferredRequestedFontSize) < 1e-9);
+		assert.ok(Math.abs(inferred / c.widgetHeight - c.ratioToWidgetHeight) < 1e-9);
+	}
+});
