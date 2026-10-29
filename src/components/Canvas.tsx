@@ -9,6 +9,7 @@ import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/Pr
 import { ResolveProjectBitmapFont, ResolveProjectSdfFont, ResolveProjectFont, ResolveProjectImage, ResolveProjectWidgetStyle } from "../project/ProjectWorkspace";
 import type { BitmapFontDefinition } from "../project/FntParser";
 import {
+	FitUnresolvedCssFontSize,
 	GetFlag,
 	GetNumber,
 	GetNodeProperty,
@@ -340,6 +341,10 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 			console.info("[NIH Layout Studio][Text route]", {
 				widget: node.name, widgetId: node.id, text: text.slice(0, 100),
 				fontPath: fontPath ?? null, route,
+				widgetHeight: rect.height,
+				inferredFontSize: textStyle.fontSize,
+				effectiveCssFallbackFontSize: route === "CSS fallback"
+					? FitUnresolvedCssFontSize(node, rect, textStyle.fontSize) : null,
 				resolvedSdf: sdfFont?.fnt5Name ?? null,
 				resolvedBitmap: bitmapFont?.name ?? null,
 				fontOverride: fontOverride ?? null,
@@ -376,6 +381,12 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 	}
 	if (bitmapFont)
 		return RenderBitmapText(node, rect, bitmapFont, color, textStyle);
+
+	// A missing .fnt/.fsdf must not make CSS paint a nominal MetronBook72
+	// generator size inside a much shorter HUD label. Loaded SDF, bitmap,
+	// and browser fonts keep their own metrics and authored sizes.
+	if (!fontOverride)
+		textStyle.fontSize = FitUnresolvedCssFontSize(node, rect, textStyle.fontSize);
 
 	const justifyContent = textStyle.hAlign === "center" ? "center" : textStyle.hAlign === "right" ? "flex-end" : "flex-start";
 	const alignItems = textStyle.vAlign === "center" ? "center" : textStyle.vAlign === "bottom" ? "flex-end" : "flex-start";
