@@ -16,3 +16,7 @@ Thumbs.db
 .sdf-preview-test-build/
 
 .imageset-test-build/
+
+# Generated geometry and grid regression bundles (re-created by npm tests)
+.geometry-engine-test-build/
+.grid-layout-test-build/
