@@ -55,3 +55,17 @@ The original capture and native rectangles remain unmodified. The full DayZ log 
 The fixture's two `provenance.nativeBuild` fields now carry the exact reported **game** version; the launcher version and screenshot hash remain separate metadata. Expected strict comparator result: **2 PASS**, **0 FAIL**, **0 PENDING**, with **9/9 numerically matching descendants in each case**. A deliberate mismatch must still fail. The unchanged pending template still reports PENDING. The new version assertion and demotion regression require local validation.
 
 This closes the *tested native authored rectangle and fixaspect gate*, not the broader Workbench visual acceptance gates. Textured ImageWidget U/V pixel rendering, FNT5 glyphs, clipping/scissor, scale/DPI and managed layout interactions remain open. Keep PR #47 in draft.
+
+
+## Completed local strict parity verification — October 29, 2026
+
+The user's PowerShell 5.1 transcript `Pasted text(20261029-172543).txt` documents an unmodified fast-forward from `978415b` to `cbfcd14`, followed by:
+
+- `npm run test:geometry-engine`: **263 passed, zero failed/cancelled/skipped/todo**.
+- `npm run compare:workbench-common -- tests/fixtures/native-aspect/capture.runtime.2026-10-29.json tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout`: **2 PASS, zero FAIL/PENDING/SYNTHETIC**.
+- `root-960x500-origin`: **9/9** independent native descendant rectangles matched.
+- `root-1280x720-offset`: **9/9** independent native descendant rectangles matched.
+
+The strict comparator succeeded without `--allow-pending` after associating the separately supplied DayZ Launcher screenshot game version `1.30.164.200.000000` with both capture records. The original client log still does **not** independently contain that precise build string.
+
+**Disposition:** CLOSE the tested common `fixaspect` authored-rectangle gate on this research branch. Keep the original empty-capture fixture as a negative test. Do **not** infer visual UV, clipping, FNT5 or full Workbench parity from this result; PR #47 remains draft pending those separate gates.
