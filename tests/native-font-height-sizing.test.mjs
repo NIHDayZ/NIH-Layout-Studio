@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { ResolveExperimentalFnt5FontSize } from "../.geometry-engine-test-build/Fnt5FontSizingExperiment.js";
 
 test("height experiment requests full widget height instead of capping at nominal FNT5 size", () => {
