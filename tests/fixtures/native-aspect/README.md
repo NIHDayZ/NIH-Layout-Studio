@@ -24,7 +24,7 @@ All values are root-local `x, y, width, height` in logical pixels. The predictio
 | `Button_Mode3` | 3 | `521, 280, 420, 210` |
 | `ExactWidthBypass` | 3, width exact | `32, 118, 200, 32` |
 
-The mode-3 Button deliberately extends **50 logical pixels below its parent's 160-pixel height**. This is intended: distinguish geometry from visual clipping. Do not compare clipped pixels to `GetScreenSize` as if they were the same measurement.
+The mode-3 Button deliberately extends **66 logical pixels below its parent's 160-pixel height**. This is intended: distinguish geometry from visual clipping. Do not compare clipped pixels to `GetScreenSize` as if they were the same measurement.
 
 ### Workbench vs Studio procedure
 
@@ -41,6 +41,14 @@ The mode-3 Button deliberately extends **50 logical pixels below its parent's 16
 npm run test:geometry-engine
 npm run test:native-image-uv
 ```
+
+The existing generic Workbench-native rectangle comparator also accepts this fixture as an explicit second argument. For the empty capture template (expected `PENDING` rather than `PASS`):
+
+```powershell
+npm run compare:workbench-common -- tests/fixtures/native-aspect/capture.template.json tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout --allow-pending
+```
+
+Once native getter observations and their provenance are recorded in a separate capture JSON (do not overwrite the template), supply that JSON instead. The comparator already rejects mismatched rectangles, guards against synthetic captures, and requires a native build identifier for a version-pinned PASS.
 
 The geometry suite parses the actual fixture and asserts the shared calculated rectangles. It is a **synthetic Studio prediction test**, not native parity proof. Passing it cannot be reported as Workbench-verified behavior.
 
