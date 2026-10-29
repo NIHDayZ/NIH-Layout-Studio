@@ -126,3 +126,34 @@ test("debug FNT5 placement dedup distinguishes same font and size with different
 	assert.match(source,/widgetSize: \[width, height\], hAlign, vAlign, debugExpandedCanvas:/);
 	// Only log-key/fields are under test. Glyph draw position and native baseline parity are unchanged.
 });
+
+test("instrumented Text and Button FNT5 placements confirm split baseline and preserve shared-origin hypothesis as unverified", () => {
+	const observation=JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-default-baseline/capture.instrumentation.2026-10-29.json",import.meta.url
+	),"utf8"));
+	assert.equal(observation.captureKind,"paired-font-baseline-instrumentation-and-shared-origin-hypothesis");
+	assert.equal(observation.log.placementRecords,60);
+	assert.equal(observation.log.textPlacements,36);
+	assert.equal(observation.log.buttonPlacements,24);
+	assert.deepEqual(observation.log.textBaseYByHeight,[0,0,0,0]);
+	assert.deepEqual(observation.log.buttonBaseYByHeight,[-3,-4.25,-8.5,-13.75]);
+	assert.equal(observation.log.sdfWidgetRecords,20);
+	assert.equal(observation.log.atlasDecodes.failed,0);
+	const capture=JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-default-baseline/capture.visual.2026-10-29.json",import.meta.url
+	),"utf8"));
+	assert.equal(capture.cases.length,observation.log.pairedMeasurements.caseCount);
+	const mean=(a)=>a.reduce((sum,value)=>sum+value,0)/a.length;
+	const oldError=mean(capture.cases.map(item=>Math.abs(item.deltaTop)));
+	const error=(ratio)=>mean(capture.cases.map(item=>{
+		const oldBaseY=item.widgetType==="TextWidget"?0:-item.widgetHeight*0.125;
+		const newBaseY=-item.widgetHeight*ratio;
+		return Math.abs(item.deltaTop+newBaseY-oldBaseY);
+	}));
+	assert.ok(Math.abs(oldError-observation.log.pairedMeasurements.existingMeanAbsVerticalError)<1e-9);
+	for(const candidate of observation.log.pairedMeasurements.hypotheticalSharedOriginRatios)
+		assert.ok(Math.abs(error(candidate.ratio)-candidate.meanAbsVerticalError)<1e-9);
+	assert.ok(error(0.08)<oldError*.4);
+	assert.equal(observation.log.pairedMeasurements.independentValidation,false);
+	assert.equal(observation.result.nativeLineOriginExactFormulaRecovered,false);
+});

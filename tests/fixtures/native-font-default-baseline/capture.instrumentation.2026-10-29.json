@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "paired-font-baseline-instrumentation-and-shared-origin-hypothesis",
+  "captureDate": "2026-10-29",
+  "sourceFixture": "tests/fixtures/native-font-default-baseline/NIH_NativeFontDefaultBaseline.layout",
+  "relatedNativeCapture": "tests/fixtures/native-font-default-baseline/capture.visual.2026-10-29.json",
+  "evidence": {
+    "screenshot": {
+      "filename": "image(20261029-215837).png",
+      "sha256": "57c96a727626b8fe87af2ce462e7183a318c208cd718b1f2748e214a52e162a1"
+    },
+    "console": {
+      "filename": "Pasted text(20261029-215826).txt",
+      "sha256": "438700d2af570cee3cc57f4c313ff3823b6fe219d08a1545f1555c2277786068",
+      "bytes": 54275
+    },
+    "viewport": [
+      1280,
+      720
+    ],
+    "zoomPercent": 68,
+    "experimentalFlags": "experimentalStandaloneFnt5=1&experimentalMsdf=1&experimentalFnt5Placement=1&experimentalFnt5Fit=height&debugFnt5Sampling=1"
+  },
+  "log": {
+    "fontRoutesSdf": 20,
+    "sdfWidgetRecords": 20,
+    "placementRecords": 60,
+    "placementsByFont": {
+      "sdf_metronbook72": 24,
+      "sdf_metronbook24": 24,
+      "sdf_metronlight24": 12
+    },
+    "distinctFontSizeGlyphs": 36,
+    "buttonPlacements": 24,
+    "textPlacements": 36,
+    "requestedFontSizes": [
+      24,
+      34,
+      68,
+      110
+    ],
+    "textBaseYByHeight": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "buttonBaseYByHeight": [
+      -3,
+      -4.25,
+      -8.5,
+      -13.75
+    ],
+    "nonzeroBaseYFraction": -0.125,
+    "atlasDecodes": {
+      "success": 203,
+      "failed": 0
+    },
+    "availableSdfShortNames": 8,
+    "observedInkOutsideWidget": 8,
+    "outsideCause": "Horizontal negative A bearing for Book24/Light24, not vertical overflow"
+  },
+  "pairedMeasurements": {
+    "caseCount": 20,
+    "reference": "Native/Studio screenshot ink-top measurements already recorded in relatedNativeCapture",
+    "existingMeanAbsVerticalError": 4.154850000000001,
+    "hypotheticalSharedOriginRatios": [
+      {
+        "ratio": 0.07,
+        "meanAbsVerticalError": 1.5809499999999994
+      },
+      {
+        "ratio": 0.08,
+        "meanAbsVerticalError": 1.5018499999999997
+      },
+      {
+        "ratio": 0.09,
+        "meanAbsVerticalError": 1.5396500000000002
+      },
+      {
+        "ratio": 0.1,
+        "meanAbsVerticalError": 1.59135
+      },
+      {
+        "ratio": 0.125,
+        "meanAbsVerticalError": 2.26125
+      }
+    ],
+    "selectedResearchHypothesis": {
+      "ratio": 0.08,
+      "predictedMeanAbsError": 1.5018499999999997,
+      "relativeReduction": 0.6385308735574089
+    },
+    "retrospectiveFitOnly": true,
+    "independentValidation": false
+  },
+  "result": {
+    "diagnosticDedupKeyFixed": true,
+    "resourceAndFontRouteVerified": true,
+    "nativeLineOriginExactFormulaRecovered": false,
+    "prodDefaultsUnchanged": true
+  },
+  "nextTest": "Use a separately gated opt-in shared baseline -ratio*widgetHeight for standalone one-line FNT5; test on a different text sample before applying to production"
+}
