@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "paired-native-studio-height-sized-font-ink",
+  "captureDate": "2026-10-29",
+  "sourceLayout": "tests/fixtures/native-font-route/NIH_NativeFontRoute_Parity.layout",
+  "rootLogicalSize": [
+    1280,
+    720
+  ],
+  "sourceImages": [
+    {
+      "tool": "Workbench",
+      "file": "image(20261029-191539).png",
+      "sha256": "51bf3e6f5fb4d955ec36f04b5d2f625d6bf8a8e00ce212977c3043a870d03fbd",
+      "imageSize": [
+        1919,
+        1033
+      ],
+      "rootPixelRect": {
+        "x": 577,
+        "y": 193,
+        "width": 876,
+        "height": 493
+      },
+      "displayedZoomPercent": 68
+    },
+    {
+      "tool": "NIH Layout Studio",
+      "file": "image(20261029-211851).png",
+      "sha256": "f93ce1ca76ad0fff7378bcb7abe78e2076abe960748f651762182538c2b4cca8",
+      "imageSize": [
+        1917,
+        1032
+      ],
+      "rootPixelRect": {
+        "x": 308,
+        "y": 221,
+        "width": 867,
+        "height": 488
+      },
+      "displayedZoomPercent": 68
+    }
+  ],
+  "consoleLog": {
+    "file": "Pasted text(20261029-211842).txt",
+    "sha256": "34d76bb43c2a6f9d08d7191dcfbb56c896e5a73fa91e1b8fce95735d9f6d0395",
+    "observed": "Standalone FNT5, median MSDF, bearing placement, experimentalFnt5Fit=height, six SDF widgets",
+    "requestedFontSizes": {
+      "Text_Book72_Short": 34,
+      "Text_Book72_Tall": 110,
+      "Text_Book24": 44,
+      "Text_Light24": 44,
+      "Button_Book72": 68,
+      "Button_Book24": 44
+    },
+    "allShortBook72InkOutsideWidget": false,
+    "localAutomatedTestRunNotProvided": true
+  },
+  "sampling": {
+    "method": "Within each authored rectangle map the 1280x720 logical root to measured screenshot root. Select pixels where each RGB channel > 190 and use min/max thresholded white bounding box. Convert width/height and vertical top/bottom insets to logical pixels. Workbench gray background (~128) and Studio black background excluded. Exact alpha and antialiasing fidelity not established; sampling excludes pixels painted outside authored widgets.",
+    "thresholdMinRgbExclusive": 190,
+    "cropToAuthoredWidget": true,
+    "scaleNormalization": "linear from independently observed root pixel rectangles"
+  },
+  "cases": [
+    {
+      "id": "Text_Book72_Short",
+      "authoredRect": {
+        "x": 70,
+        "y": 95,
+        "width": 480,
+        "height": 34
+      },
+      "workbench": {
+        "logicalInkWidth": 128.5845,
+        "logicalInkHeight": 24.8276,
+        "topInsetLogical": 7.2312,
+        "bottomInsetLogical": 1.9412,
+        "physicalBoundingBoxXYXY": [
+          625,
+          263,
+          713,
+          280
+        ]
+      },
+      "studio": {
+        "logicalInkWidth": 128.4429,
+        "logicalInkHeight": 23.6066,
+        "topInsetLogical": 9.7541,
+        "bottomInsetLogical": 0.6393,
+        "physicalBoundingBoxXYXY": [
+          355,
+          292,
+          442,
+          308
+        ]
+      },
+      "widthDifferencePercent": -0.11,
+      "verticalTopDifferenceLogical": 2.523
+    },
+    {
+      "id": "Text_Book72_Tall",
+      "authoredRect": {
+        "x": 70,
+        "y": 165,
+        "width": 480,
+        "height": 110
+      },
+      "workbench": {
+        "logicalInkWidth": 416.4384,
+        "logicalInkHeight": 81.785,
+        "topInsetLogical": 17.5558,
+        "bottomInsetLogical": 10.6592,
+        "physicalBoundingBoxXYXY": [
+          626,
+          318,
+          911,
+          374
+        ]
+      },
+      "studio": {
+        "logicalInkWidth": 414.8558,
+        "logicalInkHeight": 79.6721,
+        "topInsetLogical": 29.7541,
+        "bottomInsetLogical": 0.5738,
+        "physicalBoundingBoxXYXY": [
+          356,
+          353,
+          637,
+          407
+        ]
+      },
+      "widthDifferencePercent": -0.38,
+      "verticalTopDifferenceLogical": 12.198
+    },
+    {
+      "id": "Text_Book24",
+      "authoredRect": {
+        "x": 70,
+        "y": 325,
+        "width": 480,
+        "height": 44
+      },
+      "workbench": {
+        "logicalInkWidth": 166.5753,
+        "logicalInkHeight": 32.1298,
+        "topInsetLogical": 9.4422,
+        "bottomInsetLogical": 2.428,
+        "physicalBoundingBoxXYXY": [
+          625,
+          422,
+          739,
+          444
+        ]
+      },
+      "studio": {
+        "logicalInkWidth": 165.3518,
+        "logicalInkHeight": 30.9836,
+        "topInsetLogical": 11.3934,
+        "bottomInsetLogical": 1.623,
+        "physicalBoundingBoxXYXY": [
+          355,
+          449,
+          467,
+          470
+        ]
+      },
+      "widthDifferencePercent": -0.735,
+      "verticalTopDifferenceLogical": 1.951
+    },
+    {
+      "id": "Text_Light24",
+      "authoredRect": {
+        "x": 70,
+        "y": 415,
+        "width": 480,
+        "height": 44
+      },
+      "workbench": {
+        "logicalInkWidth": 162.1918,
+        "logicalInkHeight": 32.1298,
+        "topInsetLogical": 9.9899,
+        "bottomInsetLogical": 1.8803,
+        "physicalBoundingBoxXYXY": [
+          625,
+          484,
+          736,
+          506
+        ]
+      },
+      "studio": {
+        "logicalInkWidth": 160.9227,
+        "logicalInkHeight": 30.9836,
+        "topInsetLogical": 11.3934,
+        "bottomInsetLogical": 1.623,
+        "physicalBoundingBoxXYXY": [
+          355,
+          510,
+          464,
+          531
+        ]
+      },
+      "widthDifferencePercent": -0.782,
+      "verticalTopDifferenceLogical": 1.403
+    },
+    {
+      "id": "Button_Book72",
+      "authoredRect": {
+        "x": 670,
+        "y": 95,
+        "width": 480,
+        "height": 68
+      },
+      "workbench": {
+        "logicalInkWidth": 258.6301,
+        "logicalInkHeight": 51.1156,
+        "topInsetLogical": 11.6126,
+        "bottomInsetLogical": 5.2718,
+        "physicalBoundingBoxXYXY": [
+          1110,
+          266,
+          1287,
+          301
+        ]
+      },
+      "studio": {
+        "logicalInkWidth": 256.8858,
+        "logicalInkHeight": 48.6885,
+        "topInsetLogical": 9.7541,
+        "bottomInsetLogical": 9.5574,
+        "physicalBoundingBoxXYXY": [
+          835,
+          292,
+          1009,
+          325
+        ]
+      },
+      "widthDifferencePercent": -0.674,
+      "verticalTopDifferenceLogical": -1.859
+    },
+    {
+      "id": "Button_Book24",
+      "authoredRect": {
+        "x": 670,
+        "y": 205,
+        "width": 480,
+        "height": 44
+      },
+      "workbench": {
+        "logicalInkWidth": 168.0365,
+        "logicalInkHeight": 32.1298,
+        "topInsetLogical": 9.6856,
+        "bottomInsetLogical": 2.1846,
+        "physicalBoundingBoxXYXY": [
+          1142,
+          340,
+          1257,
+          362
+        ]
+      },
+      "studio": {
+        "logicalInkWidth": 163.8754,
+        "logicalInkHeight": 32.459,
+        "topInsetLogical": 4.5082,
+        "bottomInsetLogical": 7.0328,
+        "physicalBoundingBoxXYXY": [
+          867,
+          363,
+          978,
+          385
+        ]
+      },
+      "widthDifferencePercent": -2.476,
+      "verticalTopDifferenceLogical": -5.177
+    }
+  ],
+  "findings": {
+    "widthPassCount": 6,
+    "widthAbsolutePercentTolerance": 3,
+    "maxWidthAbsoluteDifferencePercent": 2.476,
+    "tallBook72TopOffsetDifference": 12.198,
+    "tallBook72StudioBottomInset": 0.5738,
+    "notes": "Six measured glyph widths close to native, but tall TextWidget in Studio touches its bottom boundary while Workbench retains bottom padding. Book24 ButtonWidget vertical top differs by about 5 logical pixels. Neither native auto text size behavior beyond these widgets nor alpha/pixel-perfect text placement is established."
+  },
+  "gates": {
+    "widgetHeightSizingForTheseSixCases": "visual-width-pass",
+    "universalEnfusionTextSizing": "not-proven",
+    "nativeVerticalAlignment": "fail-or-pending",
+    "glyphPixelParity": "not-proven",
+    "productionDefault": "unchanged"
+  }
+}

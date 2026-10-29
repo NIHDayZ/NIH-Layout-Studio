@@ -36,3 +36,24 @@ test("unsupported sizing ratios or invalid dimensions fail closed", () => {
 	assert.equal(ResolveExperimentalFnt5FontSize("height",24,-4,true,false),1);
 	assert.equal(ResolveExperimentalFnt5FontSize("height",0,44,true,false),0);
 });
+
+test("six independently measured font widths follow height sizing while vertical alignment remains open", () => {
+	const capture = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-route/capture.height-visual.2026-10-29.json", import.meta.url
+	), "utf8"));
+	assert.equal(capture.captureKind, "paired-native-studio-height-sized-font-ink");
+	assert.deepEqual(capture.sourceImages.map(image => image.displayedZoomPercent), [68,68]);
+	assert.equal(capture.cases.length, 6);
+	assert.equal(capture.findings.widthPassCount, 6);
+	assert.equal(capture.gates.universalEnfusionTextSizing, "not-proven");
+	assert.equal(capture.gates.nativeVerticalAlignment, "fail-or-pending");
+	assert.equal(capture.consoleLog.localAutomatedTestRunNotProvided, true);
+	for (const item of capture.cases) {
+		const expected = (item.studio.physicalBoundingBoxXYXY[2] - item.studio.physicalBoundingBoxXYXY[0]) *
+			capture.rootLogicalSize[0] / capture.sourceImages[1].rootPixelRect.width;
+		assert.ok(Math.abs(expected - item.studio.logicalInkWidth) < 0.001);
+		assert.ok(Math.abs(item.widthDifferencePercent) <= 3, item.id);
+	}
+	assert.ok(capture.findings.tallBook72TopOffsetDifference > 10);
+	assert.ok(capture.findings.tallBook72StudioBottomInset < 2);
+});
