@@ -2,6 +2,7 @@ import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
 import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../renderer/GridLayout";
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
+import { ResolveExperimentalFnt5FontSize } from "../renderer/engine/Fnt5FontSizingExperiment";
 import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
 import { DecodeNativeImageWidgetFlags, NativeImageFlipCssTransform } from "../renderer/engine/NativeImageUv";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
@@ -294,17 +295,8 @@ function ResolveControlTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverrid
 }
 
 const experimentalFnt5FitRaw = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("experimentalFnt5Fit") : null;
-// "1" uses the best-observed 0.9 Workbench comparison baseline. Numeric ratios remain available for diagnostics.
-const experimentalFnt5FitRatio = (() => {
-	if (experimentalFnt5FitRaw === null || experimentalFnt5FitRaw === "0")
-		return null;
-	if (experimentalFnt5FitRaw === "1")
-		return 0.9;
-	const ratio = Number(experimentalFnt5FitRaw);
-	if (!Number.isFinite(ratio) || ratio < 0.5 || ratio > 1.2)
-		return null;
-	return ratio;
-})();
+// "1" retains the legacy 0.9/capped experiment. "height" requests exact widget height
+// without a nominal-font cap. Neither mode is used by the production/default route.
 const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const debugHudGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugHudGeometry") === "1";
 const experimentalWorkbenchControlFonts = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchControlFonts") === "1";
@@ -375,9 +367,13 @@ function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel
 			const value = Number(GetNodeProperty(node, name));
 			return Number.isFinite(value) && value > 0;
 		});
-		const fittedSize = experimentalFnt5FitRatio !== null && sdfFont.fnt5PixelMetrics && !explicitTextSize
-			? Math.min(textStyle.fontSize, Math.max(1, rect.height * experimentalFnt5FitRatio))
-			: textStyle.fontSize;
+		const fittedSize = ResolveExperimentalFnt5FontSize(
+			experimentalFnt5FitRaw,
+			textStyle.fontSize,
+			rect.height,
+			!!sdfFont.fnt5PixelMetrics,
+			explicitTextSize
+		);
 		return <SdfTextCanvas resource={sdfFont} text={text} color={color} fontSize={fittedSize} width={rect.width} height={rect.height} hAlign={textStyle.hAlign} vAlign={textStyle.vAlign} wrap={GetNodeProperty(node, "wrap") !== "0"} shadowSize={textStyle.shadowSize} shadowOffsetX={textStyle.shadowOffsetX} shadowOffsetY={textStyle.shadowOffsetY} shadowColor={textStyle.shadowColor} />;
 	}
 	if (bitmapFont)
