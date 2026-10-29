@@ -79,7 +79,7 @@ test("native aspect capture template remains pending for both independently requ
 	assert.deepEqual(report.reports.map(item => item.total), [9, 9]);
 });
 
-test("independent October 29 native fixaspect capture matches 18 descendant rectangles with no measured delta", () => {
+test("independent October 29 native fixaspect capture passes both version-pinned cases with 18 matching rectangles", () => {
 	const native = JSON.parse(readFileSync(new URL(
 		"./fixtures/native-aspect/capture.runtime.2026-10-29.json", import.meta.url
 	), "utf8"));
@@ -95,20 +95,32 @@ test("independent October 29 native fixaspect capture matches 18 descendant rect
 	assert.ok(native.cases.every(item =>
 		item.provenance.captureMethod === "dayz-client-script-getters" &&
 		item.provenance.versionDefine === "DAYZ_1_30" &&
-		item.provenance.nativeBuild === null));
+		item.provenance.nativeBuild === "1.30.164.200.000000" &&
+		item.provenance.launcherVersion === "1.6.164064" &&
+		item.provenance.nativeBuildEvidence.sha256 === "89df829251ef3779281d50b928b64253a61412ad884f26a52e14e53640499a4f"));
 	const compared = CompareCommonGeometryCaptures(native, roots);
-	assert.deepEqual(compared.summary, { pass: 0, fail: 0, pending: 2, synthetic: 0 });
+	assert.deepEqual(compared.summary, { pass: 2, fail: 0, pending: 0, synthetic: 0 });
 	assert.deepEqual(compared.reports.map(item => item.matched), [9, 9]);
-	assert.ok(compared.reports.every(item =>
-		item.errors.length === 1 && /client build identifier was not captured/i.test(item.errors[0])));
+	assert.ok(compared.reports.every(item => item.errors.length === 0));
 });
 
-test("native aspect mismatch still fails, even when exact client build is unknown", () => {
+test("native aspect mismatch fails even with valid versioned capture evidence", () => {
 	const native = JSON.parse(readFileSync(new URL(
 		"./fixtures/native-aspect/capture.runtime.2026-10-29.json", import.meta.url
 	), "utf8"));
 	native.cases[0].observed.Text_Mode1.width += 1;
 	const report = CompareCommonGeometryCaptures(native, roots);
-	assert.deepEqual(report.summary, { pass: 0, fail: 1, pending: 1, synthetic: 0 });
+	assert.deepEqual(report.summary, { pass: 1, fail: 1, pending: 0, synthetic: 0 });
 	assert.match(report.reports[0].errors.join(" "), /Text_Mode1\.width/);
+});
+
+test("removing independently supplied client version demotes a complete numeric capture back to PENDING", () => {
+	const native = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-aspect/capture.runtime.2026-10-29.json", import.meta.url
+	), "utf8"));
+	for (const item of native.cases)
+		item.provenance.nativeBuild = null;
+	const compared = CompareCommonGeometryCaptures(native, roots);
+	assert.deepEqual(compared.summary, { pass: 0, fail: 0, pending: 2, synthetic: 0 });
+	assert.deepEqual(compared.reports.map(item => item.matched), [9, 9]);
 });

@@ -58,13 +58,13 @@ Promote to PR #47 only after (a) full local build/test checks pass, (b) native a
 
 ### Independent native client capture (October 29, 2026)
 
-The disposable probe has now compiled and executed successfully in a DayZ client. Its independent [structured capture](capture.runtime.2026-10-29.json) reports **18/18 matching descendant rectangles** across both root sizes, including all numeric aspect modes and exact-width bypass. The exact client executable build is not in the log (`DAYZ_1_30` is only a script define), so the generic comparator correctly returns **2 PENDING (9/9 numerically matched in each)**, not a version-pinned PASS.
+The disposable probe has now compiled and executed successfully in a DayZ client. Its independent [structured capture](capture.runtime.2026-10-29.json) reports **18/18 matching descendant rectangles** across both root sizes, including all numeric aspect modes and exact-width bypass. The original log lacks an executable build string (`DAYZ_1_30` is only a script define). A subsequent user-supplied DayZ Launcher screenshot identifies **Game `1.30.164.200.000000`**, **Launcher `1.6.164064`**; its SHA-256 and separate provenance are recorded in the structured JSON. With this supplementary version evidence, the comparator should report **2 PASS (9/9 each)**. The capture is client-runtime authored geometry only, not a Workbench screenshot oracle.
 
 ```powershell
 npm run test:geometry-engine
-npm run compare:workbench-common -- tests/fixtures/native-aspect/capture.runtime.2026-10-29.json tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout --allow-pending
+npm run compare:workbench-common -- tests/fixtures/native-aspect/capture.runtime.2026-10-29.json tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout
 ```
 
-The new capture test asserts both matching numeric cases and the pending metadata gate. The untouched template must continue returning PENDING. Actual ImageWidget pixel UVs, clipping, fonts, and Workbench screenshot matching remain separate, open visual gates.
+The native capture test asserts both matching numeric cases and the supplementary version metadata gate. The untouched template must continue returning PENDING. Actual ImageWidget pixel UVs, clipping, fonts, and Workbench screenshot matching remain separate, open visual gates.
 
-The parent consolidation commit `f6d5b106bef400c953f0a11fd4e7372497adc26f` passed 299 local tests in the user's 2026-10-29 09:16 PDT validation. The initial fixture additions passed the user's local run; the newly committed native capture regression cases require a fresh local run.
+The parent consolidation commit `f6d5b106bef400c953f0a11fd4e7372497adc26f` passed 299 local tests in the user's 2026-10-29 09:16 PDT validation. After adding the native capture, the user's Windows geometry suite passed 262/262 tests. The supplementary version-evidence changes and added regression require another local run.

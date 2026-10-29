@@ -4,7 +4,7 @@
   "sourceLayout": "tests/fixtures/native-aspect/NIH_NativeAspect_Parity.layout",
   "rootName": "NIHNativeAspectParity",
   "captureDate": "2026-10-29",
-  "notes": "Independent native DayZ client getter capture. Exact executable/client build number not present; DAYZ_1_30 is a script define, not proof of a precise build. Both phases have all 9 descendants; 18/18 rectangles match shared geometry with zero numeric difference, but version-pinned comparator remains PENDING. Original full log retained by uploader; raw log and private local paths are not committed. Visual clipping, text ink and image UV pixel parity remain untested.",
+  "notes": "Independent native DayZ client getter capture. The original client script log lacks an exact build identifier (DAYZ_1_30 is only a script define); a separate user-provided DayZ Launcher screenshot subsequently recorded Game 1.30.164.200.000000 and Launcher 1.6.164064. Screenshot provenance and SHA-256 are retained with each case. Both phases have all 9 descendants; 18/18 rectangles match shared geometry with zero numeric difference, and the comparator can now PASS both cases with this separately supplied version evidence. Original full log retained by uploader; raw log and private local paths are not committed. Visual clipping, text ink and image UV pixel parity remain untested.",
   "cases": [
     {
       "id": "root-960x500-origin",
@@ -141,7 +141,7 @@
       },
       "provenance": {
         "captureMethod": "dayz-client-script-getters",
-        "nativeBuild": null,
+        "nativeBuild": "1.30.164.200.000000",
         "versionDefine": "DAYZ_1_30",
         "evidenceFile": "script_2026-10-29_09-34-51.log",
         "evidenceSha256": "704346403ff69d2ce0080197802dcc8e284e53c8acfbce04e6804ef894ce91cc",
@@ -157,6 +157,13 @@
           "Image_Mode2": "ImageWidget",
           "Parent_Mode3": "PanelWidget",
           "Button_Mode3": "ButtonWidget"
+        },
+        "launcherVersion": "1.6.164064",
+        "nativeBuildEvidence": {
+          "kind": "user-provided DayZ Launcher version screenshot",
+          "fileName": "image(20261029-171631).png",
+          "sha256": "89df829251ef3779281d50b928b64253a61412ad884f26a52e14e53640499a4f",
+          "association": "Provided in follow-up with original DayZ native capture validation; version string not present in the original client log"
         }
       }
     },
@@ -295,7 +302,7 @@
       },
       "provenance": {
         "captureMethod": "dayz-client-script-getters",
-        "nativeBuild": null,
+        "nativeBuild": "1.30.164.200.000000",
         "versionDefine": "DAYZ_1_30",
         "evidenceFile": "script_2026-10-29_09-34-51.log",
         "evidenceSha256": "704346403ff69d2ce0080197802dcc8e284e53c8acfbce04e6804ef894ce91cc",
@@ -311,6 +318,13 @@
           "Image_Mode2": "ImageWidget",
           "Parent_Mode3": "PanelWidget",
           "Button_Mode3": "ButtonWidget"
+        },
+        "launcherVersion": "1.6.164064",
+        "nativeBuildEvidence": {
+          "kind": "user-provided DayZ Launcher version screenshot",
+          "fileName": "image(20261029-171631).png",
+          "sha256": "89df829251ef3779281d50b928b64253a61412ad884f26a52e14e53640499a4f",
+          "association": "Provided in follow-up with original DayZ native capture validation; version string not present in the original client log"
         }
       }
     }
