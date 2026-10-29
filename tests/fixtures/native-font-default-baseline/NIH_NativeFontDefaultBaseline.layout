@@ -1,0 +1,210 @@
+FrameWidgetClass NIHNativeFontDefaultBaseline {
+	position 0 0
+	size 1280 720
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		TextWidgetClass TextBook72_H24 {
+			position 40 65
+			size 270 24
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		TextWidgetClass TextBook72_H34 {
+			position 350 65
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		TextWidgetClass TextBook72_H68 {
+			position 660 65
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		TextWidgetClass TextBook72_H110 {
+			position 970 65
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		TextWidgetClass TextBook24_H24 {
+			position 40 195
+			size 270 24
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		TextWidgetClass TextBook24_H34 {
+			position 350 195
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		TextWidgetClass TextBook24_H68 {
+			position 660 195
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		TextWidgetClass TextBook24_H110 {
+			position 970 195
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		TextWidgetClass TextLight24_H24 {
+			position 40 325
+			size 270 24
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronLight24"
+			text "ABC"
+		}
+		TextWidgetClass TextLight24_H34 {
+			position 350 325
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronLight24"
+			text "ABC"
+		}
+		TextWidgetClass TextLight24_H68 {
+			position 660 325
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronLight24"
+			text "ABC"
+		}
+		TextWidgetClass TextLight24_H110 {
+			position 970 325
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronLight24"
+			text "ABC"
+		}
+		ButtonWidgetClass ButtonBook72_H24 {
+			position 40 455
+			size 270 24
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		ButtonWidgetClass ButtonBook72_H34 {
+			position 350 455
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		ButtonWidgetClass ButtonBook72_H68 {
+			position 660 455
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		ButtonWidgetClass ButtonBook72_H110 {
+			position 970 455
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook72"
+			text "ABC"
+		}
+		ButtonWidgetClass ButtonBook24_H24 {
+			position 40 585
+			size 270 24
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		ButtonWidgetClass ButtonBook24_H34 {
+			position 350 585
+			size 270 34
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		ButtonWidgetClass ButtonBook24_H68 {
+			position 660 585
+			size 270 68
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+		ButtonWidgetClass ButtonBook24_H110 {
+			position 970 585
+			size 270 110
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			font "gui/fonts/sdf_MetronBook24"
+			text "ABC"
+		}
+	}
+}

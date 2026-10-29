@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-font-default-baseline-pending",
+  "sourceLayout": "tests/fixtures/native-font-default-baseline/NIH_NativeFontDefaultBaseline.layout",
+  "logicalViewport": [
+    1280,
+    720
+  ],
+  "reason": "The prior 20-case valign fixture was rejected by Workbench 1.30 for its explicitly authored text valign properties. This replacement uses no explicit text alignment properties.",
+  "nativeBuild": "1.30.164200.56",
+  "studioFlags": "experimentalStandaloneFnt5=1&experimentalMsdf=1&experimentalFnt5Placement=1&experimentalFnt5Fit=height&debugFnt5Sampling=1",
+  "nativePaintVerified": false,
+  "cases": [
+    {
+      "id": "TextBook72_H24",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "authoredRect": [
+        40,
+        65,
+        270,
+        24
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook72_H34",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "authoredRect": [
+        350,
+        65,
+        270,
+        34
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook72_H68",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "authoredRect": [
+        660,
+        65,
+        270,
+        68
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook72_H110",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "authoredRect": [
+        970,
+        65,
+        270,
+        110
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook24_H24",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "authoredRect": [
+        40,
+        195,
+        270,
+        24
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook24_H34",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "authoredRect": [
+        350,
+        195,
+        270,
+        34
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook24_H68",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "authoredRect": [
+        660,
+        195,
+        270,
+        68
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextBook24_H110",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "authoredRect": [
+        970,
+        195,
+        270,
+        110
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextLight24_H24",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronLight24",
+      "authoredRect": [
+        40,
+        325,
+        270,
+        24
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextLight24_H34",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronLight24",
+      "authoredRect": [
+        350,
+        325,
+        270,
+        34
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextLight24_H68",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronLight24",
+      "authoredRect": [
+        660,
+        325,
+        270,
+        68
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "TextLight24_H110",
+      "type": "TextWidgetClass",
+      "font": "gui/fonts/sdf_MetronLight24",
+      "authoredRect": [
+        970,
+        325,
+        270,
+        110
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook72_H24",
+      "type": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "authoredRect": [
+        40,
+        455,
+        270,
+        24
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook72_H34",
+      "type": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "authoredRect": [
+        350,
+        455,
+        270,
+        34
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook72_H68",
+      "type": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "authoredRect": [
+        660,
+        455,
+        270,
+        68
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook72_H110",
+      "type": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "authoredRect": [
+        970,
+        455,
+        270,
+        110
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook24_H24",
+      "type": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "authoredRect": [
+        40,
+        585,
+        270,
+        24
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook24_H34",
+      "type": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "authoredRect": [
+        350,
+        585,
+        270,
+        34
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook24_H68",
+      "type": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "authoredRect": [
+        660,
+        585,
+        270,
+        68
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    },
+    {
+      "id": "ButtonBook24_H110",
+      "type": "ButtonWidgetClass",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "authoredRect": [
+        970,
+        585,
+        270,
+        110
+      ],
+      "workbenchInkBounds": null,
+      "studioInkBounds": null,
+      "result": "pending"
+    }
+  ]
+}

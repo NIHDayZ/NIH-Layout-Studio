@@ -1,0 +1,79 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { LayoutParser } from "../.geometry-engine-test-build/LayoutParser.js";
+import { BuildAuthoredGeometrySnapshot } from "../.geometry-engine-test-build/GeometrySnapshot.js";
+
+const source = readFileSync(new URL(
+	"./fixtures/native-font-default-baseline/NIH_NativeFontDefaultBaseline.layout", import.meta.url
+), "utf8");
+const root = new LayoutParser().Parse(source).roots;
+const groups = [
+	["TextBook72","TextWidgetClass","gui/fonts/sdf_MetronBook72",65],
+	["TextBook24","TextWidgetClass","gui/fonts/sdf_MetronBook24",195],
+	["TextLight24","TextWidgetClass","gui/fonts/sdf_MetronLight24",325],
+	["ButtonBook72","ButtonWidgetClass","gui/fonts/sdf_MetronBook72",455],
+	["ButtonBook24","ButtonWidgetClass","gui/fonts/sdf_MetronBook24",585]
+];
+const heights=[24,34,68,110];
+const xs=[40,350,660,970];
+function Prop(node, name) {
+	return node.properties.find(property=>property.name.toLowerCase()===name)?.value;
+}
+
+test("native baseline fixture has 20 Text/Button samples without unverified explicit text alignment", () => {
+	assert.equal(root.length,1);
+	assert.equal(root[0].name,"NIHNativeFontDefaultBaseline");
+	assert.equal(root[0].children.length,20);
+	assert.equal(source.includes('"text valign"'),false);
+	assert.equal(source.includes('"text halign"'),false);
+	for(let r=0;r<groups.length;++r) {
+		for(let c=0;c<heights.length;++c) {
+			const node=root[0].children[r*4+c];
+			assert.equal(node.name,groups[r][0]+"_H"+heights[c]);
+			assert.equal(node.type,groups[r][1]);
+			assert.equal(Prop(node,"font"),groups[r][2]);
+			assert.equal(Prop(node,"text"),"ABC");
+			assert.equal(Prop(node,"text valign"),undefined);
+			assert.equal(Prop(node,"text halign"),undefined);
+		}
+	}
+});
+
+test("height-only variation preserves independently authored geometry in all 20 samples", () => {
+	const snapshot=BuildAuthoredGeometrySnapshot(root,{x:0,y:0,width:1280,height:720});
+	assert.deepEqual(snapshot.issues,[]);
+	assert.equal(snapshot.entries.length,21);
+	for(let r=0;r<groups.length;++r) {
+		for(let c=0;c<heights.length;++c) {
+			const node=root[0].children[r*4+c];
+			assert.deepEqual(snapshot.byId.get(node.id)?.absoluteRect,
+				{x:xs[c],y:groups[r][3],width:270,height:heights[c]});
+		}
+	}
+});
+
+test("source evidence marks previous explicit-valign native capture invalid without altering the original fixture", () => {
+	const evidence=JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-default-baseline/rejected-valign.2026-10-29.json",import.meta.url
+	),"utf8"));
+	assert.equal(evidence.captureKind,"rejected-native-text-valign-visual-fixture");
+	assert.equal(evidence.observedNativeErrors.property,"text valign");
+	assert.equal(evidence.observedNativeErrors.explicitPropertyOccurrencesInSource,15);
+	assert.equal(evidence.conclusion.explicitAlignmentNativeParity,"invalid-capture");
+	assert.equal(evidence.conclusion.studioVerticalAlignmentPolicy,"not-validated-for-native");
+	assert.equal(evidence.conclusion.workbenchVersionGeneralization,"not-established");
+	assert.ok(evidence.nativeScreenshot.sha256 && evidence.studioScreenshot.sha256);
+});
+
+test("native default font ink template is incomplete until paired native captures are measured", () => {
+	const capture=JSON.parse(readFileSync(new URL(
+		"./fixtures/native-font-default-baseline/capture.template.json",import.meta.url
+	),"utf8"));
+	assert.equal(capture.captureKind,"native-font-default-baseline-pending");
+	assert.equal(capture.nativePaintVerified,false);
+	assert.equal(capture.cases.length,20);
+	assert.deepEqual(capture.cases.map(c=>c.id),root[0].children.map(n=>n.name));
+	assert.ok(capture.cases.every(c=>c.workbenchInkBounds===null &&
+		c.studioInkBounds===null && c.result==="pending"));
+});

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "rejected-native-text-valign-visual-fixture",
+  "capturedDate": "2026-10-29",
+  "sourceLayout": "tests/fixtures/native-font-valign/NIH_NativeFontVAlign_Parity.layout",
+  "nativeScreenshot": {
+    "filename": "image(20261029-213613).png",
+    "sha256": "b212cb8028d3bd6ecb9a8aadefa2adaac8fbe23ddd402362b8b04e3bd810e158",
+    "nativeTool": "DayZ Tools Workbench",
+    "version": "1.30.164200.56",
+    "logicalViewport": [
+      1280,
+      720
+    ],
+    "zoomPercent": 68
+  },
+  "studioScreenshot": {
+    "filename": "image(20261029-213606).png",
+    "sha256": "e7fd8a9772567feb22fc033c2813bbdcb03396ecaa9fe7e187b9ee63dd3ac6fb",
+    "version": "0.37.0",
+    "logicalViewport": [
+      1280,
+      720
+    ],
+    "zoomPercent": 68
+  },
+  "observedNativeErrors": {
+    "property": "text valign",
+    "errorText": "Unknown keyword/data 'text valign'",
+    "explicitPropertyOccurrencesInSource": 15,
+    "consoleScreenshotShowsErrors": true,
+    "preciseEmittedErrorCountUnknown": true
+  },
+  "contrast": "Workbench renders similar vertical positions across default/top/center/bottom columns despite reported property errors. Studio interprets authored values and shifts text. Explicit columns are invalid as independent native alignment evidence.",
+  "conclusion": {
+    "explicitAlignmentNativeParity": "invalid-capture",
+    "nativeDefaultTextMetrics": "partially-observable",
+    "studioVerticalAlignmentPolicy": "not-validated-for-native",
+    "workbenchVersionGeneralization": "not-established"
+  },
+  "nextGate": "Re-test native default alignment at 24,34,68,110 pixel widget heights on TextWidget/ ButtonWidget across Book72, Book24 and Light24 with no explicit text valign property.",
+  "note": "The previous fixture remains unchanged as a negative/compatibility example. Do not remove its regression tests; they test Studio parser behavior, not native property acceptance. Original screenshot images are not committed."
+}

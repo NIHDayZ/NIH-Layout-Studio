@@ -30,3 +30,12 @@ Capture lossless full screenshots from both editors. Preserve real filenames and
 ## Gate boundary
 
 The existing `capture.template.json` is intentionally empty. This is a new native visual test. No production Canvas text baseline changes, font-specific offsets or native font behavior claims should be made before its result. If the native vertical alignment differs consistently from `lineHeight=fontSize*1.25`, derive a **shared glyph-ink vertical model** from the observed native cases and then test that in an isolated experiment. Avoid patching Book72 tall or Book24 ButtonWidget individually; the goal is a common engine model.
+
+
+## 2026-10-29 — Workbench rejects explicit `"text valign"` in this fixture
+
+The user supplied Workbench and Studio screenshots of this exact file at 1280×720 and 68% zoom. Workbench version 1.30.164200.56 displayed repeated **`Unknown keyword/data 'text valign'`** errors for the explicitly authored alignment attributes (15 such lines in this fixture). Studio parsed and applied these attributes, but Workbench displayed essentially native default text placement in all four columns.
+
+**Therefore the four columns are not a valid comparison of native top/center/bottom text placement.** Do not count them as a native-pass or a native-fail for glyph baseline parity. This only establishes rejection in the tested build/context; external DayZ layouts can contain this property and other engine contexts may support it. For a native-supported default text baseline test, use `../native-font-default-baseline/NIH_NativeFontDefaultBaseline.layout` on `research/native-font-default-baseline`.
+
+The original fixture remains frozen as a negative compatibility case. No renderer defaults were changed based on its screenshots.
