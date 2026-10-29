@@ -1,0 +1,66 @@
+FrameWidgetClass NIHNativeImageUvParity {
+	position 0 0
+	size 960 320
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		ImageWidgetClass UV_None {
+			position 24 64
+			size 192 192
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			image0 "set:dayz_gui image:DayZLogo"
+			mode blend
+			"src alpha" 1
+			stretch 1
+			"flip u" 0
+			"flip v" 0
+		}
+		ImageWidgetClass UV_FlipU {
+			position 264 64
+			size 192 192
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			image0 "set:dayz_gui image:DayZLogo"
+			mode blend
+			"src alpha" 1
+			stretch 1
+			"flip u" 1
+			"flip v" 0
+		}
+		ImageWidgetClass UV_FlipV {
+			position 504 64
+			size 192 192
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			image0 "set:dayz_gui image:DayZLogo"
+			mode blend
+			"src alpha" 1
+			stretch 1
+			"flip u" 0
+			"flip v" 1
+		}
+		ImageWidgetClass UV_FlipUV {
+			position 744 64
+			size 192 192
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			image0 "set:dayz_gui image:DayZLogo"
+			mode blend
+			"src alpha" 1
+			stretch 1
+			"flip u" 1
+			"flip v" 1
+		}
+	}
+}

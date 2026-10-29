@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-image-pixel-pending",
+  "sourceLayout": "tests/fixtures/native-image-visual/NIH_NativeImageUv_Parity.layout",
+  "nativeVersion": "1.30.164.200.000000",
+  "candidateResource": "set:dayz_gui image:DayZLogo",
+  "notes": "Visual test specification only. Do not substitute computed CSS transforms, shared UV helper results, or screen rectangles for independently observed textured pixels. Verify resource resolves in both environments. Supply matched screenshots with effective zoom and DPR, then inspect each image orientation.",
+  "cases": [
+    {
+      "id": "UV_None",
+      "flipU": 0,
+      "flipV": 0,
+      "resourceResolvedNative": null,
+      "resourceResolvedStudio": null,
+      "nativePixels": null,
+      "studioPixels": null,
+      "result": "pending"
+    },
+    {
+      "id": "UV_FlipU",
+      "flipU": 1,
+      "flipV": 0,
+      "resourceResolvedNative": null,
+      "resourceResolvedStudio": null,
+      "nativePixels": null,
+      "studioPixels": null,
+      "result": "pending"
+    },
+    {
+      "id": "UV_FlipV",
+      "flipU": 0,
+      "flipV": 1,
+      "resourceResolvedNative": null,
+      "resourceResolvedStudio": null,
+      "nativePixels": null,
+      "studioPixels": null,
+      "result": "pending"
+    },
+    {
+      "id": "UV_FlipUV",
+      "flipU": 1,
+      "flipV": 1,
+      "resourceResolvedNative": null,
+      "resourceResolvedStudio": null,
+      "nativePixels": null,
+      "studioPixels": null,
+      "result": "pending"
+    }
+  ]
+}
