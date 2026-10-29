@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "paired-workbench-studio-image-visual-observation",
+  "capturedDate": "2026-10-29",
+  "fixture": "tests/fixtures/native-image-visual/NIH_NativeImageUv_Parity.layout",
+  "resourceReference": "set:dayz_gui image:DayZLogo",
+  "sourceImages": [
+    {
+      "tool": "NIH Layout Studio",
+      "file": "image(20261029-175131).png",
+      "sha256": "e014f1d7bfeddfab86c1645f2d8a38f731357290bbdeb0919a1631abdc8f71b6",
+      "resolution": [
+        1919,
+        1032
+      ],
+      "previewViewport": [
+        1280,
+        720
+      ],
+      "zoomPct": 79,
+      "displayBackground": "dark",
+      "version": "0.37.0"
+    },
+    {
+      "tool": "DayZ Tools Workbench",
+      "file": "image(20261029-175138).png",
+      "sha256": "05bd994190526f10a959f43857d24ba56deefc81e9650a99f199cda26cf9f767",
+      "resolution": [
+        1919,
+        1032
+      ],
+      "previewViewport": [
+        1280,
+        720
+      ],
+      "zoomPct": 80,
+      "displayBackground": "medium gray",
+      "rootDpiScalingEnabled": false,
+      "version": "1.30.164200.56"
+    }
+  ],
+  "authoredRootLogicalSize": [
+    960,
+    320
+  ],
+  "interpretation": "All four visibly textured widgets have matching expected U/V orientation and no obvious cropping or texture-resolution failure. The native and web raster images differ in screenshot zoom and background; exact pixel/alpha parity is NOT established.",
+  "pixelsEquivalentStrictly": false,
+  "uvOrientationVisualPass": true,
+  "analysis": {
+    "method": "Diagnostic only: threshold screenshot pixels where min(R,G,B)>205 within each observed logo bounding box; resize each binary white silhouette to 160x160 via nearest neighbor; compute intersection-over-union (IoU). This removes zoom/background differences but cannot establish pixel exactness, color sampling, alpha or native source UV generality.",
+    "whiteThresholdMinRgb": 205,
+    "normalizedPixels": [
+      160,
+      160
+    ],
+    "studioGlobalWhiteRowRange": [
+      278,
+      417
+    ],
+    "workbenchGlobalWhiteRowRange": [
+      209,
+      352
+    ],
+    "interpretation": "Use numeric overlap only as corroborating visual evidence. Not a formal native pixel parity certificate."
+  },
+  "cases": [
+    {
+      "id": "UV_None",
+      "visibleResourceInBoth": true,
+      "expectedFlipU": 0,
+      "expectedFlipV": 0,
+      "observedOrientation": "match",
+      "normalizedSilhouetteIou": 0.931,
+      "normalizedSilhouetteIouAllow1pxShift": 0.931,
+      "studioWhiteBBoxX": [
+        329,
+        476
+      ],
+      "workbenchWhiteBBoxX": [
+        518,
+        667
+      ]
+    },
+    {
+      "id": "UV_FlipU",
+      "visibleResourceInBoth": true,
+      "expectedFlipU": 1,
+      "expectedFlipV": 0,
+      "observedOrientation": "match",
+      "normalizedSilhouetteIou": 0.9256,
+      "normalizedSilhouetteIouAllow1pxShift": 0.9256,
+      "studioWhiteBBoxX": [
+        520,
+        665
+      ],
+      "workbenchWhiteBBoxX": [
+        712,
+        861
+      ]
+    },
+    {
+      "id": "UV_FlipV",
+      "visibleResourceInBoth": true,
+      "expectedFlipU": 0,
+      "expectedFlipV": 1,
+      "observedOrientation": "match",
+      "normalizedSilhouetteIou": 0.9382,
+      "normalizedSilhouetteIouAllow1pxShift": 0.9382,
+      "studioWhiteBBoxX": [
+        710,
+        856
+      ],
+      "workbenchWhiteBBoxX": [
+        906,
+        1055
+      ]
+    },
+    {
+      "id": "UV_FlipUV",
+      "visibleResourceInBoth": true,
+      "expectedFlipU": 1,
+      "expectedFlipV": 1,
+      "observedOrientation": "match",
+      "normalizedSilhouetteIou": 0.8875,
+      "normalizedSilhouetteIouAllow1pxShift": 0.9421,
+      "studioWhiteBBoxX": [
+        899,
+        1045
+      ],
+      "workbenchWhiteBBoxX": [
+        1100,
+        1249
+      ]
+    }
+  ],
+  "pending": [
+    "Same effective zoom and device pixel ratio (DPR) raster capture for pixel-level comparison",
+    "Color, alpha, filtering and edge antialiasing parity",
+    "Other ImageWidget draw modes and arbitrary nonrectangular UVs",
+    "Clipping/scissor and font painting parity"
+  ]
+}

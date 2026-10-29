@@ -68,3 +68,19 @@ test("UV visual capture template is empty; no fixture prediction qualifies as na
 		c.nativePixels === null && c.studioPixels === null &&
 		c.resourceResolvedNative === null && c.resourceResolvedStudio === null));
 });
+
+test("independent Workbench/Studio screenshots support four flip orientations but not fabricated pixel-perfect parity", () => {
+	const observation = JSON.parse(readFileSync(new URL(
+		"./fixtures/native-image-visual/capture.visual.2026-10-29.json", import.meta.url
+	), "utf8"));
+	assert.equal(observation.captureKind, "paired-workbench-studio-image-visual-observation");
+	assert.equal(observation.uvOrientationVisualPass, true);
+	assert.equal(observation.pixelsEquivalentStrictly, false);
+	assert.deepEqual(observation.sourceImages.map(c => c.previewViewport), [[1280,720],[1280,720]]);
+	assert.deepEqual(observation.sourceImages.map(c => c.zoomPct), [79,80]);
+	assert.deepEqual(observation.cases.map(c => c.id), samples.map(s => s[0]));
+	assert.ok(observation.cases.every(c =>
+		c.visibleResourceInBoth && c.observedOrientation === "match" &&
+		c.normalizedSilhouetteIou > 0.85 &&
+		c.normalizedSilhouetteIouAllow1pxShift < 1));
+});
