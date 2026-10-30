@@ -101,132 +101,16 @@ function FindNodeRectInfo(nodes: LayoutNode[], id: string, parentRect: Rect, par
 function RenameSourceBlockRoot(block: string[], type: string, oldName: string, newName: string): string[] {
 	if (block.length === 0)
 		return block;
-	// Copies of historical, ID-less widgets must rename their friendly Name
-	// property, not invent a new identifier token in the declaration.
 	const copy = [...block];
+	// Keep pre-ID declarations anonymous when copying. Rename only their
+	// existing friendly Name property (or insert Name if it was absent).
 	const localSource = copy.join("\n");
 	const root = new LayoutParser().Parse(localSource).roots[0];
 	if (root?.type === type && root.sourceHasNoIdentifier)
 		return PatchNodeName(localSource, root, newName).split("\n");
-	const escapedType = type.replace(/[.*+?^${}()|[\]\\]/g, "\\function RenameSourceBlockRoot(block: string[], type: string, oldName: string, newName: string): string[] {
-	if (block.length === 0)
-		return block;
-	const copy = [...block];
 	const escapedType = type.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	const escapedName = oldName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	copy[0] = copy[0].replace(new RegExp(`^(\\s*${escapedType}\\s+)${escapedName}(\\s*\\{?.*)$`), `$1${newName}$2`);
-	return copy;
-}");
-	const escapedName = oldName.replace(/[.*+?^${}()|[\]\\]/g, "\\function RenameSourceBlockRoot(block: string[], type: string, oldName: string, newName: string): string[] {
-	if (block.length === 0)
-		return block;
-	const copy = [...block];
-	const escapedType = type.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-	const escapedName = oldName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-	copy[0] = copy[0].replace(new RegExp(`^(\\s*${escapedType}\\s+)${escapedName}(\\s*\\{?.*)$`), `$1${newName}$2`);
-	return copy;
-}");
-	copy[0] = copy[0].replace(new RegExp(`^(\\s*${escapedType}\\s+)${escapedName}(\\s*\\{?.*)import { MakeCopiedWidgetNameFromNames } from "./model/WidgetCopyName";
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent } from "react";
-import { Canvas, type CanvasDebugOptions } from "./components/Canvas";
-import { ProjectPanel } from "./components/ProjectPanel";
-import { PropertyInspector, type FontResourceOption, type ImageSetResourceOption, type StyleResourceOption } from "./components/PropertyInspector";
-import { ImageSetInspector } from "./components/ImageSetInspector";
-import { RenderStatus } from "./components/RenderStatus";
-import { NativeCompatibilityReview, NativeCompatibilityWarnings } from "./components/NativeCompatibilityWarnings";
-import { InspectNativePropertyCompatibility } from "./renderer/engine/NativePropertyCompatibility";
-import { WidgetTree } from "./components/WidgetTree";
-import type { LayoutDocument, LayoutNode, LayoutProperty, LayoutProblem } from "./model/LayoutTypes";
-import { RectToLayoutGeometry, ResolveRect, type Rect } from "./renderer/LayoutMath";
-import { LayoutParser } from "./parser/LayoutParser";
-import type { ProjectFile, ProjectWorkspaceModel } from "./project/ProjectTypes";
-import { BuildProjectWorkspace, DisposeProjectWorkspace, ParseImageSetSource, ResolveImageSetAtlasUrl, ResolveProjectImage } from "./project/ProjectWorkspace";
-import { EncodeImageToEdds, type EddsPixelFormat } from "./project/EddsEncoder";
-import { BuildImageSet } from "./project/ImageSetBuilder";
-import { WorkbenchWidgetTypes } from "./schema/WidgetSchema";
-import { version as appVersion } from "../package.json";
-import "./styles.css";
-
-
-function FindNodeById(nodes: LayoutNode[], id: string | null | undefined): LayoutNode | null {
-	if (!id)
-		return null;
-	for (const node of nodes) {
-		if (node.id === id)
-			return node;
-		const child = FindNodeById(node.children, id);
-		if (child)
-			return child;
-	}
-	return null;
-}
-
-function FindParentArray(nodes: LayoutNode[], id: string): LayoutNode[] | null {
-	if (nodes.some((node) => node.id === id))
-		return nodes;
-	for (const node of nodes) {
-		const parent = FindParentArray(node.children, id);
-		if (parent)
-			return parent;
-	}
-	return null;
-}
-
-
-function FindParentNode(nodes: LayoutNode[], id: string, parent: LayoutNode | null = null): LayoutNode | null {
-	for (const node of nodes) {
-		if (node.id === id)
-			return parent;
-		const found = FindParentNode(node.children, id, node);
-		if (found !== null)
-			return found;
-	}
-	return null;
-}
-
-function CollectNodeNames(nodes: LayoutNode[], names = new Set<string>()): Set<string> {
-	for (const node of nodes) {
-		names.add(node.name);
-		CollectNodeNames(node.children, names);
-	}
-	return names;
-}
-
-function MakeCopiedWidgetName(nodes: LayoutNode[], name: string): string {
-	return MakeCopiedWidgetNameFromNames(CollectNodeNames(nodes), name);
-}
-
-function MakeUniqueNodeName(nodes: LayoutNode[], baseName: string): string {
-	const names = CollectNodeNames(nodes);
-	if (!names.has(baseName))
-		return baseName;
-	let suffix = 2;
-	while (names.has(`${baseName}${suffix}`))
-		++suffix;
-	return `${baseName}${suffix}`;
-}
-
-interface NodeRectInfo {
-	node: LayoutNode;
-	parentNode: LayoutNode | null;
-	parentRect: Rect;
-	rect: Rect;
-}
-
-function FindNodeRectInfo(nodes: LayoutNode[], id: string, parentRect: Rect, parentNode: LayoutNode | null = null): NodeRectInfo | null {
-	for (const node of nodes) {
-		const rect = ResolveRect(node, parentRect);
-		if (node.id === id)
-			return { node, parentNode, parentRect, rect };
-		const childParent = { x: 0, y: 0, width: Math.max(0, rect.width), height: Math.max(0, rect.height) };
-		const found = FindNodeRectInfo(node.children, id, childParent, node);
-		if (found)
-			return found;
-	}
-	return null;
-}
-
-), `$1${newName}$2`);
 	return copy;
 }
 function ContainsNode(node: LayoutNode, id: string): boolean {

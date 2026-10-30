@@ -125,3 +125,12 @@ test("App source edits preserve ID-less declarations in rename, paste and duplic
 	assert.ok(app.includes("return PatchNodeName(localSource, root, newName).split"));
 	assert.ok(app.includes("const block = RenameSourceBlockRoot(lines.slice(range.start, range.end + 1), node.type, node.name, newName);"));
 });
+
+
+test("optional-ID editor source is syntactically isolated and has exactly one copy of each patch helper", () => {
+	const app=readFileSync(new URL("../src/App.tsx",import.meta.url),"utf8");
+	for (const helper of ["RenameSourceBlockRoot", "PatchNodeName", "PatchDuplicateNode"])
+		assert.equal((app.match(new RegExp("function " + helper + "\\(", "g")) ?? []).length, 1, helper);
+	assert.equal((app.match(/import \{ MakeCopiedWidgetNameFromNames \}/g) ?? []).length, 1);
+	assert.equal(app.includes('\\function RenameSourceBlockRoot('), false);
+});
