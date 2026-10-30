@@ -16,6 +16,8 @@ export interface ArrangementOptions {
 	constrainedGrid?: boolean;
 	/** Native-derived fixed-child WrapSpacer only; no content-sized axes. */
 	fixedWrap?: boolean;
+	/** Opt-in Workbench-observed right-to-left and vertical-center fixed Wrap preview. */
+	fixedWrapPreview?: boolean;
 	/** Prototype: resolve vertical Wrap size from fixed child lines at a known width. Requires fixedWrap. */
 	wrapContentHeight?: boolean;
 	/** Authored-only viewport diagnostics; does not simulate native scrolling. */
@@ -156,12 +158,15 @@ export function ProbeWrapContentHeight(
 
 function ArrangeFixedWrap(
 	parent: MeasuredLayoutNode,
-	rect: GeometryRect
+	rect: GeometryRect,
+	preview = false
 ): ChildArrangement | null {
 	const eligible = ReadFixedWrapChildren(parent);
 	if (!eligible || !parent.nativeWrap || parent.unresolvedContentHeight)
 		return null;
-	const plan = PlanFixedWrap(eligible.sizes, rect, parent.nativeWrap);
+	const plan = preview
+		? PlanFixedWrapPreview(eligible.sizes, rect, parent.nativeWrap)
+		: PlanFixedWrap(eligible.sizes, rect, parent.nativeWrap);
 	if (!plan)
 		return null;
 	const rects = ScatterManagedRects(eligible.indices, plan.rects, parent.children.length);
@@ -292,6 +297,8 @@ export function PlanManagedChildren(
 			}
 		};
 	}
+	if (parent.strategy.kind === "wrap" && options.fixedWrapPreview)
+		return ArrangeFixedWrap(parent, containerRect, true);
 	const handler = IMPLEMENTED_STRATEGIES[parent.strategy.kind];
 	return handler?.(parent, containerRect) ?? null;
 }

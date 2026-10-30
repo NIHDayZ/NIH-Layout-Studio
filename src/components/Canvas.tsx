@@ -882,7 +882,10 @@ export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChang
 	const geometryById = useMemo(() => {
 		if (!snapshotEnabled)
 			return undefined;
-		const snapshot = ArrangeMeasuredGeometry(MeasureLayoutTree(nodes), root);
+		const snapshot = ArrangeMeasuredGeometry(MeasureLayoutTree(nodes), root, 1, {
+			fixedWrap: typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalSnapshotManaged") === "1",
+			fixedWrapPreview: typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalSnapshotManaged") === "1"
+		});
 		if (snapshot.issues.some((issue) => issue.code === "duplicate-widget-id"))
 			return undefined;
 		return snapshot.byId;
