@@ -16,6 +16,9 @@ export interface LayoutNode {
 	name: string;
 	properties: LayoutProperty[];
 	children: LayoutNode[];
+	/** Parsed non-renderable class blocks (for example ScriptParamsClass).
+	 * These retain source provenance but never occupy widget child slots. */
+	sourceAuxiliaryBlocks?: LayoutNode[];
 	line: number;
 	/** True only for source declarations without a leading ID/name token.
 	 * In that case node.name is the friendly Name property or a synthetic

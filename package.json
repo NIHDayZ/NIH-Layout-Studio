@@ -23,7 +23,8 @@
     "compare:workbench-common": "node scripts/compare-workbench-common.mjs",
     "extract:workbench-content": "node scripts/extract-workbench-content.mjs",
     "extract:workbench-property-matrix": "node scripts/extract-workbench-property-matrix.mjs",
-    "extract:workbench-property-syntax": "node scripts/extract-workbench-property-syntax.mjs"
+    "extract:workbench-property-syntax": "node scripts/extract-workbench-property-syntax.mjs",
+    "test:layout-corpus": "esbuild src/parser/LayoutParser.ts --bundle --platform=node --format=esm --target=es2022 --outfile=.geometry-engine-test-build/LayoutParser.js && node scripts/verify-layout-parser-corpus.mjs"
   },
   "dependencies": {
     "react": "^19.1.1",

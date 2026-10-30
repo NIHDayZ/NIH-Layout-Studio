@@ -127,6 +127,18 @@ export class LayoutParser {
 		return document.roots.map((root) => this.SerializeNode(root, 0)).join("\n\n") + "\n";
 	}
 
+	private AddParsedChild(parent: LayoutNode, child: LayoutNode): void {
+		// Source class declarations and renderable widgets share syntax, but
+		// ScriptParamsClass is metadata and must not affect child geometry.
+		if (child.type.toLowerCase().includes("widgetclass")) {
+			parent.children.push(child);
+			return;
+		}
+		if (!parent.sourceAuxiliaryBlocks)
+			parent.sourceAuxiliaryBlocks = [];
+		parent.sourceAuxiliaryBlocks.push(child);
+	}
+
 	private ParseNode(tokens: LineToken[], startIndex: number, type: string, name: string | null): { node: LayoutNode; nextIndex: number } {
 		const node: LayoutNode = {
 			id: `node-${this.m_NextNodeId++}`,
@@ -176,7 +188,7 @@ export class LayoutParser {
 					const child = this.ParseNode(tokens, index, childDecl.type, childDecl.name);
 					child.node.sourceGroupLine = childGroupLine;
 					child.node.sourceGroupParentId = node.id;
-					node.children.push(child.node);
+					this.AddParsedChild(node, child.node);
 					index = child.nextIndex;
 				}
 				if (index < tokens.length && tokens[index].text === "}")
@@ -189,7 +201,7 @@ export class LayoutParser {
 				const child = this.ParseNode(tokens, index, declaration.type, declaration.name);
 				child.node.sourceGroupLine = token.line;
 				child.node.sourceGroupParentId = node.id;
-				node.children.push(child.node);
+				this.AddParsedChild(node, child.node);
 				index = child.nextIndex;
 				continue;
 			}
@@ -233,7 +245,12 @@ export class LayoutParser {
 
 		const grouped = new Map<number, LayoutNode[]>();
 		const synthesized: LayoutNode[] = [];
-		for (const child of node.children) {
+		// Treat metadata and widgets as one source-ordered sequence for output,
+		// without exposing metadata to layout, hierarchy or managed child slots.
+		const sourceChildren = node.sourceAuxiliaryBlocks?.length
+			? [...node.children, ...node.sourceAuxiliaryBlocks].sort((left, right) => left.line - right.line)
+			: node.children;
+		for (const child of sourceChildren) {
 			const groupLine = child.sourceGroupLine;
 			if (child.sourceGroupParentId !== node.id ||
 				groupLine === undefined || !Number.isSafeInteger(groupLine) || groupLine <= 0) {

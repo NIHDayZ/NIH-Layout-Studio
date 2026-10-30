@@ -134,3 +134,97 @@ test("optional-ID editor source is syntactically isolated and has exactly one co
 	assert.equal((app.match(/import \{ MakeCopiedWidgetNameFromNames \}/g) ?? []).length, 1);
 	assert.equal(app.includes('\\function RenameSourceBlockRoot('), false);
 });
+
+test("ScriptParamsClass is preserved as source metadata, not a layout widget", () => {
+	const source = [
+		'FrameWidgetClass "Root" {',
+		'  {',
+		'    GridSpacerWidgetClass "Grid" {',
+		'      rows 1',
+		'      columns 2',
+		'      {',
+		'        TextWidgetClass "Before" {',
+		'          text "A"',
+		'        }',
+		'      }',
+		'      {',
+		'        ScriptParamsClass {',
+		'          AlignChilds 1',
+		'          Gap 2',
+		'        }',
+		'      }',
+		'      {',
+		'        TextWidgetClass "After" {',
+		'          text "B"',
+		'        }',
+		'      }',
+		'    }',
+		'  }',
+		'}'
+	].join("\n");
+	const root = p.Parse(source).roots[0];
+	assert.equal(root.children.length, 1);
+	const grid = root.children[0];
+	assert.deepEqual(grid.children.map(c => c.name), ['"Before"', '"After"']);
+	assert.equal(grid.sourceAuxiliaryBlocks?.length, 1);
+	assert.equal(grid.sourceAuxiliaryBlocks?.[0].type, "ScriptParamsClass");
+	assert.equal(grid.sourceAuxiliaryBlocks?.[0].properties.length, 2);
+	assert.equal(grid.children[0].sourceGroupLine < grid.sourceAuxiliaryBlocks[0].sourceGroupLine, true);
+	assert.equal(grid.sourceAuxiliaryBlocks[0].sourceGroupLine < grid.children[1].sourceGroupLine, true);
+	assert.equal(p.Parse(source).source, source);
+	const canonical = p.Serialize(p.Parse(source));
+	const before = canonical.indexOf('TextWidgetClass "Before"');
+	const metadata = canonical.indexOf('ScriptParamsClass {');
+	const after = canonical.indexOf('TextWidgetClass "After"');
+	assert.ok(before >= 0 && before < metadata && metadata < after);
+	assert.ok(canonical.includes('AlignChilds 1'));
+	assert.ok(canonical.includes('Gap 2'));
+	const again = p.Parse(canonical).roots[0].children[0];
+	assert.deepEqual(again.children.map(c => c.name), grid.children.map(c => c.name));
+	assert.equal(again.sourceAuxiliaryBlocks?.length, 1);
+	assert.equal(p.Serialize(p.Parse(canonical)), canonical);
+});
+
+test("all non-widget class declarations stay outside widget child geometry", () => {
+	const source = [
+		'FrameWidgetClass {',
+		'  Name "Root"',
+		'  {',
+		'    ScriptParamsClass {',
+		'      Gap 2',
+		'    }',
+		'    PanelWidgetClass {',
+		'      Name "Panel"',
+		'    }',
+		'    ScriptParamsClass {',
+		'      AlignChilds 0',
+		'    }',
+		'  }',
+		'}'
+	].join("\r\n");
+	const first = p.Parse(source).roots[0];
+	assert.deepEqual(first.children.map(c => c.name), ["Panel"]);
+	assert.equal(first.sourceAuxiliaryBlocks?.length, 2);
+	assert.equal(first.sourceAuxiliaryBlocks[0].sourceHasNoIdentifier, true);
+	const round = p.Parse(p.Serialize(p.Parse(source))).roots[0];
+	assert.equal(round.children.length, 1);
+	assert.equal(round.sourceAuxiliaryBlocks?.length, 2);
+	assert.equal(round.children[0].name, "Panel");
+	assert.equal(p.Parse(source).source, source);
+});
+
+test("source IDs may repeat without colliding with internal node IDs", () => {
+	const source = [
+		'FrameWidgetClass Root {',
+		'  {',
+		'    WrapSpacerWidgetClass "{00000000CDEFDF47}" {}',
+		'    WrapSpacerWidgetClass "{00000000CDEFDF47}" {}',
+		'  }',
+		'}'
+	].join("\n").replaceAll(" {}"," {\n    }");
+	const [root] = p.Parse(source).roots;
+	assert.equal(root.children.length, 2);
+	assert.equal(root.children[0].name, root.children[1].name);
+	assert.notEqual(root.children[0].id, root.children[1].id);
+	assert.equal(p.Parse(p.Serialize(p.Parse(source))).roots[0].children.length, 2);
+});
