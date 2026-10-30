@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
 import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
 import { MsdfAlpha, MsdfAlphaWithBias, MsdfScaledSmoothing } from "./SdfMsdfMath";
-import { Fnt5Placement } from "./Fnt5Placement";
+import { ResolveSdfGlyphDrawPlan } from "./SdfGlyphDrawPlan";
 import { ResolveExperimentalFnt5LineOrigin } from "../renderer/engine/Fnt5LineOriginExperiment";
 import { ReadFnt5ResearchOptions } from "../renderer/engine/Fnt5ResearchOptions";
 import { WrapPreviewText } from "../renderer/engine/TextFlow";
@@ -212,7 +212,6 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
    canvas.height = pixelHeight;
    const meta = resource.metadata;
    const scale = fontSize / meta.fontSize;
-   const atlasScale = atlas.source.width / meta.atlasWidth;
    const advance = (value: string) => Array.from(value).reduce((sum, letter) => {
     const glyph = resource.glyphs.get(letter.codePointAt(0) ?? 0);
     return sum + (glyph ? (resource.fnt5PixelMetrics ? glyph.advance * scale : SdfGlyphAdvance(glyph.advance, fontSize)) : fontSize / 2);
@@ -240,25 +239,27 @@ export function SdfTextCanvas({ resource, text, color, fontSize, width, height, 
      if (glyph.width > 0 && glyph.height > 0) {
       const sprite = RasterGlyph(resource, atlas, glyph, fontSize);
       if (sprite) {
-       // The standalone FNT5 cell includes distance-field padding. A provisional
-       // centering path keeps that padding around the nominal glyph bounds and
-       // scales the entire cell using the font's actual FNT5 nominal size.
-       if (experimentalFnt5CellLayout && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
-        // Diagnostic: align the entire reconstructed glyph cell at the line origin.
-        // Keep the existing advance, wrapping and widget clipping unchanged.
-        ink.drawImage(sprite, penX, baseY, resource.fnt5CellSize * scale, resource.fnt5CellSize * scale);
-        LogFnt5Placement(resource, glyph, character, "cell", fontSize, penX, baseY, penX, baseY, resource.fnt5CellSize * scale, resource.fnt5CellSize * scale, width, height, clipPadding, sprite);
-       } else if (experimentalFnt5Placement && resource.fnt5PixelMetrics && resource.fnt5CellSize) {
-        const placement = Fnt5Placement(resource.fnt5CellSize, glyph.width, glyph.height, glyph.bearingX, glyph.bearingY, meta.fontSize, fontSize, penX, baseY);
-        if (placement) {
-         ink.drawImage(sprite, placement.x, placement.y, placement.size, placement.size);
-         LogFnt5Placement(resource, glyph, character, "bearing", fontSize, penX, baseY, placement.x, placement.y, placement.size, placement.size, width, height, clipPadding, sprite);
-        }
-       } else {
-        const x = penX + glyph.bearingX * scale;
-        const y = baseY + (meta.fontSize - glyph.bearingY) * scale;
-        ink.drawImage(sprite, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale);
-        LogFnt5Placement(resource, glyph, character, "legacy", fontSize, penX, baseY, x, y, sprite.width * scale / atlasScale, sprite.height * scale / atlasScale, width, height, clipPadding, sprite);
+       const plan = ResolveSdfGlyphDrawPlan({
+        cellLayout: experimentalFnt5CellLayout,
+        bearingPlacement: experimentalFnt5Placement,
+        hasFnt5PixelMetrics: !!resource.fnt5PixelMetrics,
+        cellSize: resource.fnt5CellSize,
+        glyphWidth: glyph.width,
+        glyphHeight: glyph.height,
+        bearingX: glyph.bearingX,
+        bearingY: glyph.bearingY,
+        nominalFontSize: meta.fontSize,
+        requestedFontSize: fontSize,
+        penX,
+        baseY,
+        spriteWidth: sprite.width,
+        spriteHeight: sprite.height,
+        atlasWidth: atlas.source.width,
+        referenceAtlasWidth: meta.atlasWidth
+       });
+       if (plan) {
+        ink.drawImage(sprite, plan.x, plan.y, plan.width, plan.height);
+        LogFnt5Placement(resource, glyph, character, plan.mode, fontSize, penX, baseY, plan.x, plan.y, plan.width, plan.height, width, height, clipPadding, sprite);
        }
       }
      }
