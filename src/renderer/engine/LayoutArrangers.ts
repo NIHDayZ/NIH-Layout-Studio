@@ -43,6 +43,8 @@ export interface ArrangementOptions {
 	 * These bounds do NOT resize parents or simulate native sizing policy.
 	 */
 	directChildBoundsDiagnostics?: boolean;
+	/** Diagnostic only; never changes native Grid sizing or child placement. */
+	gridContentCandidateDiagnostics?: boolean;
 	/**
 	 * Common authored visibility and ancestor-clip intersection diagnostics.
 	 * Read-only, class-agnostic, and NOT a native scissor/painting strategy.
@@ -258,6 +260,54 @@ export function PlanNativeManagedPreview(
 		return null;
 	const settings = DecodeNativeWrapSettings(properties);
 	return PlanFixedWrapPreview(children, container, settings)?.rects ?? null;
+}
+
+/**
+ * Conservative fixed-child content envelope for diagnostic comparison.
+ * This is NOT recovered native Grid measurement and never changes layout.
+ */
+export interface GridContentCandidate {
+	id: string;
+	width: number;
+	height: number;
+	columns: number;
+	rows: number;
+	measuredChildren: number;
+	evidence: "fixed-child-lower-bound";
+}
+
+export function ProbeGridContentCandidate(parent: MeasuredLayoutNode): GridContentCandidate | null {
+	if (parent.strategy.kind !== "grid"
+		|| (!parent.unresolvedContentWidth && !parent.unresolvedContentHeight)
+		|| !parent.nativeGrid)
+		return null;
+	const grid = parent.nativeGrid;
+	const indices = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
+	if (!indices || indices.length === 0 || indices.length > grid.columns * grid.rows)
+		return null;
+	const widths = Array<number>(grid.columns).fill(0);
+	const heights = Array<number>(grid.rows).fill(0);
+	for (let i = 0; i < indices.length; ++i) {
+		const child = parent.children[indices[i]];
+		const authored = child.authored;
+		if (child.strategy.requiresArrangement || !authored.exactSizeX || !authored.exactSizeY
+			|| authored.sizeToContentWidth || authored.sizeToContentHeight
+			|| !Number.isFinite(authored.sizeX) || authored.sizeX < 0
+			|| !Number.isFinite(authored.sizeY) || authored.sizeY < 0)
+			return null;
+		const column = i % grid.columns;
+		const row = Math.floor(i / grid.columns);
+		widths[column] = Math.max(widths[column], authored.sizeX);
+		heights[row] = Math.max(heights[row], authored.sizeY);
+	}
+	const width = widths.reduce((sum, value) => sum + value, 0)
+		+ 2 * grid.padding + Math.max(0, grid.columns - 1) * grid.margin;
+	const height = heights.reduce((sum, value) => sum + value, 0)
+		+ 2 * grid.padding + Math.max(0, grid.rows - 1) * grid.margin;
+	if (!Number.isFinite(width) || !Number.isFinite(height))
+		return null;
+	return { id: parent.node.id, width, height, columns: grid.columns,
+		rows: grid.rows, measuredChildren: indices.length, evidence: "fixed-child-lower-bound" };
 }
 
 type StrategyPlanner = (node: MeasuredLayoutNode, rect: GeometryRect) => ChildArrangement | null;

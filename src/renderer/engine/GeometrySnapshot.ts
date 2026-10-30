@@ -1,7 +1,7 @@
 import { ResolveChildClip, TranslateRect, type ArrangedWidget, type GeometryRect, type LayoutConstraints, type MeasuredWidget } from "./GeometryCore.js";
 import { ResolveAuthoredRect, ResolveAuthoredRectWithSize, type GeometryWidget } from "./WidgetGeometry.js";
 import { ChildConstraints, MeasureLayoutTree, type MeasuredLayoutNode, type MeasuredLayoutTree } from "./LayoutMeasurement.js";
-import { PlanManagedChildren, ProbeWrapContentHeight, ProbeScrollViewport, ProbeUnscaledScrollViewport, type ArrangementOptions, type AppliedLayoutStrategy } from "./LayoutArrangers.js";
+import { PlanManagedChildren, ProbeGridContentCandidate, ProbeWrapContentHeight, ProbeScrollViewport, ProbeUnscaledScrollViewport, type ArrangementOptions, type AppliedLayoutStrategy, type GridContentCandidate } from "./LayoutArrangers.js";
 import type { UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
 import { ProjectNativeScrollChildContext, type NativeScrollChildContext } from "./ScrollOffset.js";
 import { EstimateNativeScrollExtent, type AuthoredScrollViewport, type NativeScrollExtentCandidate } from "./ScrollViewport.js";
@@ -79,6 +79,8 @@ export interface AuthoredGeometrySnapshot {
 	visibilityDiagnostics: ReadonlyMap<string, AuthoredVisibilityDiagnostic>;
 	/** Generic bounds of already arranged direct children, not a native content-size policy. */
 	directChildBoundsCandidates: ReadonlyMap<string, ArrangedDirectChildBounds>;
+	/** Diagnostic lower-bound candidates; no native measurement asserted. */
+	gridContentCandidates: ReadonlyMap<string, GridContentCandidate>;
 	rootRect: GeometryRect;
 }
 
@@ -109,6 +111,7 @@ export function ArrangeMeasuredGeometry(
 	const scrollAdjustedViewports = new Map<string, UnscaledScrollViewportCandidate>();
 	const scrollChildContextCandidates = new Map<string, NativeScrollChildContext>();
 	const visibilityDiagnostics = new Map<string, AuthoredVisibilityDiagnostic>();
+	const gridContentCandidates = new Map<string, GridContentCandidate>();
 	// Only the current arrangement pass owns these width-dependent metrics.
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
@@ -144,6 +147,11 @@ export function ArrangeMeasuredGeometry(
 		for (let index = 0; index < nodes.length; ++index) {
 			const prepared = nodes[index];
 			const { node, authored, strategy } = prepared;
+			if (options.gridContentCandidateDiagnostics) {
+				const candidate = ProbeGridContentCandidate(prepared);
+				if (candidate)
+					gridContentCandidates.set(node.id, candidate);
+			}
 			const parentSize = {
 				width: constraints.availableWidth,
 				height: constraints.availableHeight
@@ -343,7 +351,7 @@ export function ArrangeMeasuredGeometry(
 	const directChildBoundsCandidates = options.directChildBoundsDiagnostics
 		? MeasureArrangedDirectChildBounds(entries)
 		: new Map<string, ArrangedDirectChildBounds>();
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, visibilityDiagnostics, directChildBoundsCandidates, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, visibilityDiagnostics, directChildBoundsCandidates, gridContentCandidates, rootRect: { ...rootRect } };
 }
 
 /**
