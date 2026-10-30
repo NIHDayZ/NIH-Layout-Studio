@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { MeasureLayoutTree } from "../.geometry-engine-test-build/GeometryComparison.js";
-import { ArrangeMeasuredGeometry } from "../.geometry-engine-test-build/GeometryComparison.js";
+import { MeasureLayoutTree } from "../.geometry-engine-test-build/SnapshotForTests.js";
+import { ArrangeMeasuredGeometry } from "../.geometry-engine-test-build/SnapshotForTests.js";
 const N=(id,type,properties=[],children=[])=>({id,name:id,type,properties:properties.map(([name,value])=>({name,value})),children});
 const F=(w,h)=>[["size",w+" "+h],["hexactsize","1"],["vexactsize","1"]];
 test("snapshot native fixed Wrap uses right-to-left order only when preview option is set",()=>{
