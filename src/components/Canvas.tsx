@@ -3,6 +3,7 @@ import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
 import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../renderer/GridLayout";
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { ResolveExperimentalFnt5FontSize } from "../renderer/engine/Fnt5FontSizingExperiment";
+import { ReadFnt5ResearchOptions } from "../renderer/engine/Fnt5ResearchOptions";
 import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
 import { DecodeNativeImageWidgetFlags, NativeImageFlipCssTransform } from "../renderer/engine/NativeImageUv";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
@@ -294,10 +295,8 @@ function ResolveControlTextStyle(node: LayoutNode, rect: Rect, fontFamilyOverrid
 	return textStyle;
 }
 
-const experimentalFnt5FitRaw = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("experimentalFnt5Fit") : null;
-// "1" retains the legacy 0.9/capped experiment. "height" requests exact widget height
-// without a nominal-font cap. Neither mode is used by the production/default route.
-const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
+// Read only once at module startup, as before. Neither fit mode affects default rendering.
+const { fit: experimentalFnt5FitRaw, debugSampling: debugTextResolution } = ReadFnt5ResearchOptions();
 const debugHudGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugHudGeometry") === "1";
 const experimentalWorkbenchControlFonts = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchControlFonts") === "1";
 const experimentalWorkbenchBackdrop = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchBackdrop") === "1";

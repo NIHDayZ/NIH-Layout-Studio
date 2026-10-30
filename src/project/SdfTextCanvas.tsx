@@ -4,6 +4,7 @@ import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./Sd
 import { MsdfAlpha, MsdfAlphaWithBias, MsdfScaledSmoothing } from "./SdfMsdfMath";
 import { Fnt5Placement } from "./Fnt5Placement";
 import { ResolveExperimentalFnt5LineOrigin } from "../renderer/engine/Fnt5LineOriginExperiment";
+import { ReadFnt5ResearchOptions } from "../renderer/engine/Fnt5ResearchOptions";
 import { WrapPreviewText } from "../renderer/engine/TextFlow";
 
 export interface SdfFontResource {
@@ -20,13 +21,18 @@ interface CachedAtlas {
  glyphs: Map<string, HTMLCanvasElement>;
 }
 const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
-// Explicit opt-in via ?experimentalMsdf=1; production remains on legacy red-channel SDF.
-const experimentalFnt5Cells = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Cells") === "1";
-const experimentalFnt5Placement = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Placement") === "1";
-const experimentalFnt5CellLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalFnt5Layout") === "cell";
-const experimentalFnt5LineOrigin = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("experimentalFnt5LineOrigin") : null;
-const debugFnt5Clip = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Clip") === "1";
-const debugFnt5Sampling = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
+// Preserve the original module-initialization snapshot and opt-in semantics.
+const {
+	cells: experimentalFnt5Cells,
+	placement: experimentalFnt5Placement,
+	cellLayout: experimentalFnt5CellLayout,
+	lineOrigin: experimentalFnt5LineOrigin,
+	debugClip: debugFnt5Clip,
+	debugSampling: debugFnt5Sampling,
+	msdf: experimentalMsdf,
+	msdfSmoothing: experimentalMsdfSmoothing,
+	msdfStroke: experimentalMsdfStroke
+} = ReadFnt5ResearchOptions();
 const loggedGlyphs = new Set<string>();
 const loggedWidgets = new Set<string>();
 const loggedPlacements = new Set<string>();
@@ -40,9 +46,6 @@ function ResourceId(resource: SdfFontResource): number {
  }
  return id;
 }
-const experimentalMsdf = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdf") === "1";
-const experimentalMsdfSmoothing = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfSmoothing") === "1";
-const experimentalMsdfStroke = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalMsdfStroke") === "1";
 function LogFnt5Placement(resource: SdfFontResource, glyph: SdfGlyphMetric, character: string, mode: string, requestedFontSize: number, penX: number, baseY: number, drawX: number, drawY: number, drawWidth: number, drawHeight: number, widgetWidth: number, widgetHeight: number, clipPadding: number, sprite: HTMLCanvasElement) {
  if (!debugFnt5Sampling || loggedPlacements.size >= 120)
   return;

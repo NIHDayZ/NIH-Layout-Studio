@@ -3,6 +3,7 @@ import type { SdfFontResource } from "./SdfTextCanvas";
 import { InspectFnt5, ParseFsdf, ParseFsdfGlyphMetrics } from "./Fnt5Metadata";
 import { ParseFnt5AtlasOrigins } from "./Fnt5AtlasOrigins";
 import { ParseStandaloneFnt5 } from "./Fnt5Standalone";
+import { ReadFnt5ResearchOptions } from "../renderer/engine/Fnt5ResearchOptions";
 import { Fnt5SiblingPaths } from "./Fnt5SiblingPaths";
 import type {
 	ImageSetDefinition,
@@ -489,7 +490,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 						++fnt5Inspected;
 						let standaloneFnt5Loaded = false;
 						// Sidecar-less FNT5 parsing is experimental and only enabled for local validation.
-						if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalStandaloneFnt5") === "1") {
+						if (ReadFnt5ResearchOptions().standalone) {
 							const paths = Fnt5SiblingPaths(fontFile.path);
 							const atlas = files.find((candidate) => candidate.extension === ".edds" && NormalizePath(candidate.path).toLowerCase() === paths.atlasPath);
 							const atlasUrl = atlas ? resourceObjectUrls.get(atlas.path) : undefined;
