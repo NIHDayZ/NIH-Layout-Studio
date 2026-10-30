@@ -13,7 +13,8 @@ test("snapshot native fixed Wrap uses right-to-left order only when preview opti
 	const strict=ArrangeMeasuredGeometry(tree,viewport,1,{fixedWrap:true});
 	const preview=ArrangeMeasuredGeometry(tree,viewport,1,{fixedWrap:true,fixedWrapPreview:true});
 	assert.equal(baseline.appliedStrategies.length,0);
-	assert.equal(strict.appliedStrategies.length,0);
+	assert.equal(strict.appliedStrategies.length,1);
+	assert.equal(strict.byId.get("a").localRect.x,50);
 	assert.equal(preview.appliedStrategies.length,1);
 	assert.equal(preview.byId.get("a").localRect.x,80);
 	assert.equal(preview.byId.get("b").localRect.x,50);
