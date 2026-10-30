@@ -17,6 +17,10 @@ export interface LayoutNode {
 	properties: LayoutProperty[];
 	children: LayoutNode[];
 	line: number;
+	/** True only for source declarations without a leading ID/name token.
+	 * In that case node.name is the friendly Name property or a synthetic
+	 * UI lookup label, and must never be serialized as a declaration token. */
+	sourceHasNoIdentifier?: boolean;
 	/** Original containing child-group opening line; optional for synthesized nodes. */
 	sourceGroupLine?: number;
 	/** Parent node ID at parse time; stops stale source coordinates after reparenting. */

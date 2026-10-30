@@ -127,11 +127,12 @@ export class LayoutParser {
 		return document.roots.map((root) => this.SerializeNode(root, 0)).join("\n\n") + "\n";
 	}
 
-	private ParseNode(tokens: LineToken[], startIndex: number, type: string, name: string): { node: LayoutNode; nextIndex: number } {
+	private ParseNode(tokens: LineToken[], startIndex: number, type: string, name: string | null): { node: LayoutNode; nextIndex: number } {
 		const node: LayoutNode = {
 			id: `node-${this.m_NextNodeId++}`,
 			type,
-			name,
+			name: name ?? "",
+			...(name === null ? { sourceHasNoIdentifier: true } : {}),
 			properties: [],
 			children: [],
 			line: tokens[startIndex].line
@@ -199,13 +200,20 @@ export class LayoutParser {
 			++index;
 		}
 
+		// DayZ layouts may omit the declaration identifier (both historical
+		// and current mixed-format files). Name is a separate property and
+		// must not be invented in the original class declaration.
+		if (name === null) {
+			const friendlyName = node.properties.find((property) => property.name.toLowerCase() === "name")?.value;
+			node.name = friendlyName || `${type}@${node.line}`;
+		}
 		return { node, nextIndex: index };
 	}
 
 	private SerializeNode(node: LayoutNode, depth: number): string {
 		const indent = "\t".repeat(depth);
 		const propertyIndent = "\t".repeat(depth + 1);
-		let output = `${indent}${node.type} ${node.name} {\n`;
+		let output = `${indent}${node.type}${node.sourceHasNoIdentifier ? "" : ` ${node.name}`} {\n`;
 
 		// Keep the original property / child-group order when source provenance
 		// exists. This is syntax preservation, not a widget-family exception.
@@ -374,20 +382,17 @@ export class LayoutParser {
 		return trimmed;
 	}
 
-	private TryParseDeclaration(text: string): { type: string; name: string } | null {
+	private TryParseDeclaration(text: string): { type: string; name: string | null } | null {
 		const trimmed = text.trim();
 		if (!trimmed || trimmed === "{" || trimmed === "}" || trimmed.startsWith("//"))
 			return null;
 
-		const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)\s+("(?:\\.|[^"\\])*"|[^\s{]+)\s*(?:\{)?$/);
+		const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*Class)(?:\s+("(?:\\.|[^"\\])*"|[^\s{]+))?\s*(?:\{)?$/);
 		if (!match)
 			return null;
 
 		const type = match[1];
-		const name = match[2];
-		if (!type.endsWith("Class"))
-			return null;
-
+		const name = match[2] ?? null;
 		return { type, name };
 	}
 

@@ -54,3 +54,15 @@ test("duplicate/paste generate valid unique IDs that survive a parse and save", 
 	assert.equal(parser.Parse(parser.Serialize(edited)).roots[0].children[0].name, copied);
 	assert.equal(MakeCopiedWidgetNameFromNames(new Set(["Label_Copy"]), "Label"), "Label_Copy2");
 });
+
+test("ID-less root declaration retains the separate friendly Name property", () => {
+	const original='FrameWidgetClass {\n Name "HudFrameWidget"\n position 0 0\n size 0.9 0.9\n halign center_ref\n valign center_ref\n {\n  TextWidgetClass "{00000000000000AA}" {\n   Name "Prompt"\n  }\n }\n}';
+	const parser = new LayoutParser();
+	const document=parser.Parse(original);
+	assert.equal(document.roots.length,1);
+	assert.equal(document.roots[0].name,"HudFrameWidget");
+	assert.equal(document.roots[0].sourceHasNoIdentifier,true);
+	assert.equal(document.roots[0].children.length,1);
+	assert.ok(parser.Serialize(document).startsWith("FrameWidgetClass {"));
+	assert.equal(parser.Parse(parser.Serialize(document)).roots[0].name,"HudFrameWidget");
+});
