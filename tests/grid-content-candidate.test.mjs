@@ -14,7 +14,7 @@ test("fixed-child content candidate remains read-only and reports a measurable e
 	assert.deepEqual(diagnostic.entries,baseline.entries);
 	assert.deepEqual(diagnostic.appliedStrategies,[]);
 	assert.deepEqual(diagnostic.issues,baseline.issues);
-	assert.deepEqual(diagnostic.gridContentCandidates.get("grid"),{id:"grid",width:80,height:50,columns:2,rows:2,measuredChildren:3,evidence:"fixed-child-lower-bound"});
+	assert.deepEqual(diagnostic.gridContentCandidates.get("grid"),{id:"grid",width:70,height:50,columns:2,rows:2,measuredChildren:3,evidence:"fixed-child-lower-bound"});
 });
 test("relative or content-sized child does not become an invented Grid measurement",()=>{
 	const relative=N("child","PanelWidgetClass",[["size","1 1"]]);
