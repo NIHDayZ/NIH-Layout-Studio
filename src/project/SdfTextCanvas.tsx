@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
-import { SdfAtlasCell, SdfCellSize, SdfGlyphAdvance, SdfSampleAlpha } from "./SdfRasterMath";
-import { MsdfAlpha, MsdfAlphaWithBias, MsdfScaledSmoothing } from "./SdfMsdfMath";
+import { SdfGlyphAdvance } from "./SdfRasterMath";
+import { ResolveSdfGlyphAtlasSample, ResolveSdfGlyphCacheKey, RasterizeSdfGlyphAlpha } from "./SdfGlyphRasterPlan";
 import { ResolveSdfGlyphDrawPlan } from "./SdfGlyphDrawPlan";
 import { ResolveExperimentalFnt5LineOrigin } from "../renderer/engine/Fnt5LineOriginExperiment";
 import { ReadFnt5ResearchOptions } from "../renderer/engine/Fnt5ResearchOptions";
@@ -114,18 +114,25 @@ function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
  return task;
 }
 function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGlyphMetric, displayedFontSize: number): HTMLCanvasElement | null {
- const cacheKey = experimentalMsdf && (experimentalMsdfSmoothing || experimentalMsdfStroke) ? `${glyph.codePoint}:${displayedFontSize}` : `${glyph.codePoint}`;
+ const cacheKey = ResolveSdfGlyphCacheKey(glyph.codePoint, displayedFontSize, experimentalMsdf, experimentalMsdfSmoothing, experimentalMsdfStroke);
  const cached = atlas.glyphs.get(cacheKey);
  if (cached)
   return cached;
- const origin = experimentalFnt5Cells ? resource.fnt5Origins?.get(glyph.codePoint) : undefined;
- // Only the tested MetronBook24 atlas has a verified 38px grid pitch.
- const usesTcrd = !!(origin && resource.fnt5Name?.toLowerCase() === "sdf_metronbook24" && resource.metadata.fontSize === 24 && atlas.source.width === 1024 && atlas.source.height === 1024);
- const rect = resource.fnt5PixelMetrics && resource.fnt5CellSize && resource.fnt5Origins?.has(glyph.codePoint)
-  ? { left: resource.fnt5Origins.get(glyph.codePoint)!.x, top: resource.fnt5Origins.get(glyph.codePoint)!.y, size: resource.fnt5CellSize, scale: 1 }
-  : usesTcrd
-  ? { left: origin.x, top: origin.y, size: 38, scale: 1 }
-  : SdfAtlasCell(glyph.x, glyph.y, SdfCellSize(resource.metadata.fontSize, resource.metadata.charScale), resource.metadata.atlasWidth, atlas.source.width, atlas.source.height);
+ const sample = ResolveSdfGlyphAtlasSample({
+  nativeOrigin: resource.fnt5Origins?.get(glyph.codePoint),
+  useExperimentalCells: experimentalFnt5Cells,
+  hasFnt5PixelMetrics: !!resource.fnt5PixelMetrics,
+  fnt5CellSize: resource.fnt5CellSize,
+  fnt5Name: resource.fnt5Name,
+  nominalFontSize: resource.metadata.fontSize,
+  charScale: resource.metadata.charScale,
+  glyphX: glyph.x,
+  glyphY: glyph.y,
+  referenceAtlasWidth: resource.metadata.atlasWidth,
+  atlasWidth: atlas.source.width,
+  atlasHeight: atlas.source.height
+ });
+ const { rect, origin } = sample;
  if (debugFnt5Sampling && loggedGlyphs.size < 120) {
   const key = ResourceId(resource) + ":" + glyph.codePoint + ":" + experimentalFnt5Cells + ":" + experimentalMsdf;
   if (!loggedGlyphs.has(key)) {
@@ -140,7 +147,7 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
     fontSize: resource.metadata.fontSize,
     fnt5OriginsCount: resource.fnt5Origins?.size ?? 0,
     origin: origin ?? null,
-    selected: resource.fnt5PixelMetrics && resource.fnt5CellSize && resource.fnt5Origins?.has(glyph.codePoint) ? "Standalone FNT5 cell" : usesTcrd ? "TCRD" : "FSDF fallback",
+    selected: sample.selected,
     rectangle: rect,
     msdf: experimentalMsdf
    });
@@ -153,17 +160,14 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  if (!sourceCtx)
   return null;
  const pixels = sourceCtx.getImageData(sourceX, sourceY, cell, cell);
- for (let p = 0; p < pixels.data.length; p += 4) {
-  const alpha = experimentalMsdf
-   ? experimentalMsdfStroke
-    ? MsdfAlphaWithBias(pixels.data[p], pixels.data[p + 1], pixels.data[p + 2], resource.metadata.inverted, experimentalMsdfSmoothing ? MsdfScaledSmoothing(displayedFontSize, resource.metadata.fontSize) : 12, 2)
-    : MsdfAlpha(pixels.data[p], pixels.data[p + 1], pixels.data[p + 2], resource.metadata.inverted, experimentalMsdfSmoothing ? MsdfScaledSmoothing(displayedFontSize, resource.metadata.fontSize) : 12)
-   : SdfSampleAlpha(pixels.data[p], resource.metadata.inverted);
-  pixels.data[p] = 255;
-  pixels.data[p + 1] = 255;
-  pixels.data[p + 2] = 255;
-  pixels.data[p + 3] = alpha;
- }
+ RasterizeSdfGlyphAlpha(pixels.data, {
+  msdf: experimentalMsdf,
+  smoothing: experimentalMsdfSmoothing,
+  stroke: experimentalMsdfStroke,
+  inverted: resource.metadata.inverted,
+  displayedFontSize,
+  nominalFontSize: resource.metadata.fontSize
+ });
  const canvas = document.createElement("canvas");
  canvas.width = cell;
  canvas.height = cell;
