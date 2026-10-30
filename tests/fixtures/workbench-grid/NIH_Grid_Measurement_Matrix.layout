@@ -1,0 +1,283 @@
+FrameWidgetClass NIHGridMeasureMatrix {
+	position 0 0
+	size 1 1
+	hexactpos 1
+	vexactpos 1
+	{
+		GridSpacerWidgetClass GridFixed {
+			position 20 20
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 0
+			"Size To Content V" 0
+			{
+				PanelWidgetClass GridFixedChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridFixedChild1 {
+					position 0 0
+					size 20 15
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridFixedChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass GridContentH {
+			position 300 20
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 0
+			{
+				PanelWidgetClass GridContentHChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridContentHChild1 {
+					position 0 0
+					size 20 15
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridContentHChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass GridContentV {
+			position 580 20
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 0
+			"Size To Content V" 1
+			{
+				PanelWidgetClass GridContentVChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridContentVChild1 {
+					position 0 0
+					size 20 15
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridContentVChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass GridContentBoth {
+			position 860 20
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass GridContentBothChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridContentBothChild1 {
+					position 0 0
+					size 20 15
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridContentBothChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass GridRelativeChild {
+			position 20 340
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass GridRelativeChildChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridRelativeChildChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass GridRelativeChildChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass GridHiddenDefault {
+			position 300 340
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass GridHiddenDefaultChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridHiddenDefaultChild1 {
+					position 0 0
+					size 20 15
+					hexactsize 1
+					vexactsize 1
+					visible 0
+				}
+				PanelWidgetClass GridHiddenDefaultChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass GridHiddenIncluded {
+			position 580 340
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			"Ignore invisible" 0
+			{
+				PanelWidgetClass GridHiddenIncludedChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridHiddenIncludedChild1 {
+					position 0 0
+					size 20 15
+					hexactsize 1
+					vexactsize 1
+					visible 0
+				}
+				PanelWidgetClass GridHiddenIncludedChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass GridExplicitCounts {
+			position 860 340
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass GridExplicitCountsChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridExplicitCountsChild1 {
+					position 0 0
+					size 20 15
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass GridExplicitCountsChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+	}
+}
