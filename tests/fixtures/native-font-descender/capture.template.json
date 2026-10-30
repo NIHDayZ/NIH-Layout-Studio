@@ -1,0 +1,815 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-text-descender-parent-clipping-pending",
+  "fixture": "tests/fixtures/native-font-descender/NIH_NativeFontDescenderBoundary.layout",
+  "root": [
+    1280,
+    720
+  ],
+  "nativePaintVerified": false,
+  "sourceObservationsAvailable": false,
+  "studioMode": "experimentalStandaloneFnt5=1&experimentalMsdf=1&experimentalFnt5Placement=1&experimentalFnt5Fit=height&experimentalFnt5LineOrigin=0.08&debugFnt5Sampling=1",
+  "method": "Compare actual white-ink rows immediately below each parent FrameWidget's bottom for clipchildren 0 vs 1. H9 controls isolate any general glyph size/border effect from the lowercase g descender; 66px near-boundary and 44px deliberately deep-boundary tests distinguish screenshot rounding from strong clipping behavior. Capture screenshots and log actual pixel sampling. Do not infer native scissor implementation from geometry.",
+  "cases": [
+    {
+      "id": "Book72_Text_Near_H9_Off",
+      "glyphName": "Book72_Text_Near_H9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        25,
+        34,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Text_Near_H9_On",
+      "glyphName": "Book72_Text_Near_H9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        335,
+        34,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Text_Near_Hg9_Off",
+      "glyphName": "Book72_Text_Near_Hg9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        645,
+        34,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Text_Near_Hg9_On",
+      "glyphName": "Book72_Text_Near_Hg9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        955,
+        34,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Text_Deep_H9_Off",
+      "glyphName": "Book72_Text_Deep_H9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        25,
+        116,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Text_Deep_H9_On",
+      "glyphName": "Book72_Text_Deep_H9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        335,
+        116,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Text_Deep_Hg9_Off",
+      "glyphName": "Book72_Text_Deep_Hg9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        645,
+        116,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Text_Deep_Hg9_On",
+      "glyphName": "Book72_Text_Deep_Hg9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        955,
+        116,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Button_Near_H9_Off",
+      "glyphName": "Book72_Button_Near_H9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        25,
+        198,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Button_Near_H9_On",
+      "glyphName": "Book72_Button_Near_H9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        335,
+        198,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Button_Near_Hg9_Off",
+      "glyphName": "Book72_Button_Near_Hg9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        645,
+        198,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Button_Near_Hg9_On",
+      "glyphName": "Book72_Button_Near_Hg9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        955,
+        198,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Button_Deep_H9_Off",
+      "glyphName": "Book72_Button_Deep_H9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        25,
+        280,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Button_Deep_H9_On",
+      "glyphName": "Book72_Button_Deep_H9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        335,
+        280,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Button_Deep_Hg9_Off",
+      "glyphName": "Book72_Button_Deep_Hg9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        645,
+        280,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book72_Button_Deep_Hg9_On",
+      "glyphName": "Book72_Button_Deep_Hg9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        955,
+        280,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Text_Near_H9_Off",
+      "glyphName": "Book24_Text_Near_H9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        25,
+        362,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Text_Near_H9_On",
+      "glyphName": "Book24_Text_Near_H9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        335,
+        362,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Text_Near_Hg9_Off",
+      "glyphName": "Book24_Text_Near_Hg9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        645,
+        362,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Text_Near_Hg9_On",
+      "glyphName": "Book24_Text_Near_Hg9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        955,
+        362,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Text_Deep_H9_Off",
+      "glyphName": "Book24_Text_Deep_H9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        25,
+        444,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Text_Deep_H9_On",
+      "glyphName": "Book24_Text_Deep_H9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        335,
+        444,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Text_Deep_Hg9_Off",
+      "glyphName": "Book24_Text_Deep_Hg9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        645,
+        444,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Text_Deep_Hg9_On",
+      "glyphName": "Book24_Text_Deep_Hg9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "TextWidgetClass",
+      "parentRect": [
+        955,
+        444,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Button_Near_H9_Off",
+      "glyphName": "Book24_Button_Near_H9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        25,
+        526,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Button_Near_H9_On",
+      "glyphName": "Book24_Button_Near_H9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        335,
+        526,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Button_Near_Hg9_Off",
+      "glyphName": "Book24_Button_Near_Hg9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        645,
+        526,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Button_Near_Hg9_On",
+      "glyphName": "Book24_Button_Near_Hg9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        955,
+        526,
+        265,
+        66
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Button_Deep_H9_Off",
+      "glyphName": "Book24_Button_Deep_H9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        25,
+        608,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Button_Deep_H9_On",
+      "glyphName": "Book24_Button_Deep_H9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        335,
+        608,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "H9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Button_Deep_Hg9_Off",
+      "glyphName": "Book24_Button_Deep_Hg9_Off_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        645,
+        608,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "0",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    },
+    {
+      "id": "Book24_Button_Deep_Hg9_On",
+      "glyphName": "Book24_Button_Deep_Hg9_On_Glyph",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widgetType": "ButtonWidgetClass",
+      "parentRect": [
+        955,
+        608,
+        265,
+        44
+      ],
+      "childRect": [
+        0,
+        0,
+        265,
+        68
+      ],
+      "parentClip": "1",
+      "sourceText": "Hg9",
+      "workbenchInkOutsideParent": null,
+      "studioInkOutsideParent": null,
+      "workbenchInkInsideParent": null,
+      "studioInkInsideParent": null,
+      "result": "pending"
+    }
+  ]
+}

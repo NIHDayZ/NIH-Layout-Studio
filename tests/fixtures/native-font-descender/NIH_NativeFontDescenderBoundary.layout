@@ -1,0 +1,682 @@
+FrameWidgetClass NIHNativeFontDescenderBoundary {
+	position 0 0
+	size 1280 720
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		FrameWidgetClass Book72_Text_Near_H9_Off {
+			position 25 34
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				TextWidgetClass Book72_Text_Near_H9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Text_Near_H9_On {
+			position 335 34
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				TextWidgetClass Book72_Text_Near_H9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Text_Near_Hg9_Off {
+			position 645 34
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				TextWidgetClass Book72_Text_Near_Hg9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Text_Near_Hg9_On {
+			position 955 34
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				TextWidgetClass Book72_Text_Near_Hg9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Text_Deep_H9_Off {
+			position 25 116
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				TextWidgetClass Book72_Text_Deep_H9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Text_Deep_H9_On {
+			position 335 116
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				TextWidgetClass Book72_Text_Deep_H9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Text_Deep_Hg9_Off {
+			position 645 116
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				TextWidgetClass Book72_Text_Deep_Hg9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Text_Deep_Hg9_On {
+			position 955 116
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				TextWidgetClass Book72_Text_Deep_Hg9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Button_Near_H9_Off {
+			position 25 198
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ButtonWidgetClass Book72_Button_Near_H9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Button_Near_H9_On {
+			position 335 198
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ButtonWidgetClass Book72_Button_Near_H9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Button_Near_Hg9_Off {
+			position 645 198
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ButtonWidgetClass Book72_Button_Near_Hg9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Button_Near_Hg9_On {
+			position 955 198
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ButtonWidgetClass Book72_Button_Near_Hg9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Button_Deep_H9_Off {
+			position 25 280
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ButtonWidgetClass Book72_Button_Deep_H9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Button_Deep_H9_On {
+			position 335 280
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ButtonWidgetClass Book72_Button_Deep_H9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Button_Deep_Hg9_Off {
+			position 645 280
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ButtonWidgetClass Book72_Button_Deep_Hg9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book72_Button_Deep_Hg9_On {
+			position 955 280
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ButtonWidgetClass Book72_Button_Deep_Hg9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook72"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Text_Near_H9_Off {
+			position 25 362
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				TextWidgetClass Book24_Text_Near_H9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Text_Near_H9_On {
+			position 335 362
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				TextWidgetClass Book24_Text_Near_H9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Text_Near_Hg9_Off {
+			position 645 362
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				TextWidgetClass Book24_Text_Near_Hg9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Text_Near_Hg9_On {
+			position 955 362
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				TextWidgetClass Book24_Text_Near_Hg9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Text_Deep_H9_Off {
+			position 25 444
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				TextWidgetClass Book24_Text_Deep_H9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Text_Deep_H9_On {
+			position 335 444
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				TextWidgetClass Book24_Text_Deep_H9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Text_Deep_Hg9_Off {
+			position 645 444
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				TextWidgetClass Book24_Text_Deep_Hg9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Text_Deep_Hg9_On {
+			position 955 444
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				TextWidgetClass Book24_Text_Deep_Hg9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Button_Near_H9_Off {
+			position 25 526
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ButtonWidgetClass Book24_Button_Near_H9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Button_Near_H9_On {
+			position 335 526
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ButtonWidgetClass Book24_Button_Near_H9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Button_Near_Hg9_Off {
+			position 645 526
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ButtonWidgetClass Book24_Button_Near_Hg9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Button_Near_Hg9_On {
+			position 955 526
+			size 265 66
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ButtonWidgetClass Book24_Button_Near_Hg9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Button_Deep_H9_Off {
+			position 25 608
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ButtonWidgetClass Book24_Button_Deep_H9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Button_Deep_H9_On {
+			position 335 608
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ButtonWidgetClass Book24_Button_Deep_H9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "H9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Button_Deep_Hg9_Off {
+			position 645 608
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 0
+			{
+				ButtonWidgetClass Book24_Button_Deep_Hg9_Off_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "Hg9"
+				}
+			}
+		}
+		FrameWidgetClass Book24_Button_Deep_Hg9_On {
+			position 955 608
+			size 265 44
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			clipchildren 1
+			{
+				ButtonWidgetClass Book24_Button_Deep_Hg9_On_Glyph {
+					position 0 0
+					size 265 68
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					font "gui/fonts/sdf_MetronBook24"
+					text "Hg9"
+				}
+			}
+		}
+	}
+}
