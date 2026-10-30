@@ -138,6 +138,35 @@ export function PlanFixedWrap(
 }
 
 /**
+ * In the observed native right-aligned fixed Wrap, the first source child is
+ * placed nearest the right edge and subsequent siblings extend left.
+ * Mirror rectangles inside EACH already-measured line, not across the whole
+ * container or across multiple lines. Preserve array indices: React/widget
+ * identities, source order and line membership are unchanged.
+ *
+ * The common start/center layout planner remains untouched. This ordering
+ * candidate stays confined to the explicitly opt-in live preview.
+ */
+function PositionRightAlignedWrapFromEnd(rects: readonly GeometryRect[]): GeometryRect[] {
+	const rowBounds = new Map<number, { left: number; right: number }>();
+	for (const rect of rects) {
+		const bounds = rowBounds.get(rect.y);
+		if (bounds) {
+			bounds.left = Math.min(bounds.left, rect.x);
+			bounds.right = Math.max(bounds.right, rect.x + rect.width);
+		} else {
+			rowBounds.set(rect.y, { left: rect.x, right: rect.x + rect.width });
+		}
+	}
+	return rects.map((rect) => {
+		const bounds = rowBounds.get(rect.y);
+		if (!bounds)
+			return { ...rect };
+		return { ...rect, x: bounds.left + bounds.right - (rect.x + rect.width) };
+	});
+}
+
+/**
  * Opt-in fixed Wrap preview, built on the already tested native-derived
  * start-aligned line packer. Centered vertical content is a HUD-calibrated
  * candidate, not proven general native Wrap parity. Existing snapshot
@@ -151,13 +180,20 @@ export function PlanFixedWrapPreview(
 	if (settings.verticalAlign !== 0 && settings.verticalAlign !== 2)
 		return null;
 	const plan = PlanFixedWrap(children, container, { ...settings, verticalAlign: 0 });
-	if (!plan || settings.verticalAlign !== 2)
-		return plan;
+	if (!plan)
+		return null;
+	// Workbench's right-aligned HUD rows place the first child at the right
+	// edge, unlike a simple CSS-like end offset of a left-to-right row.
+	const orderedRects = settings.horizontalAlign === 1
+		? PositionRightAlignedWrapFromEnd(plan.rects)
+		: plan.rects;
+	if (settings.verticalAlign !== 2)
+		return { ...plan, rects: orderedRects };
 	const available = container.height - (plan.usedHeight + 2 * settings.padding);
 	if (!Number.isFinite(available) || available < 0)
 		return null;
 	return {
 		...plan,
-		rects: plan.rects.map((rect) => ({ ...rect, y: rect.y + available / 2 }))
+		rects: orderedRects.map((rect) => ({ ...rect, y: rect.y + available / 2 }))
 	};
 }

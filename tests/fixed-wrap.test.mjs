@@ -156,11 +156,13 @@ test("nine actual vanilla BadgesPanel sizes form a right-aligned centered non-ov
 	assert.ok(plan);
 	assert.equal(plan.lineCount,1);
 	assert.equal(plan.usedHeight,38);
-	assert.ok(Math.abs(plan.rects[0].x-(364.349-332))<1e-9);
-	assert.ok(Math.abs(plan.rects.at(-1).x+35-364.349)<1e-9);
+	// Right-aligned native placement starts at the right edge with child 0,
+	// then positions subsequent authored siblings to the left.
+	assert.ok(Math.abs(plan.rects[0].x+35-364.349)<1e-9);
+	assert.ok(Math.abs(plan.rects.at(-1).x-(364.349-332))<1e-9);
 	assert.ok(plan.rects.every(x=>x.y===20.5));
 	for(let i=1;i<plan.rects.length;++i)
-		assert.ok(Math.abs(plan.rects[i].x-plan.rects[i-1].x-plan.rects[i-1].width)<1e-9);
+		assert.ok(Math.abs(plan.rects[i].x+plan.rects[i].width-plan.rects[i-1].x)<1e-9);
 });
 
 test("opt-in Wrap preview refuses unsupported vertical alignment and overflow", () => {
@@ -179,4 +181,55 @@ test("live Canvas wraps only explicitly enabled eligible fixed-child WrapSpacer 
 	assert.ok(src.includes('GetFlag(child, "hexactsize") && GetFlag(child, "vexactsize")'));
 	assert.ok(src.includes("PlanFixedWrapPreview(wrapNaturalRects, childParent, DecodeNativeWrapSettings(node.properties))"));
 	assert.ok(src.includes("} else if (wrapPlan) {"));
+});
+
+test("right-aligned Wrap preview positions siblings right-to-left within each wrapped row", () => {
+	const settings = DecodeNativeWrapSettings([
+		{name:"Padding",value:"0"}, {name:"Margin",value:"3"},
+		{name:"content_halign",value:"right"}, {name:"content_valign",value:"top"}
+	]);
+	const children = [
+		{width:50,height:13}, {width:30,height:20},
+		{width:40,height:16}, {width:50,height:10}
+	];
+	const plan = PlanFixedWrapPreview(children, {width:100,height:100}, settings);
+	assert.ok(plan);
+	assert.equal(plan.lineCount,2);
+	assert.deepEqual(plan.rects, [
+		{x:50,y:0,width:50,height:13},
+		{x:17,y:0,width:30,height:20},
+		{x:60,y:23,width:40,height:16},
+		{x:7,y:23,width:50,height:10}
+	]);
+	// A right-aligned line is reversed visually, but child indices stay intact.
+	assert.deepEqual(plan.rects.map(r=>r.width), children.map(r=>r.width));
+});
+
+test("native Wrap preview retains original start and center ordering and numeric right mode", () => {
+	const children = [{width:14,height:10},{width:27,height:12},{width:19,height:10}];
+	const base = DecodeNativeWrapSettings([{name:"Padding",value:"2"},{name:"Margin",value:"3"}]);
+	const box={width:100,height:40};
+	for(const horizontalAlign of [0,2]) {
+		const settings={...base,horizontalAlign};
+		assert.deepEqual(PlanFixedWrapPreview(children,box,settings),PlanFixedWrap(children,box,settings));
+	}
+	const numeric=DecodeNativeWrapSettings([{name:"content_halign",value:"1"}]);
+	const named=DecodeNativeWrapSettings([{name:"content_halign",value:"right"}]);
+	assert.deepEqual(PlanFixedWrapPreview(children,box,numeric),PlanFixedWrapPreview(children,box,named));
+	const plan=PlanFixedWrapPreview(children,box,numeric);
+	assert.ok(plan);
+	assert.equal(plan.rects[0].x+14, box.width-numeric.padding);
+	assert.ok(plan.rects[1].x < plan.rects[0].x);
+});
+
+test("the shared Wrap arrangement engine keeps its previous right-aligned plan", () => {
+	const children=[{width:35,height:35},{width:52,height:38},{width:35,height:35}];
+	const settings=DecodeNativeWrapSettings([{name:"Padding",value:"0"},{name:"Margin",value:"0"},{name:"content_halign",value:"right"}]);
+	const common=PlanFixedWrap(children,{width:150,height:90},settings);
+	const preview=PlanFixedWrapPreview(children,{width:150,height:90},settings);
+	assert.ok(common && preview);
+	assert.equal(common.rects[0].x,28);
+	assert.equal(preview.rects[0].x,115);
+	assert.deepEqual(common.rects.map(r=>r.x),[28,63,115]);
+	assert.deepEqual(preview.rects.map(r=>r.x),[115,63,28]);
 });
