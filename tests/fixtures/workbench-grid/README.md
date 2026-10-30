@@ -11,7 +11,7 @@ This eight-container `.layout` input isolates the unknown native content-measure
 | GridRelativeChild | 1 | 1 | second child relative size |
 | GridHiddenDefault | 1 | 1 | second child invisible; default Ignore invisible |
 | GridHiddenIncluded | 1 | 1 | same hidden child, Ignore invisible 0 |
-| GridExplicitCounts | 1 | 1 | separate stable controls for future counts variant |
+| GridExplicitCounts | 1 | 1 | Columns=1, Rows=3 |
 
 **Capture required:** from the pinned Workbench build or matching DayZ client, for EACH Grid container and three children, record GetPos, GetSize, GetScreenPos, GetScreenSize, visibility and count at creation, after Update, and after viewport resize. Keep root resolution, DPI/scale, build hash, and unmodified source alongside output. Include a second viewport size for identifying parent-dependent effects.
 

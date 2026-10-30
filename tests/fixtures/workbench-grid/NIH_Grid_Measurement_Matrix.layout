@@ -252,8 +252,8 @@ FrameWidgetClass NIHGridMeasureMatrix {
 			size 240 100
 			hexactsize 1
 			vexactsize 1
-			"Columns" 2
-			"Rows" 2
+			"Columns" 1
+			"Rows" 3
 			"Padding" 3
 			"Margin" 4
 			"Size To Content H" 1

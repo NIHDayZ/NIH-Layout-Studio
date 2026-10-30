@@ -33,4 +33,6 @@ test("relative and invisible child probes isolate the intended differences",()=>
 	assert.equal(relative.properties.find(x=>x.name==="vexactsize").value,"0");
 	assert.equal(byName.get("GridHiddenDefault").children[1].properties.find(x=>x.name==="visible").value,"0");
 	assert.equal(byName.get("GridHiddenIncluded").properties.find(x=>x.name==="Ignore invisible").value,"0");
+	assert.equal(byName.get("GridExplicitCounts").properties.find(x=>x.name==="Columns").value,"1");
+	assert.equal(byName.get("GridExplicitCounts").properties.find(x=>x.name==="Rows").value,"3");
 });
