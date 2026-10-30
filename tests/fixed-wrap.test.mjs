@@ -173,14 +173,18 @@ test("opt-in Wrap preview refuses unsupported vertical alignment and overflow", 
 	assert.deepEqual(PlanFixedWrapPreview(child,{width:100,height:90},base),PlanFixedWrap(child,{width:100,height:90},base));
 });
 
-test("live Canvas wraps only explicitly enabled eligible fixed-child WrapSpacer widgets", () => {
-	const src=readFileSync(new URL("../src/components/Canvas.tsx",import.meta.url),"utf8");
-	assert.ok(src.includes('get("experimentalNativeWrapLayout") === "1"'));
-	assert.ok(src.includes('const eligibleWrap = experimentalNativeWrapLayout && isWrapSpacer'));
-	assert.ok(src.includes('!GetFlag(node, "Size To Content H")'));
-	assert.ok(src.includes('GetFlag(child, "hexactsize") && GetFlag(child, "vexactsize")'));
-	assert.ok(src.includes("PlanFixedWrapPreview(wrapNaturalRects, childParent, DecodeNativeWrapSettings(node.properties))"));
-	assert.ok(src.includes("} else if (wrapPlan) {"));
+test("live Canvas delegates opt-in fixed Wrap planning to the shared engine adapter", () => {
+	const canvas=readFileSync(new URL("../src/components/Canvas.tsx",import.meta.url),"utf8");
+	const adapter=readFileSync(new URL("../src/renderer/engine/LiveManagedGeometry.ts",import.meta.url),"utf8");
+	assert.ok(canvas.includes('get("experimentalNativeWrapLayout") === "1"'));
+	assert.ok(canvas.includes("PlanLiveManagedChildren(node, childParent, {"));
+	assert.ok(canvas.includes("nativeWrapLayout: experimentalNativeWrapLayout"));
+	assert.equal(canvas.includes("PlanFixedWrapPreview("),false,"Canvas must not independently arrange Wrap children");
+	assert.ok(adapter.includes("const eligibleWrap = options.nativeWrapLayout && isWrapSpacer"));
+	assert.ok(adapter.includes('!GetFlag(node, "Size To Content H")'));
+	assert.ok(adapter.includes('GetFlag(child, "hexactsize") && GetFlag(child, "vexactsize")'));
+	assert.ok(adapter.includes("PlanFixedWrapPreview(wrapNaturalRects, childParent, DecodeNativeWrapSettings(node.properties))"));
+	assert.ok(adapter.includes("else if (wrapPlan)"));
 });
 
 test("right-aligned Wrap preview positions siblings right-to-left within each wrapped row", () => {
