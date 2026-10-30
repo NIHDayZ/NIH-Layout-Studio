@@ -30,15 +30,30 @@ function Descendants(nodes, parentPath = "") {
 	return out;
 }
 
-function Signature(nodes) {
-	return nodes.map((node) => ({
-		type: node.type,
-		declaration: node.sourceHasNoIdentifier ? null : node.name,
-		properties: node.properties.map(property => [property.name, property.rawValue]),
-		children: node.children.map(child => child.type)
-		// Source-order validated separately via the flattened declaration
-		// sequence after canonical serialization.
-	}));
+function FirstMismatch(a, b, path = "roots") {
+	if (Object.is(a, b))
+		return null;
+	if (Array.isArray(a) || Array.isArray(b)) {
+		if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length)
+			return path;
+		for (let i = 0; i < a.length; ++i) {
+			const diff = FirstMismatch(a[i], b[i], path + "[" + i + "]");
+			if (diff)
+				return diff;
+		}
+		return null;
+	}
+	if (a !== null && b !== null && typeof a === "object" && typeof b === "object") {
+		for (const key of new Set([...Object.keys(a), ...Object.keys(b)])) {
+			if (!Object.hasOwn(a, key) || !Object.hasOwn(b, key))
+				return path + "." + key;
+			const diff = FirstMismatch(a[key], b[key], path + "." + key);
+			if (diff)
+				return diff;
+		}
+		return null;
+	}
+	return path;
 }
 
 const args = process.argv.slice(2);
@@ -113,7 +128,8 @@ for (const folder of folders) {
 				return nodes.map(node => ({
 					type: node.type,
 					idless: node.sourceHasNoIdentifier === true,
-					name: node.name,
+					// Source-line-based UI labels are not authored identifiers.
+					name: node.sourceHasNoIdentifier ? (node.properties.find(p => p.name.toLowerCase() === "name")?.value ?? null) : node.name,
 					properties: node.properties.map(p => [p.rawName, p.rawValue]),
 					sequence: [...node.children, ...(node.sourceAuxiliaryBlocks ?? [])]
 						.sort((a,b) => a.line - b.line).map(child => child.type),
@@ -121,9 +137,10 @@ for (const folder of folders) {
 					metadata: Shape(node.sourceAuxiliaryBlocks ?? [])
 				}));
 			}
-			if (JSON.stringify(Shape(document.roots)) !== JSON.stringify(Shape(roundDocument.roots))) {
+			const diff = FirstMismatch(Shape(document.roots), Shape(roundDocument.roots));
+			if (diff) {
 				++totals.mismatchedTrees;
-				throw new Error("Canonical export changed hierarchy, source identifiers or properties");
+				throw new Error("Canonical export changed hierarchy, authored identifiers or properties at " + diff);
 			}
 		} catch (error) {
 			++totals.failures;

@@ -228,3 +228,28 @@ test("source IDs may repeat without colliding with internal node IDs", () => {
 	assert.notEqual(root.children[0].id, root.children[1].id);
 	assert.equal(p.Parse(p.Serialize(p.Parse(source))).roots[0].children.length, 2);
 });
+
+test("canonical formatting may change an anonymous source-line label without changing its authored data", () => {
+	const source = [
+		'FrameWidgetClass "Root" {', '',
+		'  {',
+		'    ScriptParamsClass {',
+		'      Gap 2',
+		'    }',
+		'    TextWidgetClass "Label" {',
+		'      Name "Caption"',
+		'    }',
+		'  }',
+		'}'
+	].join("\n");
+	const first = p.Parse(source).roots[0];
+	const next = p.Parse(p.Serialize(p.Parse(source))).roots[0];
+	const a = first.sourceAuxiliaryBlocks[0];
+	const b = next.sourceAuxiliaryBlocks[0];
+	assert.equal(a.sourceHasNoIdentifier, true);
+	assert.equal(b.sourceHasNoIdentifier, true);
+	assert.notEqual(a.name, b.name);
+	assert.deepEqual(a.properties.map(p => [p.rawName, p.rawValue]), b.properties.map(p => [p.rawName, p.rawValue]));
+	assert.equal(first.children[0].name, next.children[0].name);
+	assert.equal(p.Serialize(p.Parse(p.Serialize(p.Parse(source)))), p.Serialize(p.Parse(source)));
+});
