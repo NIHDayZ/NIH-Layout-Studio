@@ -45,3 +45,15 @@ Record actual screen pixels *inside* and *outside* each known parent rectangle f
 ## Status
 
 **Pending paired native/Studio capture**. Existing baseline and `Hg9` holdout research stays frozen on `research/native-font-shared-line-origin`. PR #47 remains draft and unchanged.
+
+## Completed Workbench and Studio comparison — October 29, 2026
+
+Both images load the 32-control native-compatible fixture at 1280×720, 68% zoom. Full screenshot SHA-256s, measured viewport rectangles, all below-parent ink-pixel counts, methodology and threshold sensitivity are recorded in `capture.visual.2026-10-29.json`. Raw PNGs remain available in the conversation and are not committed.
+
+For the **eight deep (24px) overhang cases**, the RGB>170 threshold detects **2361 white screenshot pixels below the unclipped parent in Workbench** and **1585 in Studio**. With `clipchildren=1`, these drop to **152 in Workbench** (entirely within the first 1–2 physical screenshot rows after the rounded parent boundary) and **0 in Studio**. Across all 16 clipped cases, Workbench has 170 such boundary-adjacent pixels, Studio 0, and **neither editor has white ink two or more physical rows beyond the parent bottom**. Thresholds 190 and 210 preserve this conclusion. Per-editor pixel counts must not be treated as comparable alpha coverage.
+
+**Result: parent clipping behaves consistently at the controlled visual level, including both TextWidget and ButtonWidget and both tested Metron fonts.** The remaining 1–2-raster-pixel Workbench fringe could come from half-pixel boundaries, zoom, antialiasing or capture rounding. This evidence **does not justify changing generic CSS overflow, clipchildren, or the shared font line origin**. It also does not establish exact Enfusion raster scissor behavior or self-clipping of individual sprites.
+
+Separate paint issue: Studio shows blue ButtonWidget backgrounds while Workbench's test buttons do not have matching blue backgrounds. That belongs in a button-style/defaults investigation, not text clipping.
+
+This screenshot message did **not** include the Windows 309-test transcript or a fresh Studio console log. The fixture has been visually evaluated, not locally test-validated. No renderer code was changed.

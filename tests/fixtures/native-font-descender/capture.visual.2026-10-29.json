@@ -1,0 +1,421 @@
+{
+  "schemaVersion": 1,
+  "captureKind": "native-font-descender-parent-clipping-visual-capture",
+  "date": "2026-10-29",
+  "fixture": "tests/fixtures/native-font-descender/NIH_NativeFontDescenderBoundary.layout",
+  "sourceCommit": "901b9b02f199fc3c10aa96cf826d8ba5534ffa53",
+  "images": {
+    "studio": {
+      "filename": "image(20261030-011951).png",
+      "sha256": "390fa1594ae51aa992fda55077e96df6d69fa644821efbc09157b02e6cdd732e",
+      "pixelSize": [
+        1919,
+        1031
+      ],
+      "rootPixelRect": {
+        "x": 309,
+        "y": 221,
+        "width": 866,
+        "height": 488
+      },
+      "version": "0.37.0",
+      "zoomPercent": 68
+    },
+    "workbench": {
+      "filename": "image(20261030-012002).png",
+      "sha256": "75fa4b0b94e18c6b488ebba43c19511c6edfa77df86e6cde37b54fb7142750aa",
+      "pixelSize": [
+        1919,
+        1034
+      ],
+      "rootPixelRect": {
+        "x": 500,
+        "y": 157,
+        "width": 878,
+        "height": 494
+      },
+      "version": "1.30.164200.56",
+      "zoomPercent": 68
+    }
+  },
+  "method": "Normalize separately to 1280x720 authored root. For each parent, crop the inner horizontal region x+1 through x+264, and from round(parent bottom) through round(child bottom). Threshold individual R,G,B>170 to count white pixels; exclude panel fill. Pixel counts are physical screenshot pixels and not editor-to-editor opacity equivalents. Subpixel root rounding and antialiasing create ~1-2 screenshot-pixel uncertainty at the boundary.",
+  "cases": [
+    {
+      "id": "Book72_Text_Near_H9_Off",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "TextWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book72_Text_Near_H9_On",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "TextWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book72_Text_Near_Hg9_Off",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "TextWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 3,
+      "belowParentPixelsWorkbench": 16
+    },
+    {
+      "id": "Book72_Text_Near_Hg9_On",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "TextWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book72_Text_Deep_H9_Off",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "TextWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 145,
+      "belowParentPixelsWorkbench": 192
+    },
+    {
+      "id": "Book72_Text_Deep_H9_On",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "TextWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book72_Text_Deep_Hg9_Off",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "TextWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 262,
+      "belowParentPixelsWorkbench": 354
+    },
+    {
+      "id": "Book72_Text_Deep_Hg9_On",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "TextWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book72_Button_Near_H9_Off",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book72_Button_Near_H9_On",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book72_Button_Near_Hg9_Off",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 4,
+      "belowParentPixelsWorkbench": 31
+    },
+    {
+      "id": "Book72_Button_Near_Hg9_On",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 8
+    },
+    {
+      "id": "Book72_Button_Deep_H9_Off",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 161,
+      "belowParentPixelsWorkbench": 189
+    },
+    {
+      "id": "Book72_Button_Deep_H9_On",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 13
+    },
+    {
+      "id": "Book72_Button_Deep_Hg9_Off",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 289,
+      "belowParentPixelsWorkbench": 384
+    },
+    {
+      "id": "Book72_Button_Deep_Hg9_On",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook72",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 24
+    },
+    {
+      "id": "Book24_Text_Near_H9_Off",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "TextWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book24_Text_Near_H9_On",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "TextWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book24_Text_Near_Hg9_Off",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "TextWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 6,
+      "belowParentPixelsWorkbench": 8
+    },
+    {
+      "id": "Book24_Text_Near_Hg9_On",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "TextWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 4
+    },
+    {
+      "id": "Book24_Text_Deep_H9_Off",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "TextWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 118,
+      "belowParentPixelsWorkbench": 221
+    },
+    {
+      "id": "Book24_Text_Deep_H9_On",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "TextWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 12
+    },
+    {
+      "id": "Book24_Text_Deep_Hg9_Off",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "TextWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 233,
+      "belowParentPixelsWorkbench": 381
+    },
+    {
+      "id": "Book24_Text_Deep_Hg9_On",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "TextWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 22
+    },
+    {
+      "id": "Book24_Button_Near_H9_Off",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book24_Button_Near_H9_On",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 0
+    },
+    {
+      "id": "Book24_Button_Near_Hg9_Off",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 8,
+      "belowParentPixelsWorkbench": 13
+    },
+    {
+      "id": "Book24_Button_Near_Hg9_On",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 66,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 6
+    },
+    {
+      "id": "Book24_Button_Deep_H9_Off",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 135,
+      "belowParentPixelsWorkbench": 229
+    },
+    {
+      "id": "Book24_Button_Deep_H9_On",
+      "sourceText": "H9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 31
+    },
+    {
+      "id": "Book24_Button_Deep_Hg9_Off",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "0",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 242,
+      "belowParentPixelsWorkbench": 411
+    },
+    {
+      "id": "Book24_Button_Deep_Hg9_On",
+      "sourceText": "Hg9",
+      "font": "gui/fonts/sdf_MetronBook24",
+      "widget": "ButtonWidgetClass",
+      "parentClip": "1",
+      "parentHeight": 44,
+      "belowParentPixelsStudio": 0,
+      "belowParentPixelsWorkbench": 50
+    }
+  ],
+  "summary": {
+    "deepUnclippedInkPixels": {
+      "studio": 1585,
+      "workbench": 2361
+    },
+    "deepClippedInkPixels": {
+      "studio": 0,
+      "workbench": 152
+    },
+    "allClippedInkPixels": {
+      "studio": 0,
+      "workbench": 170
+    },
+    "clippedInkMoreThanOneScreenshotRowPastBoundary": {
+      "studio": 0,
+      "workbench": 0
+    },
+    "sensitivity": [
+      {
+        "threshold": 170,
+        "studioDeepOff": 1585,
+        "workbenchDeepOff": 2361,
+        "studioDeepOn": 0,
+        "workbenchDeepOn": 152,
+        "clippedRowsBeyondFirstTwo": 0
+      },
+      {
+        "threshold": 190,
+        "studioDeepOff": 1434,
+        "workbenchDeepOff": 2114,
+        "studioDeepOn": 0,
+        "workbenchDeepOn": 138,
+        "clippedRowsBeyondFirstTwo": 0
+      },
+      {
+        "threshold": 210,
+        "studioDeepOff": 1198,
+        "workbenchDeepOff": 1892,
+        "studioDeepOn": 0,
+        "workbenchDeepOn": 109,
+        "clippedRowsBeyondFirstTwo": 0
+      }
+    ]
+  },
+  "conclusions": {
+    "nativeParentClipBehavior": "supported for 2px and 24px overhang with clipchildren 0/1",
+    "studioParentClipBehavior": "supported for 2px and 24px overhang with clipchildren 0/1",
+    "clippedVisibleInkBeyondFirstTwoRasterRows": 0,
+    "sameExactRasterScissor": "not-proven",
+    "genericClippingEngineCorrection": "not-warranted-by-this-capture",
+    "selfGlyphClippingAndMSDFShader": "not-determined-by-this-capture",
+    "studioButtonChrome": "blue background differs from Workbench's visually unfilled ButtonWidget; separate issue",
+    "noNewUnknownLayoutPropertyErrorsVisible": true,
+    "localGeometry309Validation": "not supplied with screenshot pair",
+    "productionRendererAltered": false
+  },
+  "notes": "Workbench still displays unrelated warning/error counters; no new unknown-keyword errors visible for this fixture. No Studio console accompanied these screenshots. Original PNGs are user uploads, not committed to GitHub."
+}
