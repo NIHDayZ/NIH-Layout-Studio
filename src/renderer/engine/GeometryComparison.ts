@@ -15,12 +15,17 @@ export interface GeometryDifference {
 	liveAbsolute: Rect;
 	snapshotAbsolute: Rect;
 	delta: { x: number; y: number; width: number; height: number };
+	classification: "local-placement" | "inherited-offset" | "local-and-inherited";
+	rootCauseId: string;
 }
 
 export interface GeometryComparison {
 	total: number;
 	matched: number;
 	differences: readonly GeometryDifference[];
+	localPlacementDifferences: number;
+	inheritedOffsetDifferences: number;
+	rootCauses: readonly { id: string; name: string; type: string; affectedWidgets: number; localDelta: GeometryDifference["delta"] }[];
 	unresolved: readonly { id: string; code: string; detail: string }[];
 	duplicateIds: readonly string[];
 }
@@ -43,6 +48,8 @@ export function CompareLiveToSnapshot(
 	const differences: GeometryDifference[]=[];
 	const ids=new Set<string>();
 	const duplicateIds: string[]=[];
+	const originatingDifferences = new Map<string, GeometryDifference>();
+	const causeCounts = new Map<string, number>();
 	let total=0;
 	let matched=0;
 	function Visit(node: LayoutNode,parent: Rect,absoluteParent: Rect,parentId: string | null,managedAncestor: boolean,assigned?: Rect): void {
@@ -74,13 +81,24 @@ export function CompareLiveToSnapshot(
 		if(arranged && SameRect(live,arranged.localRect,tolerance) && SameRect(absolute,arranged.absoluteRect,tolerance)) {
 			++matched;
 		} else if(arranged) {
-			differences.push({
+			const localChanged=!SameRect(live,arranged.localRect,tolerance);
+			const ancestorCause=parentId ? originatingDifferences.get(parentId) : undefined;
+			const rootCauseId=localChanged ? node.id : ancestorCause?.rootCauseId ?? node.id;
+			const parentLocalChanged=!!ancestorCause && ancestorCause.classification!=="inherited-offset";
+			const classification=localChanged
+				? (parentLocalChanged ? "local-and-inherited" : "local-placement")
+				: "inherited-offset";
+			const diff: GeometryDifference={
 				id:node.id,name:node.name,type:node.type,parentId,
+				classification,rootCauseId,
 				origin:managedAncestor?"managed-descendant":assigned?"managed":"ordinary",
 				liveLocal:live,snapshotLocal:arranged.localRect,liveAbsolute:absolute,snapshotAbsolute:arranged.absoluteRect,
 				delta:{x:live.x-arranged.localRect.x,y:live.y-arranged.localRect.y,
 					width:live.width-arranged.localRect.width,height:live.height-arranged.localRect.height}
-			});
+			};
+			differences.push(diff);
+			originatingDifferences.set(node.id,diff);
+			causeCounts.set(rootCauseId,(causeCounts.get(rootCauseId)??0)+1);
 		}
 		const childParent={x:0,y:0,width:Math.max(0,live.width),height:Math.max(0,live.height)};
 		const managed=node.type.toLowerCase().includes("spacerwidget");
@@ -90,6 +108,14 @@ export function CompareLiveToSnapshot(
 	}
 	for(const node of nodes)
 		Visit(node,root,root,null,false);
+	const rootCauses=[...causeCounts.entries()].map(([id,affectedWidgets])=>{
+		const first=differences.find(d=>d.id===id);
+		return first ? {id,name:first.name,type:first.type,affectedWidgets,localDelta:first.delta} : null;
+	}).filter((x): x is NonNullable<typeof x>=>x!==null)
+		.sort((a,b)=>b.affectedWidgets-a.affectedWidgets);
 	return {total,matched,differences,duplicateIds,
+		localPlacementDifferences:differences.filter(d=>d.classification!=="inherited-offset").length,
+		inheritedOffsetDifferences:differences.filter(d=>d.classification==="inherited-offset").length,
+		rootCauses,
 		unresolved:snapshot.issues.map(issue=>({id:issue.id,code:issue.code,detail:issue.detail}))};
 }

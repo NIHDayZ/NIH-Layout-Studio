@@ -25,3 +25,19 @@ test("comparison retains explicit duplicate ID diagnostic instead of claiming pa
 	assert.deepEqual(c.duplicateIds,["dup"]);
 	assert.equal(c.matched+c.differences.length<c.total,false);
 });
+
+test("diagnostic distinguishes the originating Grid row offset from inherited descendants",()=>{
+	const inner=N("inner","PanelWidgetClass",F(20,10),[
+		N("leaf","ImageWidgetClass",[...F(8,8),["position","4 1"],["hexactpos","1"],["vexactpos","1"]])
+	]);
+	const first=N("first","PanelWidgetClass",F(30,10));
+	const second=N("second","PanelWidgetClass",F(30,10),[inner]);
+	const grid=N("grid","GridSpacerWidgetClass",[...F(100,60),["Columns","1"],["Rows","2"]],[first,second]);
+	const c=CompareLiveToSnapshot([grid],root,off);
+	assert.equal(c.localPlacementDifferences,1);
+	assert.equal(c.inheritedOffsetDifferences,2);
+	assert.equal(c.rootCauses[0].id,"second");
+	assert.equal(c.rootCauses[0].affectedWidgets,3);
+	assert.deepEqual(c.differences.map(d=>d.classification),
+		["local-placement","inherited-offset","inherited-offset"]);
+});
