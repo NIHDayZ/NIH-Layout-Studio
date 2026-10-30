@@ -1,7 +1,7 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
-import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../renderer/GridLayout";
-import { DecodeNativeWrapSettings, PlanFixedWrapPreview } from "../renderer/engine/FixedWrap";
+import { PlanLiveManagedChildren, PlanLiveGridContent } from "../renderer/engine/LiveManagedGeometry";
+
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
@@ -693,39 +693,6 @@ const experimentalNativeWrapLayout = typeof window !== "undefined" && new URLSea
 const debugSpacerLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugSpacerLayout") === "1";
 const loggedSpacerLayouts = new Set<string>();
 
-function GetSpacerDirection(node: LayoutNode): "row" | "column" {
-	const orientation = (GetNodeProperty(node, "orientation") ?? GetNodeProperty(node, "Orientation") ?? "").toLowerCase();
-	if (orientation.includes("horizontal") || orientation === "h" || orientation === "0")
-		return "row";
-	return "column";
-}
-
-function GetSpacerGap(node: LayoutNode): number {
-	const raw = Number(GetNodeProperty(node, "Spacing") ?? GetNodeProperty(node, "spacing") ?? GetNodeProperty(node, "Gap") ?? GetNodeProperty(node, "Margin") ?? GetNodeProperty(node, "margin") ?? 0);
-	return Number.isFinite(raw) ? Math.max(0, raw) : 0;
-}
-
-function GetGridPlan(node: LayoutNode, childParent: Rect) {
-	const children = node.children.map((child) => ResolveRect(child, childParent));
-	// Parent-relative children are rendered at their resolved sizes, but must
-	// not contribute that same parent-dependent size to intrinsic measurement.
-	const measured = children.map((childRect, index) => ({
-		...childRect,
-		width: GetFlag(node.children[index], "hexactsize") ? childRect.width : 0,
-		height: GetFlag(node.children[index], "vexactsize") ? childRect.height : 0
-	}));
-	const configuredColumns = GetNumber(node, "Columns", 0);
-	const configuredRows = GetNumber(node, "Rows", 0);
-	if (experimentalNativeConstrainedGrid && !GetFlag(node, "Size To Content H") && !GetFlag(node, "Size To Content V")) {
-		// Verified GridSpacerWidget property-load routine at image VA
-		// 0x1408DED50 defaults both Rows and Columns independently to 3.
-		const { columns, rows } = ResolveNativeGridCounts(configuredColumns, configuredRows);
-		return PlanConstrainedGrid(children.length, columns, rows,
-			{ width: childParent.width, height: childParent.height }, GetNumber(node, "Margin", 0), GetNumber(node, "Padding", 0));
-	}
-	return PlanGrid(children, configuredColumns, configuredRows, GetSpacerGap(node), measured, { width: childParent.width, height: childParent.height });
-}
-
 function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | null, selectedIds: string[], onSelect: (node: LayoutNode, additive?: boolean) => void, onGeometryChange: RenderNodeProps["onGeometryChange"], zoom: number, debug: CanvasDebugOptions, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null, snapEnabled: boolean, snapSize: number, onContextMenu: RenderNodeProps["onContextMenu"]) {
 	const kind = GetWidgetKind(node);
 	const childParent: Rect = { x: 0, y: 0, width: Math.max(0, rect.width), height: Math.max(0, rect.height) };
@@ -735,48 +702,16 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 			<RenderNode key={`${child.name}-${index}`} node={child} parent={childParent} selected={selected} selectedIds={selectedIds} onSelect={onSelect} onGeometryChange={onGeometryChange} zoom={zoom} debug={debug} project={project} dependencyProjects={dependencyProjects} vanillaProject={vanillaProject} snapEnabled={snapEnabled} snapSize={snapSize} onContextMenu={onContextMenu} />
 		));
 
-	// WrapSpacer and GridSpacer have different positioning semantics. Keep the
-	// authored geometry for WrapSpacer children; the sequential GridSpacer
-	// approximation is provisional until Enfusion grid rules are verified.
-	const direction = GetSpacerDirection(node);
-	const gap = GetSpacerGap(node);
 	const isGridSpacer = node.type.toLowerCase().includes("gridspacerwidget");
-	let cursor = 0;
-	const gridPlan = isGridSpacer && experimentalGridLayout ? GetGridPlan(node, childParent) : null;
-	const isWrapSpacer = node.type.toLowerCase().includes("wrapspacerwidget");
-	// This source-independent eligibility rule deliberately excludes relative,
-	// hidden, content-sized or otherwise unresolved children. Unverified cases
-	// retain the existing authored-coordinate fallback.
-	const eligibleWrap = experimentalNativeWrapLayout && isWrapSpacer &&
-		!GetFlag(node, "Size To Content H") && !GetFlag(node, "Size To Content V") &&
-		GetFlag(node, "hexactsize") && GetFlag(node, "vexactsize") &&
-		node.children.length > 0 && node.children.every((child) =>
-			GetNodeProperty(child, "visible") !== "0" &&
-			GetFlag(child, "hexactsize") && GetFlag(child, "vexactsize") &&
-			!GetFlag(child, "Size To Content H") && !GetFlag(child, "Size To Content V"));
-	const wrapNaturalRects = eligibleWrap ? node.children.map((child) => ResolveRect(child, childParent)) : null;
-	const wrapPlan = wrapNaturalRects && wrapNaturalRects.every((rect) =>
-		Number.isFinite(rect.width) && Number.isFinite(rect.height) && rect.width > 0 && rect.height > 0)
-		? PlanFixedWrapPreview(wrapNaturalRects, childParent, DecodeNativeWrapSettings(node.properties))
-		: null;
+	const plan = PlanLiveManagedChildren(node, childParent, {
+		gridLayout: experimentalGridLayout,
+		nativeConstrainedGrid: experimentalNativeConstrainedGrid,
+		nativeWrapLayout: experimentalNativeWrapLayout
+	});
+	const { gridPlan, direction, gap } = plan;
 	return node.children.map((child, index) => {
-		const natural = wrapNaturalRects?.[index] ?? ResolveRect(child, childParent);
-		let childRect = natural;
-		if (gridPlan) {
-			childRect = gridPlan.rects[index];
-		} else if (wrapPlan) {
-			childRect = wrapPlan.rects[index];
-		} else if (isGridSpacer) {
-			if (direction === "column") {
-				const height = natural.height > 0 ? natural.height : childParent.height;
-				childRect = { x: natural.x, y: cursor, width: natural.width, height };
-				cursor += height + gap;
-			} else {
-				const width = natural.width > 0 ? natural.width : childParent.width;
-				childRect = { x: cursor, y: natural.y, width, height: natural.height };
-				cursor += width + gap;
-			}
-		}
+		const natural = ResolveRect(child, childParent);
+		const childRect = plan.rects[index];
 		if (debugSpacerLayout && loggedSpacerLayouts.size < 160) {
 			const key = JSON.stringify([node.id, child.id, childParent.width, childParent.height, natural, childRect]);
 			if (!loggedSpacerLayouts.has(key)) {
@@ -819,7 +754,7 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 	// Opt-in sizing applies before child placement so bottom/center anchors stay
 	// attached to the same parent edge when content requires a larger grid.
 	if (experimentalGridLayout && kind.isSpacer && node.type.toLowerCase().includes("gridspacerwidget") && !dragRect) {
-		const plan = GetGridPlan(node, { x: 0, y: 0, width: rect.width, height: rect.height });
+		const plan = PlanLiveGridContent(node, { x: 0, y: 0, width: rect.width, height: rect.height }, experimentalNativeConstrainedGrid);
 		const width = GetFlag(node, "Size To Content H") ? Math.max(rect.width, plan.contentWidth) : rect.width;
 		const height = GetFlag(node, "Size To Content V") ? Math.max(rect.height, plan.contentHeight) : rect.height;
 		const halign = (GetNodeProperty(node, "halign") ?? "").toLowerCase();
