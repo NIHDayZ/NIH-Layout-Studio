@@ -1,6 +1,7 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
 import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../renderer/GridLayout";
+import { DecodeNativeWrapSettings, PlanFixedWrapPreview } from "../renderer/engine/FixedWrap";
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
@@ -687,6 +688,8 @@ const experimentalGridLayout = typeof window !== "undefined" && new URLSearchPar
 // Separate opt-in: apply RTTI-verified native fixed-cell arithmetic only to
 // constrained grids; retain intrinsic sizing for Size To Content widgets.
 const experimentalNativeConstrainedGrid = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalNativeConstrainedGrid") === "1";
+// Research-only: apply the fixed-child native Wrap candidate to eligible widgets.
+const experimentalNativeWrapLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalNativeWrapLayout") === "1";
 const debugSpacerLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugSpacerLayout") === "1";
 const loggedSpacerLayouts = new Set<string>();
 
@@ -740,11 +743,29 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 	const isGridSpacer = node.type.toLowerCase().includes("gridspacerwidget");
 	let cursor = 0;
 	const gridPlan = isGridSpacer && experimentalGridLayout ? GetGridPlan(node, childParent) : null;
+	const isWrapSpacer = node.type.toLowerCase().includes("wrapspacerwidget");
+	// This source-independent eligibility rule deliberately excludes relative,
+	// hidden, content-sized or otherwise unresolved children. Unverified cases
+	// retain the existing authored-coordinate fallback.
+	const eligibleWrap = experimentalNativeWrapLayout && isWrapSpacer &&
+		!GetFlag(node, "Size To Content H") && !GetFlag(node, "Size To Content V") &&
+		GetFlag(node, "hexactsize") && GetFlag(node, "vexactsize") &&
+		node.children.length > 0 && node.children.every((child) =>
+			GetNodeProperty(child, "visible") !== "0" &&
+			GetFlag(child, "hexactsize") && GetFlag(child, "vexactsize") &&
+			!GetFlag(child, "Size To Content H") && !GetFlag(child, "Size To Content V"));
+	const wrapNaturalRects = eligibleWrap ? node.children.map((child) => ResolveRect(child, childParent)) : null;
+	const wrapPlan = wrapNaturalRects && wrapNaturalRects.every((rect) =>
+		Number.isFinite(rect.width) && Number.isFinite(rect.height) && rect.width > 0 && rect.height > 0)
+		? PlanFixedWrapPreview(wrapNaturalRects, childParent, DecodeNativeWrapSettings(node.properties))
+		: null;
 	return node.children.map((child, index) => {
-		const natural = ResolveRect(child, childParent);
+		const natural = wrapNaturalRects?.[index] ?? ResolveRect(child, childParent);
 		let childRect = natural;
 		if (gridPlan) {
 			childRect = gridPlan.rects[index];
+		} else if (wrapPlan) {
+			childRect = wrapPlan.rects[index];
 		} else if (isGridSpacer) {
 			if (direction === "column") {
 				const height = natural.height > 0 ? natural.height : childParent.height;

@@ -29,12 +29,12 @@ function ReadAlign(
 	for (const property of properties) {
 		if (property.name.toLowerCase() !== key)
 			continue;
-		const value = property.value.trim();
-		if (value === "0")
+		const value = property.value.trim().toLowerCase();
+		if (value === "0" || value === "left" || value === "top" || value === "start")
 			return 0;
-		if (value === "1")
+		if (value === "1" || value === "right" || value === "bottom" || value === "end")
 			return 1;
-		if (value === "2")
+		if (value === "2" || value === "center")
 			return 2;
 		return null;
 	}
@@ -135,4 +135,29 @@ export function PlanFixedWrap(
 		|| measured.requiredHeight > container.height)
 		return null;
 	return { rects: measured.rects, lineCount: measured.lineCount, usedHeight: measured.usedHeight };
+}
+
+/**
+ * Opt-in fixed Wrap preview, built on the already tested native-derived
+ * start-aligned line packer. Centered vertical content is a HUD-calibrated
+ * candidate, not proven general native Wrap parity. Existing snapshot
+ * PlanFixedWrap semantics remain unchanged.
+ */
+export function PlanFixedWrapPreview(
+	children: readonly Pick<GeometryRect, "width" | "height">[],
+	container: Pick<GeometryRect, "width" | "height">,
+	settings: NativeWrapSettings
+): FixedWrapPlan | null {
+	if (settings.verticalAlign !== 0 && settings.verticalAlign !== 2)
+		return null;
+	const plan = PlanFixedWrap(children, container, { ...settings, verticalAlign: 0 });
+	if (!plan || settings.verticalAlign !== 2)
+		return plan;
+	const available = container.height - (plan.usedHeight + 2 * settings.padding);
+	if (!Number.isFinite(available) || available < 0)
+		return null;
+	return {
+		...plan,
+		rects: plan.rects.map((rect) => ({ ...rect, y: rect.y + available / 2 }))
+	};
 }

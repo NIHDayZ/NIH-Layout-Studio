@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { DecodeNativeWrapSettings, PlanFixedWrap } from "../.geometry-engine-test-build/FixedWrap.js";
+import { DecodeNativeWrapSettings, PlanFixedWrap, PlanFixedWrapPreview } from "../.geometry-engine-test-build/FixedWrap.js";
+import { readFileSync } from "node:fs";
 import { DecodeNativeSpacerSpacing } from "../.geometry-engine-test-build/SpacerSettings.js";
 import { MeasureLayoutTree } from "../.geometry-engine-test-build/LayoutMeasurement.js";
 import { ArrangeMeasuredGeometry } from "../.geometry-engine-test-build/GeometrySnapshot.js";
@@ -131,4 +132,51 @@ test("Scroll, Grid, and ordinary containers never inherit the fixed Wrap strateg
  const result=ArrangeMeasuredGeometry(MeasureLayoutTree(roots),Rect(500,500),1,{fixedWrap:true});
  assert.deepEqual(result.appliedStrategies,[]);
  assert.deepEqual(result.issues.map(x=>x.type),types.slice(0,2));
+});
+
+test("native Wrap preview accepts named alignment from authored layouts", () => {
+	const cfg = DecodeNativeWrapSettings([
+		{name:"Padding",value:"0"}, {name:"Margin",value:"0"},
+		{name:"content_halign",value:"right"}, {name:"content_valign",value:"center"}
+	]);
+	assert.deepEqual(cfg,{padding:0,margin:0,horizontalAlign:1,verticalAlign:2});
+	assert.equal(DecodeNativeWrapSettings([{name:"content_valign",value:"unrecognized"}]).verticalAlign,null);
+	assert.equal(PlanFixedWrap([{width:35,height:35}],Rect(90,79),cfg),null,
+		"Existing fixed-wrap snapshot algorithm must retain start-only semantics");
+});
+
+test("nine actual vanilla BadgesPanel sizes form a right-aligned centered non-overlapping row", () => {
+	const widths=[35,35,52,35,35,35,35,35,35];
+	const children=widths.map(w=>({width:w,height:w===52?38:35}));
+	const cfg=DecodeNativeWrapSettings([
+		{name:"Padding",value:"0"}, {name:"Margin",value:"0"},
+		{name:"content_halign",value:"right"}, {name:"content_valign",value:"center"}
+	]);
+	const plan=PlanFixedWrapPreview(children,{width:364.349,height:79},cfg);
+	assert.ok(plan);
+	assert.equal(plan.lineCount,1);
+	assert.equal(plan.usedHeight,38);
+	assert.ok(Math.abs(plan.rects[0].x-(364.349-332))<1e-9);
+	assert.ok(Math.abs(plan.rects.at(-1).x+35-364.349)<1e-9);
+	assert.ok(plan.rects.every(x=>x.y===20.5));
+	for(let i=1;i<plan.rects.length;++i)
+		assert.ok(Math.abs(plan.rects[i].x-plan.rects[i-1].x-plan.rects[i-1].width)<1e-9);
+});
+
+test("opt-in Wrap preview refuses unsupported vertical alignment and overflow", () => {
+	const child=[{width:40,height:20}];
+	const base=DecodeNativeWrapSettings([]);
+	assert.equal(PlanFixedWrapPreview(child,{width:100,height:90},{...base,verticalAlign:1}),null);
+	assert.equal(PlanFixedWrapPreview(child,{width:100,height:19},{...base,verticalAlign:2}),null);
+	assert.deepEqual(PlanFixedWrapPreview(child,{width:100,height:90},base),PlanFixedWrap(child,{width:100,height:90},base));
+});
+
+test("live Canvas wraps only explicitly enabled eligible fixed-child WrapSpacer widgets", () => {
+	const src=readFileSync(new URL("../src/components/Canvas.tsx",import.meta.url),"utf8");
+	assert.ok(src.includes('get("experimentalNativeWrapLayout") === "1"'));
+	assert.ok(src.includes('const eligibleWrap = experimentalNativeWrapLayout && isWrapSpacer'));
+	assert.ok(src.includes('!GetFlag(node, "Size To Content H")'));
+	assert.ok(src.includes('GetFlag(child, "hexactsize") && GetFlag(child, "vexactsize")'));
+	assert.ok(src.includes("PlanFixedWrapPreview(wrapNaturalRects, childParent, DecodeNativeWrapSettings(node.properties))"));
+	assert.ok(src.includes("} else if (wrapPlan) {"));
 });
