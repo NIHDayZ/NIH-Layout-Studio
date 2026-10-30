@@ -1,6 +1,6 @@
 import type { GeometryRect } from "./GeometryCore.js";
-import { PlanConstrainedGrid } from "./ConstrainedGrid.js";
-import { MeasureFixedWrapContent, PlanFixedWrap, type FixedWrapContentPlan } from "./FixedWrap.js";
+import { DecodeNativeGridSettings, PlanConstrainedGrid } from "./ConstrainedGrid.js";
+import { DecodeNativeWrapSettings, MeasureFixedWrapContent, PlanFixedWrap, PlanFixedWrapPreview, type FixedWrapContentPlan } from "./FixedWrap.js";
 import { MeasureAuthoredScrollViewport, type AuthoredScrollViewport } from "./ScrollViewport.js";
 import { ResolveAuthoredRect } from "./WidgetGeometry.js";
 import { EstimateUnscaledScrollViewport, type UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
@@ -224,6 +224,35 @@ export function ProbeUnscaledScrollViewport(
 		|| !parent.nativeScroll)
 		return null;
 	return EstimateUnscaledScrollViewport(rect, parent.nativeScroll, unitScale);
+}
+
+
+/**
+ * One managed-container native planning boundary, shared by live preview and
+ * the measured snapshot strategy. Unverified modes are opt-in, not defaults.
+ * Preview returns child-index-preserving rectangles without changing source.
+ */
+export function PlanNativeManagedPreview(
+	type: string,
+	properties: readonly { name: string; value: string }[],
+	children: readonly GeometryRect[],
+	container: GeometryRect,
+	mode: "constrained-grid" | "fixed-wrap"
+): readonly GeometryRect[] | null {
+	const widgetType = type.trim().toLowerCase();
+	if (mode === "constrained-grid") {
+		if (widgetType !== "gridspacerwidgetclass")
+			return null;
+		const grid = DecodeNativeGridSettings(properties);
+		if (children.length > grid.columns * grid.rows)
+			return null;
+		return PlanConstrainedGrid(children.length, grid.columns, grid.rows,
+			container, grid.margin, grid.padding).rects;
+	}
+	if (widgetType !== "wrapspacerwidgetclass")
+		return null;
+	const settings = DecodeNativeWrapSettings(properties);
+	return PlanFixedWrapPreview(children, container, settings)?.rects ?? null;
 }
 
 type StrategyPlanner = (node: MeasuredLayoutNode, rect: GeometryRect) => ChildArrangement | null;

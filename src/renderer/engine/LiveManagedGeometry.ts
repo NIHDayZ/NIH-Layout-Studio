@@ -1,7 +1,8 @@
 import type { LayoutNode } from "../../model/LayoutTypes";
 import { GetFlag, GetNumber, GetNodeProperty, ResolveRect, type Rect } from "../LayoutMath";
-import { PlanConstrainedGrid, PlanGrid, ResolveNativeGridCounts } from "../GridLayout";
-import { DecodeNativeWrapSettings, PlanFixedWrapPreview } from "./FixedWrap";
+import { PlanGrid } from "../GridLayout";
+import { PlanNativeManagedPreview } from "./LayoutArrangers";
+
 
 /**
  * Transitional live-preview managed layout adapter.
@@ -42,11 +43,14 @@ function GetGridPlan(node: LayoutNode, childParent: Rect, nativeConstrainedGrid:
 	const configuredColumns = GetNumber(node, "Columns", 0);
 	const configuredRows = GetNumber(node, "Rows", 0);
 	if (nativeConstrainedGrid && !GetFlag(node, "Size To Content H") && !GetFlag(node, "Size To Content V")) {
-		// Verified GridSpacerWidget property-load routine at image VA
-		// 0x1408DED50 defaults both Rows and Columns independently to 3.
-		const { columns, rows } = ResolveNativeGridCounts(configuredColumns, configuredRows);
-		return PlanConstrainedGrid(children.length, columns, rows,
-			{ width: childParent.width, height: childParent.height }, GetNumber(node, "Margin", 0), GetNumber(node, "Padding", 0));
+		const slots = PlanNativeManagedPreview(node.type, node.properties, children, childParent, "constrained-grid");
+		if (slots) {
+			return {
+				rects: [...slots], columns: GetNumber(node, "Columns", 3) || 3,
+				rows: GetNumber(node, "Rows", 3) || 3,
+				contentWidth: childParent.width, contentHeight: childParent.height
+			};
+		}
 	}
 	return PlanGrid(children, configuredColumns, configuredRows, GetSpacerGap(node), measured, { width: childParent.width, height: childParent.height });
 }
@@ -69,7 +73,7 @@ export function PlanLiveManagedChildren(node: LayoutNode, childParent: Rect, opt
 	const wrapNaturalRects = eligibleWrap ? node.children.map((child) => ResolveRect(child, childParent)) : null;
 	const wrapPlan = wrapNaturalRects && wrapNaturalRects.every((r) =>
 		Number.isFinite(r.width) && Number.isFinite(r.height) && r.width > 0 && r.height > 0)
-		? PlanFixedWrapPreview(wrapNaturalRects, childParent, DecodeNativeWrapSettings(node.properties))
+		? PlanNativeManagedPreview(node.type, node.properties, wrapNaturalRects, childParent, "fixed-wrap")
 		: null;
 	const rects: Rect[] = [];
 	let cursor = 0;
@@ -79,7 +83,7 @@ export function PlanLiveManagedChildren(node: LayoutNode, childParent: Rect, opt
 		if (gridPlan)
 			rect = gridPlan.rects[index];
 		else if (wrapPlan)
-			rect = wrapPlan.rects[index];
+			rect = wrapPlan[index];
 		else if (isGridSpacer) {
 			if (direction === "column") {
 				const height = natural.height > 0 ? natural.height : childParent.height;
@@ -99,3 +103,6 @@ export function PlanLiveManagedChildren(node: LayoutNode, childParent: Rect, opt
 export function PlanLiveGridContent(node: LayoutNode, bounds: Rect, nativeConstrainedGrid: boolean) {
 	return GetGridPlan(node, bounds, nativeConstrainedGrid);
 }
+
+/** Shared dispatch exposed for geometry parity testing across live and snapshot. */
+export { PlanNativeManagedPreview } from "./LayoutArrangers";
