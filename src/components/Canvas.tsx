@@ -1,10 +1,13 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
+import { MeasureLayoutTree } from "../renderer/engine/LayoutMeasurement";
+import { ArrangeMeasuredGeometry } from "../renderer/engine/GeometrySnapshot";
+import type { ArrangedWidget } from "../renderer/engine/GeometryCore";
 import { PlanLiveManagedChildren, PlanLiveGridContent } from "../renderer/engine/LiveManagedGeometry";
 
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
 import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
 import type { ProjectWorkspaceModel, WidgetStyleDefinition } from "../project/ProjectTypes";
 import { ResolveProjectBitmapFont, ResolveProjectSdfFont, ResolveProjectFont, ResolveProjectImage, ResolveProjectWidgetStyle } from "../project/ProjectWorkspace";
@@ -119,6 +122,7 @@ function ModulationToCss(value: [number, number, number, number]) {
 interface RenderNodeProps {
 	node: LayoutNode;
 	forcedRect?: Rect;
+	geometryById?: ReadonlyMap<string, ArrangedWidget>;
 	parent: Rect;
 	selected: LayoutNode | null;
 	selectedIds: string[];
@@ -693,10 +697,14 @@ const experimentalNativeWrapLayout = typeof window !== "undefined" && new URLSea
 const debugSpacerLayout = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugSpacerLayout") === "1";
 const loggedSpacerLayouts = new Set<string>();
 
-function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | null, selectedIds: string[], onSelect: (node: LayoutNode, additive?: boolean) => void, onGeometryChange: RenderNodeProps["onGeometryChange"], zoom: number, debug: CanvasDebugOptions, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null, snapEnabled: boolean, snapSize: number, onContextMenu: RenderNodeProps["onContextMenu"]) {
+function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | null, selectedIds: string[], onSelect: (node: LayoutNode, additive?: boolean) => void, onGeometryChange: RenderNodeProps["onGeometryChange"], zoom: number, debug: CanvasDebugOptions, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null, snapEnabled: boolean, snapSize: number, onContextMenu: RenderNodeProps["onContextMenu"], geometryById?: ReadonlyMap<string, ArrangedWidget>) {
 	const kind = GetWidgetKind(node);
 	const childParent: Rect = { x: 0, y: 0, width: Math.max(0, rect.width), height: Math.max(0, rect.height) };
 
+	if (geometryById)
+		return node.children.map((child, index) => (
+			<RenderNode key={`${child.name}-${index}`} node={child} parent={childParent} geometryById={geometryById} selected={selected} selectedIds={selectedIds} onSelect={onSelect} onGeometryChange={onGeometryChange} zoom={zoom} debug={debug} project={project} dependencyProjects={dependencyProjects} vanillaProject={vanillaProject} snapEnabled={snapEnabled} snapSize={snapSize} onContextMenu={onContextMenu} />
+		));
 	if (!kind.isSpacer)
 		return node.children.map((child, index) => (
 			<RenderNode key={`${child.name}-${index}`} node={child} parent={childParent} selected={selected} selectedIds={selectedIds} onSelect={onSelect} onGeometryChange={onGeometryChange} zoom={zoom} debug={debug} project={project} dependencyProjects={dependencyProjects} vanillaProject={vanillaProject} snapEnabled={snapEnabled} snapSize={snapSize} onContextMenu={onContextMenu} />
@@ -739,13 +747,13 @@ function RenderChildren(node: LayoutNode, rect: Rect, selected: LayoutNode | nul
 	});
 }
 
-function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect, onGeometryChange, zoom, debug, project, dependencyProjects, vanillaProject, snapEnabled, snapSize, onContextMenu }: RenderNodeProps) {
+function RenderNode({ node, parent, forcedRect, geometryById, selected, selectedIds, onSelect, onGeometryChange, zoom, debug, project, dependencyProjects, vanillaProject, snapEnabled, snapSize, onContextMenu }: RenderNodeProps) {
 	if (!IsRenderableNode(node))
 		return null;
 	if (GetNodeProperty(node, "visible") === "0")
 		return null;
 
-	const resolvedRect = forcedRect ?? ResolveRect(node, parent);
+	const resolvedRect = geometryById?.get(node.id)?.localRect ?? forcedRect ?? ResolveRect(node, parent);
 	const [dragRect, setDragRect] = useState<Rect | null>(null);
 	const [hovered, setHovered] = useState(false);
 	const [pressed, setPressed] = useState(false);
@@ -753,7 +761,7 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 	const kind = GetWidgetKind(node);
 	// Opt-in sizing applies before child placement so bottom/center anchors stay
 	// attached to the same parent edge when content requires a larger grid.
-	if (experimentalGridLayout && kind.isSpacer && node.type.toLowerCase().includes("gridspacerwidget") && !dragRect) {
+	if (!geometryById && experimentalGridLayout && kind.isSpacer && node.type.toLowerCase().includes("gridspacerwidget") && !dragRect) {
 		const plan = PlanLiveGridContent(node, { x: 0, y: 0, width: rect.width, height: rect.height }, experimentalNativeConstrainedGrid);
 		const width = GetFlag(node, "Size To Content H") ? Math.max(rect.width, plan.contentWidth) : rect.width;
 		const height = GetFlag(node, "Size To Content V") ? Math.max(rect.height, plan.contentHeight) : rect.height;
@@ -854,7 +862,7 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 			{RenderWidgetContent(node, rect, visualState, debug, project, dependencyProjects, vanillaProject)}
 			{debug.showNames && isSelected && <span className="widget-name-badge">{node.name}</span>}
 			{debug.showAnchors && isSelected && <AnchorOverlay node={node} />}
-			{RenderChildren(node, rect, selected, selectedIds, onSelect, onGeometryChange, zoom, debug, project, dependencyProjects, vanillaProject, snapEnabled, snapSize, onContextMenu)}
+			{RenderChildren(node, rect, selected, selectedIds, onSelect, onGeometryChange, zoom, debug, project, dependencyProjects, vanillaProject, snapEnabled, snapSize, onContextMenu, geometryById)}
 			{isSelected && (
 				<>
 					{["nw", "n", "ne", "e", "se", "s", "sw", "w"].map((handle) => (
@@ -869,6 +877,15 @@ function RenderNode({ node, parent, forcedRect, selected, selectedIds, onSelect,
 export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChange, width, height, zoom, debug, project, dependencyProjects, vanillaProject, snapEnabled, snapSize, showGrid, onContextMenu }: CanvasProps) {
 	const root: Rect = { x: 0, y: 0, width, height };
 	const canvasRef = useRef<HTMLDivElement>(null);
+	const snapshotEnabled = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalGeometrySnapshot") === "1";
+	const geometryById = useMemo(() => {
+		if (!snapshotEnabled)
+			return undefined;
+		const snapshot = ArrangeMeasuredGeometry(MeasureLayoutTree(nodes), root);
+		if (snapshot.issues.some((issue) => issue.code === "duplicate-widget-id"))
+			return undefined;
+		return snapshot.byId;
+	}, [snapshotEnabled, nodes, width, height]);
 	const geometryTraceEnabled = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugWidgetGeometry") === "1";
 	useEffect(() => {
 		if (!geometryTraceEnabled || !selected)
@@ -919,6 +936,7 @@ export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChang
 						key={`${node.name}-${index}`}
 						node={node}
 						parent={root}
+						geometryById={geometryById}
 						selected={selected}
 						selectedIds={selectedIds}
 						onSelect={onSelect}
