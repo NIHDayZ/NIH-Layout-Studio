@@ -1,5 +1,6 @@
 import { SdfTextCanvas } from "../project/SdfTextCanvas";
 import { TraceWidgetGeometry } from "../renderer/WidgetGeometryDiagnostic";
+import { CompareLiveToSnapshot } from "../renderer/engine/GeometryComparison";
 import { MeasureLayoutTree } from "../renderer/engine/LayoutMeasurement";
 import { ArrangeMeasuredGeometry } from "../renderer/engine/GeometrySnapshot";
 import type { ArrangedWidget } from "../renderer/engine/GeometryCore";
@@ -886,6 +887,17 @@ export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChang
 			return undefined;
 		return snapshot.byId;
 	}, [snapshotEnabled, nodes, width, height]);
+	const compareGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("compareGeometryPipelines") === "1";
+	useEffect(() => {
+		if (!compareGeometry)
+			return;
+		const comparison=CompareLiveToSnapshot(nodes,root,{
+			gridLayout: experimentalGridLayout,
+			nativeConstrainedGrid: experimentalNativeConstrainedGrid,
+			nativeWrapLayout: experimentalNativeWrapLayout
+		});
+		console.info("[NIH Layout Studio][Geometry comparison]",comparison);
+	},[compareGeometry,nodes,width,height]);
 	const geometryTraceEnabled = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugWidgetGeometry") === "1";
 	useEffect(() => {
 		if (!geometryTraceEnabled || !selected)
