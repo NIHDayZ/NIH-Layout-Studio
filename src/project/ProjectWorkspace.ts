@@ -465,6 +465,8 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 	MarkStage("EDDS decoding");
 	const bitmapFonts = new Map<string, BitmapFontDefinition>();
 	const sdfFonts = new Map<string, SdfFontResource>();
+	// Capture the research route once per workspace font-indexing pass.
+	const standaloneFnt5Enabled = ReadFnt5ResearchOptions().standalone;
 	const unsupportedFontVersions = new Map<string, number>();
 	let parsedBitmapFontCount = 0;
 	let fnt5Inspected = 0;
@@ -490,7 +492,7 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 						++fnt5Inspected;
 						let standaloneFnt5Loaded = false;
 						// Sidecar-less FNT5 parsing is experimental and only enabled for local validation.
-						if (ReadFnt5ResearchOptions().standalone) {
+						if (standaloneFnt5Enabled) {
 							const paths = Fnt5SiblingPaths(fontFile.path);
 							const atlas = files.find((candidate) => candidate.extension === ".edds" && NormalizePath(candidate.path).toLowerCase() === paths.atlasPath);
 							const atlasUrl = atlas ? resourceObjectUrls.get(atlas.path) : undefined;
@@ -509,10 +511,13 @@ export async function BuildProjectWorkspace(inputFiles: File[], onTextureProgres
 						const sidecar = files.find((candidate) => candidate.extension === ".fsdf" && NormalizePath(candidate.path).toLowerCase() === NormalizePath(fontFile.path).replace(/\.fnt$/i, ".fsdf").toLowerCase());
 						if (sidecar) {
 							try {
-								const metadata = ParseFsdf(await sidecar.file.text());
+								// File text is immutable for this workspace load. Parse both
+								// metadata and glyph records from one source read.
+								const sidecarText = await sidecar.file.text();
+								const metadata = ParseFsdf(sidecarText);
 								if (metadata) {
 									++sdfSidecarsParsed;
-									const glyphs = ParseFsdfGlyphMetrics(await sidecar.file.text());
+									const glyphs = ParseFsdfGlyphMetrics(sidecarText);
 									if (glyphs) {
 										sdfGlyphsValidated += glyphs.length;
 										const atlas = files.find((candidate) => candidate.extension === ".edds" && NormalizePath(candidate.path).toLowerCase() === NormalizePath(fontFile.path).replace(/\.fnt$/i, ".edds").toLowerCase());

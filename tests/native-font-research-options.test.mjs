@@ -62,7 +62,8 @@ test("Canvas, SDF renderer and workspace load one shared parsing policy", () => 
 	assert.ok(canvas.includes('fit: experimentalFnt5FitRaw, debugSampling: debugTextResolution'));
 	assert.ok(sdf.includes('lineOrigin: experimentalFnt5LineOrigin'));
 	assert.ok(sdf.includes('msdf: experimentalMsdf'));
-	assert.ok(workspace.includes('ReadFnt5ResearchOptions().standalone'));
+	assert.ok(workspace.includes('const standaloneFnt5Enabled = ReadFnt5ResearchOptions().standalone;'));
+	assert.ok(workspace.includes('if (standaloneFnt5Enabled)'));
 	assert.equal(workspace.includes('get("experimentalStandaloneFnt5")'), false);
 	assert.equal(sdf.includes('new URLSearchParams(window.location.search)'), false);
 });
