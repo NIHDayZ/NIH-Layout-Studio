@@ -4,7 +4,10 @@ import { readFileSync } from "node:fs";
 test("Canvas uses whole-tree measured geometry only behind an explicit flag",()=>{
 	const source=readFileSync(new URL("../src/components/Canvas.tsx",import.meta.url),"utf8");
 	assert.ok(source.includes('get("experimentalGeometrySnapshot") === "1"'));
-	assert.ok(source.includes("ArrangeMeasuredGeometry(MeasureLayoutTree(nodes), root)"));
+	assert.ok(source.includes("ArrangeMeasuredGeometry(MeasureLayoutTree(nodes), root, 1, {"));
+	assert.ok(source.includes('get("experimentalSnapshotManaged") === "1"'));
+	assert.ok(source.includes("fixedWrapPreview:"));
+	assert.ok(source.includes("fixedWrap:"));
 	assert.ok(source.includes("geometryById?.get(node.id)?.localRect ?? forcedRect ?? ResolveRect(node, parent)"));
 	assert.ok(source.includes("if (!geometryById && experimentalGridLayout"));
 	assert.ok(source.includes("geometryById={geometryById}"));
