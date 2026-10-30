@@ -46,8 +46,8 @@ function GetGridPlan(node: LayoutNode, childParent: Rect, nativeConstrainedGrid:
 		const slots = PlanNativeManagedPreview(node.type, node.properties, children, childParent, "constrained-grid");
 		if (slots) {
 			return {
-				rects: [...slots], columns: GetNumber(node, "Columns", 3) || 3,
-				rows: GetNumber(node, "Rows", 3) || 3,
+				rects: [...slots], columns: Math.max(1, Math.floor(configuredColumns > 0 ? configuredColumns : 3)),
+				rows: Math.max(1, Math.floor(configuredRows > 0 ? configuredRows : 3)),
 				contentWidth: childParent.width, contentHeight: childParent.height
 			};
 		}

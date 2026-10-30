@@ -183,7 +183,9 @@ test("live Canvas delegates opt-in fixed Wrap planning to the shared engine adap
 	assert.ok(adapter.includes("const eligibleWrap = options.nativeWrapLayout && isWrapSpacer"));
 	assert.ok(adapter.includes('!GetFlag(node, "Size To Content H")'));
 	assert.ok(adapter.includes('GetFlag(child, "hexactsize") && GetFlag(child, "vexactsize")'));
-	assert.ok(adapter.includes("PlanFixedWrapPreview(wrapNaturalRects, childParent, DecodeNativeWrapSettings(node.properties))"));
+	assert.ok(adapter.includes('PlanNativeManagedPreview(node.type, node.properties, wrapNaturalRects, childParent, "fixed-wrap")'));
+	const shared=readFileSync(new URL("../src/renderer/engine/LayoutArrangers.ts",import.meta.url),"utf8");
+	assert.ok(shared.includes("PlanFixedWrapPreview(children, container, settings)"));
 	assert.ok(adapter.includes("else if (wrapPlan)"));
 });
 
