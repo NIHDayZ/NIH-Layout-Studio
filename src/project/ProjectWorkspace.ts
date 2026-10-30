@@ -1,5 +1,5 @@
 import { OrderImageSetVariants, ScaleImageSetCoordinates } from "./ImageSetVariants";
-import type { SdfFontResource } from "./SdfTextCanvas";
+import type { SdfFontResource } from "./SdfFontResource";
 import { InspectFnt5, ParseFsdf, ParseFsdfGlyphMetrics } from "./Fnt5Metadata";
 import { ParseFnt5AtlasOrigins } from "./Fnt5AtlasOrigins";
 import { ParseStandaloneFnt5 } from "./Fnt5Standalone";

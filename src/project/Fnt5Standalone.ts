@@ -1,6 +1,6 @@
 /** Experimental sidecar-less FNT5 resource parsing; geometry is provisional. */
 import { ParseFnt5AtlasOrigins } from "./Fnt5AtlasOrigins";
-import type { SdfFontResource } from "./SdfTextCanvas";
+import type { SdfFontResource } from "./SdfFontResource";
 export function ParseStandaloneFnt5(bytes: Uint8Array, atlasUrl: string, atlasWidth: number, atlasHeight: number): SdfFontResource | null {
  const origins=ParseFnt5AtlasOrigins(bytes);
  if(!origins || !atlasUrl || atlasWidth<=0 || atlasHeight<=0)return null;

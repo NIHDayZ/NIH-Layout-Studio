@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
-import type { SdfFontMetadata, SdfGlyphMetric } from "./Fnt5Metadata";
+import type { SdfGlyphMetric } from "./Fnt5Metadata";
+import type { SdfFontResource } from "./SdfFontResource";
+export type { SdfFontResource } from "./SdfFontResource";
 import { SdfGlyphAdvance } from "./SdfRasterMath";
 import { ResolveSdfGlyphAtlasSample, ResolveSdfGlyphCacheKey, RasterizeSdfGlyphAlpha } from "./SdfGlyphRasterPlan";
 import { ResolveSdfGlyphDrawPlan } from "./SdfGlyphDrawPlan";
@@ -7,17 +9,9 @@ import { ResolveExperimentalFnt5LineOrigin } from "../renderer/engine/Fnt5LineOr
 import { ReadFnt5ResearchOptions } from "../renderer/engine/Fnt5ResearchOptions";
 import { WrapPreviewText } from "../renderer/engine/TextFlow";
 
-export interface SdfFontResource {
- metadata: SdfFontMetadata;
- glyphs: Map<number, SdfGlyphMetric>;
- atlasUrl: string;
- fnt5Origins?: Map<number, { x: number; y: number }>;
- fnt5Name?: string;
- fnt5CellSize?: number;
- fnt5PixelMetrics?: boolean;
-}
 interface CachedAtlas {
  source: HTMLCanvasElement;
+ sourceContext: CanvasRenderingContext2D;
  glyphs: Map<string, HTMLCanvasElement>;
 }
 const atlases = new WeakMap<SdfFontResource, Promise<CachedAtlas>>();
@@ -105,7 +99,7 @@ function LoadAtlas(resource: SdfFontResource): Promise<CachedAtlas> {
    const ctx = source.getContext("2d", { willReadFrequently: true });
    if (!ctx) { reject(new Error("SDF canvas context unavailable")); return; }
    ctx.drawImage(image, 0, 0);
-   resolve({ source, glyphs: new Map() });
+   resolve({ source, sourceContext: ctx, glyphs: new Map() });
   };
   image.src = resource.atlasUrl;
  });
@@ -156,10 +150,9 @@ function RasterGlyph(resource: SdfFontResource, atlas: CachedAtlas, glyph: SdfGl
  if (!rect || rect.left < 0 || rect.top < 0 || rect.left + rect.size > atlas.source.width || rect.top + rect.size > atlas.source.height)
   return null;
  const { left: sourceX, top: sourceY, size: cell } = rect;
- const sourceCtx = atlas.source.getContext("2d", { willReadFrequently: true });
- if (!sourceCtx)
-  return null;
- const pixels = sourceCtx.getImageData(sourceX, sourceY, cell, cell);
+ // The atlas source context was validated during LoadAtlas, so reuse it
+ // instead of looking up the same 2D context for every newly cached glyph.
+ const pixels = atlas.sourceContext.getImageData(sourceX, sourceY, cell, cell);
  RasterizeSdfGlyphAlpha(pixels.data, {
   msdf: experimentalMsdf,
   smoothing: experimentalMsdfSmoothing,
