@@ -1,0 +1,145 @@
+{
+  "source": "user-supplied screenshots at 46% Workbench/Studio zoom; sampled flat-color pixels, not engine color getters",
+  "pictures": {
+    "workbench": "image(20261031-082627).png",
+    "studioGray": "image(20261031-082944).png",
+    "studioBlack": "image(20261031-082635).png"
+  },
+  "backdrop": {
+    "workbench": [
+      130,
+      130,
+      130
+    ],
+    "studio": [
+      130,
+      130,
+      130
+    ]
+  },
+  "authoredLayout": "tests/fixtures/workbench-grid/NIH_Grid_Complex_Visual.layout",
+  "panelStyle": "rover_sim_colorable",
+  "note": "Color pixels from screenshots and OS capture; cannot prove shader implementation or alpha equation. Distinguish gamma candidate from native-verified getter geometry.",
+  "samples": [
+    {
+      "name": "blue",
+      "authored": [
+        0.25,
+        0.58,
+        0.72,
+        0.94
+      ],
+      "workbench": [
+        136,
+        194,
+        213
+      ],
+      "studioGray": [
+        64,
+        148,
+        184
+      ],
+      "studioBlack": [
+        64,
+        147,
+        183
+      ]
+    },
+    {
+      "name": "orange",
+      "authored": [
+        0.75,
+        0.53,
+        0.27,
+        0.94
+      ],
+      "workbench": [
+        216,
+        186,
+        139
+      ],
+      "studioGray": [
+        191,
+        135,
+        69
+      ],
+      "studioBlack": [
+        191,
+        134,
+        69
+      ]
+    },
+    {
+      "name": "green",
+      "authored": [
+        0.32,
+        0.66,
+        0.49,
+        0.94
+      ],
+      "workbench": [
+        150,
+        204,
+        180
+      ],
+      "studioGray": [
+        82,
+        168,
+        125
+      ],
+      "studioBlack": [
+        82,
+        167,
+        125
+      ]
+    },
+    {
+      "name": "pink",
+      "authored": [
+        0.67,
+        0.41,
+        0.55,
+        0.94
+      ],
+      "workbench": [
+        206,
+        167,
+        189
+      ],
+      "studioGray": [
+        171,
+        105,
+        140
+      ],
+      "studioBlack": [
+        170,
+        105,
+        140
+      ]
+    },
+    {
+      "name": "lavender",
+      "authored": [
+        0.46,
+        0.5,
+        0.7,
+        0.94
+      ],
+      "workbench": [
+        175,
+        182,
+        210
+      ],
+      "studioGray": [
+        117,
+        128,
+        178
+      ],
+      "studioBlack": [
+        116,
+        127,
+        178
+      ]
+    }
+  ]
+}
