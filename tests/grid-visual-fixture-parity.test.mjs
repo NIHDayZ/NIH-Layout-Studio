@@ -13,8 +13,11 @@ function GeometryOnly(node) {
 	return {
 		name: node.name,
 		type: node.type,
-		properties: node.properties.filter(property =>
-			!["color", "style"].includes(property.name.toLowerCase())),
+		// Compare authored semantics, not parser source-line provenance:
+		// the visual-only color/style lines shift every following line number.
+		properties: node.properties
+			.filter(property => !["color", "style"].includes(property.name.toLowerCase()))
+			.map(property => ({ name: property.name, value: property.value })),
 		children: node.children.map(GeometryOnly)
 	};
 }
