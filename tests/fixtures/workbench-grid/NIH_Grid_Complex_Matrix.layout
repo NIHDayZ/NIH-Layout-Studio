@@ -1,0 +1,819 @@
+FrameWidgetClass NIHGridComplexMatrix {
+	position 0 0
+	size 1 1
+	hexactpos 1
+	vexactpos 1
+	{
+		GridSpacerWidgetClass LBaseline {
+			position 20 20
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LBaselineChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LBaselineChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LBaselineChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LSameRow {
+			position 300 20
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LSameRowChild0 {
+					position 0 0
+					size 0.25 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSameRowChild1 {
+					position 0 0
+					size 0.75 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSameRowChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LSameRowChild3 {
+					position 0 0
+					size 12 18
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LSameColumn {
+			position 580 20
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LSameColumnChild0 {
+					position 0 0
+					size 0.25 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSameColumnChild1 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LSameColumnChild2 {
+					position 0 0
+					size 0.75 0.75
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSameColumnChild3 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LSplitColumns {
+			position 860 20
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LSplitColumnsChild0 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSplitColumnsChild1 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LSplitColumnsChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LSplitColumnsChild3 {
+					position 0 0
+					size 0.25 0.75
+					hexactsize 0
+					vexactsize 0
+				}
+			}
+		}
+		GridSpacerWidgetClass LRatioOne {
+			position 20 155
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LRatioOneChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LRatioOneChild1 {
+					position 0 0
+					size 1 1
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LRatioOneChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LRatioOver {
+			position 300 155
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LRatioOverChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LRatioOverChild1 {
+					position 0 0
+					size 1.25 1.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LRatioOverChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LWidthDeficit {
+			position 580 155
+			size 45 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LWidthDeficitChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LWidthDeficitChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LWidthDeficitChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LHeightDeficit {
+			position 860 155
+			size 240 40
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LHeightDeficitChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LHeightDeficitChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LHeightDeficitChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LBothDeficit {
+			position 20 290
+			size 45 40
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LBothDeficitChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LBothDeficitChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LBothDeficitChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LThreeSparse {
+			position 300 290
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 3
+			"Rows" 3
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LThreeSparseChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeSparseChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LThreeSparseChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeSparseChild3 {
+					position 0 0
+					size 0.25 0.75
+					hexactsize 0
+					vexactsize 0
+				}
+			}
+		}
+		GridSpacerWidgetClass LThreeFull {
+			position 580 290
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 3
+			"Rows" 3
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LThreeFullChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeFullChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LThreeFullChild2 {
+					position 0 0
+					size 12 18
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeFullChild3 {
+					position 0 0
+					size 0.75 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LThreeFullChild4 {
+					position 0 0
+					size 25 40
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeFullChild5 {
+					position 0 0
+					size 18 13
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeFullChild6 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeFullChild7 {
+					position 0 0
+					size 0.25 0.75
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LThreeFullChild8 {
+					position 0 0
+					size 22 10
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LThreeOverflow {
+			position 860 290
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 3
+			"Rows" 3
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LThreeOverflowChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeOverflowChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LThreeOverflowChild2 {
+					position 0 0
+					size 12 18
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeOverflowChild3 {
+					position 0 0
+					size 0.75 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LThreeOverflowChild4 {
+					position 0 0
+					size 25 40
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeOverflowChild5 {
+					position 0 0
+					size 18 13
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeOverflowChild6 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeOverflowChild7 {
+					position 0 0
+					size 0.25 0.75
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LThreeOverflowChild8 {
+					position 0 0
+					size 22 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LThreeOverflowChild9 {
+					position 0 0
+					size 0.25 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+			}
+		}
+		GridSpacerWidgetClass LSingleColumn {
+			position 20 425
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 1
+			"Rows" 4
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LSingleColumnChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LSingleColumnChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSingleColumnChild2 {
+					position 0 0
+					size 0.25 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSingleColumnChild3 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LSingleRow {
+			position 300 425
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 4
+			"Rows" 1
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LSingleRowChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LSingleRowChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSingleRowChild2 {
+					position 0 0
+					size 0.25 0.75
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LSingleRowChild3 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LMixedH {
+			position 580 425
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			{
+				PanelWidgetClass LMixedHChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LMixedHChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LMixedHChild2 {
+					position 0 0
+					size 0.75 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LMixedHChild3 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LMixedV {
+			position 860 425
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LMixedVChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LMixedVChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LMixedVChild2 {
+					position 0 0
+					size 0.75 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LMixedVChild3 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LHiddenSkip {
+			position 20 560
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LHiddenSkipChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LHiddenSkipChild1 {
+					position 0 0
+					size 0.75 0.75
+					hexactsize 0
+					vexactsize 0
+					visible 0
+				}
+				PanelWidgetClass LHiddenSkipChild2 {
+					position 0 0
+					size 0.25 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LHiddenSkipChild3 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LHiddenInclude {
+			position 300 560
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			"Ignore invisible" 0
+			{
+				PanelWidgetClass LHiddenIncludeChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LHiddenIncludeChild1 {
+					position 0 0
+					size 0.75 0.75
+					hexactsize 0
+					vexactsize 0
+					visible 0
+				}
+				PanelWidgetClass LHiddenIncludeChild2 {
+					position 0 0
+					size 0.25 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LHiddenIncludeChild3 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LNested {
+			position 580 560
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				GridSpacerWidgetClass LNestedChild0 {
+					position 0 0
+					size 90 45
+					hexactsize 1
+					vexactsize 1
+					"Columns" 2
+					"Rows" 2
+					"Padding" 3
+					"Margin" 4
+					"Size To Content H" 1
+					"Size To Content V" 1
+					{
+						PanelWidgetClass LNestedChild0Child0 {
+							position 0 0
+							size 20 10
+							hexactsize 1
+							vexactsize 1
+						}
+						PanelWidgetClass LNestedChild0Child1 {
+							position 0 0
+							size 0.5 0.5
+							hexactsize 0
+							vexactsize 0
+						}
+					}
+				}
+				PanelWidgetClass LNestedChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LNestedChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass LTwoOverflow {
+			position 860 560
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass LTwoOverflowChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LTwoOverflowChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LTwoOverflowChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass LTwoOverflowChild3 {
+					position 0 0
+					size 0.25 0.75
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass LTwoOverflowChild4 {
+					position 0 0
+					size 12 18
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+	}
+}
