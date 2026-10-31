@@ -35,3 +35,21 @@ test("Phase 2G measurement diagnostic never changes default arrangements",()=>{
 	assert.deepEqual(diagnostic.appliedStrategies,baseline.appliedStrategies);
 	assert.deepEqual(diagnostic.issues,baseline.issues);
 });
+
+test("Phase 2J shares compact participating indices and configured column/occupied row maxima",()=>{
+	const snapshot=ArrangeMeasuredGeometry(MeasureLayoutTree([root]),{x:0,y:0,width:1920,height:1080},1,
+		{gridNativeMeasurementDiagnostics:true});
+	const cases=[
+		["VOneChild",[40,0],[10],[0]],
+		["VTwoChildren",[40,20],[15],[0,1]],
+		["VThreeByTwo",[40,20,30],[25],[0,1,2]],
+		["VOneByFour",[40],[10,15,25],[0,1,2]]
+	];
+	for(const [name,columns,rows,indices] of cases){
+		const node=root.children.find(x=>x.name===name);
+		const measurement=snapshot.gridNativeMeasurementPrototypes.get(node.id);
+		assert.deepEqual(measurement.columnWidths,columns,name+" columns");
+		assert.deepEqual(measurement.rowHeights,rows,name+" occupied rows");
+		assert.deepEqual(measurement.participatingIndices,indices,name+" participation");
+	}
+});
