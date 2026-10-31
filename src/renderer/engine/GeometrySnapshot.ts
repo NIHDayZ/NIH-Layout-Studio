@@ -169,6 +169,10 @@ export function ArrangeMeasuredGeometry(
 			// unused authored coordinates for managed children.
 			const strategyRect = allocatedRects?.[index];
 			const authoredRect = strategyRect ?? ResolveAuthoredRect(authored, parentSize);
+			const measuredGridContent = !strategyRect && options.constrainedGrid && options.gridContentArrangement
+				? ProbeGridNativeMeasurement(prepared) : null;
+			const useGridWidth = measuredGridContent !== null && prepared.unresolvedContentWidth;
+			const useGridHeight = measuredGridContent !== null && prepared.unresolvedContentHeight;
 			const measuredWrapContent = !strategyRect
 				? ProbeWrapContentHeight(prepared, authoredRect.width, options) : null;
 			const useWrapHeight = measuredWrapContent !== null;
@@ -192,15 +196,15 @@ export function ArrangeMeasuredGeometry(
 					}) : null;
 			const parentHeight = parentAttempt?.result?.height;
 			const useParentHeight = parentHeight !== undefined;
-			const useHeight = useWrapHeight || useParentHeight || useConstrainedHeight || useIntrinsicHeight;
+			const useHeight = useGridHeight || useWrapHeight || useParentHeight || useConstrainedHeight || useIntrinsicHeight;
 			const resolvedSize = {
-				width: useWidth ? intrinsic!.width! : authoredRect.width,
-				height: useWrapHeight ? measuredWrapContent!.requiredHeight
+				width: useGridWidth ? measuredGridContent!.width : useWidth ? intrinsic!.width! : authoredRect.width,
+				height: useGridHeight ? measuredGridContent!.height : useWrapHeight ? measuredWrapContent!.requiredHeight
 					: useParentHeight ? parentHeight : useConstrainedHeight ? constrainedText!.height
 					: useIntrinsicHeight ? intrinsic!.height! : authoredRect.height
 			};
 			const localRect = strategyRect ?? (
-				useWidth || useHeight
+				useGridWidth || useWidth || useHeight
 					? ResolveAuthoredRectWithSize(authored, parentSize, resolvedSize)
 					: authoredRect
 			);
@@ -284,9 +288,9 @@ export function ArrangeMeasuredGeometry(
 				measuredById.set(node.id, prepared.measurement);
 			}
 
-			if ((prepared.unresolvedContentWidth && !useWidth) || (prepared.unresolvedContentHeight && !useHeight)) {
+			if ((prepared.unresolvedContentWidth && !useWidth && !useGridWidth) || (prepared.unresolvedContentHeight && !useHeight)) {
 				const axes = [
-					prepared.unresolvedContentWidth && !useWidth ? "horizontal" : "",
+					prepared.unresolvedContentWidth && !useWidth && !useGridWidth ? "horizontal" : "",
 					prepared.unresolvedContentHeight && !useHeight ? "vertical" : ""
 				].filter(Boolean).join(" and ");
 				issues.push({

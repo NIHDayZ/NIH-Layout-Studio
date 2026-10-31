@@ -6,6 +6,7 @@ import { ResolveAuthoredRect } from "./WidgetGeometry.js";
 import { EstimateUnscaledScrollViewport, type UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
 import { ScatterManagedRects, SelectManagedChildIndices } from "./ManagedVisibility.js";
+import { ProbeGridNativeMeasurement } from "./GridNativeMeasurement.js";
 import type { NativeScrollOffsets } from "./ScrollOffset.js";
 
 /**
@@ -14,6 +15,8 @@ import type { NativeScrollOffsets } from "./ScrollOffset.js";
  */
 export interface ArrangementOptions {
 	constrainedGrid?: boolean;
+	/** Experimental parent sizing and mixed-axis fixed-child placement. Requires constrainedGrid. */
+	gridContentArrangement?: boolean;
 	/** Native-derived fixed-child WrapSpacer only; no content-sized axes. */
 	fixedWrap?: boolean;
 	/** Opt-in Workbench-observed right-to-left and vertical-center fixed Wrap preview. */
@@ -58,7 +61,7 @@ export interface AppliedLayoutStrategy {
 	id: string;
 	kind: "grid" | "wrap";
 	evidence: "native-disassembly";
-	mode: "constrained-grid-prototype" | "fixed-wrap-prototype";
+	mode: "constrained-grid-prototype" | "grid-content-prototype" | "fixed-wrap-prototype";
 }
 
 export interface ChildArrangement {
@@ -108,6 +111,55 @@ function ArrangeConstrainedGrid(
  * Refuse any child with a size-to-content request or a relative axis: that
  * would require intrinsic negotiation not yet recovered from Workbench.
  */
+/**
+ * Phase 2H mixed-axis layout: a content-sized axis uses per-column/row
+ * maxima; a fixed axis uses equal native cell allocations.
+ * The eligible child geometry must be exact and non-managed, as required
+ * by ProbeGridNativeMeasurement.
+ */
+function ArrangeMeasuredGridContent(parent: MeasuredLayoutNode, rect: GeometryRect): ChildArrangement | null {
+	const grid = parent.nativeGrid;
+	const measurement = ProbeGridNativeMeasurement(parent);
+	if (!grid || !measurement || rect.width !== measurement.width || rect.height !== measurement.height)
+		return null;
+	const indices = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
+	if (!indices || indices.length === 0)
+		return null;
+	const occupiedRows = Math.ceil(indices.length / grid.columns);
+	const widths = Array<number>(grid.columns).fill(0);
+	const heights = Array<number>(occupiedRows).fill(0);
+	for (let i = 0; i < indices.length; ++i) {
+		const size = parent.children[indices[i]].authored;
+		const col = i % grid.columns;
+		const row = Math.floor(i / grid.columns);
+		widths[col] = Math.max(widths[col], size.sizeX);
+		heights[row] = Math.max(heights[row], size.sizeY);
+	}
+	const fixedWidth = (rect.width - 2 * grid.margin - (grid.columns - 1) * grid.padding) / grid.columns;
+	const fixedHeight = (rect.height - 2 * grid.margin - (grid.rows - 1) * grid.padding) / grid.rows;
+	if (!Number.isFinite(fixedWidth) || fixedWidth < 0 || !Number.isFinite(fixedHeight) || fixedHeight < 0)
+		return null;
+	const xPositions = Array<number>(grid.columns).fill(grid.margin);
+	const yPositions = Array<number>(occupiedRows).fill(grid.margin);
+	for (let col = 1; col < grid.columns; ++col)
+		xPositions[col] = xPositions[col - 1] + (parent.unresolvedContentWidth ? widths[col - 1] : fixedWidth) + grid.padding;
+	for (let row = 1; row < occupiedRows; ++row)
+		yPositions[row] = yPositions[row - 1] + (parent.unresolvedContentHeight ? heights[row - 1] : fixedHeight) + grid.padding;
+	const slots: GeometryRect[] = indices.map((original, i) => {
+		const col = i % grid.columns;
+		const row = Math.floor(i / grid.columns);
+		const size = parent.children[original].authored;
+		return { x: xPositions[col], y: yPositions[row],
+			width: parent.unresolvedContentWidth ? size.sizeX : fixedWidth,
+			height: parent.unresolvedContentHeight ? size.sizeY : fixedHeight };
+	});
+	const rects = ScatterManagedRects(indices, slots, parent.children.length);
+	if (!rects)
+		return null;
+	return { rects, applied: { id: parent.node.id, kind: "grid", evidence: "native-disassembly",
+		mode: "grid-content-prototype" } };
+}
+
 interface EligibleWrapChildren {
 	readonly indices: readonly number[];
 	readonly sizes: readonly Pick<GeometryRect, "width" | "height">[];
@@ -335,6 +387,9 @@ export function PlanManagedChildren(
 		return null;
 	if (parent.strategy.kind === "grid" && !options.constrainedGrid)
 		return null;
+	if (parent.strategy.kind === "grid" && options.gridContentArrangement
+		&& (parent.unresolvedContentWidth || parent.unresolvedContentHeight))
+		return ArrangeMeasuredGridContent(parent, containerRect);
 	if (parent.strategy.kind === "wrap" && !options.fixedWrap)
 		return null;
 	if (parent.strategy.kind === "wrap" && parent.unresolvedContentHeight) {
