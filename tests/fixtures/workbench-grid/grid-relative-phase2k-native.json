@@ -1,0 +1,525 @@
+{
+  "capture": "DayZ client Phase 2K NIH_Grid_Relative_Matrix.layout",
+  "capturedAt": "2026-10-31",
+  "phaseNames": [
+    "relative-after-create",
+    "relative-post-update",
+    "relative-after-resize-1120x720"
+  ],
+  "viewportBefore": [
+    1920,
+    1080
+  ],
+  "viewportAfter": [
+    1120,
+    720
+  ],
+  "grid": {
+    "columns": 2,
+    "rows": 2,
+    "padding": 3,
+    "margin": 4
+  },
+  "fixedChild0": [
+    40,
+    10
+  ],
+  "fixedChild2": [
+    30,
+    25
+  ],
+  "cases": [
+    {
+      "name": "RControl",
+      "position": [
+        20,
+        20
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.5,
+        0.5
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        145.5,
+        63
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          94.5,
+          27
+        ],
+        [
+          4,
+          34,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RWidth25",
+      "position": [
+        300,
+        20
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.25,
+        0.5
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        98.25,
+        63
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          47.25,
+          27
+        ],
+        [
+          4,
+          34,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RWidth75",
+      "position": [
+        580,
+        20
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.75,
+        0.5
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        192.75,
+        63
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          141.75,
+          27
+        ],
+        [
+          4,
+          34,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RHeight25",
+      "position": [
+        860,
+        20
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.5,
+        0.25
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        145.5,
+        49.5
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          94.5,
+          13.5
+        ],
+        [
+          4,
+          20.5,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RHeight75",
+      "position": [
+        20,
+        270
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.5,
+        0.75
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        145.5,
+        76.5
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          94.5,
+          40.5
+        ],
+        [
+          4,
+          47.5,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RParentSmall",
+      "position": [
+        300,
+        270
+      ],
+      "authoredSize": [
+        160,
+        70
+      ],
+      "relativeSize": [
+        0.5,
+        0.5
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        105.5,
+        48
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          54.5,
+          12
+        ],
+        [
+          4,
+          19,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RParentLarge",
+      "position": [
+        580,
+        270
+      ],
+      "authoredSize": [
+        360,
+        160
+      ],
+      "relativeSize": [
+        0.5,
+        0.5
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        205.5,
+        93
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          154.5,
+          57
+        ],
+        [
+          4,
+          64,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RContentH",
+      "position": [
+        860,
+        270
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.5,
+        0.5
+      ],
+      "contentWidth": true,
+      "contentHeight": false,
+      "nativeParentSize": [
+        145.5,
+        100
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          44.5
+        ],
+        [
+          47,
+          4,
+          94.5,
+          44.5
+        ],
+        [
+          4,
+          51.5,
+          30,
+          44.5
+        ]
+      ]
+    },
+    {
+      "name": "RContentV",
+      "position": [
+        20,
+        520
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.5,
+        0.5
+      ],
+      "contentWidth": false,
+      "contentHeight": true,
+      "nativeParentSize": [
+        240,
+        63
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          114.5,
+          10
+        ],
+        [
+          121.5,
+          4,
+          114.5,
+          27
+        ],
+        [
+          4,
+          34,
+          114.5,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RFixed",
+      "position": [
+        300,
+        520
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.5,
+        0.5
+      ],
+      "contentWidth": false,
+      "contentHeight": false,
+      "nativeParentSize": [
+        240,
+        100
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          114.5,
+          44.5
+        ],
+        [
+          121.5,
+          4,
+          114.5,
+          44.5
+        ],
+        [
+          4,
+          51.5,
+          114.5,
+          44.5
+        ]
+      ]
+    },
+    {
+      "name": "RWidthZero",
+      "position": [
+        580,
+        520
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0,
+        0.5
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        51,
+        63
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          0,
+          27
+        ],
+        [
+          4,
+          34,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "RHeightZero",
+      "position": [
+        860,
+        520
+      ],
+      "authoredSize": [
+        240,
+        100
+      ],
+      "relativeSize": [
+        0.5,
+        0
+      ],
+      "contentWidth": true,
+      "contentHeight": true,
+      "nativeParentSize": [
+        145.5,
+        46
+      ],
+      "nativeChildRects": [
+        [
+          4,
+          4,
+          40,
+          10
+        ],
+        [
+          47,
+          4,
+          94.5,
+          10
+        ],
+        [
+          4,
+          17,
+          30,
+          25
+        ]
+      ]
+    }
+  ]
+}
