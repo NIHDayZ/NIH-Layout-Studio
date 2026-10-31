@@ -38,5 +38,5 @@ test("Phase 2H integration stays opt-in and rejects relative-child negotiation",
 	const integrated=ArrangeMeasuredGeometry(measured,viewport,1,{constrainedGrid:true,gridContentArrangement:true});
 	const relative=root.children.find(x=>x.name==="GridRelativeChild");
 	assert.deepEqual(integrated.byId.get(relative.id).absoluteRect,baseline.byId.get(relative.id).absoluteRect);
-	assert.equal(integrated.appliedStrategies.length,6);
+	assert.equal(integrated.appliedStrategies.filter(x=>x.mode==="grid-content-prototype").length,6);
 });
