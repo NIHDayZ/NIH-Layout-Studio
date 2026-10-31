@@ -7,6 +7,7 @@ import { ProjectNativeScrollChildContext, type NativeScrollChildContext } from "
 import { EstimateNativeScrollExtent, type AuthoredScrollViewport, type NativeScrollExtentCandidate } from "./ScrollViewport.js";
 import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
+import { ProbeGridNativeMeasurement, type GridNativeMeasurementPrototype } from "./GridNativeMeasurement.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
 import { InspectAuthoredVisibility, type AuthoredVisibilityDiagnostic } from "./GeometryVisibility.js";
 import { MeasureArrangedDirectChildBounds, type ArrangedDirectChildBounds } from "./ContentBounds.js";
@@ -81,6 +82,8 @@ export interface AuthoredGeometrySnapshot {
 	directChildBoundsCandidates: ReadonlyMap<string, ArrangedDirectChildBounds>;
 	/** Diagnostic lower-bound candidates; no native measurement asserted. */
 	gridContentCandidates: ReadonlyMap<string, GridContentCandidate>;
+	/** Phase 2F independent native-capture-bounded prototypes, no parent resizing. */
+	gridNativeMeasurementPrototypes: ReadonlyMap<string, GridNativeMeasurementPrototype>;
 	rootRect: GeometryRect;
 }
 
@@ -112,6 +115,7 @@ export function ArrangeMeasuredGeometry(
 	const scrollChildContextCandidates = new Map<string, NativeScrollChildContext>();
 	const visibilityDiagnostics = new Map<string, AuthoredVisibilityDiagnostic>();
 	const gridContentCandidates = new Map<string, GridContentCandidate>();
+	const gridNativeMeasurementPrototypes = new Map<string, GridNativeMeasurementPrototype>();
 	// Only the current arrangement pass owns these width-dependent metrics.
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
@@ -151,6 +155,11 @@ export function ArrangeMeasuredGeometry(
 				const candidate = ProbeGridContentCandidate(prepared);
 				if (candidate)
 					gridContentCandidates.set(node.id, candidate);
+			}
+			if (options.gridNativeMeasurementDiagnostics) {
+				const prototype = ProbeGridNativeMeasurement(prepared);
+				if (prototype)
+					gridNativeMeasurementPrototypes.set(node.id, prototype);
 			}
 			const parentSize = {
 				width: constraints.availableWidth,
@@ -351,7 +360,7 @@ export function ArrangeMeasuredGeometry(
 	const directChildBoundsCandidates = options.directChildBoundsDiagnostics
 		? MeasureArrangedDirectChildBounds(entries)
 		: new Map<string, ArrangedDirectChildBounds>();
-	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, visibilityDiagnostics, directChildBoundsCandidates, gridContentCandidates, rootRect: { ...rootRect } };
+	return { entries, byId, measuredById, issues, appliedStrategies, appliedIntrinsics, appliedConstrainedText, appliedParentContent, appliedWrapContent, scrollViewports, scrollExtentCandidates, scrollAdjustedViewports, scrollChildContextCandidates, visibilityDiagnostics, directChildBoundsCandidates, gridContentCandidates, gridNativeMeasurementPrototypes, rootRect: { ...rootRect } };
 }
 
 /**

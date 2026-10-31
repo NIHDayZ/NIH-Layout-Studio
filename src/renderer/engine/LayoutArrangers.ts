@@ -45,6 +45,8 @@ export interface ArrangementOptions {
 	directChildBoundsDiagnostics?: boolean;
 	/** Diagnostic only; never changes native Grid sizing or child placement. */
 	gridContentCandidateDiagnostics?: boolean;
+	/** Phase 2F read-only, independently observed matrix configurations only. */
+	gridNativeMeasurementDiagnostics?: boolean;
 	/**
 	 * Common authored visibility and ancestor-clip intersection diagnostics.
 	 * Read-only, class-agnostic, and NOT a native scissor/painting strategy.
