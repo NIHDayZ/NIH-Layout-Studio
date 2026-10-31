@@ -5,7 +5,7 @@ Captured on **2026-10-31** from the running DayZ client (uploaded file `NIH-Grid
 ## Capture integrity
 
 - Three complete phases: `complex-after-create`, `complex-post-update`, `complex-after-resize-1120x720`
-- **108 native widget getter records per phase**: one root Frame, 20 direct GridSpacers, one nested GridSpacer and 86 participating children, plus one hidden-excluded child record (the latter has screen rect 0,0,0,0)
+- **108 native widget getter records per phase**: one root Frame, 21 GridSpacers (20 top-level plus one nested), and 86 PanelWidgets. Across the 21 grid child lists there are 87 child slots (including the nested GridSpacer as a child); 86 participate in managed layout and one hidden PanelWidget is excluded with screen rect 0,0,0,0
 - Only root screen size changes: 1920x1080 to 1120x720. All 107 non-root screen rectangles, visible flags, and child counts are unchanged
 - No errors, duplicate widget names, missing phases, or partial widget subtrees
 
