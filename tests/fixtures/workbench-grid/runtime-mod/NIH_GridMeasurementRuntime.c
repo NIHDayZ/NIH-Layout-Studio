@@ -5,6 +5,7 @@
 class NIHGridMeasurementProbe {
 	protected Widget m_Root;
 	protected Widget m_VariationRoot;
+	protected Widget m_RelativeRoot;
 
 	void Start() {
 		if (g_Game.IsDedicatedServer())
@@ -43,6 +44,7 @@ class NIHGridMeasurementProbe {
 		m_VariationRoot.Update();
 		CaptureVariation("variation-post-update");
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeVariations, 900, false);
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(StartRelativeMatrix, 1800, false);
 	}
 
 	protected void ResizeVariations() {
@@ -52,6 +54,33 @@ class NIHGridMeasurementProbe {
 		m_VariationRoot.SetScreenSize(1120, 720);
 		m_VariationRoot.Update();
 		CaptureVariation("variation-after-resize-1120x720");
+	}
+
+	protected void StartRelativeMatrix() {
+		m_RelativeRoot = g_Game.GetWorkspace().CreateWidgets("NIH_GridMeasurementProbe/gui/layouts/NIH_Grid_Relative_Matrix.layout");
+		if (!m_RelativeRoot) {
+			Print("[NIH_LayoutStudio][GridProbe] ERROR relative layout unavailable");
+			return;
+		}
+		CaptureRelative("relative-after-create");
+		m_RelativeRoot.Update();
+		CaptureRelative("relative-post-update");
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeRelativeMatrix, 900, false);
+	}
+
+	protected void ResizeRelativeMatrix() {
+		if (!m_RelativeRoot)
+			return;
+		m_RelativeRoot.SetScreenPos(0, 0);
+		m_RelativeRoot.SetScreenSize(1120, 720);
+		m_RelativeRoot.Update();
+		CaptureRelative("relative-after-resize-1120x720");
+	}
+
+	protected void CaptureRelative(string phase) {
+		Print("[NIH_LayoutStudio][GridProbe] BEGIN " + phase);
+		CaptureTree(m_RelativeRoot, phase);
+		Print("[NIH_LayoutStudio][GridProbe] END " + phase);
 	}
 
 	protected void CaptureVariation(string phase) {
