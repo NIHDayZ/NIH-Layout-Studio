@@ -1182,7 +1182,9 @@
                 false
               ]
             }
-          ]
+          ],
+          "padding": 3,
+          "margin": 4
         },
         {
           "size": [
