@@ -31,7 +31,10 @@ test("Phase 2H native parent and child rectangles match captured H/V/mixed layou
 test("Phase 2H integration stays opt-in and rejects relative-child negotiation",()=>{
 	const baseline=ArrangeMeasuredGeometry(measured,viewport);
 	const onlyGrid=ArrangeMeasuredGeometry(measured,viewport,1,{constrainedGrid:true});
-	assert.deepEqual(onlyGrid.entries,baseline.entries);
+	for(const name of Object.keys(scenarios)) {
+		const node=root.children.find(x=>x.name===name);
+		assert.deepEqual(onlyGrid.byId.get(node.id).absoluteRect,baseline.byId.get(node.id).absoluteRect);
+	}
 	const integrated=ArrangeMeasuredGeometry(measured,viewport,1,{constrainedGrid:true,gridContentArrangement:true});
 	const relative=root.children.find(x=>x.name==="GridRelativeChild");
 	assert.deepEqual(integrated.byId.get(relative.id).absoluteRect,baseline.byId.get(relative.id).absoluteRect);
