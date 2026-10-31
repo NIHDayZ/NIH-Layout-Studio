@@ -1,0 +1,244 @@
+{
+  "provenance": {
+    "source": "DayZ client script log, user-provided 2026-10-30",
+    "runtime": "DayZ client",
+    "evidence": "independent-native-getters",
+    "phases": [
+      "after-create",
+      "post-update",
+      "after-resize-1120x720"
+    ],
+    "phaseWidgetCounts": [
+      33,
+      33,
+      33
+    ],
+    "baselineRootScreen": [
+      1920,
+      1080
+    ],
+    "resizedRootScreen": [
+      1120,
+      720
+    ],
+    "note": "All non-root screen rectangles match exactly across phases. No Workbench-specific geometry claim."
+  },
+  "scenarios": [
+    {
+      "name": "GridFixed",
+      "size": [
+        240,
+        100
+      ],
+      "children": [
+        [
+          24,
+          24,
+          114.5,
+          44.5
+        ],
+        [
+          141.5,
+          24,
+          114.5,
+          44.5
+        ],
+        [
+          24,
+          71.5,
+          114.5,
+          44.5
+        ]
+      ]
+    },
+    {
+      "name": "GridContentH",
+      "size": [
+        71,
+        100
+      ],
+      "children": [
+        [
+          304,
+          24,
+          40,
+          44.5
+        ],
+        [
+          347,
+          24,
+          20,
+          44.5
+        ],
+        [
+          304,
+          71.5,
+          30,
+          44.5
+        ]
+      ]
+    },
+    {
+      "name": "GridContentV",
+      "size": [
+        240,
+        51
+      ],
+      "children": [
+        [
+          584,
+          24,
+          114.5,
+          10
+        ],
+        [
+          701.5,
+          24,
+          114.5,
+          15
+        ],
+        [
+          584,
+          42,
+          114.5,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "GridContentBoth",
+      "size": [
+        71,
+        51
+      ],
+      "children": [
+        [
+          864,
+          24,
+          40,
+          10
+        ],
+        [
+          907,
+          24,
+          20,
+          15
+        ],
+        [
+          864,
+          42,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "GridRelativeChild",
+      "size": [
+        145.5,
+        63
+      ],
+      "children": [
+        [
+          24,
+          344,
+          40,
+          10
+        ],
+        [
+          67,
+          344,
+          94.5,
+          27
+        ],
+        [
+          24,
+          374,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "GridHiddenDefault",
+      "size": [
+        81,
+        33
+      ],
+      "children": [
+        [
+          304,
+          344,
+          40,
+          10
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          347,
+          344,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "GridHiddenIncluded",
+      "size": [
+        71,
+        51
+      ],
+      "children": [
+        [
+          584,
+          344,
+          40,
+          10
+        ],
+        [
+          627,
+          344,
+          20,
+          15
+        ],
+        [
+          584,
+          362,
+          30,
+          25
+        ]
+      ]
+    },
+    {
+      "name": "GridExplicitCounts",
+      "size": [
+        48,
+        64
+      ],
+      "children": [
+        [
+          864,
+          344,
+          40,
+          10
+        ],
+        [
+          864,
+          357,
+          20,
+          15
+        ],
+        [
+          864,
+          375,
+          30,
+          25
+        ]
+      ]
+    }
+  ]
+}
