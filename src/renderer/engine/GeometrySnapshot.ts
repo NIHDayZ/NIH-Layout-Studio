@@ -8,6 +8,7 @@ import { EstimateNativeScrollExtent, type AuthoredScrollViewport, type NativeScr
 import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
 import { ProbeGridNativeMeasurement, type GridNativeMeasurementPrototype } from "./GridNativeMeasurement.js";
+import { ProbeMeasuredRelativeGrid, type MeasuredRelativeGrid } from "./GridRelativeBridge.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
 import { InspectAuthoredVisibility, type AuthoredVisibilityDiagnostic } from "./GeometryVisibility.js";
 import { MeasureArrangedDirectChildBounds, type ArrangedDirectChildBounds } from "./ContentBounds.js";
@@ -119,6 +120,7 @@ export function ArrangeMeasuredGeometry(
 	// Only the current arrangement pass owns these width-dependent metrics.
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
+	const relativeGridCache = new WeakMap<MeasuredLayoutNode, MeasuredRelativeGrid | null>();
 	function ProbeTextHeight(node: MeasuredLayoutNode, width: number): ConstrainedTextResult | null {
 		if (!options.constrainedTextPreview || !node.textFlow || !Number.isFinite(width) || width <= 0)
 			return null;
@@ -169,10 +171,16 @@ export function ArrangeMeasuredGeometry(
 			// unused authored coordinates for managed children.
 			const strategyRect = allocatedRects?.[index];
 			const authoredRect = strategyRect ?? ResolveAuthoredRect(authored, parentSize);
-			const measuredGridContent = !strategyRect && options.constrainedGrid && options.gridContentArrangement
+			const measuredRelativeGrid = options.constrainedGrid && options.gridRelativeContentPrototype
+				&& strategy.kind === "grid" && (prepared.unresolvedContentWidth || prepared.unresolvedContentHeight)
+				? ProbeMeasuredRelativeGrid(prepared, relativeGridCache) : null;
+			const measuredGridContent = !strategyRect && !options.gridRelativeContentPrototype
+				&& options.constrainedGrid && options.gridContentArrangement
 				? ProbeGridNativeMeasurement(prepared) : null;
-			const useGridWidth = measuredGridContent !== null && prepared.unresolvedContentWidth;
-			const useGridHeight = measuredGridContent !== null && prepared.unresolvedContentHeight;
+			const useGridWidth = (measuredRelativeGrid !== null || measuredGridContent !== null)
+				&& prepared.unresolvedContentWidth;
+			const useGridHeight = (measuredRelativeGrid !== null || measuredGridContent !== null)
+				&& prepared.unresolvedContentHeight;
 			const measuredWrapContent = !strategyRect
 				? ProbeWrapContentHeight(prepared, authoredRect.width, options) : null;
 			const useWrapHeight = measuredWrapContent !== null;
@@ -198,8 +206,10 @@ export function ArrangeMeasuredGeometry(
 			const useParentHeight = parentHeight !== undefined;
 			const useHeight = useGridHeight || useWrapHeight || useParentHeight || useConstrainedHeight || useIntrinsicHeight;
 			const resolvedSize = {
-				width: useGridWidth ? measuredGridContent!.width : useWidth ? intrinsic!.width! : authoredRect.width,
-				height: useGridHeight ? measuredGridContent!.height : useWrapHeight ? measuredWrapContent!.requiredHeight
+				width: useGridWidth ? (measuredRelativeGrid?.plan.width ?? measuredGridContent!.width)
+					: useWidth ? intrinsic!.width! : authoredRect.width,
+				height: useGridHeight ? (measuredRelativeGrid?.plan.height ?? measuredGridContent!.height)
+					: useWrapHeight ? measuredWrapContent!.requiredHeight
 					: useParentHeight ? parentHeight : useConstrainedHeight ? constrainedText!.height
 					: useIntrinsicHeight ? intrinsic!.height! : authoredRect.height
 			};
@@ -331,7 +341,7 @@ export function ArrangeMeasuredGeometry(
 						scrollExtentCandidates.set(node.id, candidate);
 				}
 			}
-			const layoutPlan = PlanManagedChildren(prepared, absoluteRect, options, measuredWrapContent);
+			const layoutPlan = PlanManagedChildren(prepared, absoluteRect, options, measuredWrapContent, measuredRelativeGrid);
 			const childSlots = layoutPlan?.rects ?? null;
 			if (layoutPlan)
 				appliedStrategies.push(layoutPlan.applied);
