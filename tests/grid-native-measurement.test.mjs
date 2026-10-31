@@ -28,3 +28,13 @@ test("strictly guarded Grid prototypes reproduce the six fixed-child native meas
 	assert.equal(diagnostic.gridNativeMeasurementPrototypes.has(root.children.find(x=>x.name==="GridRelativeChild").id),false);
 	assert.equal(diagnostic.gridNativeMeasurementPrototypes.has(root.children.find(x=>x.name==="GridFixed").id),false);
 });
+
+test("single-axis Grid content requests retain authored inactive-axis size",()=>{
+	const diagnostic=ArrangeMeasuredGeometry(measured,viewport,1,{gridNativeMeasurementDiagnostics:true});
+	const hNode=root.children.find(x=>x.name==="GridContentH");
+	const vNode=root.children.find(x=>x.name==="GridContentV");
+	const hResult=diagnostic.gridNativeMeasurementPrototypes.get(hNode.id);
+	const vResult=diagnostic.gridNativeMeasurementPrototypes.get(vNode.id);
+	assert.deepEqual([hResult.width,hResult.height],[71,100]);
+	assert.deepEqual([vResult.width,vResult.height],[240,51]);
+});
