@@ -879,17 +879,23 @@ export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChang
 	const root: Rect = { x: 0, y: 0, width, height };
 	const canvasRef = useRef<HTMLDivElement>(null);
 	const snapshotEnabled = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalGeometrySnapshot") === "1";
+	// Phase 2O research-only preview. Requires the shared snapshot path as well.
+	// Intentionally no production UI control or default behavior change.
+	const relativeGridPreviewEnabled = snapshotEnabled && typeof window !== "undefined"
+		&& new URLSearchParams(window.location.search).get("experimentalGridRelativeContent") === "1";
 	const geometryById = useMemo(() => {
 		if (!snapshotEnabled)
 			return undefined;
 		const snapshot = ArrangeMeasuredGeometry(MeasureLayoutTree(nodes), root, 1, {
+			constrainedGrid: relativeGridPreviewEnabled,
+			gridRelativeContentPrototype: relativeGridPreviewEnabled,
 			fixedWrap: typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalSnapshotManaged") === "1",
 			fixedWrapPreview: typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalSnapshotManaged") === "1"
 		});
 		if (snapshot.issues.some((issue) => issue.code === "duplicate-widget-id"))
 			return undefined;
 		return snapshot.byId;
-	}, [snapshotEnabled, nodes, width, height]);
+	}, [snapshotEnabled, relativeGridPreviewEnabled, nodes, width, height]);
 	const compareGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("compareGeometryPipelines") === "1";
 	useEffect(() => {
 		if (!compareGeometry)
