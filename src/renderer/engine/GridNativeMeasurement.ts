@@ -43,6 +43,10 @@ export function ProbeGridNativeMeasurement(parent: MeasuredLayoutNode): GridNati
 	} else {
 		return null;
 	}
+	if (!parent.unresolvedContentWidth)
+		width = parent.authored.sizeX;
+	if (!parent.unresolvedContentHeight)
+		height = parent.authored.sizeY;
 	return { id: parent.node.id, width, height, caseKind,
 		evidence: "dayz-client-grid-matrix-2026-10-30" };
 }
