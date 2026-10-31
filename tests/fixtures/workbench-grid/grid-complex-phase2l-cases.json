@@ -1,0 +1,1279 @@
+{
+  "phase": "2L",
+  "purpose": "Native measurement exploration only; unknown results must be captured",
+  "capturePhases": [
+    "complex-after-create",
+    "complex-post-update",
+    "complex-after-resize-1120x720"
+  ],
+  "baselineViewport": [
+    1920,
+    1080
+  ],
+  "resizedRoot": [
+    1120,
+    720
+  ],
+  "cases": [
+    {
+      "name": "LBaseline",
+      "position": [
+        20,
+        20
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LSameRow",
+      "position": [
+        300,
+        20
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            0.25,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            0.75,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            12,
+            18
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LSameColumn",
+      "position": [
+        580,
+        20
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            0.25,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.75,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LSplitColumns",
+      "position": [
+        860,
+        20
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.25,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LRatioOne",
+      "position": [
+        20,
+        155
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            1,
+            1
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LRatioOver",
+      "position": [
+        300,
+        155
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            1.25,
+            1.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LWidthDeficit",
+      "position": [
+        580,
+        155
+      ],
+      "size": [
+        45,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LHeightDeficit",
+      "position": [
+        860,
+        155
+      ],
+      "size": [
+        240,
+        40
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LBothDeficit",
+      "position": [
+        20,
+        290
+      ],
+      "size": [
+        45,
+        40
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LThreeSparse",
+      "position": [
+        300,
+        290
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 3,
+      "rows": 3,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.25,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LThreeFull",
+      "position": [
+        580,
+        290
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 3,
+      "rows": 3,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            12,
+            18
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.75,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            25,
+            40
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            18,
+            13
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.25,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            22,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LThreeOverflow",
+      "position": [
+        860,
+        290
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 3,
+      "rows": 3,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            12,
+            18
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.75,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            25,
+            40
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            18,
+            13
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.25,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            22,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.25,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LSingleColumn",
+      "position": [
+        20,
+        425
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 1,
+      "rows": 4,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            0.25,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LSingleRow",
+      "position": [
+        300,
+        425
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 4,
+      "rows": 1,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            0.25,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LMixedH",
+      "position": [
+        580,
+        425
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": false,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            0.75,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LMixedV",
+      "position": [
+        860,
+        425
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": false,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            0.75,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LHiddenSkip",
+      "position": [
+        20,
+        560
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.75,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ],
+          "visible": false
+        },
+        {
+          "size": [
+            0.25,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LHiddenInclude",
+      "position": [
+        300,
+        560
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "ignoreInvisible": false,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.75,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ],
+          "visible": false
+        },
+        {
+          "size": [
+            0.25,
+            0.25
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LNested",
+      "position": [
+        580,
+        560
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "type": "GridSpacerWidgetClass",
+          "size": [
+            90,
+            45
+          ],
+          "exact": [
+            true,
+            true
+          ],
+          "columns": 2,
+          "rows": 2,
+          "contentH": true,
+          "contentV": true,
+          "children": [
+            {
+              "size": [
+                20,
+                10
+              ],
+              "exact": [
+                true,
+                true
+              ]
+            },
+            {
+              "size": [
+                0.5,
+                0.5
+              ],
+              "exact": [
+                false,
+                false
+              ]
+            }
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    },
+    {
+      "name": "LTwoOverflow",
+      "position": [
+        860,
+        560
+      ],
+      "size": [
+        240,
+        100
+      ],
+      "columns": 2,
+      "rows": 2,
+      "padding": 3,
+      "margin": 4,
+      "contentH": true,
+      "contentV": true,
+      "children": [
+        {
+          "size": [
+            40,
+            10
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.5,
+            0.5
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            30,
+            25
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        },
+        {
+          "size": [
+            0.25,
+            0.75
+          ],
+          "exact": [
+            false,
+            false
+          ]
+        },
+        {
+          "size": [
+            12,
+            18
+          ],
+          "exact": [
+            true,
+            true
+          ]
+        }
+      ]
+    }
+  ]
+}
