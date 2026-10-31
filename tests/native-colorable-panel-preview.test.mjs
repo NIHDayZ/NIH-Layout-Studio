@@ -25,9 +25,9 @@ test("Phase 2Q confirms screenshot-derived power 2.2 candidate without claiming 
 		assert.ok(prediction, sample.name);
 		assert.equal(prediction.length, 3);
 		for (let channel = 0; channel < 3; ++channel) {
-			const naïve = Math.round(alpha * [r, g, b][channel] * 255
+			const directChannel = Math.round(alpha * [r, g, b][channel] * 255
 				+ (1 - alpha) * evidence.backdrop.workbench[channel]);
-			naiveError += Math.abs(naïve - sample.workbench[channel]);
+			naiveError += Math.abs(directChannel - sample.workbench[channel]);
 			candidateError += Math.abs(prediction[channel] - sample.workbench[channel]);
 			++comparedChannels;
 		}
