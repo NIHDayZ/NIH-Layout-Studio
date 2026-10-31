@@ -1,0 +1,412 @@
+FrameWidgetClass NIHGridRelativeMatrix {
+	position 0 0
+	size 1 1
+	hexactpos 1
+	vexactpos 1
+	{
+		GridSpacerWidgetClass RControl {
+			position 20 20
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RControlChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RControlChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RControlChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RWidth25 {
+			position 300 20
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RWidth25Child0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RWidth25Child1 {
+					position 0 0
+					size 0.25 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RWidth25Child2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RWidth75 {
+			position 580 20
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RWidth75Child0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RWidth75Child1 {
+					position 0 0
+					size 0.75 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RWidth75Child2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RHeight25 {
+			position 860 20
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RHeight25Child0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RHeight25Child1 {
+					position 0 0
+					size 0.5 0.25
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RHeight25Child2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RHeight75 {
+			position 20 270
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RHeight75Child0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RHeight75Child1 {
+					position 0 0
+					size 0.5 0.75
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RHeight75Child2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RParentSmall {
+			position 300 270
+			hexactpos 1
+			vexactpos 1
+			size 160 70
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RParentSmallChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RParentSmallChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RParentSmallChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RParentLarge {
+			position 580 270
+			hexactpos 1
+			vexactpos 1
+			size 360 160
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RParentLargeChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RParentLargeChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RParentLargeChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RContentH {
+			position 860 270
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			{
+				PanelWidgetClass RContentHChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RContentHChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RContentHChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RContentV {
+			position 20 520
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RContentVChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RContentVChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RContentVChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RFixed {
+			position 300 520
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			{
+				PanelWidgetClass RFixedChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RFixedChild1 {
+					position 0 0
+					size 0.5 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RFixedChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RWidthZero {
+			position 580 520
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RWidthZeroChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RWidthZeroChild1 {
+					position 0 0
+					size 0 0.5
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RWidthZeroChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+		GridSpacerWidgetClass RHeightZero {
+			position 860 520
+			hexactpos 1
+			vexactpos 1
+			size 240 100
+			hexactsize 1
+			vexactsize 1
+			"Columns" 2
+			"Rows" 2
+			"Padding" 3
+			"Margin" 4
+			"Size To Content H" 1
+			"Size To Content V" 1
+			{
+				PanelWidgetClass RHeightZeroChild0 {
+					position 0 0
+					size 40 10
+					hexactsize 1
+					vexactsize 1
+				}
+				PanelWidgetClass RHeightZeroChild1 {
+					position 0 0
+					size 0.5 0
+					hexactsize 0
+					vexactsize 0
+				}
+				PanelWidgetClass RHeightZeroChild2 {
+					position 0 0
+					size 30 25
+					hexactsize 1
+					vexactsize 1
+				}
+			}
+		}
+	}
+}
