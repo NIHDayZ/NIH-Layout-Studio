@@ -313,7 +313,6 @@ const experimentalFnt5FitRatio = (() => {
 const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const debugHudGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugHudGeometry") === "1";
 const experimentalWorkbenchControlFonts = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchControlFonts") === "1";
-const experimentalWorkbenchBackdrop = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchBackdrop") === "1";
 const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
 	const text = GetNodeProperty(node, "text") ?? "";
@@ -951,7 +950,7 @@ export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChang
 
 	return (
 		<div className="canvas-shell">
-			<div ref={canvasRef} className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}), ...(experimentalWorkbenchBackdrop ? { backgroundColor: "rgb(130,130,130)" } : {}) }} onMouseDown={() => undefined}>
+			<div ref={canvasRef} className={`canvas ${showGrid ? "canvas-grid" : ""}`} style={{ width, height, ...(showGrid ? { ["--grid-size" as string]: `${snapSize}px` } : {}) }} onMouseDown={() => undefined}>
 				{nodes.map((node, index) => (
 					<RenderNode
 						key={`${node.name}-${index}`}
