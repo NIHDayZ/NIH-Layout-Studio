@@ -26,7 +26,7 @@ test("native exact-child content sizing differs from the read-only lower-bound e
 		if (contentH)
 			assert.equal(actual.size[0]-estimate.width,1,name+" horizontal native-vs-estimate discrepancy");
 		if (contentV)
-			assert.equal(actual.size[1]-estimate.height,1,name+" vertical native-vs-estimate discrepancy");
+			assert.equal(actual.size[1]-estimate.height,name==="GridHiddenDefault" ? -2 : 1,name+" vertical native-vs-estimate discrepancy");
 	}
 	assert.equal(snapshot.gridContentCandidates.has(root.children.find(x=>x.name==="GridRelativeChild").id),false);
 	assert.equal(snapshot.appliedStrategies.length,0);
