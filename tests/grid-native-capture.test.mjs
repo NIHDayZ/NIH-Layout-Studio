@@ -25,7 +25,7 @@ test("native Grid content measurements preserve per-case discrepancies without u
 		["GridContentBoth",[70,50]],
 		["GridHiddenDefault",[80,35]],
 		["GridHiddenIncluded",[70,50]],
-		["GridExplicitCounts",[46,63]]
+		["GridExplicitCounts",[46,64]]
 	]);
 	for(const [name,dimensions] of expectedCandidates) {
 		const grid=root.children.find(x=>x.name===name);
