@@ -43,6 +43,8 @@ Replace the host/port with the actual Vite URL if different. Select 1920×1080, 
 1. **Filled panels / rendering:** Turn OFF Studio's editor widget-bounds overlay, and compare colored panel fills, transparency, overlap and clipping with Workbench's actual rendered view. `style rover_sim_colorable` is included because color tint on unstyled PanelWidgets may not be visible natively.
 2. **Geometry diagnosis:** Turn ON the Studio bounds overlay if anything looks misaligned. Numeric native getter rectangles from Phase 2L remain authoritative; do not adjust the measurement fixture to make the visuals align.
 
+**Permanent Studio background (October 31, 2026):** the editor's `.canvas` now defaults to Workbench-matched neutral gray `rgb(130, 130, 130)` (`#828282`), for all layout previews, with no query parameter. The former `experimentalWorkbenchBackdrop=1` flag has been retired. The surrounding editor, resource panes, and viewport grid remain dark. This reduces background-compositing differences; it does not by itself establish color-space or `rover_sim_colorable` material parity.
+
 Capture a Workbench screenshot and a Studio screenshot at the same layout resolution, with zoom and OS DPI documented. Differences must be classified as placement, sizing, native material/color, alpha/composition, clipping/scissor, or scaling; an outline-only browser report is not a renderer acceptance test.
 
 ### Safeguards
