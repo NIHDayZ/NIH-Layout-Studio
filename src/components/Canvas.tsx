@@ -7,6 +7,7 @@ import type { ArrangedWidget } from "../renderer/engine/GeometryCore";
 import { PlanLiveManagedChildren, PlanLiveGridContent } from "../renderer/engine/LiveManagedGeometry";
 
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
+import { PreviewNativeColorablePanelColor } from "../renderer/engine/NativeColorablePanelPreview";
 import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
@@ -162,11 +163,14 @@ function GetWidgetKind(node: LayoutNode) {
 }
 
 function GetPanelBackground(node: LayoutNode): string | undefined {
-	const color = ParseColor(GetNodeProperty(node, "color"));
+	const authoredColor = GetNodeProperty(node, "color");
+	const color = ParseColor(authoredColor);
 	if (!color)
 		return undefined;
 
-	const style = (GetNodeProperty(node, "style") ?? "").toLowerCase();
+	const style = (GetNodeProperty(node, "style") ?? "").trim().toLowerCase();
+	if (experimentalNativeColorablePanel && style === "rover_sim_colorable")
+		return PreviewNativeColorablePanelColor(authoredColor) ?? color;
 	if (!style || style === "blank" || style === "empty")
 		return style === "blank" || style === "empty" ? undefined : color;
 
@@ -313,6 +317,8 @@ const experimentalFnt5FitRatio = (() => {
 const debugTextResolution = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugFnt5Sampling") === "1";
 const debugHudGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debugHudGeometry") === "1";
 const experimentalWorkbenchControlFonts = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchControlFonts") === "1";
+// Phase 2Q research hypothesis; off unless explicitly requested.
+const experimentalNativeColorablePanel = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalNativeColorablePanel") === "1";
 const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
 	const text = GetNodeProperty(node, "text") ?? "";
