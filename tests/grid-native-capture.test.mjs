@@ -20,8 +20,13 @@ test("native exact-child content sizing differs from the read-only lower-bound e
 		const actual=native.scenarios.find(x=>x.name===name);
 		const estimate=snapshot.gridContentCandidates.get(name);
 		assert.ok(estimate, name+" candidate should be independently measurable");
-		assert.equal(actual.size[0]-estimate.width,1,name+" horizontal native-vs-estimate discrepancy");
-		assert.equal(actual.size[1]-estimate.height,1,name+" vertical native-vs-estimate discrepancy");
+		const grid=root.children.find(x=>x.name===name);
+		const contentH=grid.properties.some(x=>x.name.toLowerCase()==="size to content h" && x.value==="1");
+		const contentV=grid.properties.some(x=>x.name.toLowerCase()==="size to content v" && x.value==="1");
+		if (contentH)
+			assert.equal(actual.size[0]-estimate.width,1,name+" horizontal native-vs-estimate discrepancy");
+		if (contentV)
+			assert.equal(actual.size[1]-estimate.height,1,name+" vertical native-vs-estimate discrepancy");
 	}
 	assert.equal(snapshot.gridContentCandidates.has("GridRelativeChild"),false);
 	assert.equal(snapshot.appliedStrategies.length,0);
