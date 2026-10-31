@@ -68,8 +68,16 @@ class NIHGridMeasurementProbe {
 		string screenRect = string.Format("%1,%2,%3,%4", screenX, screenY, screenWidth, screenHeight);
 		string identity = string.Format("[NIH_LayoutStudio][GridProbe] phase=%1 name=%2 type=%3",
 			phase, widget.GetName(), widget.GetTypeName());
-		Print(identity + " localRect=" + localRect + " screenRect=" + screenRect
-			+ " childCount=" + childCount.ToString() + " visible=" + widget.IsVisible().ToString());
+		string logLine = identity;
+		logLine += " localRect=";
+		logLine += localRect;
+		logLine += " screenRect=";
+		logLine += screenRect;
+		logLine += " childCount=";
+		logLine += childCount.ToString();
+		logLine += " visible=";
+		logLine += widget.IsVisible().ToString();
+		Print(logLine);
 
 		Widget child = widget.GetChildren();
 		while (child) {
