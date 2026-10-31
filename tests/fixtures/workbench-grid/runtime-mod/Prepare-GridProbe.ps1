@@ -12,7 +12,8 @@ $sourceFiles = @(
 	@{ Source = (Join-Path $PSScriptRoot 'NIH_GridMeasurementRuntime.c'); Relative = 'Scripts\5_Mission\NIH_GridMeasurementRuntime.c' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_Measurement_Matrix.layout'); Relative = 'gui\layouts\NIH_Grid_Measurement_Matrix.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_Variation_Matrix.layout'); Relative = 'gui\layouts\NIH_Grid_Variation_Matrix.layout' },
-	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_Relative_Matrix.layout'); Relative = 'gui\layouts\NIH_Grid_Relative_Matrix.layout' }
+	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_Relative_Matrix.layout'); Relative = 'gui\layouts\NIH_Grid_Relative_Matrix.layout' },
+	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_Complex_Matrix.layout'); Relative = 'gui\layouts\NIH_Grid_Complex_Matrix.layout' }
 )
 foreach ($entry in $sourceFiles) {
 	if (-not (Test-Path -LiteralPath $entry.Source -PathType Leaf)) {
