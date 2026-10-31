@@ -1,11 +1,12 @@
 /**
  * Disposable native Grid sizing evidence capture. Never load in production.
- * One root, three phases, two explicit root viewport dimensions.
+ * Sequential native roots, each captured before/after Update and after root resize.
  */
 class NIHGridMeasurementProbe {
 	protected Widget m_Root;
 	protected Widget m_VariationRoot;
 	protected Widget m_RelativeRoot;
+	protected Widget m_ComplexRoot;
 
 	void Start() {
 		if (g_Game.IsDedicatedServer())
@@ -66,6 +67,7 @@ class NIHGridMeasurementProbe {
 		m_RelativeRoot.Update();
 		CaptureRelative("relative-post-update");
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeRelativeMatrix, 900, false);
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(StartComplexMatrix, 1800, false);
 	}
 
 	protected void ResizeRelativeMatrix() {
@@ -75,6 +77,35 @@ class NIHGridMeasurementProbe {
 		m_RelativeRoot.SetScreenSize(1120, 720);
 		m_RelativeRoot.Update();
 		CaptureRelative("relative-after-resize-1120x720");
+	}
+
+	protected void StartComplexMatrix() {
+		m_ComplexRoot = g_Game.GetWorkspace().CreateWidgets("NIH_GridMeasurementProbe/gui/layouts/NIH_Grid_Complex_Matrix.layout");
+		if (!m_ComplexRoot) {
+			Print("[NIH_LayoutStudio][GridProbe] ERROR complex layout unavailable");
+			return;
+		}
+
+		CaptureComplex("complex-after-create");
+		m_ComplexRoot.Update();
+		CaptureComplex("complex-post-update");
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeComplexMatrix, 900, false);
+	}
+
+	protected void ResizeComplexMatrix() {
+		if (!m_ComplexRoot)
+			return;
+
+		m_ComplexRoot.SetScreenPos(0, 0);
+		m_ComplexRoot.SetScreenSize(1120, 720);
+		m_ComplexRoot.Update();
+		CaptureComplex("complex-after-resize-1120x720");
+	}
+
+	protected void CaptureComplex(string phase) {
+		Print("[NIH_LayoutStudio][GridProbe] BEGIN " + phase);
+		CaptureTree(m_ComplexRoot, phase);
+		Print("[NIH_LayoutStudio][GridProbe] END " + phase);
 	}
 
 	protected void CaptureRelative(string phase) {
