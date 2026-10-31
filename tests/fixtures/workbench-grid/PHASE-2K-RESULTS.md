@@ -10,9 +10,11 @@ All three required relative phases completed, each containing 12 GridSpacer pare
 
 This model is **only independently verified for the 2-column, 2-row, three-child fixture**: child 0 = exact 40x10 in cell (0,0), child 1 = relative `rw,rh` in cell (1,0), child 2 = exact 30x25 in cell (0,1), Padding = 3, Margin = 4.
 
-For content width, the exact-child/spacing base is `Wbase = 40 + 3 + 8 = 51`. The relative column width is `Wrel = rw * max(0, authoredWidth - Wbase)`. Parent width is `Wbase + Wrel`.
+For content width, the exact-child/spacing base is `Wbase = 40 + 3 + 8 = 51`. The relative column width is `Wrel = rw * (authoredWidth - Wbase)`. Parent width is `Wbase + Wrel`.
 
-For content height, the exact-child/spacing base is `Hbase = 10 + 25 + 3 + 8 = 46`. The relative row request is `Hrel = rh * max(0, authoredHeight - Hbase)`. The first row is `max(10, Hrel)`, and parent height is `8 + 3 + 25 + firstRowHeight`.
+For content height, the exact-child/spacing base is `Hbase = 10 + 25 + 3 + 8 = 46`. The relative row request is `Hrel = rh * (authoredHeight - Hbase)`. The first row is `max(10, Hrel)`, and parent height is `8 + 3 + 25 + firstRowHeight`.
+
+The fixture never exercises negative remaining space. No clamp, collapse, or overflow behavior is established for authored dimensions smaller than the fixed contributions.
 
 For an axis **without** Size To Content, the native grid uses equal cell allocations: `(authoredAxis - 2*Margin - (count-1)*Padding)/count`; this applies to exact and relative children alike. The two axes resolve independently. Relative children occupy their calculated cell extent on the content axis; fixed-size children retain their exact extent on that axis.
 
