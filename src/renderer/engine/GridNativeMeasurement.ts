@@ -1,52 +1,41 @@
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
-import { ProbeGridContentCandidate } from "./LayoutArrangers.js";
 import { SelectManagedChildIndices } from "./ManagedVisibility.js";
-
-/**
- * Phase 2F: observation-bounded native Grid content measurement experiment.
- * Corrections below are supported ONLY by the 2026-10-30 DayZ 2x2/1x3
- * three-child matrix. Do not extrapolate them to arbitrary grid dimensions.
- */
 export interface GridNativeMeasurementPrototype {
 	id: string;
 	width: number;
 	height: number;
-	evidence: "dayz-client-grid-matrix-2026-10-30";
-	caseKind: "2x2-three-visible" | "2x2-hidden-second" | "1x3-three-visible";
+	evidence: "dayz-client-grid-variations-2026-10-30";
+	caseKind: "fixed-child-content";
 }
-
 export function ProbeGridNativeMeasurement(parent: MeasuredLayoutNode): GridNativeMeasurementPrototype | null {
-	const candidate = ProbeGridContentCandidate(parent);
 	const grid = parent.nativeGrid;
-	if (!candidate || !grid || parent.children.length !== 3
-		|| grid.padding !== 3 || grid.margin !== 4)
+	if (!grid || parent.strategy.kind !== "grid" || (!parent.unresolvedContentWidth && !parent.unresolvedContentHeight))
 		return null;
-	const selected = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
-	if (!selected)
+	const indices = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
+	if (!indices || !indices.length || indices.length > grid.columns * grid.rows)
 		return null;
-	let caseKind: GridNativeMeasurementPrototype["caseKind"];
-	let width: number;
-	let height: number;
-	if (grid.columns === 2 && grid.rows === 2 && selected.length === 3) {
-		caseKind = "2x2-three-visible";
-		width = candidate.width + 1;
-		height = candidate.height + 1;
-	} else if (grid.columns === 2 && grid.rows === 2
-		&& selected.length === 2 && selected[0] === 0 && selected[1] === 2) {
-		caseKind = "2x2-hidden-second";
-		width = candidate.width + 1;
-		height = candidate.height - 2;
-	} else if (grid.columns === 1 && grid.rows === 3 && selected.length === 3) {
-		caseKind = "1x3-three-visible";
-		width = candidate.width + 2;
-		height = candidate.height;
-	} else {
-		return null;
+	const widths = Array<number>(grid.columns).fill(0);
+	const heights = Array<number>(grid.rows).fill(0);
+	for (let i = 0; i < indices.length; ++i) {
+		const child = parent.children[indices[i]];
+		const a = child.authored;
+		if (child.strategy.requiresArrangement || !a.exactSizeX || !a.exactSizeY
+			|| a.sizeToContentWidth || a.sizeToContentHeight || !Number.isFinite(a.sizeX)
+			|| !Number.isFinite(a.sizeY) || a.sizeX < 0 || a.sizeY < 0)
+			return null;
+		const column = i % grid.columns;
+		const row = Math.floor(i / grid.columns);
+		widths[column] = Math.max(widths[column], a.sizeX);
+		heights[row] = Math.max(heights[row], a.sizeY);
 	}
-	if (!parent.unresolvedContentWidth)
-		width = parent.authored.sizeX;
-	if (!parent.unresolvedContentHeight)
-		height = parent.authored.sizeY;
-	return { id: parent.node.id, width, height, caseKind,
-		evidence: "dayz-client-grid-matrix-2026-10-30" };
+	const occupiedRows = Math.ceil(indices.length / grid.columns);
+	const contentWidth = widths.reduce((sum, n) => sum + n, 0) + (grid.columns - 1) * grid.padding + 2 * grid.margin;
+	const contentHeight = heights.slice(0, occupiedRows).reduce((sum, n) => sum + n, 0)
+		+ (occupiedRows - 1) * grid.padding + 2 * grid.margin;
+	const width = parent.unresolvedContentWidth ? contentWidth : parent.authored.sizeX;
+	const height = parent.unresolvedContentHeight ? contentHeight : parent.authored.sizeY;
+	if (!Number.isFinite(width) || !Number.isFinite(height))
+		return null;
+	return { id: parent.node.id, width, height, caseKind: "fixed-child-content",
+		evidence: "dayz-client-grid-variations-2026-10-30" };
 }
