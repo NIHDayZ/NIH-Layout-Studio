@@ -143,7 +143,7 @@ const html = [
 '.legend { font-size:12px; color:#a4b0bd; }',
 '</style></head><body>',
 '<h1>Phase 2N · Native vs. shared snapshot</h1>',
-'<p>This is a rectangle comparison derived from actual DayZ client getters, not a Workbench screenshot or a claim of visual pixel parity. The Studio side uses the Phase 2M opt-in snapshot engine. The normal editor is not affected.</p>',
+'<p>This is a rectangle comparison derived from actual DayZ client getters, not a Workbench screenshot or a claim of visual pixel parity. The Studio side uses the Phase 2M opt-in snapshot engine (constrainedGrid + gridRelativeContentPrototype). The normal editor is not affected.</p>',
 '<div class="controls"><label>Grid scenario<select id="case"></select></label>',
 '<label>Native capture viewport<select id="viewport"></select></label>',
 '<div class="metric">Compared rectangles<strong id="count"></strong></div>',
