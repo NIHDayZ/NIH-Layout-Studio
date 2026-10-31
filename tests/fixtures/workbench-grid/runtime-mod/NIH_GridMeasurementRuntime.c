@@ -4,6 +4,7 @@
  */
 class NIHGridMeasurementProbe {
 	protected Widget m_Root;
+	protected Widget m_VariationRoot;
 
 	void Start() {
 		if (g_Game.IsDedicatedServer())
@@ -19,6 +20,7 @@ class NIHGridMeasurementProbe {
 		m_Root.Update();
 		Capture("post-update");
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeAndCapture, 900, false);
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(StartVariations, 1800, false);
 	}
 
 	protected void ResizeAndCapture() {
@@ -29,6 +31,33 @@ class NIHGridMeasurementProbe {
 		m_Root.SetScreenSize(1120, 720);
 		m_Root.Update();
 		Capture("after-resize-1120x720");
+	}
+
+	protected void StartVariations() {
+		m_VariationRoot = g_Game.GetWorkspace().CreateWidgets("NIH_GridMeasurementProbe/gui/layouts/NIH_Grid_Variation_Matrix.layout");
+		if (!m_VariationRoot) {
+			Print("[NIH_LayoutStudio][GridProbe] ERROR variation layout unavailable");
+			return;
+		}
+		CaptureVariation("variation-after-create");
+		m_VariationRoot.Update();
+		CaptureVariation("variation-post-update");
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeVariations, 900, false);
+	}
+
+	protected void ResizeVariations() {
+		if (!m_VariationRoot)
+			return;
+		m_VariationRoot.SetScreenPos(0, 0);
+		m_VariationRoot.SetScreenSize(1120, 720);
+		m_VariationRoot.Update();
+		CaptureVariation("variation-after-resize-1120x720");
+	}
+
+	protected void CaptureVariation(string phase) {
+		Print("[NIH_LayoutStudio][GridProbe] BEGIN " + phase);
+		CaptureTree(m_VariationRoot, phase);
+		Print("[NIH_LayoutStudio][GridProbe] END " + phase);
 	}
 
 	protected void Capture(string phase) {
