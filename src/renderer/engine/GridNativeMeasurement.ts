@@ -6,6 +6,11 @@ export interface GridNativeMeasurementPrototype {
 	height: number;
 	evidence: "dayz-client-grid-variations-2026-10-30";
 	caseKind: "fixed-child-content";
+	/** Maxima for configured columns, including unoccupied zero-width columns. */
+	columnWidths: readonly number[];
+	/** Maxima only for occupied rows; unused configured rows do not grow content. */
+	rowHeights: readonly number[];
+	participatingIndices: readonly number[];
 }
 export function ProbeGridNativeMeasurement(parent: MeasuredLayoutNode): GridNativeMeasurementPrototype | null {
 	const grid = parent.nativeGrid;
@@ -36,6 +41,8 @@ export function ProbeGridNativeMeasurement(parent: MeasuredLayoutNode): GridNati
 	const height = parent.unresolvedContentHeight ? contentHeight : parent.authored.sizeY;
 	if (!Number.isFinite(width) || !Number.isFinite(height))
 		return null;
-	return { id: parent.node.id, width, height, caseKind: "fixed-child-content",
+	return { id: parent.node.id, width, height,
+		columnWidths: widths, rowHeights: heights.slice(0, occupiedRows),
+		participatingIndices: indices, caseKind: "fixed-child-content",
 		evidence: "dayz-client-grid-variations-2026-10-30" };
 }

@@ -122,19 +122,10 @@ function ArrangeMeasuredGridContent(parent: MeasuredLayoutNode, rect: GeometryRe
 	const measurement = ProbeGridNativeMeasurement(parent);
 	if (!grid || !measurement || rect.width !== measurement.width || rect.height !== measurement.height)
 		return null;
-	const indices = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
-	if (!indices || indices.length === 0)
-		return null;
-	const occupiedRows = Math.ceil(indices.length / grid.columns);
-	const widths = Array<number>(grid.columns).fill(0);
-	const heights = Array<number>(occupiedRows).fill(0);
-	for (let i = 0; i < indices.length; ++i) {
-		const size = parent.children[indices[i]].authored;
-		const col = i % grid.columns;
-		const row = Math.floor(i / grid.columns);
-		widths[col] = Math.max(widths[col], size.sizeX);
-		heights[row] = Math.max(heights[row], size.sizeY);
-	}
+	const indices = measurement.participatingIndices;
+	const widths = measurement.columnWidths;
+	const heights = measurement.rowHeights;
+	const occupiedRows = heights.length;
 	const fixedWidth = (rect.width - 2 * grid.margin - (grid.columns - 1) * grid.padding) / grid.columns;
 	const fixedHeight = (rect.height - 2 * grid.margin - (grid.rows - 1) * grid.padding) / grid.rows;
 	if (!Number.isFinite(fixedWidth) || fixedWidth < 0 || !Number.isFinite(fixedHeight) || fixedHeight < 0)
