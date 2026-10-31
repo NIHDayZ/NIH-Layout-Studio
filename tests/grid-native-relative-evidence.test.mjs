@@ -24,8 +24,10 @@ function PredictFixture(sample) {
 	const fixedColumnWidth = Math.max(firstWidth, lastWidth);
 	const baseWidth = 2 * margin + padding + fixedColumnWidth;
 	const baseHeight = 2 * margin + padding + firstHeight + lastHeight;
-	const relativeWidth = ratioWidth * Math.max(0, authoredWidth - baseWidth);
-	const relativeHeight = ratioHeight * Math.max(0, authoredHeight - baseHeight);
+	assert.ok(authoredWidth >= baseWidth, "negative free width is not measured by Phase 2K");
+	assert.ok(authoredHeight >= baseHeight, "negative free height is not measured by Phase 2K");
+	const relativeWidth = ratioWidth * (authoredWidth - baseWidth);
+	const relativeHeight = ratioHeight * (authoredHeight - baseHeight);
 	const equalWidth = Math.max(0, (authoredWidth - 2 * margin - padding) / columns);
 	const equalHeight = Math.max(0, (authoredHeight - 2 * margin - padding) / rows);
 	const col0 = sample.contentWidth ? fixedColumnWidth : equalWidth;
