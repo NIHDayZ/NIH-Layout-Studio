@@ -5,6 +5,7 @@ import { MeasureAuthoredScrollViewport, type AuthoredScrollViewport } from "./Sc
 import { ResolveAuthoredRect } from "./WidgetGeometry.js";
 import { EstimateUnscaledScrollViewport, type UnscaledScrollViewportCandidate } from "./ScrollSettings.js";
 import type { MeasuredLayoutNode } from "./LayoutMeasurement.js";
+import type { MeasuredRelativeGrid } from "./GridRelativeBridge.js";
 import { ScatterManagedRects, SelectManagedChildIndices } from "./ManagedVisibility.js";
 import { ProbeGridNativeMeasurement } from "./GridNativeMeasurement.js";
 import type { NativeScrollOffsets } from "./ScrollOffset.js";
@@ -17,6 +18,8 @@ export interface ArrangementOptions {
 	constrainedGrid?: boolean;
 	/** Experimental parent sizing and mixed-axis fixed-child placement. Requires constrainedGrid. */
 	gridContentArrangement?: boolean;
+	/** Phase 2M experiment: apply independently captured relative GridSpacer content sizing. Requires constrainedGrid. */
+	gridRelativeContentPrototype?: boolean;
 	/** Native-derived fixed-child WrapSpacer only; no content-sized axes. */
 	fixedWrap?: boolean;
 	/** Opt-in Workbench-observed right-to-left and vertical-center fixed Wrap preview. */
@@ -61,7 +64,7 @@ export interface AppliedLayoutStrategy {
 	id: string;
 	kind: "grid" | "wrap";
 	evidence: "native-disassembly";
-	mode: "constrained-grid-prototype" | "grid-content-prototype" | "fixed-wrap-prototype";
+	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "fixed-wrap-prototype";
 }
 
 export interface ChildArrangement {
@@ -149,6 +152,34 @@ function ArrangeMeasuredGridContent(parent: MeasuredLayoutNode, rect: GeometryRe
 		return null;
 	return { rects, applied: { id: parent.node.id, kind: "grid", evidence: "native-disassembly",
 		mode: "grid-content-prototype" } };
+}
+
+/**
+ * Phase 2M: both sizing and placement use the SAME cached native-derived plan.
+ * No independent cell arithmetic is introduced in the arrangement dispatcher.
+ */
+function ArrangeRelativeGridContent(
+	parent: MeasuredLayoutNode,
+	rect: GeometryRect,
+	measured: MeasuredRelativeGrid | null
+): ChildArrangement | null {
+	if (!measured || Math.abs(rect.width - measured.plan.width) > 0.00001
+		|| Math.abs(rect.height - measured.plan.height) > 0.00001)
+		return null;
+	const rects = ScatterManagedRects(
+		measured.participatingIndices, measured.plan.rects, parent.children.length
+	);
+	if (!rects)
+		return null;
+	return {
+		rects,
+		applied: {
+			id: parent.node.id,
+			kind: "grid",
+			evidence: "native-disassembly",
+			mode: "grid-relative-content-prototype"
+		}
+	};
 }
 
 interface EligibleWrapChildren {
@@ -372,12 +403,16 @@ export function PlanManagedChildren(
 	parent: MeasuredLayoutNode,
 	containerRect: GeometryRect,
 	options: ArrangementOptions = {},
-	measuredWrapContent: FixedWrapContentPlan | null = null
+	measuredWrapContent: FixedWrapContentPlan | null = null,
+	measuredRelativeGrid: MeasuredRelativeGrid | null = null
 ): ChildArrangement | null {
 	if (!parent.strategy.requiresArrangement || parent.children.length === 0)
 		return null;
 	if (parent.strategy.kind === "grid" && !options.constrainedGrid)
 		return null;
+	if (parent.strategy.kind === "grid" && options.gridRelativeContentPrototype
+		&& (parent.unresolvedContentWidth || parent.unresolvedContentHeight))
+		return ArrangeRelativeGridContent(parent, containerRect, measuredRelativeGrid);
 	if (parent.strategy.kind === "grid" && options.gridContentArrangement
 		&& (parent.unresolvedContentWidth || parent.unresolvedContentHeight))
 		return ArrangeMeasuredGridContent(parent, containerRect);
