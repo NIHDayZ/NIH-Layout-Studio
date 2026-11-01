@@ -42,6 +42,10 @@ test("Phase 2S captures native rendering state without modifying widgets or prio
 		assert.ok(block.includes(getter), getter + " missing");
 	for (const name of ["SOURCEALPHA", "BLEND", "ADDITIVE", "NOFILTER"])
 		assert.ok(block.includes("WidgetFlags." + name));
+	assert.ok(block.includes('string masks = "[NIH_LayoutStudio][ColorFlagProbe] MASKS"'));
+	assert.ok(block.includes('Print(masks)'), "capture actual enum values for raw flag interpretation");
+	for (const name of ["sourceAlphaMask", "blendMask", "additiveMask", "noFilterMask"])
+		assert.ok(block.includes(name + ".ToString()"), "runtime mask value missing " + name);
 	for (const mutation of [".SetFlags(", ".ClearFlags(", ".SetColor(", ".SetAlpha(", ".SetSize(", ".SetScreenSize("])
 		assert.equal(block.includes(mutation), false, "the research flag reader must not mutate state: " + mutation);
 	assert.ok(script.includes('Print("[NIH_LayoutStudio][GridProbe] BEGIN " + phase)'));
