@@ -101,6 +101,33 @@ Provide both screenshots and the extracted log. Native runtime metadata supports
 
 If we need a follow-up, it should be a *separately authorized* comparison of renderer paths informed by these observations—not another fitted CSS alpha constant.
 
+## Phase 2T result — native blank style, renderer correction (2026-11-01)
+
+The user supplied the actual Workbench and experimental Studio screenshots plus `NIH-PanelStyleProbe-Phase2T.txt`.
+
+**Native runtime confirms that an unstyled PanelWidget resolves to `GetStyleName() == "blank"`.** The log reports two complete phases with 18 native widget records each; all values are stable across `after-create` and `post-update`. The eight sampled Plain children have runtime style `blank`; the eight Styled children retain `rover_sim_colorable`. All 18 remain `visible=true` with the same raw flags `536870975`, and each same-color Plain/Styled pair retains identical packed ARGB and alpha.
+
+The Workbench screenshot confirms that native `blank` panels **do not paint their authored color**: they show the dark/light parent surface completely unchanged, even when the child color alpha equals 1. Studio previously invented raw-color backgrounds for those same plain panels.
+
+Representative actual screenshot-center samples:
+
+| Control | Workbench | Studio before fix |
+|---|---|---|
+| Dark, Plain opaque blue | `(90,90,90)` (parent) | `(64,148,184)` |
+| Light, Plain opaque blue | `(231,231,231)` (parent) | `(64,148,184)` |
+| Dark, Plain 50%-alpha blue | `(90,90,90)` (parent) | `(77,119,137)` |
+| Light, Plain 50%-alpha blue | `(231,231,231)` (parent) | `(147,189,207)` |
+| Dark, Styled opaque blue | `(137,200,221)` | `(136,199,220)` |
+| Light, Styled opaque blue | `(137,200,221)` | `(136,199,220)` |
+
+Source screenshots: `image(20261101-064920).png` (Workbench), `image(20261101-064757).png` (Studio). Pixel-center coordinates and values are captured in `panel-color-phase2t-screenshot-evidence.json`; the regression test asserts the native plain-background invariants and opaque styled parity.
+
+**Confirmed and corrected:** `Canvas.tsx::GetPanelBackground` previously returned `color` when no `style` property was present, despite treating explicit `style blank` and `style empty` as transparent. It now returns **undefined** for missing style as well. This is the general `PanelWidgetClass` implicit-blank rule, not a per-widget-name fix or an experimental preview toggle. The widget still exists in the DOM, preserves geometry/children/interaction, and keeps its authored color property for editing and serialization. Only its fabricated paint is suppressed.
+
+This change **does not** modify `rover_sim_colorable` colors (including experimental gamma) or resolve the remaining intermediate-alpha differences; a truly unstyled PanelWidget has no independent native colored-pixel paint path to compare.
+
+No additional PBO build or native capture is needed for this Phase 2T observation. To validate the browser correction, reload the same Studio fixture after pulling. Its upper Plain groups should show only their respective dark/light background surfaces; the lower Styled groups remain rendered. All baseline GridSpacer geometry remains unchanged.
+
 ## Safeguards
 
 - No change to default or experimental Canvas rendering, GridSpacer rules, widget IDs, font handling or color parsing.
