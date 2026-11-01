@@ -123,3 +123,39 @@ test("Phase 2Q intermediate-alpha Workbench samples cannot be claimed exact with
 	for (const sample of calibration.studioRGB[5])
 		assert.deepEqual(sample, backdrop, "zero alpha is Studio gray backdrop");
 });
+
+
+test("Phase 2Q two-layer model explains all 30 unchanged Studio screenshot swatches", () => {
+	const calibration = evidence.alphaCalibration;
+	const gray = calibration.studioRGB[5][0];
+	let totalError = 0;
+	let channels = 0;
+	for (let row = 0; row < calibration.authoredAlpha.length; ++row) {
+		const alpha = calibration.authoredAlpha[row];
+		for (let colorIndex = 0; colorIndex < 5; ++colorIndex) {
+			const authored = evidence.samples[colorIndex].authored;
+			const displayed = calibration.studioRGB[row][colorIndex];
+			for (let channel = 0; channel < 3; ++channel) {
+				const rawByte = Math.round(authored[channel] * 255);
+				const gammaByte = Math.round(Math.pow(authored[channel], 1 / 2.2) * 255);
+				// Previous Canvas: gamma CSS background first, then direct RGB
+				// style-image sprite on top, BOTH using authored alpha.
+				const underStyle = gammaByte * alpha + gray[channel] * (1 - alpha);
+				const predicted = rawByte * alpha + underStyle * (1 - alpha);
+				totalError += Math.abs(predicted - displayed[channel]);
+				++channels;
+			}
+		}
+	}
+	assert.equal(channels, 90);
+	assert.ok(totalError / channels <= 0.6,
+		"the legacy double-paint model should reproduce the Studio screenshot");
+});
+
+test("Phase 2Q suppresses only the duplicate colorable imageset during gamma experiment", () => {
+	assert.ok(canvas.includes("const useExperimentalColorableFill = experimentalNativeColorablePanel && kind.isPanel"));
+	assert.ok(canvas.includes('&& (GetNodeProperty(node, "style") ?? "").trim().toLowerCase() === "rover_sim_colorable"'));
+	assert.ok(canvas.includes("!useExperimentalColorableFill && RenderStyleChrome("));
+	assert.ok(canvas.includes("style.background = GetPanelBackground(node)"));
+	assert.ok(canvas.includes('get("experimentalNativeColorablePanel") === "1"'));
+});
