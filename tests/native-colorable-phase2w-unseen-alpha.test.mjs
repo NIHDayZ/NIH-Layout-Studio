@@ -153,3 +153,110 @@ test("Phase 2W optional native evaluator is read-only and accepts synthetic data
 		rmSync(dir,{recursive:true,force:true});
 	}
 });
+
+
+const nativePhase2w = JSON.parse(readFileSync(
+	new URL("panel-color-phase2w-native-observations.json", fixtures), "utf8"
+));
+
+test("Phase 2W actual screenshots contain 90 uncontaminated native swatches and the expected controls", () => {
+	assert.equal(nativePhase2w.kind, "ACTUAL_NATIVE_UNSEEN_ALPHA_OBSERVATIONS");
+	assert.equal(nativePhase2w.preFrozenPredictions.commit,
+		"70659eb137f347ce2381c7d4dd97c732e213e205");
+	assert.equal(nativePhase2w.preFrozenPredictions.updatedAfterCapture, false);
+	assert.equal(nativePhase2w.captureMethod.includes("max RGB range 0"), true);
+	assert.deepEqual(nativePhase2w.backgroundOrder, backgroundNames);
+	assert.deepEqual(nativePhase2w.alphaOrder, alphaLevels);
+	assert.deepEqual(nativePhase2w.colorOrder, predictions.colorOrder);
+	assert.equal(nativePhase2w.backgrounds.length, 3);
+	for (const actual of nativePhase2w.backgrounds) {
+		const frozen = predictions.backgrounds.find(item => item.name === actual.name);
+		assert.ok(frozen, "unrecognized native background " + actual.name);
+		assert.deepEqual(actual.backdropRGB, frozen.opaqueSrgbPrediction);
+		assert.deepEqual(actual.studioBackdropRGB, frozen.opaqueSrgbPrediction);
+		assert.equal(actual.swatchesRGB.length, 6);
+		assert.equal(actual.studioSwatchesRGB.length, 6);
+		for (const rows of [actual.swatchesRGB, actual.studioSwatchesRGB]) {
+			assert.equal(rows.length, 6);
+			for (const row of rows) {
+				assert.equal(row.length, 5);
+				for (const rgb of row) {
+					assert.equal(rgb.length, 3);
+					assert.ok(rgb.every(channel => Number.isInteger(channel)
+						&& channel >= 0 && channel <= 255));
+				}
+			}
+			assert.deepEqual(rows[0], predictions.predictedNativeRgb[actual.name].pchip[0]);
+			assert.deepEqual(rows[5], predictions.predictedNativeRgb[actual.name].pchip[5]);
+		}
+	}
+});
+
+test("Phase 2W blind native evaluator reproduces preregistered PCHIP, linear and CSS errors", () => {
+	const observedFile = fileURLToPath(new URL(
+		"panel-color-phase2w-native-observations.json", fixtures));
+	const actual = AnalyzeWith(observedFile);
+	assert.equal(actual.status, "HELD_OUT_ALPHA_COMPARISON");
+	assert.equal(actual.validatedHeldOutAlphas, true);
+	assert.equal(actual.nativeMeasurementsAvailable, true);
+	assert.deepEqual(actual.predictedNativeRgb, predictions.predictedNativeRgb);
+	assert.equal(actual.heldOut.channelCount, 270);
+	assert.equal(actual.heldOut.intermediateChannelCount, 180);
+	assert.deepEqual(actual.heldOut.overall, {
+		pchip: 0.7926,
+		linear: 1.0704,
+		css: 5.4444
+	});
+	assert.deepEqual(actual.heldOut.intermediateOnly, {
+		pchip: 1.1889,
+		linear: 1.6056,
+		css: 8.1667
+	});
+	const byBackground = actual.heldOut.perBackground;
+	assert.equal(byBackground.Dark.overallMAE.pchip, 1.0444);
+	assert.equal(byBackground.Light.overallMAE.pchip, 0.4667);
+	assert.equal(byBackground.Chromatic.overallMAE.pchip, 0.8667);
+	for (const frozen of predictions.backgrounds) {
+		assert.deepEqual(byBackground[frozen.name].backdropAbsoluteErrors, [0, 0, 0]);
+	}
+});
+
+test("Phase 2W frozen PCHIP generalizes better than both baselines on unseen alpha values", () => {
+	const observedFile = fileURLToPath(new URL(
+		"panel-color-phase2w-native-observations.json", fixtures));
+	const errors = AnalyzeWith(observedFile).heldOut.intermediateOnly;
+	assert.ok(errors.pchip < errors.linear, "cubic interpolation must outperform the linear baseline");
+	assert.ok(errors.pchip < errors.css / 6, "frozen PCHIP must beat CSS by more than 6x");
+	assert.ok(errors.linear < errors.css, "linear interpolation still improves on CSS");
+	assert.equal(predictions.measurementStatus,
+		"PREDICTIONS_FROZEN_BEFORE_NEW_ALPHA_NATIVE_CAPTURE");
+	assert.equal(predictions.allowReFittingAfterCapture, false);
+});
+
+test("Phase 2W real residual is preserved, not described as a recovered shader equation", () => {
+	let worst = { value: -1, background: "", row: -1, color: -1, channel: -1 };
+	let studioError = 0;
+	let channels = 0;
+	for (const group of nativePhase2w.backgrounds) {
+		const forecast = predictions.predictedNativeRgb[group.name].pchip;
+		for (let row = 0; row < 6; ++row) {
+			for (let color = 0; color < 5; ++color) {
+				for (let channel = 0; channel < 3; ++channel) {
+					const actual = group.swatchesRGB[row][color][channel];
+					const delta = Math.abs(actual - forecast[row][color][channel]);
+					studioError += Math.abs(actual - group.studioSwatchesRGB[row][color][channel]);
+					++channels;
+					if (delta > worst.value) {
+						worst = { value: delta, background: group.name, row, color, channel };
+					}
+				}
+			}
+		}
+	}
+	assert.equal(channels, 270);
+	assert.deepEqual(worst, {
+		value: 7, background: "Chromatic", row: 3, color: 0, channel: 0
+	});
+	assert.equal(+(studioError / channels).toFixed(4), 5.4074);
+	assert.ok(worst.value > 0, "the interpolated model remains an approximation");
+});
