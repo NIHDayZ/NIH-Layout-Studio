@@ -87,3 +87,57 @@ test("Phase 2U report rejects canonical alpha-only blending and labels regressio
 	assert.equal(result.heldOutColorLinearWeightDiagnostic.totalChannelCount, 150);
 	assert.ok(result.heldOutColorLinearWeightDiagnostic.meanAbsoluteByteError < 2);
 });
+
+
+const phase2uCapture = JSON.parse(readFileSync(
+	new URL("./fixtures/workbench-grid/panel-color-phase2u-quantized-srgb-screenshot-evidence.json", import.meta.url),
+	"utf8"
+));
+
+test("Phase 2U actual sRGB screenshot matches every native opaque and transparent control", () => {
+	assert.equal(phase2uCapture.screenshotDimensions.length, 2);
+	assert.equal(phase2uCapture.previewZoomPercent, 46);
+	assert.deepEqual(phase2uCapture.authoredAlpha, [1, 0.94, 0.75, 0.5, 0.25, 0]);
+	assert.deepEqual(phase2uCapture.experimentFlags, {
+		experimentalNativeColorablePanel: true,
+		experimentalNativeColorableSRGB: true
+	});
+	for (const backdrop of screens.backgrounds) {
+		const rows = phase2uCapture.studio[backdrop.name];
+		assert.equal(rows.length, 6);
+		for (const row of rows)
+			assert.equal(row.length, 5);
+		for (let i = 0; i < 5; ++i) {
+			assert.deepEqual(rows[0][i], screens.pixels.workbench[backdrop.name][0][i],
+				"fully opaque sRGB swatch must match actual native screenshot");
+			assert.deepEqual(rows[5][i], backdrop.workbench,
+				"fully transparent swatch must show parent background");
+		}
+	}
+});
+
+test("Phase 2U screenshot preserves independently measured partial alpha mismatch", () => {
+	let channels = 0;
+	for (const backdrop of ["Dark", "Light"]) {
+		for (let row = 0; row < screens.alphaRows.length; ++row) {
+			let errorSum = 0;
+			for (let color = 0; color < 5; ++color) {
+				for (let channel = 0; channel < 3; ++channel) {
+					const predicted = phase2uCapture.studio[backdrop][row][color][channel];
+					const actual = screens.pixels.workbench[backdrop][row][color][channel];
+					errorSum += Math.abs(predicted - actual);
+					++channels;
+				}
+			}
+			const observed = errorSum / 15;
+			const frozen = phase2uCapture.measuredMAEByAlpha[backdrop][row];
+			assert.ok(Math.abs(observed - frozen) < 0.0001,
+				backdrop + " authored alpha " + screens.alphaRows[row]);
+		}
+	}
+	assert.equal(channels, 150);
+	assert.equal(phase2uCapture.measuredMAEByAlpha.Dark[0], 0);
+	assert.equal(phase2uCapture.measuredMAEByAlpha.Light[0], 0);
+	assert.ok(phase2uCapture.measuredMAEByAlpha.Light[3] > 17);
+	assert.equal(phase2uCapture.noShaderImplementationClaim, true);
+});
