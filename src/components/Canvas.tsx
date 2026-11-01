@@ -171,8 +171,11 @@ function GetPanelBackground(node: LayoutNode): string | undefined {
 	const style = (GetNodeProperty(node, "style") ?? "").trim().toLowerCase();
 	if (experimentalNativeColorablePanel && style === "rover_sim_colorable")
 		return PreviewNativeColorablePanelColor(authoredColor) ?? color;
+	// Native PanelWidgetClass without an authored style resolves to "blank":
+	// it remains visible and retains its color/alpha, but paints no fill.
+	// Do not synthesize a colored rectangle for that implicit blank style.
 	if (!style || style === "blank" || style === "empty")
-		return style === "blank" || style === "empty" ? undefined : color;
+		return undefined;
 
 	if (style.includes("colorable") || style.includes("panel") || style.includes("expansion"))
 		return color;
