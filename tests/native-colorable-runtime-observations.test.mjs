@@ -54,7 +54,20 @@ test("Phase 2S native getter ARGB exactly preserves authored 8-bit rgba at all s
 test("Phase 2S identical raw flags do not independently establish GPU blend state", () => {
 	assert.equal(evidence.rawWidgetFlags, 536870975);
 	assert.equal(evidence.rawWidgetFlagsHex, "0x2000003F");
-	assert.equal(evidence.enumMaskValuesCaptured, false);
+	assert.equal(evidence.enumMaskValuesCaptured, true);
+	assert.equal(evidence.enumMaskCapture.captureCount, 2);
+	assert.deepEqual(evidence.enumMaskCapture.values, {
+		SOURCEALPHA: 4194304,
+		BLEND: 1048576,
+		ADDITIVE: 2097152,
+		NOFILTER: 16777216
+	});
+	for (const [name, mask] of Object.entries(evidence.enumMaskCapture.values)) {
+		assert.equal(evidence.rawWidgetFlags & mask, 0, name + " must be absent from native widget flags");
+		assert.equal(evidence.enumMaskCapture.hex[name],
+			"0x" + mask.toString(16).padStart(8, "0").toUpperCase());
+	}
+	assert.equal(evidence.enumMaskCapture.flagsAndMasksOverlap, 0);
 	for (const record of evidence.records) {
 		assert.equal(record.flags, evidence.rawWidgetFlags);
 		for (const name of ["sourceAlpha", "blend", "additive", "noFilter"])
