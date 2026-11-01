@@ -1,0 +1,243 @@
+{
+  "phase": "2V",
+  "createdFrom": "Existing Phase 2Q authored colors and Phase 2R Workbench Dark/Light swatches; Phase 2V native evidence not available when frozen",
+  "candidate": "unconstrained two-linear-coefficient blend then sRGB encode (per alpha; no interpolation assumed)",
+  "background": {
+    "style": "rover_sim_colorable",
+    "authored": [
+      0.08,
+      0.36,
+      0.82,
+      1
+    ],
+    "opaqueSrgbPrediction": [
+      79,
+      162,
+      234
+    ]
+  },
+  "colorOrder": [
+    "Blue",
+    "Orange",
+    "Green",
+    "Pink",
+    "Lavender"
+  ],
+  "alphaOrder": [
+    1,
+    0.94,
+    0.75,
+    0.5,
+    0.25,
+    0
+  ],
+  "coefficients": [
+    {
+      "authoredAlpha": 1,
+      "sourceWeight": 0.999381941497634,
+      "backdropWeight": 0.0001795237718552412
+    },
+    {
+      "authoredAlpha": 0.94,
+      "sourceWeight": 0.9006741221693979,
+      "backdropWeight": 0.05708521786679928
+    },
+    {
+      "authoredAlpha": 0.75,
+      "sourceWeight": 0.6449983944064729,
+      "backdropWeight": 0.21112139540527092
+    },
+    {
+      "authoredAlpha": 0.5,
+      "sourceWeight": 0.42621844889271837,
+      "backdropWeight": 0.3827596427008424
+    },
+    {
+      "authoredAlpha": 0.25,
+      "sourceWeight": 0.24345022986746687,
+      "backdropWeight": 0.6137585464306748
+    },
+    {
+      "authoredAlpha": 0,
+      "sourceWeight": 0,
+      "backdropWeight": 1
+    }
+  ],
+  "predictedNativeRgb": [
+    [
+      [
+        137,
+        200,
+        221
+      ],
+      [
+        224,
+        192,
+        142
+      ],
+      [
+        154,
+        212,
+        186
+      ],
+      [
+        214,
+        172,
+        195
+      ],
+      [
+        180,
+        188,
+        218
+      ]
+    ],
+    [
+      [
+        132,
+        195,
+        217
+      ],
+      [
+        215,
+        187,
+        147
+      ],
+      [
+        148,
+        206,
+        186
+      ],
+      [
+        205,
+        168,
+        194
+      ],
+      [
+        173,
+        183,
+        215
+      ]
+    ],
+    [
+      [
+        117,
+        179,
+        209
+      ],
+      [
+        187,
+        173,
+        159
+      ],
+      [
+        130,
+        188,
+        186
+      ],
+      [
+        179,
+        158,
+        192
+      ],
+      [
+        152,
+        170,
+        207
+      ]
+    ],
+    [
+      [
+        103,
+        167,
+        207
+      ],
+      [
+        160,
+        162,
+        175
+      ],
+      [
+        114,
+        173,
+        191
+      ],
+      [
+        152,
+        152,
+        195
+      ],
+      [
+        131,
+        160,
+        205
+      ]
+    ],
+    [
+      [
+        93,
+        162,
+        215
+      ],
+      [
+        132,
+        160,
+        199
+      ],
+      [
+        100,
+        166,
+        207
+      ],
+      [
+        127,
+        154,
+        209
+      ],
+      [
+        111,
+        158,
+        214
+      ]
+    ],
+    [
+      [
+        79,
+        162,
+        234
+      ],
+      [
+        79,
+        162,
+        234
+      ],
+      [
+        79,
+        162,
+        234
+      ],
+      [
+        79,
+        162,
+        234
+      ],
+      [
+        79,
+        162,
+        234
+      ]
+    ]
+  ],
+  "measurementStatus": "PREDICTIONS_FROZEN_BEFORE_THIRD_NATIVE_CAPTURE",
+  "allowFittingThirdBackground": false,
+  "provenance": {
+    "trainingOnly": [
+      "Phase 2R Dark background 0.10 neutral",
+      "Phase 2R Light background 0.80 neutral"
+    ],
+    "unseen": "Chromatic background 0.08 0.36 0.82"
+  },
+  "notes": [
+    "Predictions are hypothesis outputs, not native Workbench observations.",
+    "A good result on a third backdrop still cannot establish a shader law or guarantee generalization across styles/textures."
+  ]
+}
