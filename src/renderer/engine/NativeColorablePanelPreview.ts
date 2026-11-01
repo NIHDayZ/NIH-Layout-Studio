@@ -38,6 +38,37 @@ export function PreviewNativeColorablePanelColor(value?: string): string | undef
 }
 
 /**
+ * Phase 2U: controlled alternative to the original 1/2.2 approximation.
+ *
+ * Native GetColor() stores authored linear floats as rounded 8-bit ARGB.
+ * Encoding the quantized channels through the standard sRGB transfer exactly
+ * reproduces the 15 Workbench opaque color channels and both test backdrops.
+ *
+ * This is a research-only preview; the native alpha-compositing operation
+ * remains unverified. Keep the existing power-2.2 preview for A/B comparison.
+ */
+function EncodeLinearSrgbChannel(channel: number): number {
+	const byte = Math.round(channel * 255);
+	const linear = byte / 255;
+	let display = linear * 12.92;
+	if (linear > 0.0031308)
+		display = 1.055 * Math.pow(linear, 1 / 2.4) - 0.055;
+	return Math.round(display * 255);
+}
+
+export function PreviewNativeColorablePanelSrgbColor(value?: string): string | undefined {
+	const channels = ParseNativePanelChannels(value);
+	if (!channels)
+		return undefined;
+	const [r, g, b, alpha] = channels;
+	const encodedR = EncodeLinearSrgbChannel(r);
+	const encodedG = EncodeLinearSrgbChannel(g);
+	const encodedB = EncodeLinearSrgbChannel(b);
+	const nativeAlpha = Math.round(alpha * 255) / 255;
+	return `rgba(${encodedR}, ${encodedG}, ${encodedB}, ${nativeAlpha})`;
+}
+
+/**
  * Prediction only, not an implementation of confirmed native blending.
  * Useful for comparing screenshot swatches against simple models.
  */
