@@ -7,7 +7,7 @@ import type { ArrangedWidget } from "../renderer/engine/GeometryCore";
 import { PlanLiveManagedChildren, PlanLiveGridContent } from "../renderer/engine/LiveManagedGeometry";
 
 import { SelectWorkbenchControlFontSize } from "../renderer/ControlFontSizing";
-import { PreviewNativeColorablePanelColor } from "../renderer/engine/NativeColorablePanelPreview";
+import { PreviewNativeColorablePanelColor, PreviewNativeColorablePanelSrgbColor } from "../renderer/engine/NativeColorablePanelPreview";
 import { MeasureBitmapAdvance } from "../renderer/engine/TextLineMetrics";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import type { LayoutNode } from "../model/LayoutTypes";
@@ -169,8 +169,11 @@ function GetPanelBackground(node: LayoutNode): string | undefined {
 		return undefined;
 
 	const style = (GetNodeProperty(node, "style") ?? "").trim().toLowerCase();
-	if (experimentalNativeColorablePanel && style === "rover_sim_colorable")
+	if (experimentalNativeColorablePanel && style === "rover_sim_colorable") {
+		if (experimentalNativeColorableSRGB)
+			return PreviewNativeColorablePanelSrgbColor(authoredColor) ?? color;
 		return PreviewNativeColorablePanelColor(authoredColor) ?? color;
+	}
 	// Native PanelWidgetClass without an authored style resolves to "blank":
 	// it remains visible and retains its color/alpha, but paints no fill.
 	// Do not synthesize a colored rectangle for that implicit blank style.
@@ -322,6 +325,8 @@ const debugHudGeometry = typeof window !== "undefined" && new URLSearchParams(wi
 const experimentalWorkbenchControlFonts = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalWorkbenchControlFonts") === "1";
 // Phase 2Q research hypothesis; off unless explicitly requested.
 const experimentalNativeColorablePanel = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalNativeColorablePanel") === "1";
+// Phase 2U A/B transfer control, only inside the existing colorable-panel experiment.
+const experimentalNativeColorableSRGB = experimentalNativeColorablePanel && new URLSearchParams(window.location.search).get("experimentalNativeColorableSRGB") === "1";
 const loggedTextRoutes = new Set<string>();
 function RenderText(node: LayoutNode, rect: Rect, project: ProjectWorkspaceModel | null, dependencyProjects: ProjectWorkspaceModel[], vanillaProject: ProjectWorkspaceModel | null) {
 	const text = GetNodeProperty(node, "text") ?? "";
