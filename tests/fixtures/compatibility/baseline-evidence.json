@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Evidence catalogue for Workbench compatibility baseline. Entries indicate the scope of tested behavior, never blanket widget parity.",
+  "notes": [
+    "All known Workbench widget types come from src/schema/WidgetSchema.ts; runtime/vanilla population requires optional user-supplied census JSON.",
+    "Source renderer routes describe existing code paths, not proof that pixels match Workbench.",
+    "An automated test path is a test artifact, not by itself evidence that it passed on the current user's machine.",
+    "Native evidence applies only to the named fixture and property under test.",
+    "Editing is global via PropertyInspector, but widget-specific interaction fidelity and save round-trips are not considered validated by its presence.",
+    "Native scroll comparison capture template is explicitly pending and must not be reported as confirmed parity."
+  ],
+  "groups": {
+    "Structure": [
+      "FrameWidgetClass",
+      "PanelWidgetClass",
+      "CanvasWidgetClass",
+      "ContentWidgetClass",
+      "SmartPanelWidgetClass",
+      "WindowWidgetClass",
+      "WorkspaceWidgetClass",
+      "WidgetClass",
+      "StyledWidgetClass"
+    ],
+    "Layout / scrolling": [
+      "GridSpacerWidgetClass",
+      "WrapSpacerWidgetClass",
+      "SpacerWidgetClass",
+      "SpacerBaseWidgetClass",
+      "ScrollWidgetClass"
+    ],
+    "Typography": [
+      "TextWidgetClass",
+      "MultilineTextWidgetClass",
+      "RichTextWidgetClass",
+      "HtmlWidgetClass"
+    ],
+    "Images / media": [
+      "ImageWidgetClass",
+      "RTTextureWidgetClass",
+      "RenderTargetWidgetClass",
+      "VideoWidgetClass",
+      "MapWidgetClass",
+      "ItemPreviewWidgetClass",
+      "PlayerPreviewWidgetClass"
+    ],
+    "Inputs": [
+      "ButtonWidgetClass",
+      "CheckBoxWidgetClass",
+      "ThreeStateCheckboxWidgetClass",
+      "EditBoxWidgetClass",
+      "MultilineEditBoxWidgetClass",
+      "PasswordEditBoxWidgetClass",
+      "SliderWidgetClass",
+      "XComboBoxWidgetClass"
+    ],
+    "Lists": [
+      "BaseListboxWidgetClass",
+      "GenericListboxWidgetClass",
+      "TextListboxWidgetClass",
+      "UniversalListboxWidgetClass",
+      "ServerBrowserWidgetClass"
+    ],
+    "Indicators / graphs": [
+      "SimpleProgressBarWidgetClass",
+      "ProgressBarWidgetClass",
+      "BasicGraphWidgetClass",
+      "RingBufferGraphWidgetClass",
+      "TimeBasedGraphWidgetClass",
+      "TimeBasedGraphWithAxesWidgetClass"
+    ],
+    "Other UI": [
+      "ConsoleWidgetClass",
+      "ContextMenuWidgetClass",
+      "DiagMenuWidgetClass",
+      "EmbededWidgetClass",
+      "MenuStripWidgetClass"
+    ]
+  },
+  "evidence": {
+    "FrameWidgetClass": {
+      "tests": {
+        "geometry": [
+          "tests/workbench-common-comparison.test.mjs",
+          "tests/geometry-comparison.test.mjs"
+        ],
+        "roundtrip": [
+          "tests/native-property-order-serialization.test.mjs"
+        ]
+      },
+      "native": [
+        {
+          "scope": "common measured geometry fixtures",
+          "path": "tests/fixtures/workbench-common/NIH_Common_Geometry_Parity.layout"
+        },
+        {
+          "scope": "property serialization syntax on specific fixtures",
+          "path": "tests/fixtures/workbench-content/capture.property-syntax.native.2026-10-28.json"
+        }
+      ]
+    },
+    "PanelWidgetClass": {
+      "tests": {
+        "render": [
+          "tests/native-colorable-phase2w-unseen-alpha.test.mjs",
+          "tests/native-colorable-style-comparison.test.mjs"
+        ],
+        "roundtrip": [
+          "tests/native-property-order-serialization.test.mjs"
+        ]
+      },
+      "native": [
+        {
+          "scope": "implicit blank style and selected colorable panel pixels only",
+          "path": "tests/fixtures/workbench-grid/panel-color-phase2w-native-observations.json"
+        }
+      ]
+    },
+    "GridSpacerWidgetClass": {
+      "tests": {
+        "geometry": [
+          "tests/grid-native-visual-report.test.mjs",
+          "tests/grid-native-relative-generalized.test.mjs",
+          "tests/grid-native-integration.test.mjs"
+        ]
+      },
+      "native": [
+        {
+          "scope": "specific native rectangle observations and calculated grid cases",
+          "path": "tests/fixtures/workbench-grid/NIH_Grid_Measurement_Matrix.layout"
+        }
+      ]
+    },
+    "WrapSpacerWidgetClass": {
+      "tests": {
+        "geometry": [
+          "tests/wrap-content.test.mjs",
+          "tests/fixed-wrap.test.mjs"
+        ]
+      }
+    },
+    "ScrollWidgetClass": {
+      "tests": {
+        "geometry": [
+          "tests/scroll-viewport.test.mjs",
+          "tests/workbench-scroll-comparison.test.mjs",
+          "tests/scroll-offset.test.mjs"
+        ]
+      },
+      "pending": [
+        {
+          "scope": "native viewport numeric comparison not completed",
+          "path": "tests/fixtures/workbench-scroll/capture.template.json"
+        }
+      ]
+    },
+    "TextWidgetClass": {
+      "tests": {
+        "render": [
+          "tests/fnt5-layout-comparison.test.mjs",
+          "tests/text-flow.test.mjs"
+        ]
+      }
+    },
+    "MultilineTextWidgetClass": {
+      "tests": {
+        "render": [
+          "tests/text-flow.test.mjs"
+        ]
+      }
+    },
+    "ImageWidgetClass": {
+      "tests": {
+        "render": [
+          "tests/imageset-variants.test.mjs",
+          "tests/geometry-comparison.test.mjs"
+        ]
+      }
+    },
+    "ButtonWidgetClass": {
+      "tests": {
+        "geometry": [
+          "tests/grid-native-visual-report.test.mjs"
+        ]
+      }
+    },
+    "ContentWidgetClass": {
+      "tests": {
+        "geometry": [
+          "tests/content-sizing-requests.test.mjs",
+          "tests/content-property-matrix.test.mjs"
+        ]
+      }
+    },
+    "RenderTargetWidgetClass": {},
+    "RTTextureWidgetClass": {},
+    "VideoWidgetClass": {}
+  },
+  "crossCutting": {
+    "parsing": {
+      "implementation": "src/parser/LayoutParser.ts",
+      "test": "tests/layout-widget-ids.test.mjs",
+      "scope": "generic node parsing only; per-widget semantic handling still unverified"
+    },
+    "editing": {
+      "implementation": "src/components/PropertyInspector.tsx",
+      "scope": "global editable properties, widget-specific behavior not validated"
+    },
+    "rendering": {
+      "implementation": "src/components/Canvas.tsx",
+      "scope": "some widget kinds have specialized DOM routes; not proof of full Workbench rendering"
+    },
+    "roundtrip": {
+      "implementation": "src/App.tsx",
+      "test": "tests/native-property-order-serialization.test.mjs",
+      "scope": "specific source order and serialization cases, not all native layout files"
+    },
+    "assets": {
+      "implementation": "src/project/ProjectWorkspace.ts",
+      "test": "tests/imageset-variants.test.mjs",
+      "scope": "resource lookup/texture support, not universal image fidelity"
+    }
+  }
+}
