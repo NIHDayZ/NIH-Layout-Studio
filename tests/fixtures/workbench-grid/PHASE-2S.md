@@ -57,6 +57,47 @@ Expected diagnostic markers: `BEGIN after-create`, `END after-create`, `BEGIN po
 - `GetColor()`/`GetAlpha()` and the flags may show authored versus runtime-adjusted values; avoid changing them in the probe, since that would alter the screenshot condition.
 - Even if the flags identify an alpha-blend mode, the *exact native GPU shader equation* and its color-space interpretation remain unverified. Retain the single-layer gamma conversion as **experimental only**.
 
+## Native runtime result — 2026-10-31
+
+The user supplied `NIH-ColorFlagProbe-Phase2S.txt` after rebuilding the client PBO. The log has **two runs**, each with complete `after-create` and `post-update` phases and exactly **10 records per phase**. All 40 records are valid; both update phases and both runs are identical. No missing-widget or missing-layout errors were reported.
+
+A normalized, independently auditable record of the ten unique widgets is frozen in `panel-color-phase2s-runtime-observations.json`. The regression `tests/native-colorable-runtime-observations.test.mjs` compares all numeric colors with the original authored .layout values, rather than fitting new values.
+
+| Native widget | Unsigned ARGB | `GetAlpha()` | Explanation |
+|---|---|---|---|
+| `QBackdropDark` | `0xFF1A1A1A` | 1 | Authored neutral 0.10 → 26 per channel |
+| `QDarkBlueAlpha100` | `0xFF4094B8` | 1 | Authored 0.25,0.58,0.72 → 64,148,184 |
+| `QDarkOrangeAlpha050` | `0x80BF8745` | 0.501961 | Alpha rounded to 128/255 |
+| `QDarkGreenAlpha025` | `0x4052A87D` | 0.25098 | Alpha rounded to 64/255 |
+| `QDarkPinkAlpha000` | `0x00AB698C` | 0 | Zero alpha preserved |
+| `QBackdropLight` | `0xFFCCCCCC` | 1 | Authored neutral 0.80 → 204 per channel |
+
+The five paired dark/light foreground widgets have identical packed `GetColor()` results on both backgrounds. All ten widgets report:
+
+- Type `PanelWidget`, style `rover_sim_colorable`, visible `true`
+- `GetFlags() = 536870975 = 0x2000003F`
+- Probe bitwise tests `SOURCEALPHA=false`, `BLEND=false`, `ADDITIVE=false`, `NOFILTER=false`
+- No change between creation and update
+
+**Interpretation:** DayZ's native `GetColor()` reports the authored channels quantized to 8 bits, not the gamma-encoded appearance visible on screen. `GetAlpha()` agrees with the packed high byte. The display gamma/color transform, alpha blending, and any style-specific composition happen downstream of these getters.
+
+**Important open question:** We logged the raw flags and four false bitwise checks, but **did not log the numeric values of the `WidgetFlags` enum constants**. We must not turn those four booleans into a claim about the GPU blend state without establishing the enum masks and whether these flags govern the style renderer. The follow-up read-only probe now prints a `MASKS` record with the four actual enum values once per capture phase.
+
+### Small native follow-up — verify enum constants
+
+Rebuild the disposable probe PBO using the same commands above after pulling the current branch. The updated script adds a `[NIH_LayoutStudio][ColorFlagProbe] MASKS` log line without changing widget state or the existing grid measurements.
+
+Filter the new lines with:
+
+```powershell
+$latest = Get-ChildItem "$env:LOCALAPPDATA\DayZ" -Filter 'script_*.log' -File |
+    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+
+Select-String -LiteralPath $latest.FullName -SimpleMatch '[NIH_LayoutStudio][ColorFlagProbe] MASKS'
+```
+
+The four numeric mask values are sufficient to interpret the earlier `0x2000003F` flags correctly. **No additional screenshots or alpha calibration layouts are required** for this targeted check.
+
 ## Local validation limits
 
 The new geometry-suite tests validate research evidence and static probe structure; they do NOT compile/run DayZ EnScript. The PBO build and native logs remain independent acceptance steps.
