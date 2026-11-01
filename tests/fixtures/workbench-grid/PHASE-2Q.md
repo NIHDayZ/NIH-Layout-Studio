@@ -163,6 +163,33 @@ A useful descriptive diagnostic, *not* a recovered shader opacity, is `1 - (nati
 
 **Next investigation:** inspect the actual `rover_sim_colorable` style definition and referenced imageset/material/texture alpha in native Workbench or source resources. Determine whether the native pipeline uses tint premultiplication, specific shader alpha blending, or layered style rendering. Treat the experimental single-layer gamma CSS path as a bounded preview, not as a verified style renderer. Do not introduce an alpha fudge curve based on screenshot-fitting.
 
+### Native style and imageset definition — verified from Workbench resources
+
+The user inspected installed native resources directly; evidence transcribed without extrapolation in `rover-colorable-native-style-evidence.json`:
+
+- `P:\\gui\\looknfeel\\dayzwidgets.styles`, lines 3284–3307: `rover_sim_colorable` uses `ImageSet="rover_imageset"`, empty font, `Color="4294967295"` (fully white `0xFFFFFFFF`). Its **Normal and Disabled states both assign `WhitePixel` to all nine regions**.
+- `P:\\gui\\imagesets\\rover_imageset.imageset`: `WhitePixel` is one `1 x 1` image at atlas position `(1,101)`, `Flags 0`. Texture path is `{A1C80CDD1389C1A2}Gui/imagesets/rover_imageset.edds`; imageset metadata `mpix 3`.
+
+The style therefore doesn't select different textures/colors for the two observed states and uses the same referenced texel for every nine-slice region. **Neither the numeric RGBA contents of that atlas texel nor the native blending equation can be deduced from these text resources.** In particular, do not silently assume the pixel is opaque white just because its name is `WhitePixel`.
+
+The repository now has an offline, read-only inspector using our existing `DecodeEddsToPixels` implementation:
+
+```powershell
+cd Z:\\GitHub\\NIH-Layout-Studio
+git pull --ff-only
+npm run inspect:rover-whitepixel
+```
+
+This command invokes `build:bc7-tests` (building the existing EDDS/DDS decoder), then reads `P:\\gui\\imagesets\\rover_imageset.edds`. If the path differs, supply the actual path:
+
+```powershell
+npm run inspect:rover-whitepixel -- "P:\\gui\\imagesets\\rover_imageset.edds"
+```
+
+It prints the decoded dimensions, numeric RGBA at `(1,101)`, `opaqueWhite`, and a 3x3 neighborhood (helpful for atlas filtering/bleed hypotheses). Save its JSON output and use the **actual pixel** as the next input to the research; no binary asset redistribution is required.
+
+If `opaqueWhite=true` the texture-byte hypothesis becomes less plausible for the center of the panels, but we still need to investigate pixel color-space interpretation, color modulation, GPU alpha state, premultiplication, and style layering before promoting any global correction. If `opaqueWhite=false`, separate the texel's RGB and alpha from widget authored RGBA before deriving a blend equation.
+
 ## Acceptance and safeguards
 
 - Do not change `ParseColor`, text, buttons, controls or other widget rendering on this hypothesis.
