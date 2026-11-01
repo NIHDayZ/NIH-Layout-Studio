@@ -7,6 +7,7 @@ class NIHGridMeasurementProbe {
 	protected Widget m_VariationRoot;
 	protected Widget m_RelativeRoot;
 	protected Widget m_ComplexRoot;
+	protected Widget m_ColorRoot;
 
 	void Start() {
 		if (g_Game.IsDedicatedServer())
@@ -90,6 +91,7 @@ class NIHGridMeasurementProbe {
 		m_ComplexRoot.Update();
 		CaptureComplex("complex-post-update");
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeComplexMatrix, 900, false);
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(StartColorFlagProbe, 1800, false);
 	}
 
 	protected void ResizeComplexMatrix() {
@@ -100,6 +102,62 @@ class NIHGridMeasurementProbe {
 		m_ComplexRoot.SetScreenSize(1120, 720);
 		m_ComplexRoot.Update();
 		CaptureComplex("complex-after-resize-1120x720");
+	}
+
+	/**
+	 * Phase 2S: read-only native widget rendering state.
+	 * Uses the existing disposable client probe only after grid captures finish.
+	 * Widget IDs are intentionally not used, including for pre-update checks.
+	 */
+	protected void StartColorFlagProbe() {
+		m_ColorRoot = g_Game.GetWorkspace().CreateWidgets("NIH_GridMeasurementProbe/gui/layouts/NIH_Panel_Background_Calibration.layout");
+		if (!m_ColorRoot) {
+			Print("[NIH_LayoutStudio][ColorFlagProbe] ERROR color calibration layout unavailable");
+			return;
+		}
+
+		CaptureColorFlags("after-create");
+		m_ColorRoot.Update();
+		CaptureColorFlags("post-update");
+	}
+
+	protected void CaptureColorFlags(string phase) {
+		if (!m_ColorRoot)
+			return;
+
+		Print("[NIH_LayoutStudio][ColorFlagProbe] BEGIN " + phase);
+		CaptureColorWidget(m_ColorRoot, "QBackdropDark", phase);
+		CaptureColorWidget(m_ColorRoot, "QDarkBlueAlpha100", phase);
+		CaptureColorWidget(m_ColorRoot, "QDarkOrangeAlpha050", phase);
+		CaptureColorWidget(m_ColorRoot, "QDarkGreenAlpha025", phase);
+		CaptureColorWidget(m_ColorRoot, "QDarkPinkAlpha000", phase);
+		CaptureColorWidget(m_ColorRoot, "QBackdropLight", phase);
+		CaptureColorWidget(m_ColorRoot, "QLightBlueAlpha100", phase);
+		CaptureColorWidget(m_ColorRoot, "QLightOrangeAlpha050", phase);
+		CaptureColorWidget(m_ColorRoot, "QLightGreenAlpha025", phase);
+		CaptureColorWidget(m_ColorRoot, "QLightPinkAlpha000", phase);
+		Print("[NIH_LayoutStudio][ColorFlagProbe] END " + phase);
+	}
+
+	protected void CaptureColorWidget(Widget root, string widgetName, string phase) {
+		Widget widget = root.FindAnyWidget(widgetName);
+		if (!widget) {
+			Print("[NIH_LayoutStudio][ColorFlagProbe] ERROR missing widget " + widgetName);
+			return;
+		}
+
+		int flags = widget.GetFlags();
+		string entry = string.Format("[NIH_LayoutStudio][ColorFlagProbe] phase=%1 name=%2 type=%3", phase, widget.GetName(), widget.GetTypeName());
+		entry += " style=" + widget.GetStyleName();
+		entry += " colorARGB=" + widget.GetColor().ToString();
+		entry += " alpha=" + widget.GetAlpha().ToString();
+		entry += " flags=" + flags.ToString();
+		entry += " sourceAlpha=" + ((flags & WidgetFlags.SOURCEALPHA) != 0).ToString();
+		entry += " blend=" + ((flags & WidgetFlags.BLEND) != 0).ToString();
+		entry += " additive=" + ((flags & WidgetFlags.ADDITIVE) != 0).ToString();
+		entry += " noFilter=" + ((flags & WidgetFlags.NOFILTER) != 0).ToString();
+		entry += " visible=" + widget.IsVisible().ToString();
+		Print(entry);
 	}
 
 	protected void CaptureComplex(string phase) {
