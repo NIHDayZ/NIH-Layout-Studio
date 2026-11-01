@@ -1,0 +1,57 @@
+{
+  "provenance": "Native Workbench resource files inspected by user on P: workdrive; extracted 2026-11-01",
+  "stylePath": "P:\\gui\\looknfeel\\dayzwidgets.styles",
+  "styleLineRange": [
+    3284,
+    3307
+  ],
+  "styleName": "rover_sim_colorable",
+  "styleImageset": "rover_imageset",
+  "styleFont": "",
+  "styleColorDecimal": 4294967295,
+  "styleColorHex": "0xFFFFFFFF",
+  "states": {
+    "Normal": [
+      "LeftTop",
+      "Top",
+      "RightTop",
+      "Right",
+      "RightBottom",
+      "Bottom",
+      "LeftBottom",
+      "Center",
+      "Left"
+    ],
+    "Disabled": [
+      "LeftTop",
+      "Top",
+      "RightTop",
+      "Right",
+      "RightBottom",
+      "Bottom",
+      "LeftBottom",
+      "Center",
+      "Left"
+    ]
+  },
+  "imageForEveryRegion": "WhitePixel",
+  "imagesetPath": "P:\\gui\\imagesets\\rover_imageset.imageset",
+  "imagesetLines": [
+    5,
+    15
+  ],
+  "imagesetTexture": "{A1C80CDD1389C1A2}Gui/imagesets/rover_imageset.edds",
+  "imagesetMpix": 3,
+  "imageName": "WhitePixel",
+  "imagePos": [
+    1,
+    101
+  ],
+  "imageSize": [
+    1,
+    1
+  ],
+  "imageFlags": 0,
+  "texturePixelRGBA": null,
+  "interpretation": "The declaration identifies a single 1x1 atlas region reused across nine slice names. RGBA texel content and native shader/blend remain unverified pending DecodeEddsToPixels inspection."
+}
