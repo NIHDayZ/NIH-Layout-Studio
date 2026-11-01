@@ -1,0 +1,1214 @@
+FrameWidgetClass NIHPanelStyleComparison {
+	position 0 0
+	size 1920 1080
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		PanelWidgetClass QTBackdropDark {
+			position 42 42
+			hexactpos 1
+			vexactpos 1
+			size 830 895
+			hexactsize 1
+			vexactsize 1
+			color 0.10 0.10 0.10 1
+			style rover_sim_colorable
+			{
+			FrameWidgetClass QTDarkPlainGroup {
+				position 18 18
+				hexactpos 1
+				vexactpos 1
+				size 780 410
+				hexactsize 1
+				vexactsize 1
+				{
+					PanelWidgetClass QTDarkPlainBlueAlpha100 {
+						position 19 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 1
+					}
+					PanelWidgetClass QTDarkPlainOrangeAlpha100 {
+						position 162 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 1
+					}
+					PanelWidgetClass QTDarkPlainGreenAlpha100 {
+						position 305 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 1
+					}
+					PanelWidgetClass QTDarkPlainPinkAlpha100 {
+						position 448 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 1
+					}
+					PanelWidgetClass QTDarkPlainLavenderAlpha100 {
+						position 591 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 1
+					}
+					PanelWidgetClass QTDarkPlainBlueAlpha094 {
+						position 19 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.94
+					}
+					PanelWidgetClass QTDarkPlainOrangeAlpha094 {
+						position 162 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.94
+					}
+					PanelWidgetClass QTDarkPlainGreenAlpha094 {
+						position 305 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.94
+					}
+					PanelWidgetClass QTDarkPlainPinkAlpha094 {
+						position 448 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.94
+					}
+					PanelWidgetClass QTDarkPlainLavenderAlpha094 {
+						position 591 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.94
+					}
+					PanelWidgetClass QTDarkPlainBlueAlpha075 {
+						position 19 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.75
+					}
+					PanelWidgetClass QTDarkPlainOrangeAlpha075 {
+						position 162 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.75
+					}
+					PanelWidgetClass QTDarkPlainGreenAlpha075 {
+						position 305 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.75
+					}
+					PanelWidgetClass QTDarkPlainPinkAlpha075 {
+						position 448 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.75
+					}
+					PanelWidgetClass QTDarkPlainLavenderAlpha075 {
+						position 591 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.75
+					}
+					PanelWidgetClass QTDarkPlainBlueAlpha050 {
+						position 19 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.5
+					}
+					PanelWidgetClass QTDarkPlainOrangeAlpha050 {
+						position 162 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.5
+					}
+					PanelWidgetClass QTDarkPlainGreenAlpha050 {
+						position 305 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.5
+					}
+					PanelWidgetClass QTDarkPlainPinkAlpha050 {
+						position 448 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.5
+					}
+					PanelWidgetClass QTDarkPlainLavenderAlpha050 {
+						position 591 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.5
+					}
+					PanelWidgetClass QTDarkPlainBlueAlpha025 {
+						position 19 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.25
+					}
+					PanelWidgetClass QTDarkPlainOrangeAlpha025 {
+						position 162 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.25
+					}
+					PanelWidgetClass QTDarkPlainGreenAlpha025 {
+						position 305 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.25
+					}
+					PanelWidgetClass QTDarkPlainPinkAlpha025 {
+						position 448 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.25
+					}
+					PanelWidgetClass QTDarkPlainLavenderAlpha025 {
+						position 591 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.25
+					}
+					PanelWidgetClass QTDarkPlainBlueAlpha000 {
+						position 19 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0
+					}
+					PanelWidgetClass QTDarkPlainOrangeAlpha000 {
+						position 162 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0
+					}
+					PanelWidgetClass QTDarkPlainGreenAlpha000 {
+						position 305 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0
+					}
+					PanelWidgetClass QTDarkPlainPinkAlpha000 {
+						position 448 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0
+					}
+					PanelWidgetClass QTDarkPlainLavenderAlpha000 {
+						position 591 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0
+					}
+				}
+			}
+			FrameWidgetClass QTDarkStyledGroup {
+				position 18 450
+				hexactpos 1
+				vexactpos 1
+				size 780 410
+				hexactsize 1
+				vexactsize 1
+				{
+					PanelWidgetClass QTDarkStyledBlueAlpha100 {
+						position 19 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledOrangeAlpha100 {
+						position 162 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledGreenAlpha100 {
+						position 305 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledPinkAlpha100 {
+						position 448 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledLavenderAlpha100 {
+						position 591 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledBlueAlpha094 {
+						position 19 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledOrangeAlpha094 {
+						position 162 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledGreenAlpha094 {
+						position 305 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledPinkAlpha094 {
+						position 448 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledLavenderAlpha094 {
+						position 591 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledBlueAlpha075 {
+						position 19 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledOrangeAlpha075 {
+						position 162 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledGreenAlpha075 {
+						position 305 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledPinkAlpha075 {
+						position 448 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledLavenderAlpha075 {
+						position 591 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledBlueAlpha050 {
+						position 19 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledOrangeAlpha050 {
+						position 162 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledGreenAlpha050 {
+						position 305 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledPinkAlpha050 {
+						position 448 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledLavenderAlpha050 {
+						position 591 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledBlueAlpha025 {
+						position 19 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledOrangeAlpha025 {
+						position 162 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledGreenAlpha025 {
+						position 305 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledPinkAlpha025 {
+						position 448 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledLavenderAlpha025 {
+						position 591 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledBlueAlpha000 {
+						position 19 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledOrangeAlpha000 {
+						position 162 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledGreenAlpha000 {
+						position 305 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledPinkAlpha000 {
+						position 448 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTDarkStyledLavenderAlpha000 {
+						position 591 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0
+						style rover_sim_colorable
+					}
+				}
+			}
+			}
+		}
+		PanelWidgetClass QTBackdropLight {
+			position 944 42
+			hexactpos 1
+			vexactpos 1
+			size 830 895
+			hexactsize 1
+			vexactsize 1
+			color 0.80 0.80 0.80 1
+			style rover_sim_colorable
+			{
+			FrameWidgetClass QTLightPlainGroup {
+				position 18 18
+				hexactpos 1
+				vexactpos 1
+				size 780 410
+				hexactsize 1
+				vexactsize 1
+				{
+					PanelWidgetClass QTLightPlainBlueAlpha100 {
+						position 19 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 1
+					}
+					PanelWidgetClass QTLightPlainOrangeAlpha100 {
+						position 162 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 1
+					}
+					PanelWidgetClass QTLightPlainGreenAlpha100 {
+						position 305 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 1
+					}
+					PanelWidgetClass QTLightPlainPinkAlpha100 {
+						position 448 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 1
+					}
+					PanelWidgetClass QTLightPlainLavenderAlpha100 {
+						position 591 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 1
+					}
+					PanelWidgetClass QTLightPlainBlueAlpha094 {
+						position 19 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.94
+					}
+					PanelWidgetClass QTLightPlainOrangeAlpha094 {
+						position 162 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.94
+					}
+					PanelWidgetClass QTLightPlainGreenAlpha094 {
+						position 305 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.94
+					}
+					PanelWidgetClass QTLightPlainPinkAlpha094 {
+						position 448 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.94
+					}
+					PanelWidgetClass QTLightPlainLavenderAlpha094 {
+						position 591 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.94
+					}
+					PanelWidgetClass QTLightPlainBlueAlpha075 {
+						position 19 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.75
+					}
+					PanelWidgetClass QTLightPlainOrangeAlpha075 {
+						position 162 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.75
+					}
+					PanelWidgetClass QTLightPlainGreenAlpha075 {
+						position 305 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.75
+					}
+					PanelWidgetClass QTLightPlainPinkAlpha075 {
+						position 448 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.75
+					}
+					PanelWidgetClass QTLightPlainLavenderAlpha075 {
+						position 591 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.75
+					}
+					PanelWidgetClass QTLightPlainBlueAlpha050 {
+						position 19 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.5
+					}
+					PanelWidgetClass QTLightPlainOrangeAlpha050 {
+						position 162 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.5
+					}
+					PanelWidgetClass QTLightPlainGreenAlpha050 {
+						position 305 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.5
+					}
+					PanelWidgetClass QTLightPlainPinkAlpha050 {
+						position 448 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.5
+					}
+					PanelWidgetClass QTLightPlainLavenderAlpha050 {
+						position 591 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.5
+					}
+					PanelWidgetClass QTLightPlainBlueAlpha025 {
+						position 19 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.25
+					}
+					PanelWidgetClass QTLightPlainOrangeAlpha025 {
+						position 162 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.25
+					}
+					PanelWidgetClass QTLightPlainGreenAlpha025 {
+						position 305 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.25
+					}
+					PanelWidgetClass QTLightPlainPinkAlpha025 {
+						position 448 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.25
+					}
+					PanelWidgetClass QTLightPlainLavenderAlpha025 {
+						position 591 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.25
+					}
+					PanelWidgetClass QTLightPlainBlueAlpha000 {
+						position 19 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0
+					}
+					PanelWidgetClass QTLightPlainOrangeAlpha000 {
+						position 162 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0
+					}
+					PanelWidgetClass QTLightPlainGreenAlpha000 {
+						position 305 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0
+					}
+					PanelWidgetClass QTLightPlainPinkAlpha000 {
+						position 448 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0
+					}
+					PanelWidgetClass QTLightPlainLavenderAlpha000 {
+						position 591 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0
+					}
+				}
+			}
+			FrameWidgetClass QTLightStyledGroup {
+				position 18 450
+				hexactpos 1
+				vexactpos 1
+				size 780 410
+				hexactsize 1
+				vexactsize 1
+				{
+					PanelWidgetClass QTLightStyledBlueAlpha100 {
+						position 19 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledOrangeAlpha100 {
+						position 162 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledGreenAlpha100 {
+						position 305 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledPinkAlpha100 {
+						position 448 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledLavenderAlpha100 {
+						position 591 20
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 1
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledBlueAlpha094 {
+						position 19 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledOrangeAlpha094 {
+						position 162 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledGreenAlpha094 {
+						position 305 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledPinkAlpha094 {
+						position 448 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledLavenderAlpha094 {
+						position 591 80
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.94
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledBlueAlpha075 {
+						position 19 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledOrangeAlpha075 {
+						position 162 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledGreenAlpha075 {
+						position 305 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledPinkAlpha075 {
+						position 448 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledLavenderAlpha075 {
+						position 591 140
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.75
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledBlueAlpha050 {
+						position 19 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledOrangeAlpha050 {
+						position 162 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledGreenAlpha050 {
+						position 305 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledPinkAlpha050 {
+						position 448 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledLavenderAlpha050 {
+						position 591 200
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.5
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledBlueAlpha025 {
+						position 19 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledOrangeAlpha025 {
+						position 162 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledGreenAlpha025 {
+						position 305 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledPinkAlpha025 {
+						position 448 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledLavenderAlpha025 {
+						position 591 260
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0.25
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledBlueAlpha000 {
+						position 19 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.25 0.58 0.72 0
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledOrangeAlpha000 {
+						position 162 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.75 0.53 0.27 0
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledGreenAlpha000 {
+						position 305 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.32 0.66 0.49 0
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledPinkAlpha000 {
+						position 448 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.67 0.41 0.55 0
+						style rover_sim_colorable
+					}
+					PanelWidgetClass QTLightStyledLavenderAlpha000 {
+						position 591 320
+						hexactpos 1
+						vexactpos 1
+						size 112 48
+						hexactsize 1
+						vexactsize 1
+						color 0.46 0.50 0.70 0
+						style rover_sim_colorable
+					}
+				}
+			}
+			}
+		}
+	}
+}
