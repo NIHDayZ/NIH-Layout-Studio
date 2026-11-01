@@ -8,7 +8,7 @@
   "recordsPerPhase": 10,
   "totalWidgetRecords": 40,
   "allFourGroupsIdentical": true,
-  "enumMaskValuesCaptured": false,
+  "enumMaskValuesCaptured": true,
   "rawWidgetFlags": 536870975,
   "rawWidgetFlagsHex": "0x2000003F",
   "records": [
@@ -156,7 +156,26 @@
   "notes": [
     "GetColor() returns signed 32-bit packed ARGB, byte-for-byte consistent with authored float colors quantized to 8-bit channels.",
     "GetAlpha() equals the packed A/255, printed to six decimal digits.",
-    "All four bitwise queries in the existing native probe returned false. Actual numeric WidgetFlags enum masks were not printed in this capture; do not identify the effective GPU blend mode from these booleans.",
+    "All four numeric WidgetFlags values were subsequently captured twice in the mask-only follow-up; no masks overlap 0x2000003F.",
     "One referenced WhitePixel atlas texel is fully opaque white, so its central alpha cannot explain partial-alpha panel-center differences."
-  ]
+  ],
+  "enumMaskCapture": {
+    "source": "DayZ client script_2026-10-31_23-32-41.log, lines 809 and 822; two identical MASKS records",
+    "captureCount": 2,
+    "values": {
+      "SOURCEALPHA": 4194304,
+      "BLEND": 1048576,
+      "ADDITIVE": 2097152,
+      "NOFILTER": 16777216
+    },
+    "hex": {
+      "SOURCEALPHA": "0x00400000",
+      "BLEND": "0x00100000",
+      "ADDITIVE": "0x00200000",
+      "NOFILTER": "0x01000000"
+    },
+    "flagsAndMasksOverlap": 0,
+    "flagMask": "0x2000003F",
+    "interpretation": "All four bits absent. Native styled panels still render with authored alpha. This does not establish actual GPU blend state or its equation."
+  }
 }
