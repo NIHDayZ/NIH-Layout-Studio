@@ -1,0 +1,632 @@
+FrameWidgetClass NIHColorableBackgroundCalibration {
+	position 0 0
+	size 1 1
+	hexactpos 1
+	vexactpos 1
+	{
+		PanelWidgetClass QBackdropDark {
+			position 36 36
+			hexactpos 1
+			vexactpos 1
+			size 800 670
+			hexactsize 1
+			vexactsize 1
+			color 0.10 0.10 0.10 1
+			style rover_sim_colorable
+			{
+				PanelWidgetClass QDarkBlueAlpha100 {
+					position 22 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkOrangeAlpha100 {
+					position 172 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkGreenAlpha100 {
+					position 322 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkPinkAlpha100 {
+					position 472 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkLavenderAlpha100 {
+					position 622 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkBlueAlpha094 {
+					position 22 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkOrangeAlpha094 {
+					position 172 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkGreenAlpha094 {
+					position 322 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkPinkAlpha094 {
+					position 472 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkLavenderAlpha094 {
+					position 622 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkBlueAlpha075 {
+					position 22 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkOrangeAlpha075 {
+					position 172 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkGreenAlpha075 {
+					position 322 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkPinkAlpha075 {
+					position 472 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkLavenderAlpha075 {
+					position 622 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkBlueAlpha050 {
+					position 22 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkOrangeAlpha050 {
+					position 172 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkGreenAlpha050 {
+					position 322 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkPinkAlpha050 {
+					position 472 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkLavenderAlpha050 {
+					position 622 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkBlueAlpha025 {
+					position 22 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkOrangeAlpha025 {
+					position 172 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkGreenAlpha025 {
+					position 322 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkPinkAlpha025 {
+					position 472 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkLavenderAlpha025 {
+					position 622 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkBlueAlpha000 {
+					position 22 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkOrangeAlpha000 {
+					position 172 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkGreenAlpha000 {
+					position 322 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkPinkAlpha000 {
+					position 472 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QDarkLavenderAlpha000 {
+					position 622 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0
+					style rover_sim_colorable
+				}
+			}
+		}
+		PanelWidgetClass QBackdropLight {
+			position 898 36
+			hexactpos 1
+			vexactpos 1
+			size 800 670
+			hexactsize 1
+			vexactsize 1
+			color 0.80 0.80 0.80 1
+			style rover_sim_colorable
+			{
+				PanelWidgetClass QLightBlueAlpha100 {
+					position 22 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightOrangeAlpha100 {
+					position 172 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightGreenAlpha100 {
+					position 322 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightPinkAlpha100 {
+					position 472 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightLavenderAlpha100 {
+					position 622 27
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 1
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightBlueAlpha094 {
+					position 22 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightOrangeAlpha094 {
+					position 172 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightGreenAlpha094 {
+					position 322 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightPinkAlpha094 {
+					position 472 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightLavenderAlpha094 {
+					position 622 128
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0.94
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightBlueAlpha075 {
+					position 22 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightOrangeAlpha075 {
+					position 172 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightGreenAlpha075 {
+					position 322 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightPinkAlpha075 {
+					position 472 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightLavenderAlpha075 {
+					position 622 229
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0.75
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightBlueAlpha050 {
+					position 22 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightOrangeAlpha050 {
+					position 172 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightGreenAlpha050 {
+					position 322 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightPinkAlpha050 {
+					position 472 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightLavenderAlpha050 {
+					position 622 330
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0.5
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightBlueAlpha025 {
+					position 22 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightOrangeAlpha025 {
+					position 172 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightGreenAlpha025 {
+					position 322 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightPinkAlpha025 {
+					position 472 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightLavenderAlpha025 {
+					position 622 431
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0.25
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightBlueAlpha000 {
+					position 22 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.25 0.58 0.72 0
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightOrangeAlpha000 {
+					position 172 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.75 0.53 0.27 0
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightGreenAlpha000 {
+					position 322 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.32 0.66 0.49 0
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightPinkAlpha000 {
+					position 472 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.67 0.41 0.55 0
+					style rover_sim_colorable
+				}
+				PanelWidgetClass QLightLavenderAlpha000 {
+					position 622 532
+					hexactpos 1
+					vexactpos 1
+					size 124 78
+					hexactsize 1
+					vexactsize 1
+					color 0.46 0.50 0.70 0
+					style rover_sim_colorable
+				}
+			}
+		}
+	}
+}
