@@ -141,6 +141,28 @@ Capture screenshots for both programs. Compare parent background colors separate
 
 **No PBO rebuild is necessary to open the staged layout in Workbench.** The new test `tests/native-colorable-background-calibration.test.mjs` checks layout structure and that the existing guarded GridSpacer model is not accidentally activated. The experiment will not change the normal renderer or promote the gamma candidate.
 
+### Phase 2R results — two backing surfaces (2026-11-01)
+
+Two *actual* screenshots are captured: Studio `image(20261101-054051).png` and Workbench `image(20261101-054147).png`. The authored 1920x1080 layout is shown at 46% zoom with no widget bounds. We measured 50 corresponding swatches (5 colors × 5 nonzero-alpha rows × 2 backdrops) and the opaque parent backdrops using 7x7 median pixel patches. All sample positions, values, and provenance are independently frozen in `panel-color-phase2r-background-evidence.json`; `tests/native-colorable-background-observations.test.mjs` protects the measurements and key logical consequences.
+
+Backdrop controls are **dark** Studio/Workbench `rgb(90,90,90)`, **light** Studio `rgb(230,230,230)` versus Workbench `rgb(231,231,231)`.
+
+| Authored alpha | Dark-backdrop Studio vs. Workbench MAE | Light-backdrop Studio vs. Workbench MAE |
+|---|---:|---:|
+| 1.00 | 1.27 | 1.27 |
+| 0.94 | 0.60 | 2.33 |
+| 0.75 | 2.67 | 10.87 |
+| 0.50 | 1.40 | 17.13 |
+| 0.25 | 7.47 | 13.00 |
+
+These are absolute screenshot RGB channel differences, in values out of 255, not measured shader error. Opaque colors match closely over either surface, confirming the generalized candidate `RGB = authored^(1/2.2)` independently of backdrop for this style and these sampled colors. Alpha is **not** a single background-independent CSS opacity rule.
+
+**A stronger falsification than MAE:** for orange at authored alpha 0.50 over the **light** parent, the native Workbench screenshot reports **red=205**, whereas the same native screenshot reports **opaque orange red=224** and **light backdrop red=231**. Every ordinary source-over mixture with any effective alpha from 0 to 1 must lie within `[224,231]`, and **205 is outside that interval by at least 19 RGB levels**. Therefore **no input-alpha remapping by itself** can reproduce native output across this test. It necessarily involves additional RGB processing, a nonstandard alpha/material blend, or another compositing interaction. Screenshot samples do not establish which specific mechanism is responsible.
+
+A useful descriptive diagnostic, *not* a recovered shader opacity, is `1 - (nativeLight - nativeDark)/(231 - 90)`. Averaging this independently for the fifteen color channels at each opacity yields approximately 1.000, 0.952, 0.810, 0.635, 0.400, while a fixed-source CSS opacity model would use 1, 0.94, 0.75, 0.50, 0.25. This apparent opacity also varies across channels, so it must **not** be installed as a global alpha curve.
+
+**Next investigation:** inspect the actual `rover_sim_colorable` style definition and referenced imageset/material/texture alpha in native Workbench or source resources. Determine whether the native pipeline uses tint premultiplication, specific shader alpha blending, or layered style rendering. Treat the experimental single-layer gamma CSS path as a bounded preview, not as a verified style renderer. Do not introduce an alpha fudge curve based on screenshot-fitting.
+
 ## Acceptance and safeguards
 
 - Do not change `ParseColor`, text, buttons, controls or other widget rendering on this hypothesis.
