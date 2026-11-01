@@ -1,7 +1,7 @@
 {
   "phase": "2V",
   "createdFrom": "Existing Phase 2Q authored colors and Phase 2R Workbench Dark/Light swatches; Phase 2V native evidence not available when frozen",
-  "candidate": "unconstrained two-linear-coefficient blend then sRGB encode (per alpha; no interpolation assumed)",
+  "candidate": "opaque alpha=1 and transparent alpha=0 anchored to verified controls; intermediate alpha uses 2 coefficients per row fitted only on Phase 2R Dark/Light and sRGB-encoded",
   "background": {
     "style": "rover_sim_colorable",
     "authored": [
@@ -34,8 +34,8 @@
   "coefficients": [
     {
       "authoredAlpha": 1,
-      "sourceWeight": 0.999381941497634,
-      "backdropWeight": 0.0001795237718552412
+      "sourceWeight": 1,
+      "backdropWeight": 0
     },
     {
       "authoredAlpha": 0.94,
@@ -83,7 +83,7 @@
       [
         214,
         172,
-        195
+        196
       ],
       [
         180,
@@ -239,5 +239,11 @@
   "notes": [
     "Predictions are hypothesis outputs, not native Workbench observations.",
     "A good result on a third backdrop still cannot establish a shader law or guarantee generalization across styles/textures."
-  ]
+  ],
+  "trainingBoundaries": {
+    "opaqueAnchored": true,
+    "transparentAnchored": true,
+    "intermediateRowsFitUsingOnlyTwoKnownBackdrops": true,
+    "heldOutChromaticNeverUsed": true
+  }
 }
