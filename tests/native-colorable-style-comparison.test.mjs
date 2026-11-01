@@ -104,3 +104,50 @@ test("Phase 2T passive panels cannot activate managed geometry experiments", () 
 		assert.equal(guarded.appliedStrategies.length, 0);
 	}
 });
+
+
+const phase2tEvidence = JSON.parse(readFileSync(
+	new URL("./fixtures/workbench-grid/panel-color-phase2t-screenshot-evidence.json", import.meta.url), "utf8"
+));
+const canvasSource = readFileSync(
+	new URL("../src/components/Canvas.tsx", import.meta.url), "utf8"
+);
+
+test("Phase 2T native blank style leaves authored-color panels transparent, preserving their widget state", () => {
+	const runtime = phase2tEvidence.nativeClient;
+	assert.equal(runtime.recordCount, 36);
+	assert.equal(runtime.recordsPerPhase, 18);
+	assert.equal(runtime.allPhasesEqual, true);
+	assert.equal(runtime.allNativeVisible, true);
+	assert.equal(runtime.flagsForAll, 536870975);
+	assert.equal(runtime.plainStyle, "blank");
+	assert.equal(runtime.styledStyle, "rover_sim_colorable");
+	const samples = phase2tEvidence.samples;
+	assert.equal(samples.length, 6);
+	for (const sample of samples) {
+		const parentRgb = sample.backdrop === "dark" ? [90, 90, 90] : [231, 231, 231];
+		if (sample.style === "absent") {
+			assert.deepEqual(sample.workbench.rgb, parentRgb,
+				"native unstyled panel must show its parent background rather than a synthesized fill");
+		} else {
+			assert.equal(sample.style, "rover_sim_colorable");
+			assert.equal(sample.authoredAlpha, 1);
+			for (let channel = 0; channel < 3; ++channel) {
+				assert.ok(Math.abs(sample.workbench.rgb[channel] - sample.studio.rgb[channel]) <= 1,
+					"the experimental single-layer preview must remain close for fully opaque styled swatches");
+			}
+		}
+	}
+});
+
+test("Phase 2T Canvas does not synthesize a fill for implicit blank PanelWidget style", () => {
+	const start = canvasSource.indexOf("function GetPanelBackground(node: LayoutNode)");
+	const end = canvasSource.indexOf("function GetImageCandidates(", start);
+	assert.ok(start >= 0 && end > start);
+	const source = canvasSource.slice(start, end);
+	assert.match(source, /if \(!style \|\| style === "blank" \|\| style === "empty"\)\s+return undefined;/);
+	assert.ok(source.includes('if (experimentalNativeColorablePanel && style === "rover_sim_colorable")'));
+	assert.ok(source.includes('return PreviewNativeColorablePanelColor(authoredColor) ?? color'));
+	assert.ok(canvasSource.includes('style.background = GetPanelBackground(node)'));
+	assert.ok(canvasSource.includes('!useExperimentalColorableFill && RenderStyleChrome('));
+});
