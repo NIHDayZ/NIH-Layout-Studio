@@ -81,22 +81,22 @@ The five paired dark/light foreground widgets have identical packed `GetColor()`
 
 **Interpretation:** DayZ's native `GetColor()` reports the authored channels quantized to 8 bits, not the gamma-encoded appearance visible on screen. `GetAlpha()` agrees with the packed high byte. The display gamma/color transform, alpha blending, and any style-specific composition happen downstream of these getters.
 
-**Important open question:** We logged the raw flags and four false bitwise checks, but **did not log the numeric values of the `WidgetFlags` enum constants**. We must not turn those four booleans into a claim about the GPU blend state without establishing the enum masks and whether these flags govern the style renderer. The follow-up read-only probe now prints a `MASKS` record with the four actual enum values once per capture phase.
+**Enum masks resolved (2026-10-31, 23:33 Pacific):** The user reran the probe and supplied two identical `MASKS` records from `script_2026-10-31_23-32-41.log`, lines 809 and 822:
 
-### Small native follow-up — verify enum constants
+| Enum | Runtime decimal | Runtime hex | Active in 0x2000003F |
+|---|---:|---|---|
+| `WidgetFlags.SOURCEALPHA` | 4,194,304 | `0x00400000` | **No** |
+| `WidgetFlags.BLEND` | 1,048,576 | `0x00100000` | **No** |
+| `WidgetFlags.ADDITIVE` | 2,097,152 | `0x00200000` | **No** |
+| `WidgetFlags.NOFILTER` | 16,777,216 | `0x01000000` | **No** |
 
-Rebuild the disposable probe PBO using the same commands above after pulling the current branch. The updated script adds a `[NIH_LayoutStudio][ColorFlagProbe] MASKS` log line without changing widget state or the existing grid measurements.
+**Consequence:** The four earlier false checks were accurate; they were not caused by an incorrect enum interpretation. Existing ColorFlagProbe native observations are now sufficient to establish this. **Do not request a redundant rebuild or recapture of these masks.**
 
-Filter the new lines with:
+According to the native DayZ `EnWidgets.c` API comments (`https://diff.yadz.app/files/1_Core/proto/EnWidgets.c/`), when `SOURCEALPHA` is unset, the texture is treated as nontransparent for the purpose of alpha, and transparency is supplied by the widget's color. This is consistent with the verified opaque white texel and quantized authored `GetAlpha()` values. The same API describes `BLEND` as texture alpha blending and `ADDITIVE` as texture addition. The absence of those flags in a **PanelWidget's styled nine-slice** does not prove that no alpha blending or material-specific composition takes place: the Workbench screenshots demonstrate visually translucent panels.
 
-```powershell
-$latest = Get-ChildItem "$env:LOCALAPPDATA\DayZ" -Filter 'script_*.log' -File |
-    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+The remaining raw bits are `0x20000000` and `0x0000003F`, which have not been individually named and verified for the user's active DayZ build. We cannot infer the native GPU blend equation from the `GetFlags()` mask alone.
 
-Select-String -LiteralPath $latest.FullName -SimpleMatch '[NIH_LayoutStudio][ColorFlagProbe] MASKS'
-```
-
-The four numeric mask values are sufficient to interpret the earlier `0x2000003F` flags correctly. **No additional screenshots or alpha calibration layouts are required** for this targeted check.
+**Next meaningful research:** determine whether the style renderer applies an implicit blend policy, linear/sRGB conversion, and/or alpha premultiplication independently of the public widget flags. Use a controlled shader/texture comparison or native rendering evidence; do **not** fit a CSS opacity curve to the existing screenshot samples or change the default panel renderer. No further native flag probes are necessary at this stage.
 
 ## Local validation limits
 
