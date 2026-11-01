@@ -147,15 +147,19 @@ class NIHGridMeasurementProbe {
 		}
 
 		int flags = widget.GetFlags();
+		bool hasSourceAlpha = (flags & WidgetFlags.SOURCEALPHA) != 0;
+		bool hasBlend = (flags & WidgetFlags.BLEND) != 0;
+		bool hasAdditive = (flags & WidgetFlags.ADDITIVE) != 0;
+		bool hasNoFilter = (flags & WidgetFlags.NOFILTER) != 0;
 		string entry = string.Format("[NIH_LayoutStudio][ColorFlagProbe] phase=%1 name=%2 type=%3", phase, widget.GetName(), widget.GetTypeName());
 		entry += " style=" + widget.GetStyleName();
 		entry += " colorARGB=" + widget.GetColor().ToString();
 		entry += " alpha=" + widget.GetAlpha().ToString();
 		entry += " flags=" + flags.ToString();
-		entry += " sourceAlpha=" + ((flags & WidgetFlags.SOURCEALPHA) != 0).ToString();
-		entry += " blend=" + ((flags & WidgetFlags.BLEND) != 0).ToString();
-		entry += " additive=" + ((flags & WidgetFlags.ADDITIVE) != 0).ToString();
-		entry += " noFilter=" + ((flags & WidgetFlags.NOFILTER) != 0).ToString();
+		entry += " sourceAlpha=" + hasSourceAlpha.ToString();
+		entry += " blend=" + hasBlend.ToString();
+		entry += " additive=" + hasAdditive.ToString();
+		entry += " noFilter=" + hasNoFilter.ToString();
 		entry += " visible=" + widget.IsVisible().ToString();
 		Print(entry);
 	}
