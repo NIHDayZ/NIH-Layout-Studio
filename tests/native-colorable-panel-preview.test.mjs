@@ -159,3 +159,42 @@ test("Phase 2Q suppresses only the duplicate colorable imageset during gamma exp
 	assert.ok(canvas.includes("style.background = GetPanelBackground(node)"));
 	assert.ok(canvas.includes('get("experimentalNativeColorablePanel") === "1"'));
 });
+
+
+test("Phase 2Q corrected screenshot verifies single-layer gamma preview against all 30 native swatches", () => {
+	const calibration = evidence.alphaCalibration;
+	const corrected = calibration.correctedSingleLayer;
+	assert.equal(corrected.studioRGB.length, 6);
+	assert.equal(calibration.workbenchRGB.length, 6);
+	assert.equal(corrected.workbenchDifferenceByAlpha.length, 6);
+	let errorTotal = 0;
+	let channels = 0;
+	for (let row = 0; row < 6; ++row) {
+		assert.equal(corrected.studioRGB[row].length, 5);
+		let rowError = 0;
+		let maxError = 0;
+		for (let col = 0; col < 5; ++col) {
+			for (let channel = 0; channel < 3; ++channel) {
+				const delta = Math.abs(corrected.studioRGB[row][col][channel]
+					- calibration.workbenchRGB[row][col][channel]);
+				rowError += delta;
+				errorTotal += delta;
+				maxError = Math.max(maxError, delta);
+				++channels;
+			}
+		}
+		const reported = corrected.workbenchDifferenceByAlpha[row];
+		assert.equal(reported.alpha, calibration.authoredAlpha[row]);
+		assert.ok(Math.abs(reported.meanAbsoluteRGBDifference - rowError / 15) < 0.0001);
+		assert.equal(reported.maxChannelDifference, maxError);
+	}
+	assert.equal(channels, 90);
+	const meanError = errorTotal / channels;
+	assert.ok(Math.abs(meanError - corrected.overallMeanAbsoluteRGBDifference) < 0.0001);
+	assert.ok(meanError < 4 && meanError > 3,
+		"corrected screenshot should remain close but not falsely claim complete alpha parity");
+	assert.ok(corrected.workbenchDifferenceByAlpha[0].maxChannelDifference <= 2);
+	assert.ok(corrected.workbenchDifferenceByAlpha[1].maxChannelDifference <= 3);
+	assert.ok(corrected.workbenchDifferenceByAlpha[2].meanAbsoluteRGBDifference > 7);
+	assert.ok(corrected.workbenchDifferenceByAlpha[3].meanAbsoluteRGBDifference > 7);
+});
