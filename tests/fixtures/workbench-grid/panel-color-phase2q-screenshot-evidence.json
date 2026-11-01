@@ -525,6 +525,208 @@
         ]
       ]
     ],
-    "note": "These are screenshots, NOT native runtime color getters or verified gamma shader internals. Studio screenshot opaque-row RGB is the direct authored-byte mapping despite gamma-looking URL; check active code via browser computedStyle before interpreting alpha/model comparison."
+    "note": "These are screenshots, NOT native runtime color getters or verified gamma shader internals. Studio screenshot opaque-row RGB is the direct authored-byte mapping despite gamma-looking URL; check active code via browser computedStyle before interpreting alpha/model comparison.",
+    "correctedSingleLayer": {
+      "screenshot": "image(20261101-052910).png",
+      "description": "Studio gamma experiment after preventing duplicate styled-image paint. Verified with uploaded screenshot, 7x7 central median samples at same Studio sampling centers.",
+      "studioRGB": [
+        [
+          [
+            136,
+            199,
+            220
+          ],
+          [
+            224,
+            191,
+            141
+          ],
+          [
+            152,
+            211,
+            184
+          ],
+          [
+            213,
+            170,
+            194
+          ],
+          [
+            179,
+            186,
+            217
+          ]
+        ],
+        [
+          [
+            136,
+            195,
+            215
+          ],
+          [
+            219,
+            188,
+            141
+          ],
+          [
+            151,
+            207,
+            181
+          ],
+          [
+            208,
+            168,
+            191
+          ],
+          [
+            176,
+            183,
+            212
+          ]
+        ],
+        [
+          [
+            135,
+            182,
+            198
+          ],
+          [
+            201,
+            176,
+            139
+          ],
+          [
+            147,
+            191,
+            171
+          ],
+          [
+            192,
+            160,
+            178
+          ],
+          [
+            167,
+            172,
+            195
+          ]
+        ],
+        [
+          [
+            133,
+            165,
+            175
+          ],
+          [
+            177,
+            161,
+            136
+          ],
+          [
+            141,
+            171,
+            157
+          ],
+          [
+            172,
+            150,
+            162
+          ],
+          [
+            155,
+            158,
+            174
+          ]
+        ],
+        [
+          [
+            131,
+            147,
+            152
+          ],
+          [
+            153,
+            145,
+            132
+          ],
+          [
+            135,
+            150,
+            143
+          ],
+          [
+            150,
+            140,
+            146
+          ],
+          [
+            142,
+            144,
+            151
+          ]
+        ],
+        [
+          [
+            130,
+            130,
+            130
+          ],
+          [
+            130,
+            130,
+            130
+          ],
+          [
+            130,
+            130,
+            130
+          ],
+          [
+            130,
+            130,
+            130
+          ],
+          [
+            130,
+            130,
+            130
+          ]
+        ]
+      ],
+      "workbenchDifferenceByAlpha": [
+        {
+          "alpha": 1,
+          "meanAbsoluteRGBDifference": 1.2667,
+          "maxChannelDifference": 2
+        },
+        {
+          "alpha": 0.94,
+          "meanAbsoluteRGBDifference": 1.6,
+          "maxChannelDifference": 3
+        },
+        {
+          "alpha": 0.75,
+          "meanAbsoluteRGBDifference": 7.5333,
+          "maxChannelDifference": 9
+        },
+        {
+          "alpha": 0.5,
+          "meanAbsoluteRGBDifference": 7.8667,
+          "maxChannelDifference": 9
+        },
+        {
+          "alpha": 0.25,
+          "meanAbsoluteRGBDifference": 2.8667,
+          "maxChannelDifference": 4
+        },
+        {
+          "alpha": 0,
+          "meanAbsoluteRGBDifference": 0,
+          "maxChannelDifference": 0
+        }
+      ],
+      "overallMeanAbsoluteRGBDifference": 3.5222,
+      "status": "Single-layer painting confirmed; RGB transfer close for alpha 1 and 0.94; native intermediate alpha formula not recovered"
+    }
   }
 }
