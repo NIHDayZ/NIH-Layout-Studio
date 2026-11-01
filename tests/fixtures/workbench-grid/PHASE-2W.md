@@ -109,3 +109,60 @@ The evaluator reports mean absolute RGB errors for frozen PCHIP, frozen linear i
 ## Scope
 
 Phase 2W adds only an isolated `.layout` fixture, pre-capture prediction snapshot, read-only analysis script, tests, staging and documentation. No changes to Canvas, geometry, production color parsing, native assets, or prior research fixtures.
+
+
+## Phase 2W completed — genuine unseen-alpha validation (2026-11-01)
+
+The user confirmed **365/365** regression tests passed, TypeScript typecheck passed, Vite production build passed (89 modules, 1.01 s), and the prediction-only analysis returned the expected \`PREDICTION_ONLY_AWAITING_NATIVE_CAPTURE\` status prior to taking native measurements.
+
+**Actual captures:** \`image(20261101-080956).png\` from Workbench (1919×1037 screenshot pixels), \`image(20261101-080950).png\` from Studio (1919×1030). Both display \`NIH_Panel_Heldout_Alpha_Matrix.layout\` with authored 1920×1080 viewport and 46% preview zoom.
+
+All 90 native Workbench and 90 Studio RGB triplets were measured from uniform interior 7×7 patches. All actual readings, screen coordinates, and independently captured parent RGB controls are saved in \`panel-color-phase2w-native-observations.json\`. The native screenshot was captured **after** the predictions were frozen in commit \`70659eb137f347ce2381c7d4dd97c732e213e205\`. The original preregistration JSON and model coefficients were **not modified** after capturing the measurements.
+
+### Independent measured results
+
+The three opaque background controls exactly match the frozen predictions: Dark \`(90,90,90)\`, Light \`(231,231,231)\`, Chromatic \`(79,162,234)\`. All 15 RGB channels for each fully opaque source row and each fully transparent source row also match their original controls.
+
+| Model | MAE across all 270 native RGB channels | MAE on 180 genuinely unseen-alpha RGB channels |
+|---|---:|---:|
+| **Pre-frozen PCHIP weighted-linear/sRGB candidate** | **0.7926** | **1.1889** |
+| Pre-frozen piecewise linear weighted-linear/sRGB | 1.0704 | 1.6056 |
+| Ordinary quantized-sRGB source-over | 5.4444 | 8.1667 |
+| Real experimental Studio screenshot | 5.4074 | 8.1111 |
+
+Breakdown by parent background, 90 channels per background including control rows:
+
+| Background | PCHIP | Piecewise linear | CSS source-over |
+|---|---:|---:|---:|
+| Dark | 1.0444 | 1.1111 | 2.3333 |
+| Light | 0.4667 | 1.0000 | 8.0556 |
+| Chromatic | 0.8667 | 1.1000 | 5.9444 |
+
+**Decision:** The preregistered smooth PCHIP curve predicts **previously unseen alpha levels across three background colors**, without refitting, approximately **6.87 times better than CSS source-over** on the intermediate-only data. The cubic curve also improves on simple linear interpolation, although both are much better than CSS on this fixture.
+
+**Remaining error is real:** Maximum PCHIP channel error is **7 RGB levels**, at Chromatic backdrop / 37.5% authored alpha / Blue swatch / red channel (native 105 versus prediction 98). This residual persists despite exact backdrop and opaque foreground controls; the interpolation is not a perfect native shader equation.
+
+### Reproducible real comparison
+
+After fetching the commit containing the native observations, run:
+
+\`\`\`powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+npm run test:geometry-engine
+
+node scripts\Analyze-NativePanelUnseenAlpha.mjs "tests\fixtures\workbench-grid\panel-color-phase2w-native-observations.json"
+\`\`\`
+
+The analysis must report \`HELD_OUT_ALPHA_COMPARISON\` and total / intermediate MAEs of \`0.7926 / 1.1889\` (PCHIP), \`1.0704 / 1.6056\` (linear), and \`5.4444 / 8.1667\` (CSS). The real-observation regression cases extend the anticipated suite total from 365 to **369**, pending local validation. There is no need to rerun the earlier native client flag probes.
+
+### Interpretation and next research decision
+
+This constitutes **strong independent predictive evidence** for a continuously varying pair of color weights followed by sRGB output transfer for the sampled opaque-white \`rover_sim_colorable\` PanelWidgets. It does **not** verify a unique GPU blend equation, texel sampling across styles, or all possible opacity values.
+
+The conservative next step is to separate two goals:
+
+1. **Preview parity:** Consider adding an explicitly opt-in, style-scoped PCHIP compositor experiment that can be compared visually and quantitatively against the native fixture. To render nested/translucent panels accurately, the experiment will need access to the true underlying linearized backdrop rather than blindly applying a CSS \`background-color\` fill. Do not alter production renderer or simply apply a screenshot-fitted alpha curve.
+2. **Native mechanism:** In parallel, investigate actual widget blend state/shader source to identify why the source/destination weights sum to less than one at intermediate alpha. Only this can validate broader applicability to other styles and textured widgets.
+
+Keep GridSpacer geometry, implicit \`blank\` PanelWidget rule, and the existing quantized-sRGB preview intact. No general panel-color change is warranted from this fixture alone.
