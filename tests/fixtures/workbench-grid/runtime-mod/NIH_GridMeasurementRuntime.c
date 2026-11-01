@@ -126,6 +126,18 @@ class NIHGridMeasurementProbe {
 			return;
 
 		Print("[NIH_LayoutStudio][ColorFlagProbe] BEGIN " + phase);
+		// Log the *actual* script enum values, not assumptions about bit indices.
+		// All four checks were false for native flags=536870975 (0x2000003F).
+		int sourceAlphaMask = WidgetFlags.SOURCEALPHA;
+		int blendMask = WidgetFlags.BLEND;
+		int additiveMask = WidgetFlags.ADDITIVE;
+		int noFilterMask = WidgetFlags.NOFILTER;
+		string masks = "[NIH_LayoutStudio][ColorFlagProbe] MASKS";
+		masks += " sourceAlpha=" + sourceAlphaMask.ToString();
+		masks += " blend=" + blendMask.ToString();
+		masks += " additive=" + additiveMask.ToString();
+		masks += " noFilter=" + noFilterMask.ToString();
+		Print(masks);
 		CaptureColorWidget(m_ColorRoot, "QBackdropDark", phase);
 		CaptureColorWidget(m_ColorRoot, "QDarkBlueAlpha100", phase);
 		CaptureColorWidget(m_ColorRoot, "QDarkOrangeAlpha050", phase);
