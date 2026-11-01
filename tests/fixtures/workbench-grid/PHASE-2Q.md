@@ -55,6 +55,38 @@ console.log(el && getComputedStyle(el).backgroundColor);
 
 Native Workbench lacks an equivalent CSS getter; screenshot sampling must be treated as visual evidence, not a native shader measurement. If alpha varies unexpectedly, establish its formula from the six controlled opacity rows before considering a production-level correction.
 
+
+## Phase 2Q screenshot calibration — 2026-11-01
+
+The user submitted three screenshots with the experimental flag in the Studio browser address: the Phase 2P complex color grid, the 30-panel Studio alpha matrix, and the **same** alpha matrix in native Workbench. Both canvases sampled at `rgb(130,130,130)`. Full 6x5 screenshot color matrices and the 7x7 median sampling coordinates are in `panel-color-phase2q-screenshot-evidence.json`.
+
+| Opacity | Studio opaque/direct behavior | Workbench vs. simple gamma-encoded CSS alpha-over-gray, RGB-channel MAE |
+|---|---|---:|
+| 100% | Direct authored 8-bit RGB, **not** gamma-converted | 1.31 |
+| 94% | Still near direct authored RGB | 1.23 |
+| 75% | Not reliable evidence of gamma conversion | 7.25 |
+| 50% | Not reliable evidence of gamma conversion | 7.61 |
+| 25% | Drifts toward gray as expected | 3.24 |
+| 0% | Exactly gray in both programs | 0 |
+
+**Critical diagnostic:** For the opaque blue panel `QBlueAlpha100`, the screenshot shows Studio `rgb(64,148,184)` while Workbench shows `rgb(137,200,221)`. A live `PreviewNativeColorablePanelColor("0.25 0.58 0.72 1")` invocation would produce `rgba(136,199,220,1)`. Thus the screenshot **does not show the experimental conversion being applied** even though the URL includes `experimentalNativeColorablePanel=1`. It is not evidence of an incorrect gamma algorithm. The most likely checks are whether the research commit was pulled locally, the Vite server was restarted, and the widget's live DOM `background-color` is the computed gamma candidate.
+
+Use this **read-only browser check** in the experimental Studio tab after pulling the latest branch and restarting Vite:
+
+```js
+const swatch = [...document.querySelectorAll('[data-layout-node-name]')]
+	.find(el => el.dataset.layoutNodeName === 'QBlueAlpha100');
+console.log({
+	url: location.search,
+	found: !!swatch,
+	computed: swatch ? getComputedStyle(swatch).backgroundColor : null
+});
+```
+
+Expected for an active candidate, opaque blue: approximately `rgb(136, 199, 220)`. For the legacy direct path: `rgb(64, 148, 184)`. CSS browser output may include whitespace normalization.
+
+The alpha rows further show that **an independently verified native alpha compositing formula is still missing**. Power-2.2 RGB encoding followed by ordinary CSS source-over matches opaque and 94%-opacity rows closely, but disagrees by around 7–8 channel levels in 50–75%-opacity rows. This means **do not promote** the RGB-only candidate globally and do not invent per-alpha corrections until the active Studio flag and additional shader/material evidence are confirmed.
+
 ## Acceptance and safeguards
 
 - Do not change `ParseColor`, text, buttons, controls or other widget rendering on this hypothesis.
