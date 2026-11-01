@@ -69,23 +69,37 @@ The user submitted three screenshots with the experimental flag in the Studio br
 | 25% | Drifts toward gray as expected | 3.24 |
 | 0% | Exactly gray in both programs | 0 |
 
-**Critical diagnostic:** For the opaque blue panel `QBlueAlpha100`, the screenshot shows Studio `rgb(64,148,184)` while Workbench shows `rgb(137,200,221)`. A live `PreviewNativeColorablePanelColor("0.25 0.58 0.72 1")` invocation would produce `rgba(136,199,220,1)`. Thus the screenshot **does not show the experimental conversion being applied** even though the URL includes `experimentalNativeColorablePanel=1`. It is not evidence of an incorrect gamma algorithm. The most likely checks are whether the research commit was pulled locally, the Vite server was restarted, and the widget's live DOM `background-color` is the computed gamma candidate.
+**Corrected rendering-pipeline diagnosis (2026-11-01):** Chrome DevTools confirmed that the *actual panel DOM background* for `QBlueAlpha100` was `rgb(136,199,220)` with the gamma experiment enabled. However, the visible screenshot still showed the direct RGB `(64,148,184)`. The gamma flag was **active**. Our earlier hypothesis that the Vite build/flag was stale was incorrect.
 
-Use this **read-only browser check** in the experimental Studio tab after pulling the latest branch and restarting Vite:
+Source inspection located the issue: `Canvas.tsx` paints the CSS `GetPanelBackground` (gamma-encoded when experimental) **under** a `RenderStyleChrome` imageset. The chrome's `ModulatedImageSprite` uses original authored RGB, not gamma-encoded values. Both paint paths use the authored alpha, so the top imageset can completely obscure the CSS background at alpha=1 and compounds alpha at lower opacities.
+
+The previous Studio screenshot is explained, for each RGB channel, by this two-layer composition:
+
+```
+gammaByte = round(255 * authoredChannel ^ (1 / 2.2))
+directByte = round(255 * authoredChannel)
+under = alpha * gammaByte + (1 - alpha) * backdropByte
+visible = alpha * directByte + (1 - alpha) * under
+```
+
+That model matches **all 30 observed swatches**, 90 channel samples, at approximately **0.27 RGB levels mean absolute difference**. This independently supports the double-paint explanation far more strongly than guessing that the gamma feature had not loaded.
+
+**Experimental single-layer correction:** While `experimentalNativeColorablePanel=1` is set **and only for leaf or container `PanelWidgetClass` widgets whose style is exactly `rover_sim_colorable`**, `RenderNode` now suppresses `RenderStyleChrome` for that panel. Its single CSS background remains gamma-encoded; all other styles, panels, widgets and default (flag-off) rendering continue unchanged. This isolates the gamma and native alpha hypothesis without altering texture, fonts or geometry. Because it bypasses imageset paint, it is **research-only** and not a general solution for styled textured panels.
+
+After pulling and restarting Vite, the opaque blue swatch should **visibly** approach Workbench's `rgb(137,200,221)`, versus Studio CSS `rgb(136,199,220)`. A computed-style check alone is insufficient; compare a screenshot or DevTools' pixel paint overlay after this correction.
 
 ```js
 const swatch = [...document.querySelectorAll('[data-layout-node-name]')]
 	.find(el => el.dataset.layoutNodeName === 'QBlueAlpha100');
 console.log({
-	url: location.search,
-	found: !!swatch,
-	computed: swatch ? getComputedStyle(swatch).backgroundColor : null
+	computed: swatch ? getComputedStyle(swatch).backgroundColor : null,
+	styleChromeChildren: swatch ? swatch.querySelectorAll('.widget-style-chrome').length : null
 });
 ```
 
-Expected for an active candidate, opaque blue: approximately `rgb(136, 199, 220)`. For the legacy direct path: `rgb(64, 148, 184)`. CSS browser output may include whitespace normalization.
+With the flag active and after the correction, expect `computed: rgb(136, 199, 220)` and `styleChromeChildren: 0`. With the flag off, the prior imageset chrome behavior remains enabled where resources resolve.
 
-The alpha rows further show that **an independently verified native alpha compositing formula is still missing**. Power-2.2 RGB encoding followed by ordinary CSS source-over matches opaque and 94%-opacity rows closely, but disagrees by around 7–8 channel levels in 50–75%-opacity rows. This means **do not promote** the RGB-only candidate globally and do not invent per-alpha corrections until the active Studio flag and additional shader/material evidence are confirmed.
+**Native alpha remains independently unresolved.** At 50–75% opacity, a *single* gamma CSS fill is still predicted to disagree with Workbench by about 7–8 RGB levels per channel. We must recapture the corrected Studio alpha matrix before deciding whether a different native blending transfer, image modulation or alpha convention is required.
 
 ## Acceptance and safeguards
 
