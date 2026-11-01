@@ -10,6 +10,7 @@
     "verify:workbench-scroll": "node scripts/verify-workbench-scroll.mjs",
     "compare:workbench-scroll": "node scripts/compare-workbench-scroll.mjs",
     "typecheck": "tsc -b --pretty false",
+    "inspect:rover-whitepixel": "npm run build:bc7-tests && node scripts/Inspect-NativeRoverPixel.mjs",
     "test:bc7": "npm run build:bc7-tests && node --test tests/bc7.test.mjs",
     "test:bc7:reference": "npm run build:bc7-tests && cc -O2 -std=c99 tests/reference/bc7_reference.c -o .bc7-test-build/bc7-reference && node --test tests/bc7.reference.test.mjs",
     "test:widget-census": "node --test tests/workbench-widget-census.test.mjs",
