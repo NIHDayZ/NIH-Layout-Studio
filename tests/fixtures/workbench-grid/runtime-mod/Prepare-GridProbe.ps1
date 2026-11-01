@@ -17,7 +17,8 @@ $sourceFiles = @(
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_Complex_Visual.layout'); Relative = 'gui\layouts\NIH_Grid_Complex_Visual.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Panel_Color_Alpha_Calibration.layout'); Relative = 'gui\layouts\NIH_Panel_Color_Alpha_Calibration.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Panel_Background_Calibration.layout'); Relative = 'gui\layouts\NIH_Panel_Background_Calibration.layout' },
-	@{ Source = (Join-Path $fixtureRoot 'NIH_Panel_Style_Comparison.layout'); Relative = 'gui\layouts\NIH_Panel_Style_Comparison.layout' }
+	@{ Source = (Join-Path $fixtureRoot 'NIH_Panel_Style_Comparison.layout'); Relative = 'gui\layouts\NIH_Panel_Style_Comparison.layout' },
+	@{ Source = (Join-Path $fixtureRoot 'NIH_Panel_Heldout_Chromatic.layout'); Relative = 'gui\layouts\NIH_Panel_Heldout_Chromatic.layout' }
 )
 foreach ($entry in $sourceFiles) {
 	if (-not (Test-Path -LiteralPath $entry.Source -PathType Leaf)) {
