@@ -15,7 +15,7 @@ Each of the three backgrounds (Dark, Light, Chromatic) contains these four rows 
 
 ## Frozen predictions and model
 
-The preregistered file is `tests/fixtures/workbench-grid/panel-color-phase2w-frozen-predictions.json`. It was committed **before native Phase 2W screenshots**.
+The preregistered file is `tests/fixtures/workbench-grid/panel-color-phase2w-frozen-predictions.json`. Its **pre-capture immutable GitHub commit is `70659eb137f347ce2381c7d4dd97c732e213e205`**. It was committed **before native Phase 2W screenshots** and must never be retroactively edited to improve the blind comparison.
 
 The only fitted weights originate in the preexisting Phase 2V frozen file, originally derived from Phase 2R Dark and Light observations. The Phase 2V Chromatic native samples were **not used for fitting**. Alpha knot positions are quantized with `round(alpha * 255) / 255`, in agreement with native GetAlpha observations.
 
@@ -41,6 +41,7 @@ The predicted linear RGB channel is `weightSource * quantizedSource + weightBack
 - Opaque native RGB control predictions: `(90,90,90)`, `(231,231,231)`, `(79,162,234)` respectively.
 - Each parent has 30 `PanelWidgetClass` leaves, with the same five RGB colors used in Phase 2R, at alpha rows `1,0.875,0.625,0.375,0.125,0`.
 - Each leaf has exact position `(18 + column*110, 26 + row*99)` and size 96 × 70; every child uses `style rover_sim_colorable`.
+- Widget name suffixes use rounded percentage codes (e.g., `Alpha088` means exact authored 0.875, not 0.88); rely on the layout's `color` property for measured alpha.
 - No widget IDs, spacers, fonts, geometry experiments or production changes.
 
 ## Local validation / prediction-only analysis
