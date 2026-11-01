@@ -106,6 +106,33 @@ npm run analyze:native-panel-color
 
 Expected new regression total: **351 tests**, pending local confirmation. The analysis command prints a JSON report with transfer exactness, per-model MAE, the convex-hull counterexample, and descriptive leave-one-color-out diagnostics. No native PBO rebuild or additional screenshot is needed to audit the mathematical results.
 
+## Phase 2U screenshot and local validation — confirmed (2026-11-01)
+
+The user confirmed **351/351 geometry/research regressions passing**, TypeScript typecheck PASS, Vite build PASS (89 modules; 1.25 seconds), and the analysis command completed with no errors. They also supplied a real 1919×1026 browser screenshot using both `experimentalNativeColorablePanel=1` and `experimentalNativeColorableSRGB=1`, with `NIH_Panel_Style_Comparison.layout` at 46% zoom.
+
+The screenshot's central-pixel measurements (7×7 medians) are frozen independently in `panel-color-phase2u-quantized-srgb-screenshot-evidence.json`, and two new regression tests compare them with Phase 2R Workbench observations.
+
+| Authored alpha | Actual Studio vs Workbench dark-background RGB MAE | Light-background RGB MAE |
+|---|---:|---:|
+| 1.00 | **0.00** | **0.00** |
+| 0.94 | 1.07 | 3.33 |
+| 0.75 | 3.67 | 11.87 |
+| 0.50 | 1.20 | 17.60 |
+| 0.25 | 7.13 | 14.33 |
+| 0.00 | **0.00** | **0.00** |
+
+**Result:** all 15 fully opaque colored swatch channels exactly equal native Workbench values, **over both backgrounds**, and both sampled parent backgrounds exactly match native output: dark `(90,90,90)`, light `(231,231,231)`. The transparent row shows precisely those parents. The intermediate-alpha error remains concentrated on the light backdrop.
+
+The previously confirmed implicit-blank behavior persists: plain (no authored style) panels do not paint, leaving the upper groups uncolored. The quantized-sRGB flag affects only the styled panel experimental path.
+
+The screenshot cannot prove the GPU shader or unseen widget styles. The resulting evidence tests extend the expected geometry-suite count from **351 to 353** after this documentation-only Phase 2U evidence update. No default renderer changes were made.
+
+### Next falsifiable question
+
+The held-out-color linear-weight diagnostic has MAE 1.0281, but its two coefficients were fitted using both available background colors at each opacity. It is **not a native compositor implementation**.
+
+The most informative next independent measurement would be the **same five colors and alpha rows on a third, chromatic opaque background**, explicitly excluded from fitting, so the model is tested against a genuinely unseen backdrop. The third backdrop's native sRGB-encoded RGB should be measured and its authored color independently verified before evaluating predictions. This helps distinguish one set of backdrop-independent source/destination weights from a screenshot-specific fit. Do not fit new parameters or change default rendering based solely on those results.
+
 ### Decision
 
 **Accept as evidence:** quantized-sRGB matches sampled opaque panels exactly, and authored gamma is not the full native alpha operation.
