@@ -116,3 +116,52 @@ This reports per-alpha and overall **out-of-sample** error for both the frozen c
 This research phase adds only a new test fixture, stage-list entry, frozen measurement predictions, read-only analysis code, tests and documentation. It does **not** alter Canvas, native gameplay mods, the original phases' fixtures, the color parser, production rendering, or geometry.
 
 Reference: \`tests/fixtures/workbench-grid/PHASE-2U.md\` and \`scripts/Analyze-NativePanelCompositing.mjs\`.
+
+
+## Phase 2V completed — real unseen background (2026-11-01)
+
+**Local validation:** 357/357 existing regressions passed, TypeScript typecheck and Vite production build passed (89 modules; 1.03s). The blind prediction command returned the expected \`PREDICTION_ONLY_AWAITING_NATIVE_CAPTURE\` status before the screenshots were reviewed.
+
+**Native and browser captures received:** \`image(20261101-074820).png\` (Workbench) and \`image(20261101-074827).png\` (Studio), 1919×1031 captured screenshot pixels, authored root 1920×1080, 46% preview zoom. Interior centers were measured using 7×7 median RGB patches. Native observed pixels are stored in \`panel-color-phase2v-workbench-observations.json\` along with the matched Studio pixels and exact screenshot sample coordinates.
+
+**Crucial protocol:** The independent predictions were frozen in commit \`51f663f2091af0f4ab219e3aacbd62ac1eea1f6e\` **before** the chromatic Workbench screenshot was received. The original \`panel-color-phase2v-frozen-predictions.json\` was NOT edited or re-fitted after seeing the screenshot. All 30 observed native RGB triplets are in a separate file. New tests run the optional evaluator on the actual observation file and check its output.
+
+### Results: 90 native RGB channels on the third background
+
+- Parent backdrop: Workbench and Studio both \`(79,162,234)\`, identical to the pre-frozen quantized-sRGB prediction.
+- Fully opaque source panels: all five native colors match both the frozen candidate and Studio exactly, 15/15 channel values.
+- Fully transparent source panels: all five match the measured parent backdrop, 15/15 channel values.
+- The full sample includes 30 panels × 3 channels = 90 RGB channels; 60 intermediate-alpha channels are independent of the exact endpoint controls.
+
+| Alpha | Frozen model mean absolute error | Ordinary quantized-sRGB source-over mean absolute error | Actual Studio vs Workbench mean absolute error |
+|---|---:|---:|---:|
+| 1.00 | 0.0000 | 0.0000 | 0.0000 |
+| 0.94 | **0.1333** | 2.4667 | 2.8000 |
+| 0.75 | **1.0667** | 8.1333 | 8.5333 |
+| 0.50 | **1.7333** | 12.1333 | 12.4667 |
+| 0.25 | **1.3333** | 11.6000 | 11.2667 |
+| 0.00 | 0.0000 | 0.0000 | 0.0000 |
+| **90-channel overall** | **0.7111** | **5.7222** | **5.8444** |
+| **60-channel intermediate-alpha only** | **1.0667** | **8.5833** | **8.7667** |
+
+The frozen model therefore improves held-out mean absolute byte error by roughly **8×** versus normal sRGB source-over without any adjustment or fitting using the third background. This is important evidence of **predictive validity over an unseen chromatic background**.
+
+**Still not an exact shader equation:** Worst frozen-model residual is 7 channel levels (red channel of blue sample at 50% opacity). Mean absolute error by channel over 30 samples is red 1.3333, green 0.3333, blue 0.4667. A slightly systematic residual survives even on the holdout. The model's intermediate coefficients are per sampled alpha, are not constrained to sum to one, and have not been demonstrated at unseen alpha values, textured/other widget styles, or different color-management environments.
+
+**Decision:** The general idea of separable color-space and weighted linear-light compositing is strongly supported by independent data. Do not yet promote the *empirical* alpha weights to production. Continue by testing a **functional alpha equation** against unseen alpha values, or locate native shader/pipeline evidence; avoid collecting more examples at the same five known alphas unless a new variable is being tested.
+
+### Reproduce actual native comparison
+
+After pulling the branch containing the real measured observation file:
+
+\`\`\`powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+npm run test:geometry-engine
+
+node scripts\Analyze-NativePanelHeldoutBackdrop.mjs "tests\fixtures\workbench-grid\panel-color-phase2v-workbench-observations.json"
+\`\`\`
+
+The second command is a **real measured** holdout comparison (\`HELD_OUT_NATIVE_COMPARISON\`), unlike the previous predictions-only invocation. It reports the frozen-model and ordinary CSS baseline MAEs without refitting.
+
+New regression tests added for the native screenshot comparison extend the anticipated total to **360**; local execution of those new tests remains pending.
