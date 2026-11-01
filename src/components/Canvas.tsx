@@ -787,6 +787,13 @@ function RenderNode({ node, parent, forcedRect, geometryById, selected, selected
 	const disabled = GetFlag(node, "disabled");
 	const visualState = resolvedWidgetStyle ? SelectVisualState(resolvedWidgetStyle.definition, disabled, pressed, hovered, isSelected) : "normal";
 	const style = BuildWidgetStyle(node, rect, isSelected, debug);
+	// Phase 2Q: the CSS colorable fill and the native-style imageset are
+	// alternative paint paths. Painting both compounds alpha and allows the
+	// authored-RGB style sprite to cover the gamma-encoded CSS result.
+	// Keep this single-fill treatment experimental; other styles retain
+	// their existing imageset chrome.
+	const useExperimentalColorableFill = experimentalNativeColorablePanel && kind.isPanel
+		&& (GetNodeProperty(node, "style") ?? "").trim().toLowerCase() === "rover_sim_colorable";
 	if (!isSelected && isMultiSelected)
 		style.outline = "1px dashed #5aa7d7";
 	if (kind.isScroll)
@@ -864,7 +871,7 @@ function RenderNode({ node, parent, forcedRect, geometryById, selected, selected
 			onPointerLeave={() => { setHovered(false); setPressed(false); }}
 			onContextMenu={(event) => { event.preventDefault(); event.stopPropagation(); onSelect(node, false); onContextMenu(node, event.clientX, event.clientY); }}
 		>
-			{RenderStyleChrome(node, rect, visualState, project, dependencyProjects, vanillaProject)}
+			{!useExperimentalColorableFill && RenderStyleChrome(node, rect, visualState, project, dependencyProjects, vanillaProject)}
 			{RenderWidgetContent(node, rect, visualState, debug, project, dependencyProjects, vanillaProject)}
 			{debug.showNames && isSelected && <span className="widget-name-badge">{node.name}</span>}
 			{debug.showAnchors && isSelected && <AnchorOverlay node={node} />}
