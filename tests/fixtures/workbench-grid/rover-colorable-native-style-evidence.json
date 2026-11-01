@@ -52,6 +52,128 @@
     1
   ],
   "imageFlags": 0,
-  "texturePixelRGBA": null,
-  "interpretation": "The declaration identifies a single 1x1 atlas region reused across nine slice names. RGBA texel content and native shader/blend remain unverified pending DecodeEddsToPixels inspection."
+  "texturePixelRGBA": [
+    255,
+    255,
+    255,
+    255
+  ],
+  "interpretation": "WhitePixel center is opaque white. Neighboring texels include alpha-zero white; edge sampling/filtering effects remain possible. Neither authored material nor shader blending is yet fully known.",
+  "decodedTexture": {
+    "path": "P:\\gui\\imagesets\\rover_imageset.edds",
+    "compressedSizeBytes": 169120,
+    "width": 256,
+    "height": 512,
+    "decoder": "NIH Layout Studio DecodeEddsToPixels",
+    "whitePixel": {
+      "x": 1,
+      "y": 101,
+      "rgba": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    "neighborhood": [
+      [
+        {
+          "x": 0,
+          "y": 100,
+          "rgba": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        {
+          "x": 1,
+          "y": 100,
+          "rgba": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        {
+          "x": 2,
+          "y": 100,
+          "rgba": [
+            255,
+            255,
+            255,
+            0
+          ]
+        }
+      ],
+      [
+        {
+          "x": 0,
+          "y": 101,
+          "rgba": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        {
+          "x": 1,
+          "y": 101,
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "x": 2,
+          "y": 101,
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      ],
+      [
+        {
+          "x": 0,
+          "y": 102,
+          "rgba": [
+            255,
+            255,
+            255,
+            0
+          ]
+        },
+        {
+          "x": 1,
+          "y": 102,
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "x": 2,
+          "y": 102,
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        }
+      ]
+    ],
+    "observationDate": "2026-11-01",
+    "notes": "Decoded native texel RGBA, not native GPU shader observation."
+  }
 }
