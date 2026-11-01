@@ -1,0 +1,204 @@
+{
+  "study": "Phase 2T: no explicit PanelWidget style vs rover_sim_colorable under same parent",
+  "sources": {
+    "workbenchScreenshot": "image(20261101-064920).png",
+    "studioScreenshot": "image(20261101-064757).png",
+    "clientLog": "NIH-PanelStyleProbe-Phase2T.txt"
+  },
+  "viewport": {
+    "authoredRoot": [
+      1920,
+      1080
+    ],
+    "workbenchZoomPercent": 46,
+    "studioZoomPercent": 46
+  },
+  "nativeClient": {
+    "recordCount": 36,
+    "phases": [
+      "after-create",
+      "post-update"
+    ],
+    "recordsPerPhase": 18,
+    "plainWidgetsPerPhase": 8,
+    "styledWidgetsPerPhase": 8,
+    "parentWidgetsPerPhase": 2,
+    "allPhasesEqual": true,
+    "allNativeVisible": true,
+    "flagsForAll": 536870975,
+    "plainStyle": "blank",
+    "styledStyle": "rover_sim_colorable",
+    "observation": "No authored style is resolved by native GetStyleName() as blank; both categories retain authored packed ARGB, quantized alpha and identical flags."
+  },
+  "samples": [
+    {
+      "name": "QTDarkPlainBlueAlpha100",
+      "workbench": {
+        "center": [
+          540,
+          200
+        ],
+        "rgb": [
+          90,
+          90,
+          90
+        ]
+      },
+      "studio": {
+        "center": [
+          368,
+          266
+        ],
+        "rgb": [
+          64,
+          148,
+          184
+        ]
+      },
+      "backdrop": "dark",
+      "style": "absent",
+      "authoredAlpha": 1
+    },
+    {
+      "name": "QTLightPlainBlueAlpha100",
+      "workbench": {
+        "center": [
+          956,
+          200
+        ],
+        "rgb": [
+          231,
+          231,
+          231
+        ]
+      },
+      "studio": {
+        "center": [
+          770,
+          266
+        ],
+        "rgb": [
+          64,
+          148,
+          184
+        ]
+      },
+      "backdrop": "light",
+      "style": "absent",
+      "authoredAlpha": 1
+    },
+    {
+      "name": "QTDarkPlainBlueAlpha050",
+      "workbench": {
+        "center": [
+          540,
+          268
+        ],
+        "rgb": [
+          90,
+          90,
+          90
+        ]
+      },
+      "studio": {
+        "center": [
+          368,
+          350
+        ],
+        "rgb": [
+          77,
+          119,
+          137
+        ]
+      },
+      "backdrop": "dark",
+      "style": "absent",
+      "authoredAlpha": 0.5
+    },
+    {
+      "name": "QTLightPlainBlueAlpha050",
+      "workbench": {
+        "center": [
+          956,
+          268
+        ],
+        "rgb": [
+          231,
+          231,
+          231
+        ]
+      },
+      "studio": {
+        "center": [
+          770,
+          350
+        ],
+        "rgb": [
+          147,
+          189,
+          207
+        ]
+      },
+      "backdrop": "light",
+      "style": "absent",
+      "authoredAlpha": 0.5
+    },
+    {
+      "name": "QTDarkStyledBlueAlpha100",
+      "workbench": {
+        "center": [
+          540,
+          390
+        ],
+        "rgb": [
+          137,
+          200,
+          221
+        ]
+      },
+      "studio": {
+        "center": [
+          368,
+          462
+        ],
+        "rgb": [
+          136,
+          199,
+          220
+        ]
+      },
+      "backdrop": "dark",
+      "style": "rover_sim_colorable",
+      "authoredAlpha": 1
+    },
+    {
+      "name": "QTLightStyledBlueAlpha100",
+      "workbench": {
+        "center": [
+          956,
+          390
+        ],
+        "rgb": [
+          137,
+          200,
+          221
+        ]
+      },
+      "studio": {
+        "center": [
+          770,
+          462
+        ],
+        "rgb": [
+          136,
+          199,
+          220
+        ]
+      },
+      "backdrop": "light",
+      "style": "rover_sim_colorable",
+      "authoredAlpha": 1
+    }
+  ],
+  "conclusion": "Workbench leaves authored-color PanelWidgets with implicit blank style visually unpainted, while Studio (before correction) synthesized their authored-color CSS fill. Styled opaque blue matches experimental gamma preview to within one channel level. Native style selection is independently confirmed by client runtime GetStyleName(), with all 18 widgets visible and flags equal."
+}
