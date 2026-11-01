@@ -8,6 +8,7 @@ class NIHGridMeasurementProbe {
 	protected Widget m_RelativeRoot;
 	protected Widget m_ComplexRoot;
 	protected Widget m_ColorRoot;
+	protected Widget m_PanelStyleRoot;
 
 	void Start() {
 		if (g_Game.IsDedicatedServer())
@@ -119,6 +120,7 @@ class NIHGridMeasurementProbe {
 		CaptureColorFlags("after-create");
 		m_ColorRoot.Update();
 		CaptureColorFlags("post-update");
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(StartPanelStyleProbe, 900, false);
 	}
 
 	protected void CaptureColorFlags(string phase) {
@@ -172,6 +174,68 @@ class NIHGridMeasurementProbe {
 		entry += " blend=" + hasBlend.ToString();
 		entry += " additive=" + hasAdditive.ToString();
 		entry += " noFilter=" + hasNoFilter.ToString();
+		entry += " visible=" + widget.IsVisible().ToString();
+		Print(entry);
+	}
+
+	/**
+	 * Phase 2T: compare identical PanelWidgets with no authored style against
+	 * rover_sim_colorable. A no-style panel might not paint at all: keep the
+	 * actual GetStyleName(), widget color, alpha and flags as native evidence.
+	 * This is client-only, read-only and independent of prior geometry roots.
+	 */
+	protected void StartPanelStyleProbe() {
+		m_PanelStyleRoot = g_Game.GetWorkspace().CreateWidgets("NIH_GridMeasurementProbe/gui/layouts/NIH_Panel_Style_Comparison.layout");
+		if (!m_PanelStyleRoot) {
+			Print("[NIH_LayoutStudio][PanelStyleProbe] ERROR comparison layout unavailable");
+			return;
+		}
+
+		CapturePanelStyles("after-create");
+		m_PanelStyleRoot.Update();
+		CapturePanelStyles("post-update");
+	}
+
+	protected void CapturePanelStyles(string phase) {
+		if (!m_PanelStyleRoot)
+			return;
+
+		Print("[NIH_LayoutStudio][PanelStyleProbe] BEGIN " + phase);
+		CapturePanelStyleWidget("QTBackdropDark", phase);
+		CapturePanelStyleWidget("QTBackdropLight", phase);
+		CapturePanelStyleWidget("QTDarkPlainBlueAlpha100", phase);
+		CapturePanelStyleWidget("QTDarkStyledBlueAlpha100", phase);
+		CapturePanelStyleWidget("QTDarkPlainOrangeAlpha050", phase);
+		CapturePanelStyleWidget("QTDarkStyledOrangeAlpha050", phase);
+		CapturePanelStyleWidget("QTDarkPlainGreenAlpha025", phase);
+		CapturePanelStyleWidget("QTDarkStyledGreenAlpha025", phase);
+		CapturePanelStyleWidget("QTDarkPlainPinkAlpha000", phase);
+		CapturePanelStyleWidget("QTDarkStyledPinkAlpha000", phase);
+		CapturePanelStyleWidget("QTLightPlainBlueAlpha100", phase);
+		CapturePanelStyleWidget("QTLightStyledBlueAlpha100", phase);
+		CapturePanelStyleWidget("QTLightPlainOrangeAlpha050", phase);
+		CapturePanelStyleWidget("QTLightStyledOrangeAlpha050", phase);
+		CapturePanelStyleWidget("QTLightPlainGreenAlpha025", phase);
+		CapturePanelStyleWidget("QTLightStyledGreenAlpha025", phase);
+		CapturePanelStyleWidget("QTLightPlainPinkAlpha000", phase);
+		CapturePanelStyleWidget("QTLightStyledPinkAlpha000", phase);
+		Print("[NIH_LayoutStudio][PanelStyleProbe] END " + phase);
+	}
+
+	protected void CapturePanelStyleWidget(string widgetName, string phase) {
+		Widget widget = m_PanelStyleRoot.FindAnyWidget(widgetName);
+		if (!widget) {
+			Print("[NIH_LayoutStudio][PanelStyleProbe] ERROR missing widget " + widgetName);
+			return;
+		}
+
+		string entry = "[NIH_LayoutStudio][PanelStyleProbe] phase=" + phase;
+		entry += " name=" + widget.GetName();
+		entry += " type=" + widget.GetTypeName();
+		entry += " style=" + widget.GetStyleName();
+		entry += " colorARGB=" + widget.GetColor().ToString();
+		entry += " alpha=" + widget.GetAlpha().ToString();
+		entry += " flags=" + widget.GetFlags().ToString();
 		entry += " visible=" + widget.IsVisible().ToString();
 		Print(entry);
 	}
