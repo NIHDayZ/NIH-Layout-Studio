@@ -101,6 +101,46 @@ With the flag active and after the correction, expect `computed: rgb(136, 199, 2
 
 **Native alpha remains independently unresolved.** At 50–75% opacity, a *single* gamma CSS fill is still predicted to disagree with Workbench by about 7–8 RGB levels per channel. We must recapture the corrected Studio alpha matrix before deciding whether a different native blending transfer, image modulation or alpha convention is required.
 
+## Phase 2Q corrected screenshot — validated visible gamma fill
+
+The user supplied `image(20261101-052910).png` after the experimental single-layer correction. The actual visible Studio panel colors now follow the gamma-encoded RGB candidate. All 30 central colors were measured from 7x7 screenshot patches and stored as `alphaCalibration.correctedSingleLayer` in `panel-color-phase2q-screenshot-evidence.json`.
+
+| Authored alpha | Studio vs. Workbench screenshot RGB-channel MAE | Maximum absolute channel difference |
+|---|---:|---:|
+| 1.00 | 1.27 | 2 |
+| 0.94 | 1.60 | 3 |
+| 0.75 | 7.53 | 9 |
+| 0.50 | 7.87 | 9 |
+| 0.25 | 2.87 | 4 |
+| 0.00 | 0.00 | 0 |
+| **Overall** | **3.52** | **9** |
+
+Thus the duplicate style chrome explanation is supported and the experimental single-fill RGB transfer produces a close match for opaque panels. **Do not claim accurate native alpha mixing at 50–75%.** These samples use one neutral gray backdrop and do not separate source-opacity processing from backdrop-dependent color-space conversion.
+
+### Phase 2R — distinguish source alpha from backdrop color
+
+A separate native visual fixture `NIH_Panel_Background_Calibration.layout` adds two fully opaque `rover_sim_colorable` parent panels, with authored neutral tints `0.10` and `0.80` respectively. **Each background contains the same 30 children:** five colors and the six authored alpha levels. This is 62 panels total, 60 swatches. Children have exact pixel positions and sizes; no GridSpacer or WrapSpacer is involved.
+
+This fixture tests a new variable: whether the native versus CSS mixing error depends on the color underneath the same partially transparent panel. The parents themselves must be compared first to rule out different authored-gray rendering. Because native `rover_sim_colorable` parent backgrounds are also styled, this is still a **native shader/material observation**, not proof of a universal compositor formula.
+
+After pulling and validating the branch:
+
+```powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+npm run test:geometry-engine
+npm run typecheck
+npm run build
+.\tests\fixtures\workbench-grid\runtime-mod\Prepare-GridProbe.ps1 -Overwrite
+git status --short
+```
+
+Open the staged layout in **Workbench** from `P:\NIH_GridMeasurementProbe\gui\layouts\NIH_Panel_Background_Calibration.layout`. In **Studio**, load `Z:\GitHub\NIH-Layout-Studio\tests\fixtures\workbench-grid\NIH_Panel_Background_Calibration.layout` with `?experimentalNativeColorablePanel=1`. Keep 1920x1080 resolution, 46% zoom, no widget bounds, and the permanent gray canvas.
+
+Capture screenshots for both programs. Compare parent background colors separately, then child centers. The alpha=0 row should exactly show the corresponding parent color; alpha=1 should show the same fully opaque child color over both parent colors. Differences in between will constrain native blend behavior.
+
+**No PBO rebuild is necessary to open the staged layout in Workbench.** The new test `tests/native-colorable-background-calibration.test.mjs` checks layout structure and that the existing guarded GridSpacer model is not accidentally activated. The experiment will not change the normal renderer or promote the gamma candidate.
+
 ## Acceptance and safeguards
 
 - Do not change `ParseColor`, text, buttons, controls or other widget rendering on this hypothesis.
