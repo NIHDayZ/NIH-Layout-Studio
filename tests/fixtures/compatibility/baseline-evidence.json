@@ -90,7 +90,7 @@
       "native": [
         {
           "scope": "common measured geometry fixtures",
-          "path": "tests/fixtures/workbench-common/NIH_Common_Geometry_Parity.layout"
+          "path": "tests/fixtures/workbench-common/capture.runtime.2026-10-28.json"
         },
         {
           "scope": "property serialization syntax on specific fixtures",
@@ -126,7 +126,7 @@
       "native": [
         {
           "scope": "specific native rectangle observations and calculated grid cases",
-          "path": "tests/fixtures/workbench-grid/NIH_Grid_Measurement_Matrix.layout"
+          "path": "tests/fixtures/workbench-grid/grid-complex-phase2l-native.json"
         }
       ]
     },
@@ -150,6 +150,12 @@
         {
           "scope": "native viewport numeric comparison not completed",
           "path": "tests/fixtures/workbench-scroll/capture.template.json"
+        }
+      ],
+      "native": [
+        {
+          "scope": "native scroll runtime properties captured; viewport screenshot comparison remains pending",
+          "path": "tests/fixtures/workbench-scroll/capture.runtime.2026-10-28.json"
         }
       ]
     },
