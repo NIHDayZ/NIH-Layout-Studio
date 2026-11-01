@@ -87,7 +87,7 @@ test("Markdown baseline identifies native proof boundaries and cannot synthesize
 	assert.match(markdown, /GridSpacerWidgetClass/);
 	assert.match(markdown, /PanelWidgetClass/);
 	assert.match(markdown, /native-comparison-pending/);
-	assert.match(markdown, /No/);
+	assert.match(markdown, /Native gui\.pbo census provided: no/);
 	assert.ok(!markdown.includes("100% compatible"));
 	assert.equal(markdown.split("\n").filter(line => line.startsWith("| ") && line.includes("WidgetClass")).length, 49);
 });
