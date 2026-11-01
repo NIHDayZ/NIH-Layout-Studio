@@ -123,3 +123,65 @@ test("Phase 2V optional observed-file evaluator reports held-out errors without 
 		rmSync(folder, { recursive: true, force: true });
 	}
 });
+
+
+const nativeCapture = JSON.parse(readFileSync(
+	new URL("panel-color-phase2v-workbench-observations.json", root), "utf8"
+));
+
+test("Phase 2V independent native screenshot preserves pre-frozen predictions and exact controls", () => {
+	assert.equal(nativeCapture.kind, "ACTUAL_NATIVE_HELD_OUT_OBSERVATIONS");
+	assert.equal(nativeCapture.predictionsFrozenBeforeCapture.commit,
+		"51f663f2091af0f4ab219e3aacbd62ac1eea1f6e");
+	assert.equal(nativeCapture.predictionsFrozenBeforeCapture.unchangedAfterMeasurement, true);
+	assert.deepEqual(nativeCapture.backdropRGB, [79, 162, 234]);
+	assert.deepEqual(nativeCapture.studioBackdropRGB, nativeCapture.backdropRGB);
+	assert.deepEqual(nativeCapture.alphaOrder, [1, 0.94, 0.75, 0.5, 0.25, 0]);
+	assert.deepEqual(nativeCapture.colorOrder, prediction.colorOrder);
+	assert.deepEqual(nativeCapture.swatchesRGB[0], prediction.predictedNativeRgb[0]);
+	assert.deepEqual(nativeCapture.swatchesRGB[5], prediction.predictedNativeRgb[5]);
+	assert.deepEqual(nativeCapture.studioSwatchesRGB[0], prediction.predictedNativeRgb[0]);
+	assert.deepEqual(nativeCapture.studioSwatchesRGB[5], prediction.predictedNativeRgb[5]);
+	assert.equal(nativeCapture.swatchesRGB.length, 6);
+	assert.equal(nativeCapture.studioSwatchesRGB.length, 6);
+	for (const rows of [nativeCapture.swatchesRGB, nativeCapture.studioSwatchesRGB]) {
+		for (const row of rows) {
+			assert.equal(row.length, 5);
+			for (const rgb of row)
+				assert.equal(rgb.length, 3);
+		}
+	}
+});
+
+test("Phase 2V blind out-of-sample model beats ordinary sRGB blend without refitting", () => {
+	const nativeFile = fileURLToPath(new URL(
+		"panel-color-phase2v-workbench-observations.json", root));
+	const report = AnalyzeWith(nativeFile);
+	assert.equal(report.status, "HELD_OUT_NATIVE_COMPARISON");
+	assert.equal(report.validatedHeldOut, true);
+	assert.equal(report.nativeObservationsAvailable, true);
+	assert.equal(report.comparison.observationIsHeldOut, true);
+	assert.equal(report.comparison.channelCount, 90);
+	assert.deepEqual(report.comparison.backgroundControl.absoluteChannelErrors, [0, 0, 0]);
+	assert.deepEqual(report.predictedNativeRgb, prediction.predictedNativeRgb);
+	assert.equal(report.comparison.overallMAE.fittedFromNeutral, 0.7111);
+	assert.equal(report.comparison.overallMAE.ordinarySrgbCss, 5.7222);
+	assert.deepEqual(report.comparison.perAlphaMAE.fittedFromNeutral,
+		[0, 0.1333, 1.0667, 1.7333, 1.3333, 0]);
+	assert.deepEqual(report.comparison.perAlphaMAE.ordinarySrgbCss,
+		[0, 2.4667, 8.1333, 12.1333, 11.6, 0]);
+	assert.ok(report.comparison.overallMAE.fittedFromNeutral <
+		report.comparison.overallMAE.ordinarySrgbCss / 7,
+		"previously frozen model must outperform the independent CSS blend baseline");
+});
+
+test("Phase 2V screenshot does not claim fitted coefficients are universal or rewrite earlier inputs", () => {
+	assert.equal(prediction.allowFittingThirdBackground, false);
+	assert.equal(prediction.measurementStatus, "PREDICTIONS_FROZEN_BEFORE_THIRD_NATIVE_CAPTURE");
+	assert.equal(prediction.trainingBoundaries.heldOutChromaticNeverUsed, true);
+	assert.equal(nativeCapture.predictionsFrozenBeforeCapture.unchangedAfterMeasurement, true);
+	for (let row = 1; row <= 4; ++row) {
+		assert.notDeepEqual(nativeCapture.swatchesRGB[row], prediction.predictedNativeRgb[row],
+			"model remains approximate even on independently held-out background");
+	}
+});
