@@ -14,6 +14,8 @@ import {
 export interface MeasuredRelativeGrid {
 	readonly plan: NativeRelativeGridPlan;
 	readonly participatingIndices: readonly number[];
+	/** Only set by the Phase 3I resolved-parent experiment; never by legacy exact-size probe. */
+	readonly allocatedParentRelative?: true;
 }
 
 /**
@@ -154,5 +156,5 @@ export function ProbeAllocatedParentRelativeGrid(
 		contentHeight: true,
 		children
 	});
-	return plan ? { plan, participatingIndices: indices } : null;
+	return plan ? { plan, participatingIndices: indices, allocatedParentRelative: true } : null;
 }
