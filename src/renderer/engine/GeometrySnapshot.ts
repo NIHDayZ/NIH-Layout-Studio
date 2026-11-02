@@ -10,6 +10,7 @@ import type { ConstrainedTextResult } from "./ConstrainedText.js";
 import { ProbeGridNativeMeasurement, type GridNativeMeasurementPrototype } from "./GridNativeMeasurement.js";
 import { ProbeMeasuredRelativeGrid, ProbeAllocatedParentRelativeGrid, ProbeAllocatedParentSingleAxisGrid, type MeasuredRelativeGrid } from "./GridRelativeBridge.js";
 import { ProbeNestedAllocatedGrid } from "./NativeNestedGrid.js";
+import { ProbeMixedAxisGrid } from "./NativeMixedGrid.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
 import { InspectAuthoredVisibility, type AuthoredVisibilityDiagnostic } from "./GeometryVisibility.js";
 import { MeasureArrangedDirectChildBounds, type ArrangedDirectChildBounds } from "./ContentBounds.js";
@@ -188,7 +189,11 @@ export function ArrangeMeasuredGeometry(
 				&& options.gridAllocatedParentSingleAxisPrototype && strategy.kind === "grid"
 				&& (prepared.unresolvedContentWidth || prepared.unresolvedContentHeight)) {
 				if (!strategyRect) {
-					const nested = ProbeNestedAllocatedGrid(prepared, parentSize.width, parentSize.height);
+					// Keep the narrower Phase 3M native case unchanged.
+					// Only when it rejects, try the independently observed
+					// one-column mixed managed-child dependency pattern.
+					const nested = ProbeNestedAllocatedGrid(prepared, parentSize.width, parentSize.height)
+						?? ProbeMixedAxisGrid(prepared, parentSize.width, parentSize.height);
 					if (nested) {
 						for (const [gridNode, gridPlan] of nested.plans)
 							nestedGridPlans.set(gridNode, gridPlan);
