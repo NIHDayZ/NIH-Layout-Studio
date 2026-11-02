@@ -69,3 +69,38 @@ test("Phase 3N comparison identifies named source geometry without persisting wi
 	assert.equal(report.withinTolerance, 3);
 	assert.match(FormatPhase3NNative(report), /matched=3 mismatched=0/);
 });
+
+test("Phase 3N reports native sibling-order differences without false missing-source results", () => {
+	const reference = {
+		root: [1920, 1080], phases: ["post-update"],
+		kind: "CONTROLLED_NATIVE_NESTED_FIXTURE", observationDifferencesAcrossPhases: 0,
+		keyRects: [
+			["NIH_NestedGridDependencyMatrix", "", -1, [0,0,1920,1080], true],
+			["OuterHeightOuter", "SlotHeightOuter", 2, [52,102,399,110], true],
+			["InnerHeightOuter", "OuterHeightOuter", 7, [57,107,190.5,100], true]
+		]
+	};
+	const report = ComparePhase3NNative(s_NestedSource, reference);
+	assert.equal(report.mismatches, 0);
+	assert.equal(report.withinTolerance, 3);
+	assert.deepEqual(report.sourceOrderDifferences, [
+		{ name: "InnerHeightOuter", parent: "OuterHeightOuter", nativeOrdinal: 7, sourceOrdinal: 0 }
+	]);
+});
+
+test("Phase 3N groups inherited mismatch chains and reports native local deltas", () => {
+	const reference = {
+		root: [1920, 1080], phases: ["post-update"],
+		kind: "CONTROLLED_NATIVE_NESTED_FIXTURE", observationDifferencesAcrossPhases: 0,
+		keyRects: [
+			["NIH_NestedGridDependencyMatrix", "", -1, [0,0,1920,1080], true],
+			["OuterHeightOuter", "SlotHeightOuter", 2, [52,102,400,110], true],
+			["InnerHeightOuter", "OuterHeightOuter", 0, [58,107,190.5,100], true]
+		]
+	};
+	const report = ComparePhase3NNative(s_NestedSource, reference);
+	assert.equal(report.mismatches, 2);
+	assert.deepEqual(report.mismatchRoots, [{ name: "OuterHeightOuter", affected: 2 }]);
+	assert.deepEqual(report.rows.find(row => row.name === "InnerHeightOuter").localDelta,
+		[-1, 0, 0, 0]);
+});
