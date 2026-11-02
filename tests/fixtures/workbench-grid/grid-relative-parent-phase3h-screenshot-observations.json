@@ -1,0 +1,419 @@
+{
+  "phase": "3H",
+  "type": "INDEPENDENT_NATIVE_AND_STUDIO_SCREENSHOT_PIXEL_OBSERVATIONS",
+  "sourceLayout": "tests/fixtures/workbench-grid/NIH_Grid_RelativeParent_Axis_Matrix.layout",
+  "nativeScreenshot": {
+    "conversationUpload": "image(20261102-165810).png",
+    "imageDimensions": [
+      1919,
+      1026
+    ],
+    "displayZoom": 0.46
+  },
+  "studioScreenshot": {
+    "conversationUpload": "image(20261102-165802).png",
+    "imageDimensions": [
+      1919,
+      1031
+    ],
+    "displayZoom": 0.46,
+    "url": "http://localhost:5173"
+  },
+  "samplingMethod": "Exact flat-fill RGB connected components (largest solid interior within each panel), screenshot pixel bounding boxes; no screen-origin normalization or OCR",
+  "colors": {
+    "native": {
+      "blue": [
+        129,
+        211,
+        248
+      ],
+      "orange": [
+        249,
+        199,
+        120
+      ],
+      "green": [
+        139,
+        236,
+        188
+      ]
+    },
+    "studio": {
+      "blue": [
+        56,
+        166,
+        240
+      ],
+      "orange": [
+        242,
+        145,
+        48
+      ],
+      "green": [
+        66,
+        214,
+        128
+      ]
+    }
+  },
+  "records": [
+    {
+      "group": "Direct",
+      "mode": "ExactBoth",
+      "workbench": {
+        "blue": {
+          "x": 536,
+          "y": 202,
+          "width": 32,
+          "height": 12
+        },
+        "orange": {
+          "x": 574,
+          "y": 202,
+          "width": 28,
+          "height": 12
+        },
+        "green": {
+          "x": 536,
+          "y": 220,
+          "width": 21,
+          "height": 22
+        }
+      },
+      "studio": {
+        "blue": {
+          "x": 334,
+          "y": 269,
+          "width": 30,
+          "height": 11
+        },
+        "orange": {
+          "x": 333,
+          "y": 285,
+          "width": 48,
+          "height": 20
+        },
+        "green": {
+          "x": 333,
+          "y": 310,
+          "width": 20,
+          "height": 21
+        }
+      }
+    },
+    {
+      "group": "Direct",
+      "mode": "RelativeWidth",
+      "workbench": {
+        "blue": {
+          "x": 752,
+          "y": 202,
+          "width": 32,
+          "height": 12
+        },
+        "orange": {
+          "x": 790,
+          "y": 202,
+          "width": 28,
+          "height": 12
+        },
+        "green": {
+          "x": 752,
+          "y": 220,
+          "width": 21,
+          "height": 22
+        }
+      },
+      "studio": {
+        "blue": {
+          "x": 546,
+          "y": 269,
+          "width": 30,
+          "height": 11
+        },
+        "orange": {
+          "x": 546,
+          "y": 285,
+          "width": 47,
+          "height": 20
+        },
+        "green": {
+          "x": 546,
+          "y": 310,
+          "width": 19,
+          "height": 21
+        }
+      }
+    },
+    {
+      "group": "Direct",
+      "mode": "RelativeHeight",
+      "workbench": {
+        "blue": {
+          "x": 969,
+          "y": 202,
+          "width": 31,
+          "height": 12
+        },
+        "orange": {
+          "x": 1006,
+          "y": 202,
+          "width": 29,
+          "height": 12
+        },
+        "green": {
+          "x": 969,
+          "y": 220,
+          "width": 20,
+          "height": 22
+        }
+      },
+      "studio": {
+        "blue": {
+          "x": 758,
+          "y": 269,
+          "width": 30,
+          "height": 11
+        },
+        "orange": {
+          "x": 758,
+          "y": 285,
+          "width": 48,
+          "height": 20
+        },
+        "green": {
+          "x": 758,
+          "y": 310,
+          "width": 20,
+          "height": 21
+        }
+      }
+    },
+    {
+      "group": "Direct",
+      "mode": "RelativeBoth",
+      "workbench": {
+        "blue": {
+          "x": 1185,
+          "y": 202,
+          "width": 32,
+          "height": 12
+        },
+        "orange": {
+          "x": 1223,
+          "y": 202,
+          "width": 28,
+          "height": 12
+        },
+        "green": {
+          "x": 1185,
+          "y": 220,
+          "width": 21,
+          "height": 22
+        }
+      },
+      "studio": {
+        "blue": {
+          "x": 971,
+          "y": 269,
+          "width": 30,
+          "height": 11
+        },
+        "orange": {
+          "x": 971,
+          "y": 285,
+          "width": 47,
+          "height": 20
+        },
+        "green": {
+          "x": 970,
+          "y": 310,
+          "width": 20,
+          "height": 21
+        }
+      }
+    },
+    {
+      "group": "Nested",
+      "mode": "ExactBoth",
+      "workbench": {
+        "blue": {
+          "x": 554,
+          "y": 462,
+          "width": 32,
+          "height": 13
+        },
+        "orange": {
+          "x": 592,
+          "y": 462,
+          "width": 16,
+          "height": 13
+        },
+        "green": {
+          "x": 554,
+          "y": 481,
+          "width": 21,
+          "height": 21
+        }
+      },
+      "studio": {
+        "blue": {
+          "x": 351,
+          "y": 524,
+          "width": 31,
+          "height": 12
+        },
+        "orange": {
+          "x": 351,
+          "y": 541,
+          "width": 36,
+          "height": 14
+        },
+        "green": {
+          "x": 352,
+          "y": 559,
+          "width": 19,
+          "height": 21
+        }
+      }
+    },
+    {
+      "group": "Nested",
+      "mode": "RelativeWidth",
+      "workbench": {
+        "blue": {
+          "x": 771,
+          "y": 462,
+          "width": 31,
+          "height": 13
+        },
+        "orange": {
+          "x": 808,
+          "y": 462,
+          "width": 16,
+          "height": 13
+        },
+        "green": {
+          "x": 771,
+          "y": 481,
+          "width": 20,
+          "height": 21
+        }
+      },
+      "studio": {
+        "blue": {
+          "x": 564,
+          "y": 524,
+          "width": 30,
+          "height": 12
+        },
+        "orange": {
+          "x": 564,
+          "y": 541,
+          "width": 35,
+          "height": 14
+        },
+        "green": {
+          "x": 564,
+          "y": 559,
+          "width": 20,
+          "height": 21
+        }
+      }
+    },
+    {
+      "group": "Nested",
+      "mode": "RelativeHeight",
+      "workbench": {
+        "blue": {
+          "x": 987,
+          "y": 462,
+          "width": 32,
+          "height": 13
+        },
+        "orange": {
+          "x": 1025,
+          "y": 462,
+          "width": 16,
+          "height": 13
+        },
+        "green": {
+          "x": 987,
+          "y": 481,
+          "width": 21,
+          "height": 21
+        }
+      },
+      "studio": {
+        "blue": {
+          "x": 776,
+          "y": 524,
+          "width": 31,
+          "height": 12
+        },
+        "orange": {
+          "x": 776,
+          "y": 541,
+          "width": 36,
+          "height": 14
+        },
+        "green": {
+          "x": 776,
+          "y": 559,
+          "width": 20,
+          "height": 21
+        }
+      }
+    },
+    {
+      "group": "Nested",
+      "mode": "RelativeBoth",
+      "workbench": {
+        "blue": {
+          "x": 1203,
+          "y": 462,
+          "width": 32,
+          "height": 13
+        },
+        "orange": {
+          "x": 1241,
+          "y": 462,
+          "width": 16,
+          "height": 13
+        },
+        "green": {
+          "x": 1203,
+          "y": 481,
+          "width": 21,
+          "height": 21
+        }
+      },
+      "studio": {
+        "blue": {
+          "x": 989,
+          "y": 524,
+          "width": 30,
+          "height": 12
+        },
+        "orange": {
+          "x": 989,
+          "y": 541,
+          "width": 35,
+          "height": 14
+        },
+        "green": {
+          "x": 989,
+          "y": 559,
+          "width": 19,
+          "height": 21
+        }
+      }
+    }
+  ],
+  "interpretation": {
+    "nativeAllFourModesHaveMatchingRelativeOffsetsWithinEachGroup": true,
+    "nativeAbsoluteChildGeometryNotEstablishedBeyondScreenshotResolution": true,
+    "nativeShaderEquationNotInvestigated": true,
+    "normalizationHypothesis": "Probe native relative-grid planner using pre-content resolved parent dimensions, but do not enable production path without further native parent-allocation evidence"
+  }
+}
