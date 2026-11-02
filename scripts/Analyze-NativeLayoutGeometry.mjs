@@ -375,7 +375,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
 			const focusLabel = focusFlag ? focusFlag.slice("--focus=".length) : null;
 			if (focusLabel !== null && (focusLabel.length < 1 || focusLabel.length > 128))
 				throw new Error("focus must be a nonempty substring up to 128 characters");
-			const focusPattern = focusLabel ? new RegExp(focusLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\const report = AnalyzeVanillaGeometry(readFileSync(resolve(files[0]), "utf8"), { maxFocused });"), "i") : undefined;
+			const focusPattern = focusLabel ? { test(value) { return value.toLowerCase().includes(focusLabel.toLowerCase()); } } : undefined;
 			const report = AnalyzeVanillaGeometry(readFileSync(resolve(files[0]), "utf8"), {
 				maxFocused, focusPattern, focusLabel: focusLabel ?? undefined
 			});
