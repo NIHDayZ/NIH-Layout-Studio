@@ -184,7 +184,8 @@ export function ArrangeMeasuredGeometry(
 						: null))
 				: null;
 			if (options.constrainedGrid && options.gridRelativeContentPrototype
-				&& options.gridNestedAllocationPrototype && strategy.kind === "grid"
+				&& options.gridNestedAllocationPrototype && options.gridAllocatedParentRelativePrototype
+				&& options.gridAllocatedParentSingleAxisPrototype && strategy.kind === "grid"
 				&& (prepared.unresolvedContentWidth || prepared.unresolvedContentHeight)) {
 				if (!strategyRect) {
 					const nested = ProbeNestedAllocatedGrid(prepared, parentSize.width, parentSize.height);
