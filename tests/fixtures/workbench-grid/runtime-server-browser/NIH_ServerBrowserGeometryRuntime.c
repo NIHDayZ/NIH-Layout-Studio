@@ -56,8 +56,11 @@ class NIHServerBrowserGeometryProbe {
 	protected void CaptureTarget(string widgetName, string phase) {
 		Widget widget = m_Root.FindAnyWidget(widgetName);
 		if (!widget) {
-			Print("[NIH_LayoutStudio][ServerBrowserProbe] MISSING phase=" + phase
-				+ " name=" + widgetName);
+			string missingLine = "[NIH_LayoutStudio][ServerBrowserProbe] MISSING phase=";
+			missingLine += phase;
+			missingLine += " name=";
+			missingLine += widgetName;
+			Print(missingLine);
 			return;
 		}
 
