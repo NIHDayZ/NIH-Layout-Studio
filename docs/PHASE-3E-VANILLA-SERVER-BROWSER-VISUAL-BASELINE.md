@@ -129,3 +129,34 @@ npm --silent run audit:native-layout-geometry -- "$layoutPath" --json |
 ```
 
 The correct next fix is the earliest significant *local* divergence that affects many children. Do not patch multiple descendant coordinates, promote native alpha to production, or change visible widget styles before confirming whether those descendants have a wrong allocated parent rectangle. This keeps the project focused on universal layout behavior.
+
+## Phase 3F outcome — 398 passing tests and specific Grid strategy gates
+
+On November 1, 2026, the user reran the corrected native-layout diagnostic: **398/398 tests passed**. Actual vanilla `server_browser_tab_pages.layout` results:
+
+- Root 1920×1080, **269** measured widgets.
+- Live managed Grid vs basic authored snapshot: **105 differences**.
+- Relative-content native snapshot vs basic authored snapshot: **0 differences** (no local or inherited changes).
+- **0** native-derived relative/fixed Grid strategies applied. The experimental relative-grid URL did **not** cause the intended strategy to run on this vanilla layout.
+- Representative live/basic differences: `server_list_content_root` local Y +45 and height +407.76; `filters_content` height −108; `servers_navigation_panel` Y −5 with 17 affected widgets; `search_name_setting_panel2` and `search_ip_setting_panel2` X +64.8 / width −32.4.
+
+The zero-strategy result is the decisive finding: this layout is outside the narrow measured strategy eligibility implemented in the snapshot, or it fails a guard needed for that strategy. It is not proof that the native relative-grid formula itself is wrong, because the formula never ran.
+
+### New read-only eligibility breakdown
+
+The existing `scripts/Analyze-NativeLayoutGeometry.mjs` now reports **every GridSpacer's eligibility** under the current native-derived fixed/relative strategies. The report uses the same prepared-node visibility and relative-grid probe helpers already used by the snapshot; it lists explicit gating reasons such as not content-sized, parent dimensions not authored-exact, unknown invisible-child handling, unsupported nested content-size children, exhausted fixed grid capacity, and failed native-relative plan constraints. These are reasons for *current Studio prototype rejection*, not Workbench incompatibility.
+
+The text report now prints the entire configured focus window (not an additional hidden 18-row truncation). Use literal `--focus=filters_content` to see the filter subtree rather than 192 server-list descendants:
+
+```powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+npm run test:geometry-engine
+
+$layoutPath = 'P:\gui\layouts\new_ui\server_browser\pc\server_browser_tab_pages.layout'
+npm run audit:native-layout-geometry -- "$layoutPath" '--focus=filters_content' '--max-focused=30'
+```
+
+For machine-readable inspection, append `--json`. The output is a read-only model comparison and does not edit sources or enable any production rendering behavior.
+
+**Expected test count: 400** after two additional diagnostic/CLI regression tests, pending the user's local execution. Do not promote any snapshot code path until we have evidence of a native-eligible scenario in this or another representative layout.
