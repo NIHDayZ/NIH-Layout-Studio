@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { CensusExtractedLayouts } from "../scripts/Census-ExtractedNativeLayouts.mjs";
@@ -152,4 +154,23 @@ test("missing and empty extraction directories are rejected instead of returning
 	} finally {
 		rmSync(root, { recursive: true, force: true });
 	}
+});
+
+
+test("PowerShell 5.1 UTF-8 BOM census remains consumable by the compatibility audit CLI", () => {
+	WithLayouts({ "ui/native.layout": s_NamedAndIdless }, root => {
+		const path = join(root, "powershell-census.json");
+		writeFileSync(path, "\uFEFF" + JSON.stringify(CensusExtractedLayouts(root)), "utf8");
+		const script = fileURLToPath(new URL(
+			"../scripts/Generate-NativeCompatibilityBaseline.mjs", import.meta.url));
+		const json = execFileSync(process.execPath,
+			[script, "--json", "--census=" + path], { encoding: "utf8" });
+		const report = JSON.parse(json);
+		assert.equal(report.summary.nativeCensusProvided, true);
+		assert.equal(report.summary.nativeCensusSource, "local-extracted-layouts");
+		assert.equal(report.summary.nativeParsedLayoutFiles, 1);
+		assert.equal(report.summary.nativeParseFailures, 0);
+		assert.equal(report.summary.nativeIdlessWidgetDeclarations, 3);
+		assert.equal(report.summary.overallParityPercentage, null);
+	});
 });
