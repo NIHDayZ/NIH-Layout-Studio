@@ -141,10 +141,11 @@ function InspectRelativeChildTopology(node, indices) {
 	return { reason: "no-obvious-child-topology-blocker", blockingChild: null };
 }
 
-function InspectGridEligibility(measured, basic, relative, names) {
+function InspectGridEligibility(measured, basic, relative, allocated, names) {
 	const items = [];
 	const cache = new WeakMap();
 	const modesById = new Map(relative.appliedStrategies.map(item => [item.id, item.mode]));
+	const allocatedModesById = new Map(allocated.appliedStrategies.map(item => [item.id, item.mode]));
 	function Walk(node) {
 		if (node.strategy.kind === "grid") {
 			const grid = node.nativeGrid;
@@ -209,6 +210,27 @@ function InspectGridEligibility(measured, basic, relative, names) {
 				|| base.localRect.width < 0 || base.localRect.height < 0)
 				fixedReason = "invalid-arranged-parent-rect";
 
+			const allocatedMode = allocatedModesById.get(node.node.id) ?? null;
+			let allocatedReason = "unresolved-after-eligibility-check";
+			if (allocatedMode === "grid-allocated-parent-relative-prototype")
+				allocatedReason = "allocated-parent-grid-applied";
+			else if (allocatedMode === "grid-relative-content-prototype")
+				allocatedReason = "existing-exact-grid-applied";
+			else if (!grid)
+				allocatedReason = "invalid-native-grid-settings";
+			else if (!node.unresolvedContentWidth || !node.unresolvedContentHeight)
+				allocatedReason = "single-axis-content-unsupported";
+			else if (a.exactSizeX && a.exactSizeY)
+				allocatedReason = "exact-grid-prototype-rejected";
+			else if (indices === null)
+				allocatedReason = "unknown-ignore-invisible";
+			else if (indices.length === 0)
+				allocatedReason = "no-eligible-children";
+			else if (childTopology.reason !== "no-obvious-child-topology-blocker")
+				allocatedReason = childTopology.reason;
+			// This summary is diagnostic classification, not a proof of native
+			// eligibility. Snapshot appliedStrategies is the authoritative
+			// record of which experimental strategy actually executed.
 			const source = names.get(node.node.id);
 			items.push({
 				id: node.node.id,
@@ -233,7 +255,9 @@ function InspectGridEligibility(measured, basic, relative, names) {
 				fixedReason,
 				relativeReason,
 				probeReturnedPlan: relativePlan !== null,
-				appliedMode: modesById.get(node.node.id) ?? null
+				appliedMode: modesById.get(node.node.id) ?? null,
+				allocatedMode,
+				allocatedReason
 			});
 		}
 		for (const child of node.children)
@@ -253,8 +277,11 @@ function InspectGridEligibility(measured, basic, relative, names) {
 		relativeReasonCounts: Counts("relativeReason"),
 		childTopologyReasonCounts: Counts("childTopologyReason"),
 		contentSizingModeCounts: Counts("contentSizingMode"),
+		allocatedReasonCounts: Counts("allocatedReason"),
+		allocatedStrategyCounts: Counts("allocatedMode"),
 		exactParentSizeCount: items.filter(item => item.exactSizeX && item.exactSizeY).length,
 		appliedStrategyCount: items.filter(item => item.appliedMode !== null).length,
+		allocatedAppliedStrategyCount: items.filter(item => item.allocatedMode !== null).length,
 		items
 	};
 }
@@ -274,21 +301,28 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		constrainedGrid: true,
 		gridRelativeContentPrototype: true
 	});
+	const allocated = ArrangeMeasuredGeometry(measured, root, 1, {
+		constrainedGrid: true,
+		gridRelativeContentPrototype: true,
+		gridAllocatedParentRelativePrototype: true
+	});
 	const names = IndexNames(document.roots).names;
 	const changed = SnapshotComparison(basic, relative, names);
+	const allocatedChanges = SnapshotComparison(relative, allocated, names);
 	const live = CompareLiveToSnapshot(document.roots, root, {
 		gridLayout: true,
 		nativeConstrainedGrid: true,
 		nativeWrapLayout: false
 	});
 	const filterPattern = options.focusPattern ?? /server_list_root|server_list_content_root|filter|server_list_header/i;
-	const gridEligibility = InspectGridEligibility(measured, basic, relative, names);
+	const gridEligibility = InspectGridEligibility(measured, basic, relative, allocated, names);
 	const focused = [];
 	for (const item of basic.entries) {
 		const n = names.get(item.id);
 		if (!n || !(filterPattern.test(n.name) || n.ancestry.some(name => filterPattern.test(name))))
 			continue;
 		const relativeEntry = relative.byId.get(item.id);
+		const allocatedEntry = allocated.byId.get(item.id);
 		const liveEntry = live.differences.find(diff => diff.id === item.id);
 		focused.push({
 			id: item.id, name: n.name, type: n.type, ancestry: n.ancestry,
@@ -296,11 +330,18 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 			relativeLocal: relativeEntry?.localRect ?? null,
 			basicAbsolute: item.absoluteRect,
 			relativeAbsolute: relativeEntry?.absoluteRect ?? null,
+			allocatedLocal: allocatedEntry?.localRect ?? null,
+			allocatedAbsolute: allocatedEntry?.absoluteRect ?? null,
+			allocatedVsRelativeDelta: allocatedEntry && relativeEntry
+				? Delta(allocatedEntry.localRect, relativeEntry.localRect) : null,
 			relativeDelta: relativeEntry ? Delta(relativeEntry.localRect, item.localRect) : null,
 			liveGridVsBasic: liveEntry ? ShortenLiveDifference(liveEntry) : null
 		});
 	}
 	const applied = relative.appliedStrategies.map(item => ({
+		id: item.id, name: names.get(item.id)?.name ?? "", mode: item.mode
+	}));
+	const allocatedApplied = allocated.appliedStrategies.map(item => ({
 		id: item.id, name: names.get(item.id)?.name ?? "", mode: item.mode
 	}));
 	return {
@@ -310,6 +351,7 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		parsedRoots: document.roots.length,
 		basicSnapshotWidgets: basic.entries.length,
 		relativeSnapshotWidgets: relative.entries.length,
+		allocatedSnapshotWidgets: allocated.entries.length,
 		basicSnapshotIssues: basic.issues.map(issue => ({
 			id: issue.id, name: names.get(issue.id)?.name ?? "", code: issue.code
 		})),
@@ -317,7 +359,18 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 			id: issue.id, name: names.get(issue.id)?.name ?? "", code: issue.code
 		})),
 		relativeSnapshotAppliedStrategies: applied,
+		allocatedSnapshotAppliedStrategies: allocatedApplied,
+		allocatedSnapshotIssues: allocated.issues.map(issue => ({
+			id: issue.id, name: names.get(issue.id)?.name ?? "", code: issue.code
+		})),
 		gridEligibility,
+		allocatedVsRelative: {
+			totalChanged: allocatedChanges.totalChanged,
+			localRectChanged: allocatedChanges.localRectChanged,
+			inheritedOnly: allocatedChanges.inheritedOnly,
+			topRootCauses: allocatedChanges.topRootCauses,
+			firstChanges: allocatedChanges.changed.slice(0, options.maxDiffs ?? 30)
+		},
 		focusSelection: options.focusLabel ?? "default server-list/filter ancestry",
 		relativeVsBasic: {
 			totalChanged: changed.totalChanged,
@@ -340,7 +393,7 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		},
 		focusedCount: focused.length,
 		focused: focused.slice(0, options.maxFocused ?? 35),
-		warning: "All rectangles are unzoomed Studio model coordinates. These are two Studio models, not independently measured Workbench geometry."
+		warning: "All rectangles are unzoomed Studio model coordinates. These are three Studio snapshot variants plus a live model, not independently measured Workbench geometry."
 	};
 }
 
@@ -358,12 +411,18 @@ export function FormatVanillaGeometry(report) {
 			report.relativeVsBasic.inheritedOnly + " inherited only)",
 		"Relative native-derived strategies applied: " +
 			report.relativeSnapshotAppliedStrategies.length,
+		"Allocated-parent experimental strategies applied: " +
+			report.allocatedSnapshotAppliedStrategies.length,
+		"New allocations vs legacy relative snapshot: " + report.allocatedVsRelative.totalChanged +
+			" changed widgets (" + report.allocatedVsRelative.localRectChanged + " local, " +
+			report.allocatedVsRelative.inheritedOnly + " inherited only)",
 		"Measured GridSpacers: " + report.gridEligibility.totalGridSpacers,
 		"Relative prototype skip reasons: " + JSON.stringify(report.gridEligibility.relativeReasonCounts),
 		"Fixed-grid skip reasons: " + JSON.stringify(report.gridEligibility.fixedReasonCounts),
 		"Child topology (independent second gate): " + JSON.stringify(report.gridEligibility.childTopologyReasonCounts),
 		"Content sizing modes: " + JSON.stringify(report.gridEligibility.contentSizingModeCounts),
 		"Parents with both exact-size flags: " + report.gridEligibility.exactParentSizeCount,
+		"Allocated-parent eligibility / activation: " + JSON.stringify(report.gridEligibility.allocatedReasonCounts),
 		"Focus: " + report.focusSelection,
 		"Focused relevant widgets: " + report.focusedCount,
 		"",
@@ -375,6 +434,12 @@ export function FormatVanillaGeometry(report) {
 	for (const item of report.relativeVsBasic.topRootCauses)
 		output.push("| " + item.name + " | " + item.type + " | " + item.affected +
 			" | " + Object.values(item.localDelta).join(" / ") + " |");
+	output.push("", "## Allocated-parent vs legacy relative snapshot root causes", "",
+		"| Widget | Type | Affected | Local delta x/y/w/h |",
+		"|---|---|---:|---|");
+	for (const item of report.allocatedVsRelative.topRootCauses)
+		output.push("| " + item.name + " | " + item.type + " | " + item.affected +
+			" | " + Object.values(item.localDelta).join(" / ") + " |");
 	output.push("", "## Live Grid vs basic snapshot root causes", "",
 		"| Widget | Type | Affected | Local delta x/y/w/h |",
 		"|---|---|---:|---|");
@@ -382,19 +447,22 @@ export function FormatVanillaGeometry(report) {
 		output.push("| " + item.name + " | " + item.type + " | " + item.affectedWidgets +
 			" | " + Object.values(item.localDelta).join(" / ") + " |");
 	output.push("", "## GridSpacer native-strategy eligibility", "",
-		"| GridSpacer | Child slots | Content W/H | Parent exact X/Y | Secondary child gate | Relative reason | Fixed reason | Applied |",
-		"|---|---:|---|---|---|---|---|---|");
+		"| GridSpacer | Child slots | Content W/H | Parent exact X/Y | Secondary child gate | Relative reason | Fixed reason | Legacy applied | Allocated applied | Allocated reason |",
+		"|---|---:|---|---|---|---|---|---|---|---|");
 	for (const item of report.gridEligibility.items)
 		output.push("| " + item.name + " | " + item.eligibleChildCount + "/" + item.childCount +
 			" | " + Number(item.contentWidth) + "/" + Number(item.contentHeight) +
 			" | " + Number(item.exactSizeX) + "/" + Number(item.exactSizeY) +
 			" | " + item.childTopologyReason + (item.childTopologyBlocker ? " (" + item.childTopologyBlocker + ")" : "") +
-			" | " + item.relativeReason + " | " + item.fixedReason + " | " + (item.appliedMode ?? "none") + " |");
+			" | " + item.relativeReason + " | " + item.fixedReason + " | " + (item.appliedMode ?? "none") +
+			" | " + (item.allocatedMode ?? "none") + " | " + item.allocatedReason + " |");
 	output.push("", "## Focused ancestry and rectangles", "");
 	for (const item of report.focused)
 		output.push("- " + [...item.ancestry, item.name].join(" > ") +
 			" | basic=" + JSON.stringify(item.basicLocal) +
 			" | relative=" + JSON.stringify(item.relativeLocal) +
+			" | allocated=" + JSON.stringify(item.allocatedLocal) +
+			" | allocated-minus-legacy=" + JSON.stringify(item.allocatedVsRelativeDelta) +
 			" | live-basic-delta=" + JSON.stringify(item.liveGridVsBasic?.delta ?? null));
 	output.push("", report.warning);
 	return output.join("\n");
