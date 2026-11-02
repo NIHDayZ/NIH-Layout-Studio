@@ -25,6 +25,8 @@ test("Phase 3N captures after-create, post-update and post-settle separately", (
 		assert.ok(s_Runtime.includes(marker), "missing " + marker);
 	assert.ok(s_Runtime.includes("g_Game.IsDedicatedServer()"));
 	assert.ok(s_Runtime.includes("override void OnInit()"));
+	assert.ok(s_Runtime.includes("missingLine += phase;"));
+	assert.ok(s_Runtime.includes("Print(missingLine);"));
 });
 
 test("Phase 3N stages vanilla layout from local user path only", () => {
