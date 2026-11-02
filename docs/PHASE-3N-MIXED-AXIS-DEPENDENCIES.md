@@ -91,3 +91,42 @@ node scripts\Compare-Phase3NNativeGeometry.mjs $layoutPath |
 The report matches each captured native name, **parent name and direct-child ordinal** to the source parse (not optional widget IDs) and compares native `GetScreenPos/GetScreenSize` against Studio five-flag `absoluteRect`. It excludes native-hidden widgets, descendants of known hidden native ancestors and zero-area native rectangles from the parity denominator. Match tolerance is 0.025 unzoomed pixels. Missing/ambiguous source identities remain explicit diagnostics, not fabricated matches.
 
 No solver modifications or sixth flag are authorized until mismatches are localized and a supported, general native rule has been corroborated. The additional fixture-comparison tests bring the expected geometry test count to **460** (454 locally verified + 3 native-probe contract tests + 3 native-evidence/comparison tests); this total still requires local execution.
+
+## 2026-11-02 — Actual five-flag native comparison and read-only generalized candidate
+
+The user independently confirmed **460/460 geometry tests**, `npm run typecheck`, and `npm run build`. The native comparator reported **34 visible comparisons, 9 within 0.025 px and 25 mismatches**. The hierarchy errors are correlated:
+
+| Native widget | Native (W×H) | Five-flag Studio (W×H) | Structural observation |
+| --- | --- | --- | --- |
+| `server_list_root` | 1209.6×800 | 1209.6×1080 | Height still authored rather than child-derived |
+| `server_list_content_root` | 1209.6×760 | 1209.6×354.24 | Height derived in native from 40+720 |
+| `server_list_scroller` | 1209.6×720 at Y=40 | 1209.6×720 at Y=0 | Missing managed stacking |
+| `right_area_root` | 518.4×490 | 518.4×1080 | Height derived in native from 40+450 |
+| `filters_root` | 518.4×450 at X=1320.6 | 129.6×1080 at X=1515 | Parent-managed cell allocation absent |
+| `filters_content` | 518.4×300 | 129.6×300 | Its own content *height* already correct; parent width is wrong |
+| `filters_button_wrapper` | 518.4×140 | 25.5312×140 | Its own content *height* correct; parent width is wrong |
+
+The six measured server-list header widths were already exact in Studio: 90, 769.6, 120, 120, 100, 10. This is strong evidence that neither basic leaf Grid arithmetic nor the text system should be modified to resolve the dominant hierarchy failures.
+
+The earlier native comparison falsely labeled `details_description_content` as `source-missing` because it required native sibling ordinal to equal document order. **Native order is not guaranteed to match authored order.** The comparator now recovers unique name+parent matches without requiring optional IDs, and reports ordinal differences explicitly. It continues excluding hidden native ancestors.
+
+A new **read-only** `ProbeMixedAxisGrid` research candidate was added in `src/renderer/engine/NativeMixedGrid.ts` without changing `GeometrySnapshot`, `Canvas`, any layout flag or production rendering. It reuses the already native-derived `PlanNativeRelativeGrid`, adds bounded recursive nested allocation, allows ordinary relative siblings on the independently observed single-column case, and admits a non-content-sized ScrollWidget only with a concrete height on the parent content-height axis. Unsupported mixed manager dimensions and multi-column relative ordinary siblings still reject conservatively. This is a hypothesis to test, **not** accepted native behavior.
+
+`scripts/Analyze-Phase3NMixedCandidate.mjs` runs that independent prediction against the user-provided *local vanilla source*, only then compares the resulting rectangles to frozen native DayZ evidence. The fixture is never used as an input to the candidate planner.
+
+```powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+npm run test:geometry-engine
+npm run typecheck
+npm run build
+$layoutPath = 'P:\gui\layouts\new_ui\server_browser\pc\server_browser_tab_pages.layout'
+node scripts\Compare-Phase3NNativeGeometry.mjs $layoutPath |
+    Tee-Object -FilePath phase3n-native-vs-studio-refined.txt
+node scripts\Analyze-Phase3NMixedCandidate.mjs $layoutPath |
+    Tee-Object -FilePath phase3n-mixed-candidate.txt
+```
+
+The updated native comparator groups inherited mismatch ancestry and reports local geometry deltas. The new mixed-axis candidate tests cover a synthetic structural reproduction of both observed hierarchies, all six previously validated Phase 3M nested controls, and rejection of an unmeasured Scroll height. These tests are evidence-based regression checks, **not new independent native captures**.
+
+Expected geometry-test total: **466** (previously 460 + two comparator regression cases + four candidate cases), pending local confirmation. Do not claim acceptance until the local suite and vanilla `phase3n-mixed-candidate.txt` both pass scrutiny. Native source capture is at 1920×1080 and does not validate arbitrary viewport sizes.
