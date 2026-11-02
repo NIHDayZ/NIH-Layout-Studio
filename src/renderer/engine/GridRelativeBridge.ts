@@ -20,6 +20,8 @@ export interface MeasuredRelativeGrid {
 	readonly allocatedParentSingleAxis?: true;
 	/** Phase 3M opt-in: provisional nested cells and reconciled content axes. */
 	readonly nestedAllocatedGrid?: true;
+	/** Phase 3N research: mixed ordinary relatives / fixed-height Scroll alongside nested Grid. */
+	readonly mixedAllocatedGrid?: true;
 }
 
 /**
