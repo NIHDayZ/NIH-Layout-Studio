@@ -58,3 +58,28 @@ npm run build
 This is **not production GridSpacer parity**. It does not assert a recovered general Workbench geometry algorithm for single-axis content sizing, scrolling, mixed managed children, nested relative-content cycles, or widget visibility/clipping. It does not add new global state, change the existing test fixture, or change FNT5, image rendering, fonts, colors, defaults or editor serialization.
 
 After the 8-case visual A/B, evaluate how many native server-browser GridSpacers meet these evidence-based guards and identify one remaining native mismatch. Do not widen the prototype gate simply because it improves a screenshot; obtain independent Workbench measurements for the new configuration.
+
+
+## Phase 3I controlled visual A/B — confirmed in Studio
+
+User screenshot captured on **2026-11-02**: \`image(20261102-174115).png\`, **1918 × 1029** full screenshot pixels, 1920×1080 authored root, 46% zoom. Browser query includes all three experimental flags. The source is the same unmodified \`NIH_Grid_RelativeParent_Axis_Matrix.layout\` used in Workbench and the Phase 3H native capture.
+
+Measured eight background-panel rectangles and 24 exact-RGB swatch rectangles; stored as half-open screen-pixel bounds in \`tests/fixtures/workbench-grid/grid-relative-parent-phase3i-preview-pixels.json\`. Compared each swatch to the independently measured Workbench rectangles in \`grid-relative-parent-phase3h-native-pixels.json\` **relative to its containing background**, since Workbench's preview origin differs.
+
+| Metric | Studio default (earlier) | Phase 3I experimental |
+|---|---:|---:|
+| Mean absolute rectangle-coordinate error, all 96 x/y/w/h comparisons | 9.1875 screenshot px | **0.9479 screenshot px** |
+| Maximum absolute rectangle-coordinate error | 43 screenshot px | **2 screenshot px** |
+| First/second column and second row correctly arranged in all 8 cases | No | **Yes** |
+
+Per-coordinate-axis new mean absolute error: **X 0.9167 px; Y 0.6667 px; width 0.9583 px; height 1.25 px.** Relative parent width, height and both-axis cases visually match the exact-size controls to screenshot-pixel tolerance, including nested parent frames.
+
+This is a substantial geometry improvement in an independent browser rendering, not merely a pure-function numerical prediction. The new result also remains slightly less precise than the earlier **0.4799 px** pure planner/native comparison, plausibly because browser rasterization and layout/zoom boundaries introduce additional rounding. Do not conflate those two measurements.
+
+### Remaining acceptance gate
+
+This confirms the 8-case simple PanelWidget-child scenario **only**. Workbench uses noticeably different background/panel tint and typography in the screenshots; those issues are separate from this geometry result. The fixture does not establish parity for nested content-sized GridSpacers, single-axis Size To Content, scroll clipping or all 43 native server-browser grids.
+
+Next capture with the **same three URL flags**: reopen \`P:\gui\layouts\new_ui\server_browser\pc\server_browser_tab_pages.layout\` at 1920×1080, 46% zoom and compare with the existing native Workbench server-browser capture. Keep \`VANILLA P:\gui\` indexed. This will show how far the experimentally supported subset carries into a real interface. If it does not materially improve, investigate the first unresolved managed/nested Grid parent rather than broadening safety guards without native evidence.
+
+Production GridSpacer placement, default renderer and the previously validated exact-size strategy remain unchanged. The user's latest screenshot did not include an accompanying 416-test log; retain **410** as the last locally confirmed suite count until a new run is provided.
