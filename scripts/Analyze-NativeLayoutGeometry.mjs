@@ -315,10 +315,18 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		gridAllocatedParentRelativePrototype: true,
 		gridAllocatedParentSingleAxisPrototype: true
 	});
+	const nested = ArrangeMeasuredGeometry(measured, root, 1, {
+		constrainedGrid: true,
+		gridRelativeContentPrototype: true,
+		gridAllocatedParentRelativePrototype: true,
+		gridAllocatedParentSingleAxisPrototype: true,
+		gridNestedAllocationPrototype: true
+	});
 	const names = IndexNames(document.roots).names;
 	const changed = SnapshotComparison(basic, relative, names);
 	const allocatedChanges = SnapshotComparison(relative, allocated, names);
 	const singleAxisChanges = SnapshotComparison(allocated, singleAxis, names);
+	const nestedChanges = SnapshotComparison(singleAxis, nested, names);
 	const live = CompareLiveToSnapshot(document.roots, root, {
 		gridLayout: true,
 		nativeConstrainedGrid: true,
@@ -334,6 +342,7 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		const relativeEntry = relative.byId.get(item.id);
 		const allocatedEntry = allocated.byId.get(item.id);
 		const singleAxisEntry = singleAxis.byId.get(item.id);
+		const nestedEntry = nested.byId.get(item.id);
 		const liveEntry = live.differences.find(diff => diff.id === item.id);
 		focused.push({
 			id: item.id, name: n.name, type: n.type, ancestry: n.ancestry,
@@ -344,6 +353,9 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 			allocatedLocal: allocatedEntry?.localRect ?? null,
 			allocatedAbsolute: allocatedEntry?.absoluteRect ?? null,
 			singleAxisLocal: singleAxisEntry?.localRect ?? null,
+			nestedLocal: nestedEntry?.localRect ?? null,
+			nestedVsSingleAxisDelta: nestedEntry && singleAxisEntry
+				? Delta(nestedEntry.localRect, singleAxisEntry.localRect) : null,
 			singleAxisVsAllocatedDelta: singleAxisEntry && allocatedEntry
 				? Delta(singleAxisEntry.localRect, allocatedEntry.localRect) : null,
 			allocatedVsRelativeDelta: allocatedEntry && relativeEntry
@@ -361,8 +373,11 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 	const singleAxisApplied = singleAxis.appliedStrategies.map(item => ({
 		id: item.id, name: names.get(item.id)?.name ?? "", mode: item.mode
 	}));
+	const nestedApplied = nested.appliedStrategies.map(item => ({
+		id: item.id, name: names.get(item.id)?.name ?? "", mode: item.mode
+	}));
 	return {
-		phase: "3F",
+		phase: "3M",
 		status: "OFFLINE_MODEL_COMPARISON_NOT_NATIVE_PARITY",
 		root,
 		parsedRoots: document.roots.length,
@@ -370,6 +385,7 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		relativeSnapshotWidgets: relative.entries.length,
 		allocatedSnapshotWidgets: allocated.entries.length,
 		singleAxisSnapshotWidgets: singleAxis.entries.length,
+		nestedSnapshotWidgets: nested.entries.length,
 		basicSnapshotIssues: basic.issues.map(issue => ({
 			id: issue.id, name: names.get(issue.id)?.name ?? "", code: issue.code
 		})),
@@ -379,10 +395,18 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		relativeSnapshotAppliedStrategies: applied,
 		allocatedSnapshotAppliedStrategies: allocatedApplied,
 		singleAxisSnapshotAppliedStrategies: singleAxisApplied,
+		nestedSnapshotAppliedStrategies: nestedApplied,
 		allocatedSnapshotIssues: allocated.issues.map(issue => ({
 			id: issue.id, name: names.get(issue.id)?.name ?? "", code: issue.code
 		})),
 		gridEligibility,
+		nestedVsSingleAxis: {
+			totalChanged: nestedChanges.totalChanged,
+			localRectChanged: nestedChanges.localRectChanged,
+			inheritedOnly: nestedChanges.inheritedOnly,
+			topRootCauses: nestedChanges.topRootCauses,
+			firstChanges: nestedChanges.changed.slice(0, options.maxDiffs ?? 30)
+		},
 		singleAxisVsAllocated: {
 			totalChanged: singleAxisChanges.totalChanged,
 			localRectChanged: singleAxisChanges.localRectChanged,
@@ -419,13 +443,13 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		},
 		focusedCount: focused.length,
 		focused: focused.slice(0, options.maxFocused ?? 35),
-		warning: "All rectangles are unzoomed Studio model coordinates. These are three Studio snapshot variants plus a live model, not independently measured Workbench geometry."
+		warning: "All rectangles are unzoomed Studio model coordinates. Research snapshots and live models are not independently measured Workbench geometry; five-flag activations are not native acceptance."
 	};
 }
 
 export function FormatVanillaGeometry(report) {
 	const output = [
-		"# NIH Phase 3F — Actual layout geometry model comparison",
+		"# NIH Phase 3M — Actual layout geometry model comparison",
 		"",
 		"Offline model comparison, NOT a Workbench native parity result.",
 		"",
@@ -443,6 +467,9 @@ export function FormatVanillaGeometry(report) {
 			report.singleAxisSnapshotAppliedStrategies.filter(item =>
 				item.mode === "grid-allocated-parent-single-axis-prototype").length,
 		"Additional rectangle changes from fourth flag: " + report.singleAxisVsAllocated.totalChanged,
+		"Five-flag nested strategies applied: " + report.nestedSnapshotAppliedStrategies.filter(item =>
+			item.mode === "grid-nested-allocation-prototype").length,
+		"Additional rectangle changes from fifth flag: " + report.nestedVsSingleAxis.totalChanged,
 		"New allocations vs legacy relative snapshot: " + report.allocatedVsRelative.totalChanged +
 			" changed widgets (" + report.allocatedVsRelative.localRectChanged + " local, " +
 			report.allocatedVsRelative.inheritedOnly + " inherited only)",
@@ -477,6 +504,12 @@ export function FormatVanillaGeometry(report) {
 	for (const item of report.singleAxisVsAllocated.topRootCauses)
 		output.push("| " + item.name + " | " + item.type + " | " + item.affected +
 			" | " + Object.values(item.localDelta).join(" / ") + " |");
+	output.push("", "## Five-flag nested vs four-flag single-axis snapshot root causes", "",
+		"| Widget | Type | Affected | Local delta x/y/w/h |",
+		"|---|---|---:|---|");
+	for (const item of report.nestedVsSingleAxis.topRootCauses)
+		output.push("| " + item.name + " | " + item.type + " | " + item.affected +
+			" | " + Object.values(item.localDelta).join(" / ") + " |");
 	output.push("", "## Live Grid vs basic snapshot root causes", "",
 		"| Widget | Type | Affected | Local delta x/y/w/h |",
 		"|---|---|---:|---|");
@@ -501,6 +534,8 @@ export function FormatVanillaGeometry(report) {
 			" | relative=" + JSON.stringify(item.relativeLocal) +
 			" | allocated=" + JSON.stringify(item.allocatedLocal) +
 			" | single-axis=" + JSON.stringify(item.singleAxisLocal) +
+			" | nested=" + JSON.stringify(item.nestedLocal) +
+			" | nested-minus-single=" + JSON.stringify(item.nestedVsSingleAxisDelta) +
 			" | single-minus-allocated=" + JSON.stringify(item.singleAxisVsAllocatedDelta) +
 			" | allocated-minus-legacy=" + JSON.stringify(item.allocatedVsRelativeDelta) +
 			" | live-basic-delta=" + JSON.stringify(item.liveGridVsBasic?.delta ?? null));
