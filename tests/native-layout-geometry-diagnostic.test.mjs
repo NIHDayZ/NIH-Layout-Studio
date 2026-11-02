@@ -368,3 +368,33 @@ test("Phase 3J CLI exposes scoped allocated-parent differences without certifyin
 		rmSync(dir, { recursive: true, force: true });
 	}
 });
+
+
+test("Phase 3K diagnostic reports six new four-flag single-axis GridSpacers without altering three-flag evidence", () => {
+	const source = readFileSync(new URL(
+		"./fixtures/workbench-grid/NIH_Grid_SingleAxis_Content_Matrix.layout",
+		import.meta.url), "utf8");
+	const report = AnalyzeVanillaGeometry(source);
+	assert.equal(report.allocatedSnapshotAppliedStrategies.length, 2);
+	assert.equal(report.singleAxisSnapshotAppliedStrategies.length, 8);
+	assert.equal(report.gridEligibility.singleAxisStrategyCounts["grid-allocated-parent-single-axis-prototype"], 6);
+	assert.equal(report.gridEligibility.singleAxisStrategyCounts["grid-relative-content-prototype"], 2);
+	assert.equal(report.singleAxisSnapshotWidgets, report.allocatedSnapshotWidgets);
+	assert.ok(report.singleAxisVsAllocated.totalChanged > 0);
+	assert.equal(report.singleAxisVsAllocated.totalChanged,
+		report.singleAxisVsAllocated.localRectChanged +
+		report.singleAxisVsAllocated.inheritedOnly);
+	assert.match(FormatVanillaGeometry(report), /Four-flag single-axis vs three-flag allocated snapshot root causes/);
+});
+
+test("Phase 3K fourth flag preserves both-axis native GridSpacer strategies", () => {
+	const source = readFileSync(new URL(
+		"./fixtures/workbench-grid/NIH_Grid_RelativeParent_Axis_Matrix.layout",
+		import.meta.url), "utf8");
+	const report = AnalyzeVanillaGeometry(source);
+	assert.equal(report.allocatedSnapshotAppliedStrategies.length, 8);
+	assert.equal(report.singleAxisSnapshotAppliedStrategies.length, 8);
+	assert.equal(report.singleAxisVsAllocated.totalChanged, 0);
+	assert.ok(report.singleAxisSnapshotAppliedStrategies.every(item =>
+		item.mode !== "grid-allocated-parent-single-axis-prototype"));
+});
