@@ -111,6 +111,36 @@ function ShortenLiveDifference(diff) {
  * Read only: the same native eligibility helpers used by the snapshot are
  * called, but neither model's rectangles or scene widgets are modified.
  */
+/**
+ * Independent secondary gate: classify child topology even when an earlier
+ * parent exact-size guard rejects the native relative-grid prototype.
+ * This DOES NOT bypass the guard or call a planner with guessed dimensions.
+ */
+function InspectRelativeChildTopology(node, indices) {
+	if (indices === null)
+		return { reason: "unknown-ignore-invisible", blockingChild: null };
+	if (!indices.length)
+		return { reason: "no-eligible-children", blockingChild: null };
+	for (const index of indices) {
+		const child = node.children[index];
+		const a = child.authored;
+		if (a.sizeToContentWidth || a.sizeToContentHeight) {
+			if (child.strategy.kind !== "grid" || !a.sizeToContentWidth
+				|| !a.sizeToContentHeight)
+				return { reason: "unsupported-nested-content-axis", blockingChild: child.node.name };
+			if (!a.exactSizeX || !a.exactSizeY)
+				return { reason: "nested-parent-size-not-exact", blockingChild: child.node.name };
+			// The nested plan may still fail later. This is a structural probe only.
+		} else if (child.strategy.requiresArrangement) {
+			return { reason: "unresolved-managed-child", blockingChild: child.node.name };
+		} else if (![a.sizeX, a.sizeY].every(Number.isFinite)
+			|| a.sizeX < 0 || a.sizeY < 0) {
+			return { reason: "invalid-child-size", blockingChild: child.node.name };
+		}
+	}
+	return { reason: "no-obvious-child-topology-blocker", blockingChild: null };
+}
+
 function InspectGridEligibility(measured, basic, relative, names) {
 	const items = [];
 	const cache = new WeakMap();
@@ -123,6 +153,7 @@ function InspectGridEligibility(measured, basic, relative, names) {
 			const indices = SelectManagedChildIndices(node.children, node.nativeIgnoreInvisible);
 			const base = basic.byId.get(node.node.id);
 			const relativePlan = ProbeMeasuredRelativeGrid(node, cache);
+			const childTopology = InspectRelativeChildTopology(node, indices);
 			let relativeReason = "relative-plan-available";
 			if (!grid)
 				relativeReason = "invalid-native-grid-settings";
@@ -191,6 +222,14 @@ function InspectGridEligibility(measured, basic, relative, names) {
 				contentHeight: node.unresolvedContentHeight,
 				exactSizeX: a.exactSizeX,
 				exactSizeY: a.exactSizeY,
+				authoredSize: { x: a.sizeX, y: a.sizeY },
+				basicLocalSize: base
+					? { width: base.localRect.width, height: base.localRect.height } : null,
+				contentSizingMode: node.unresolvedContentWidth
+					? (node.unresolvedContentHeight ? "both-axes" : "width-only")
+					: (node.unresolvedContentHeight ? "height-only" : "none"),
+				childTopologyReason: childTopology.reason,
+				childTopologyBlocker: childTopology.blockingChild,
 				fixedReason,
 				relativeReason,
 				probeReturnedPlan: relativePlan !== null,
@@ -212,6 +251,9 @@ function InspectGridEligibility(measured, basic, relative, names) {
 		totalGridSpacers: items.length,
 		fixedReasonCounts: Counts("fixedReason"),
 		relativeReasonCounts: Counts("relativeReason"),
+		childTopologyReasonCounts: Counts("childTopologyReason"),
+		contentSizingModeCounts: Counts("contentSizingMode"),
+		exactParentSizeCount: items.filter(item => item.exactSizeX && item.exactSizeY).length,
 		appliedStrategyCount: items.filter(item => item.appliedMode !== null).length,
 		items
 	};
@@ -319,6 +361,9 @@ export function FormatVanillaGeometry(report) {
 		"Measured GridSpacers: " + report.gridEligibility.totalGridSpacers,
 		"Relative prototype skip reasons: " + JSON.stringify(report.gridEligibility.relativeReasonCounts),
 		"Fixed-grid skip reasons: " + JSON.stringify(report.gridEligibility.fixedReasonCounts),
+		"Child topology (independent second gate): " + JSON.stringify(report.gridEligibility.childTopologyReasonCounts),
+		"Content sizing modes: " + JSON.stringify(report.gridEligibility.contentSizingModeCounts),
+		"Parents with both exact-size flags: " + report.gridEligibility.exactParentSizeCount,
 		"Focus: " + report.focusSelection,
 		"Focused relevant widgets: " + report.focusedCount,
 		"",
@@ -337,11 +382,13 @@ export function FormatVanillaGeometry(report) {
 		output.push("| " + item.name + " | " + item.type + " | " + item.affectedWidgets +
 			" | " + Object.values(item.localDelta).join(" / ") + " |");
 	output.push("", "## GridSpacer native-strategy eligibility", "",
-		"| GridSpacer | Child slots | Content W/H | Relative reason | Fixed reason | Applied |",
-		"|---|---:|---|---|---|---|");
+		"| GridSpacer | Child slots | Content W/H | Parent exact X/Y | Secondary child gate | Relative reason | Fixed reason | Applied |",
+		"|---|---:|---|---|---|---|---|---|");
 	for (const item of report.gridEligibility.items)
 		output.push("| " + item.name + " | " + item.eligibleChildCount + "/" + item.childCount +
 			" | " + Number(item.contentWidth) + "/" + Number(item.contentHeight) +
+			" | " + Number(item.exactSizeX) + "/" + Number(item.exactSizeY) +
+			" | " + item.childTopologyReason + (item.childTopologyBlocker ? " (" + item.childTopologyBlocker + ")" : "") +
 			" | " + item.relativeReason + " | " + item.fixedReason + " | " + (item.appliedMode ?? "none") + " |");
 	output.push("", "## Focused ancestry and rectangles", "");
 	for (const item of report.focused)
