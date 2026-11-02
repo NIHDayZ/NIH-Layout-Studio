@@ -66,7 +66,7 @@ export interface AppliedLayoutStrategy {
 	id: string;
 	kind: "grid" | "wrap";
 	evidence: "native-disassembly";
-	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "fixed-wrap-prototype";
+	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "grid-allocated-parent-relative-prototype" | "fixed-wrap-prototype";
 }
 
 export interface ChildArrangement {
@@ -179,7 +179,9 @@ function ArrangeRelativeGridContent(
 			id: parent.node.id,
 			kind: "grid",
 			evidence: "native-disassembly",
-			mode: "grid-relative-content-prototype"
+			mode: measured.allocatedParentRelative
+				? "grid-allocated-parent-relative-prototype"
+				: "grid-relative-content-prototype"
 		}
 	};
 }
