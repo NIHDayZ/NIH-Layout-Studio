@@ -1,0 +1,545 @@
+{
+  "phase": "3H",
+  "kind": "MEASURED_WORKBENCH_NATIVE_AND_STUDIO_SWATCH_RECTANGLES",
+  "date": "2026-11-02",
+  "layout": "tests/fixtures/workbench-grid/NIH_Grid_RelativeParent_Axis_Matrix.layout",
+  "nativeScreenshot": "Screenshot 2026-11-02 085807.png",
+  "nativeScreenshotSize": [
+    1919,
+    1026
+  ],
+  "studioScreenshot": "Screenshot 2026-11-02 085757.png",
+  "studioScreenshotSize": [
+    1919,
+    1031
+  ],
+  "nativeZoom": 0.46,
+  "studioZoom": 0.46,
+  "measurementMethod": "Exact-color connected pixel regions in original full-resolution screenshots; bounding boxes [left,top,rightExclusive,bottomExclusive]. Color interiors, no OCR; anti-aliased 1px edges may be excluded.",
+  "nativeSwatchRGB": {
+    "Blue": [
+      129,
+      211,
+      248
+    ],
+    "Orange": [
+      249,
+      199,
+      120
+    ],
+    "Green": [
+      139,
+      236,
+      188
+    ]
+  },
+  "studioSwatchRGB": {
+    "Blue": [
+      56,
+      166,
+      240
+    ],
+    "Orange": [
+      242,
+      145,
+      48
+    ],
+    "Green": [
+      66,
+      214,
+      128
+    ]
+  },
+  "caseOrder": "Direct row then Nested row; ExactBoth, RelativeWidth, RelativeHeight, RelativeBoth",
+  "nativeCases": [
+    {
+      "name": "GridDirectExactBoth",
+      "group": "Direct",
+      "axis": "ExactBoth",
+      "backgroundRect": [
+        516,
+        164,
+        709,
+        371
+      ],
+      "swatches": {
+        "Blue": [
+          536,
+          202,
+          568,
+          214
+        ],
+        "Orange": [
+          574,
+          202,
+          602,
+          214
+        ],
+        "Green": [
+          536,
+          220,
+          557,
+          242
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeWidth",
+      "group": "Direct",
+      "axis": "RelativeWidth",
+      "backgroundRect": [
+        732,
+        164,
+        925,
+        371
+      ],
+      "swatches": {
+        "Blue": [
+          752,
+          202,
+          784,
+          214
+        ],
+        "Orange": [
+          790,
+          202,
+          818,
+          214
+        ],
+        "Green": [
+          752,
+          220,
+          773,
+          242
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeHeight",
+      "group": "Direct",
+      "axis": "RelativeHeight",
+      "backgroundRect": [
+        949,
+        164,
+        1142,
+        371
+      ],
+      "swatches": {
+        "Blue": [
+          969,
+          202,
+          1000,
+          214
+        ],
+        "Orange": [
+          1006,
+          202,
+          1035,
+          214
+        ],
+        "Green": [
+          969,
+          220,
+          989,
+          242
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeBoth",
+      "group": "Direct",
+      "axis": "RelativeBoth",
+      "backgroundRect": [
+        1165,
+        164,
+        1358,
+        371
+      ],
+      "swatches": {
+        "Blue": [
+          1185,
+          202,
+          1217,
+          214
+        ],
+        "Orange": [
+          1223,
+          202,
+          1251,
+          214
+        ],
+        "Green": [
+          1185,
+          220,
+          1206,
+          242
+        ]
+      }
+    },
+    {
+      "name": "GridNestedExactBoth",
+      "group": "Nested",
+      "axis": "ExactBoth",
+      "backgroundRect": [
+        516,
+        405,
+        709,
+        612
+      ],
+      "swatches": {
+        "Blue": [
+          554,
+          462,
+          586,
+          475
+        ],
+        "Orange": [
+          592,
+          462,
+          608,
+          475
+        ],
+        "Green": [
+          554,
+          481,
+          575,
+          502
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeWidth",
+      "group": "Nested",
+      "axis": "RelativeWidth",
+      "backgroundRect": [
+        732,
+        405,
+        925,
+        612
+      ],
+      "swatches": {
+        "Blue": [
+          771,
+          462,
+          802,
+          475
+        ],
+        "Orange": [
+          808,
+          462,
+          824,
+          475
+        ],
+        "Green": [
+          771,
+          481,
+          791,
+          502
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeHeight",
+      "group": "Nested",
+      "axis": "RelativeHeight",
+      "backgroundRect": [
+        949,
+        405,
+        1142,
+        612
+      ],
+      "swatches": {
+        "Blue": [
+          987,
+          462,
+          1019,
+          475
+        ],
+        "Orange": [
+          1025,
+          462,
+          1041,
+          475
+        ],
+        "Green": [
+          987,
+          481,
+          1008,
+          502
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeBoth",
+      "group": "Nested",
+      "axis": "RelativeBoth",
+      "backgroundRect": [
+        1165,
+        405,
+        1358,
+        612
+      ],
+      "swatches": {
+        "Blue": [
+          1203,
+          462,
+          1235,
+          475
+        ],
+        "Orange": [
+          1241,
+          462,
+          1257,
+          475
+        ],
+        "Green": [
+          1203,
+          481,
+          1224,
+          502
+        ]
+      }
+    }
+  ],
+  "studioCases": [
+    {
+      "name": "GridDirectExactBoth",
+      "backgroundRect": [
+        318,
+        235,
+        506,
+        437
+      ],
+      "swatches": {
+        "Blue": [
+          334,
+          269,
+          364,
+          280
+        ],
+        "Orange": [
+          333,
+          285,
+          381,
+          305
+        ],
+        "Green": [
+          333,
+          310,
+          353,
+          331
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeWidth",
+      "backgroundRect": [
+        530,
+        235,
+        719,
+        437
+      ],
+      "swatches": {
+        "Blue": [
+          546,
+          269,
+          576,
+          280
+        ],
+        "Orange": [
+          546,
+          285,
+          593,
+          305
+        ],
+        "Green": [
+          546,
+          310,
+          565,
+          331
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeHeight",
+      "backgroundRect": [
+        742,
+        235,
+        931,
+        437
+      ],
+      "swatches": {
+        "Blue": [
+          758,
+          269,
+          788,
+          280
+        ],
+        "Orange": [
+          758,
+          285,
+          806,
+          305
+        ],
+        "Green": [
+          758,
+          310,
+          778,
+          331
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeBoth",
+      "backgroundRect": [
+        955,
+        235,
+        1143,
+        437
+      ],
+      "swatches": {
+        "Blue": [
+          971,
+          269,
+          1001,
+          280
+        ],
+        "Orange": [
+          971,
+          285,
+          1018,
+          305
+        ],
+        "Green": [
+          970,
+          310,
+          990,
+          331
+        ]
+      }
+    },
+    {
+      "name": "GridNestedExactBoth",
+      "backgroundRect": [
+        318,
+        472,
+        506,
+        675
+      ],
+      "swatches": {
+        "Blue": [
+          351,
+          524,
+          382,
+          536
+        ],
+        "Orange": [
+          351,
+          541,
+          387,
+          555
+        ],
+        "Green": [
+          352,
+          559,
+          371,
+          580
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeWidth",
+      "backgroundRect": [
+        530,
+        472,
+        718,
+        675
+      ],
+      "swatches": {
+        "Blue": [
+          564,
+          524,
+          594,
+          536
+        ],
+        "Orange": [
+          564,
+          541,
+          599,
+          555
+        ],
+        "Green": [
+          564,
+          559,
+          584,
+          580
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeHeight",
+      "backgroundRect": [
+        742,
+        472,
+        931,
+        675
+      ],
+      "swatches": {
+        "Blue": [
+          776,
+          524,
+          807,
+          536
+        ],
+        "Orange": [
+          776,
+          541,
+          812,
+          555
+        ],
+        "Green": [
+          776,
+          559,
+          796,
+          580
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeBoth",
+      "backgroundRect": [
+        955,
+        472,
+        1143,
+        675
+      ],
+      "swatches": {
+        "Blue": [
+          989,
+          524,
+          1019,
+          536
+        ],
+        "Orange": [
+          989,
+          541,
+          1024,
+          555
+        ],
+        "Green": [
+          989,
+          559,
+          1008,
+          580
+        ]
+      }
+    }
+  ],
+  "interpretationLimits": [
+    "Positions in full screenshots differ because the applications have different preview origins; compare each swatch against its own case background and divide by 0.46.",
+    "Native image rectangles show 8x3 colored swatches; do not infer final invisible GridSpacer bounds from them.",
+    "Native Workbench and Studio rendering colors differ. Geometric measurements use individual screenshot color matches, not cross-app RGB equality.",
+    "Native layout contains authored content-sizing on both axes and three children per GridSpacer. Other widget families and grid topologies remain unverified.",
+    "All measurements were recorded before testing any new relative-parent geometry candidate."
+  ]
+}
