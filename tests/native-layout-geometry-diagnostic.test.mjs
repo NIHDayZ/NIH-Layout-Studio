@@ -182,3 +182,82 @@ test("Phase 3F optional focus selects literal ancestry/descendant subtree and re
 		rmSync(root, { recursive: true, force: true });
 	}
 });
+
+
+
+test("Phase 3G captures authored relative parent size separately from independent child topology", () => {
+	const example = [
+		"FrameWidgetClass Root {",
+		"	size 1920 1080",
+		"	hexactsize 1",
+		"	vexactsize 1",
+		"	{",
+		"		GridSpacerWidgetClass RelativeParent {",
+		"			size 0.5 0.5",
+		"			hexactsize 0",
+		"			vexactsize 0",
+		'			"Size To Content H" 1',
+		'			"Size To Content V" 1',
+		'			"Columns" 2',
+		'			"Rows" 1',
+		"			{",
+		"				PanelWidgetClass FixedChild {",
+		"					size 40 20",
+		"					hexactsize 1",
+		"					vexactsize 1",
+		"				}",
+		"			}",
+		"		}",
+		"	}",
+		"}"
+	].join("\n");
+	const report = AnalyzeVanillaGeometry(example);
+	assert.equal(report.gridEligibility.totalGridSpacers, 1);
+	assert.equal(report.gridEligibility.exactParentSizeCount, 0);
+	assert.equal(report.gridEligibility.relativeReasonCounts["parent-size-not-exact"], 1);
+	assert.equal(report.gridEligibility.childTopologyReasonCounts["no-obvious-child-topology-blocker"], 1);
+	assert.equal(report.gridEligibility.contentSizingModeCounts["both-axes"], 1);
+	const parent = report.gridEligibility.items[0];
+	assert.deepEqual(parent.authoredSize, { x: 0.5, y: 0.5 });
+	assert.equal(parent.exactSizeX, false);
+	assert.equal(parent.exactSizeY, false);
+	assert.deepEqual(parent.basicLocalSize, { width: 960, height: 540 });
+	assert.equal(parent.probeReturnedPlan, false);
+	assert.equal(parent.appliedMode, null);
+	assert.equal(report.relativeVsBasic.totalChanged, 0);
+});
+
+test("Phase 3G secondary topology diagnosis exposes managed children after blocked relative parent", () => {
+	const example = [
+		"FrameWidgetClass Root {",
+		"	size 1920 1080",
+		"	hexactsize 1",
+		"	vexactsize 1",
+		"	{",
+		"		GridSpacerWidgetClass RelativeParent {",
+		"			size 0.5 0.5",
+		"			hexactsize 0",
+		"			vexactsize 0",
+		'			"Size To Content H" 1',
+		'			"Size To Content V" 1',
+		"			{",
+		"				ScrollWidgetClass NestedScroll {",
+		"					size 50 50",
+		"					hexactsize 1",
+		"					vexactsize 1",
+		"				}",
+		"			}",
+		"		}",
+		"	}",
+		"}"
+	].join("\n");
+	const report = AnalyzeVanillaGeometry(example);
+	const parent = report.gridEligibility.items[0];
+	assert.equal(parent.relativeReason, "parent-size-not-exact");
+	assert.equal(parent.childTopologyReason, "unresolved-managed-child");
+	assert.equal(parent.childTopologyBlocker, "NestedScroll");
+	assert.equal(report.gridEligibility.childTopologyReasonCounts["unresolved-managed-child"], 1);
+	assert.equal(report.gridEligibility.appliedStrategyCount, 0);
+	assert.match(FormatVanillaGeometry(report), /Child topology \(independent second gate\)/);
+	assert.match(FormatVanillaGeometry(report), /NestedScroll/);
+});
