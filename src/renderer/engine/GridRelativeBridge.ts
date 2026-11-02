@@ -16,6 +16,8 @@ export interface MeasuredRelativeGrid {
 	readonly participatingIndices: readonly number[];
 	/** Only set by the Phase 3I resolved-parent experiment; never by legacy exact-size probe. */
 	readonly allocatedParentRelative?: true;
+	/** Phase 3K single-axis candidate, separately gated from Phase 3I. */
+	readonly allocatedParentSingleAxis?: true;
 }
 
 /**
@@ -107,12 +109,17 @@ export function ProbeMeasuredRelativeGrid(
 export function ProbeAllocatedParentRelativeGrid(
 	parent: MeasuredLayoutNode,
 	allocatedParentWidth: number,
-	allocatedParentHeight: number
+	allocatedParentHeight: number,
+	mode: "both" | "single" = "both"
 ): MeasuredRelativeGrid | null {
 	const grid = parent.nativeGrid;
 	const authored = parent.authored;
+	const contentWidth = parent.unresolvedContentWidth;
+	const contentHeight = parent.unresolvedContentHeight;
+	const validContentAxes = mode === "single"
+		? contentWidth !== contentHeight : contentWidth && contentHeight;
 	if (parent.strategy.kind !== "grid" || !grid
-		|| !parent.unresolvedContentWidth || !parent.unresolvedContentHeight
+		|| !validContentAxes
 		|| (authored.exactSizeX && authored.exactSizeY)
 		|| !Number.isFinite(allocatedParentWidth) || allocatedParentWidth <= 0
 		|| !Number.isFinite(allocatedParentHeight) || allocatedParentHeight <= 0)
@@ -152,9 +159,27 @@ export function ProbeAllocatedParentRelativeGrid(
 		margin: grid.margin,
 		authoredWidth: resolvedWidth,
 		authoredHeight: resolvedHeight,
-		contentWidth: true,
-		contentHeight: true,
+		contentWidth,
+		contentHeight,
 		children
 	});
-	return plan ? { plan, participatingIndices: indices, allocatedParentRelative: true } : null;
+	if (!plan)
+		return null;
+	if (mode === "single")
+		return { plan, participatingIndices: indices, allocatedParentRelative: true,
+			allocatedParentSingleAxis: true };
+	return { plan, participatingIndices: indices, allocatedParentRelative: true };
+}
+
+/**
+ * Phase 3K: single-axis Size To Content against known allocated parent size.
+ * Requires a separate snapshot/Canvas flag: existing Phase 3I remains both-axis.
+ */
+export function ProbeAllocatedParentSingleAxisGrid(
+	parent: MeasuredLayoutNode,
+	allocatedParentWidth: number,
+	allocatedParentHeight: number
+): MeasuredRelativeGrid | null {
+	return ProbeAllocatedParentRelativeGrid(parent, allocatedParentWidth,
+		allocatedParentHeight, "single");
 }
