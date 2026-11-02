@@ -231,7 +231,11 @@ export function FormatVanillaGeometry(report) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
 	const args = process.argv.slice(2);
 	const files = args.filter(arg => !arg.startsWith("--"));
-	if (files.length !== 1 || args.some(arg => arg !== "--json" && !arg.startsWith("--max-focused="))) {
+	const flags = args.filter(arg => arg.startsWith("--"));
+	const invalidFlags = flags.some(arg => arg !== "--json" && !arg.startsWith("--max-focused="));
+	const duplicateFlags = flags.filter(arg => arg === "--json").length > 1
+		|| flags.filter(arg => arg.startsWith("--max-focused=")).length > 1;
+	if (files.length !== 1 || invalidFlags || duplicateFlags) {
 		console.error("Usage: node scripts/Analyze-NativeLayoutGeometry.mjs <layout-file> [--json] [--max-focused=N]");
 		process.exitCode = 2;
 	} else {
