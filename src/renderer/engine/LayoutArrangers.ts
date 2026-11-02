@@ -20,6 +20,8 @@ export interface ArrangementOptions {
 	gridContentArrangement?: boolean;
 	/** Phase 2M experiment: apply independently captured relative GridSpacer content sizing. Requires constrainedGrid. */
 	gridRelativeContentPrototype?: boolean;
+	/** Phase 3I opt-in: resolve relative Grid parent size from known parent allocation before cell planning. */
+	gridAllocatedParentRelativePrototype?: boolean;
 	/** Native-derived fixed-child WrapSpacer only; no content-sized axes. */
 	fixedWrap?: boolean;
 	/** Opt-in Workbench-observed right-to-left and vertical-center fixed Wrap preview. */
