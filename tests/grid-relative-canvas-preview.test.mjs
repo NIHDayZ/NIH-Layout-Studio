@@ -16,7 +16,7 @@ test("Phase 2O preview requires both shared snapshot and explicit relative-grid 
 	assert.ok(canvas.includes("const relativeGridPreviewEnabled = snapshotEnabled &&"));
 	assert.ok(canvas.includes("constrainedGrid: relativeGridPreviewEnabled,"));
 	assert.ok(canvas.includes("gridRelativeContentPrototype: relativeGridPreviewEnabled,"));
-	assert.ok(canvas.includes("[snapshotEnabled, relativeGridPreviewEnabled, allocatedParentGridPreviewEnabled, nodes, width, height]"));
+	assert.ok(canvas.includes("[snapshotEnabled, relativeGridPreviewEnabled, allocatedParentGridPreviewEnabled, allocatedSingleAxisGridPreviewEnabled, nodes, width, height]"));
 	// Phase 2O remains independently enabled without the Phase 3I opt-in.
 	assert.ok(canvas.includes("const allocatedParentGridPreviewEnabled = relativeGridPreviewEnabled &&"));
 	assert.ok(canvas.includes("gridAllocatedParentRelativePrototype: allocatedParentGridPreviewEnabled,"));
