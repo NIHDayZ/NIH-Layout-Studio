@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import {
 	AnalyzeVanillaGeometry,
@@ -84,6 +84,46 @@ test("Phase 3F CLI accepts a local layout and refuses malformed/no-root fixtures
 		assert.throws(() => AnalyzeVanillaGeometry(realGridFixture,
 			{ root: { x: 0, y: 0, width: 0, height: 100 } }),
 			/Root viewport dimensions/);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
+});
+
+
+test("Phase 3F CLI accepts a bare Windows-compatible layout path and handles option validation separately", () => {
+	const dir = mkdtempSync(join(tmpdir(), "nih-phase3f-args-"));
+	try {
+		const filename = join(dir, "geometry.layout");
+		writeFileSync(filename, realGridFixture);
+		const script = fileURLToPath(new URL("../scripts/Analyze-NativeLayoutGeometry.mjs", import.meta.url));
+
+		// The originally reported regression: required path must not be treated as an unknown flag.
+		const markdown = execFileSync(process.execPath, [script, filename], { encoding: "utf8" });
+		assert.match(markdown, /Phase 3F/);
+		assert.match(markdown, /Relative snapshot root causes/);
+
+		// Optional focused limit should work without --json.
+		const limited = execFileSync(process.execPath,
+			[script, filename, "--max-focused=2"], { encoding: "utf8" });
+		assert.match(limited, /Focused relevant widgets/);
+
+		// Invalid, repeated, or missing flags and a missing source path fail with a usage error.
+		for (const args of [
+			[filename, "--unknown"],
+			[filename, "--json", "--json"],
+			[filename, "--max-focused=2", "--max-focused=3"],
+			["--json"]
+		]) {
+			const result = spawnSync(process.execPath, [script, ...args], { encoding: "utf8" });
+			assert.equal(result.status, 2, "expected usage failure for " + args.join(" "));
+			assert.match(result.stderr, /Usage: node scripts\/Analyze-NativeLayoutGeometry\.mjs/);
+		}
+
+		// Malformed numeric limits are analysis errors, not incorrectly rejected source paths.
+		const invalidLimit = spawnSync(process.execPath,
+			[script, filename, "--max-focused=0"], { encoding: "utf8" });
+		assert.equal(invalidLimit.status, 1);
+		assert.match(invalidLimit.stderr, /max-focused must be an integer from 1 to 200/);
 	} finally {
 		rmSync(dir, { recursive: true, force: true });
 	}
