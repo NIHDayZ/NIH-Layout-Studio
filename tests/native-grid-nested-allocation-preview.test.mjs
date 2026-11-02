@@ -128,6 +128,16 @@ test("Phase 3M rejects invalid allocation and unmeasured managed siblings", () =
 	assert.equal(ProbeNestedAllocatedGrid(altered, 570, 465), null);
 	assert.equal(ProbeNestedAllocatedGrid(s_ByName.get("InnerHeightOuter"), 190.5, 161.04), null,
 		"standalone inner grid is not a nested parent");
+	for (const options of [
+		{ constrainedGrid: true, gridRelativeContentPrototype: true,
+			gridNestedAllocationPrototype: true },
+		{ ...s_FourFlags, gridAllocatedParentSingleAxisPrototype: false,
+			gridNestedAllocationPrototype: true }
+	]) {
+		const snapshot = ArrangeMeasuredGeometry(s_Measured, s_Root, 1, options);
+		assert.equal(snapshot.appliedStrategies.filter(item =>
+			item.mode === "grid-nested-allocation-prototype").length, 0);
+	}
 });
 
 test("Phase 3M native 1440 capture tracks independent 0.75 screen-scale across inner and leaf cases", () => {
