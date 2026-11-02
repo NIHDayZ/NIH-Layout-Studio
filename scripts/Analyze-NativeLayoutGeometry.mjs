@@ -8,7 +8,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { LayoutParser } from "../.geometry-engine-test-build/LayoutParser.js";
-import { MeasureLayoutTree, ArrangeMeasuredGeometry } from "../.geometry-engine-test-build/SnapshotForTests.js";
+import { MeasureLayoutTree, ArrangeMeasuredGeometry, ProbeMeasuredRelativeGrid, SelectManagedChildIndices } from "../.geometry-engine-test-build/SnapshotForTests.js";
 import { CompareLiveToSnapshot } from "../.geometry-engine-test-build/GeometryComparison.js";
 
 const s_Root = { x: 0, y: 0, width: 1920, height: 1080 };
@@ -106,6 +106,117 @@ function ShortenLiveDifference(diff) {
 	};
 }
 
+/**
+ * Explain why a measured GridSpacer did or did not enter an experimental path.
+ * Read only: the same native eligibility helpers used by the snapshot are
+ * called, but neither model's rectangles or scene widgets are modified.
+ */
+function InspectGridEligibility(measured, basic, relative, names) {
+	const items = [];
+	const cache = new WeakMap();
+	const modesById = new Map(relative.appliedStrategies.map(item => [item.id, item.mode]));
+	function Walk(node) {
+		if (node.strategy.kind === "grid") {
+			const grid = node.nativeGrid;
+			const a = node.authored;
+			const contentSize = node.unresolvedContentWidth || node.unresolvedContentHeight;
+			const indices = SelectManagedChildIndices(node.children, node.nativeIgnoreInvisible);
+			const base = basic.byId.get(node.node.id);
+			const relativePlan = ProbeMeasuredRelativeGrid(node, cache);
+			let relativeReason = "relative-plan-available";
+			if (!grid)
+				relativeReason = "invalid-native-grid-settings";
+			else if (!contentSize)
+				relativeReason = "not-content-sized";
+			else if (!a.exactSizeX || !a.exactSizeY)
+				relativeReason = "parent-size-not-exact";
+			else if (indices === null)
+				relativeReason = "unknown-ignore-invisible";
+			else if (indices.length === 0)
+				relativeReason = "no-eligible-children";
+			else {
+				for (const index of indices) {
+					const child = node.children[index];
+					const authored = child.authored;
+					if (authored.sizeToContentWidth || authored.sizeToContentHeight) {
+						if (child.strategy.kind !== "grid" || !authored.sizeToContentWidth
+							|| !authored.sizeToContentHeight || !authored.exactSizeX
+							|| !authored.exactSizeY) {
+							relativeReason = "unsupported-nested-content-child";
+							break;
+						}
+						if (!ProbeMeasuredRelativeGrid(child, cache)) {
+							relativeReason = "nested-relative-grid-rejected";
+							break;
+						}
+					} else if (child.strategy.requiresArrangement) {
+						relativeReason = "unresolved-managed-child";
+						break;
+					} else if (![authored.sizeX, authored.sizeY].every(Number.isFinite)
+						|| authored.sizeX < 0 || authored.sizeY < 0) {
+						relativeReason = "invalid-child-size";
+						break;
+					}
+				}
+				if (relativeReason === "relative-plan-available" && !relativePlan)
+					relativeReason = "native-relative-plan-rejected";
+			}
+
+			let fixedReason = "fixed-grid-eligible";
+			if (!grid)
+				fixedReason = "invalid-native-grid-settings";
+			else if (indices === null)
+				fixedReason = "unknown-ignore-invisible";
+			else if (indices.length === 0)
+				fixedReason = "no-eligible-children";
+			else if (contentSize)
+				fixedReason = "content-size-requires-separate-strategy";
+			else if (indices.length > grid.columns * grid.rows)
+				fixedReason = "child-count-exceeds-fixed-grid-capacity";
+			else if (!base || !Number.isFinite(base.localRect.width)
+				|| !Number.isFinite(base.localRect.height)
+				|| base.localRect.width < 0 || base.localRect.height < 0)
+				fixedReason = "invalid-arranged-parent-rect";
+
+			const source = names.get(node.node.id);
+			items.push({
+				id: node.node.id,
+				name: source?.name ?? "",
+				ancestry: source?.ancestry ?? [],
+				childCount: node.children.length,
+				eligibleChildCount: indices?.length ?? null,
+				columns: grid?.columns ?? null,
+				rows: grid?.rows ?? null,
+				contentWidth: node.unresolvedContentWidth,
+				contentHeight: node.unresolvedContentHeight,
+				exactSizeX: a.exactSizeX,
+				exactSizeY: a.exactSizeY,
+				fixedReason,
+				relativeReason,
+				probeReturnedPlan: relativePlan !== null,
+				appliedMode: modesById.get(node.node.id) ?? null
+			});
+		}
+		for (const child of node.children)
+			Walk(child);
+	}
+	for (const node of measured.roots)
+		Walk(node);
+	const Counts = key => {
+		const result = {};
+		for (const item of items)
+			result[item[key]] = (result[item[key]] ?? 0) + 1;
+		return result;
+	};
+	return {
+		totalGridSpacers: items.length,
+		fixedReasonCounts: Counts("fixedReason"),
+		relativeReasonCounts: Counts("relativeReason"),
+		appliedStrategyCount: items.filter(item => item.appliedMode !== null).length,
+		items
+	};
+}
+
 export function AnalyzeVanillaGeometry(source, options = {}) {
 	const parser = new LayoutParser();
 	const document = parser.Parse(source);
@@ -129,6 +240,7 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		nativeWrapLayout: false
 	});
 	const filterPattern = options.focusPattern ?? /server_list_root|server_list_content_root|filter|server_list_header/i;
+	const gridEligibility = InspectGridEligibility(measured, basic, relative, names);
 	const focused = [];
 	for (const item of basic.entries) {
 		const n = names.get(item.id);
@@ -163,6 +275,8 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 			id: issue.id, name: names.get(issue.id)?.name ?? "", code: issue.code
 		})),
 		relativeSnapshotAppliedStrategies: applied,
+		gridEligibility,
+		focusSelection: options.focusLabel ?? "default server-list/filter ancestry",
 		relativeVsBasic: {
 			totalChanged: changed.totalChanged,
 			localRectChanged: changed.localRectChanged,
@@ -202,6 +316,10 @@ export function FormatVanillaGeometry(report) {
 			report.relativeVsBasic.inheritedOnly + " inherited only)",
 		"Relative native-derived strategies applied: " +
 			report.relativeSnapshotAppliedStrategies.length,
+		"Measured GridSpacers: " + report.gridEligibility.totalGridSpacers,
+		"Relative prototype skip reasons: " + JSON.stringify(report.gridEligibility.relativeReasonCounts),
+		"Fixed-grid skip reasons: " + JSON.stringify(report.gridEligibility.fixedReasonCounts),
+		"Focus: " + report.focusSelection,
 		"Focused relevant widgets: " + report.focusedCount,
 		"",
 		"## Relative snapshot root causes",
@@ -218,8 +336,15 @@ export function FormatVanillaGeometry(report) {
 	for (const item of report.liveGridVsBasic.topRootCauses)
 		output.push("| " + item.name + " | " + item.type + " | " + item.affectedWidgets +
 			" | " + Object.values(item.localDelta).join(" / ") + " |");
+	output.push("", "## GridSpacer native-strategy eligibility", "",
+		"| GridSpacer | Child slots | Content W/H | Relative reason | Fixed reason | Applied |",
+		"|---|---:|---|---|---|---|");
+	for (const item of report.gridEligibility.items)
+		output.push("| " + item.name + " | " + item.eligibleChildCount + "/" + item.childCount +
+			" | " + Number(item.contentWidth) + "/" + Number(item.contentHeight) +
+			" | " + item.relativeReason + " | " + item.fixedReason + " | " + (item.appliedMode ?? "none") + " |");
 	output.push("", "## Focused ancestry and rectangles", "");
-	for (const item of report.focused.slice(0, 18))
+	for (const item of report.focused)
 		output.push("- " + [...item.ancestry, item.name].join(" > ") +
 			" | basic=" + JSON.stringify(item.basicLocal) +
 			" | relative=" + JSON.stringify(item.relativeLocal) +
@@ -232,11 +357,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
 	const args = process.argv.slice(2);
 	const files = args.filter(arg => !arg.startsWith("--"));
 	const flags = args.filter(arg => arg.startsWith("--"));
-	const invalidFlags = flags.some(arg => arg !== "--json" && !arg.startsWith("--max-focused="));
+	const invalidFlags = flags.some(arg => arg !== "--json" && !arg.startsWith("--max-focused=")
+		&& !arg.startsWith("--focus="));
 	const duplicateFlags = flags.filter(arg => arg === "--json").length > 1
-		|| flags.filter(arg => arg.startsWith("--max-focused=")).length > 1;
+		|| flags.filter(arg => arg.startsWith("--max-focused=")).length > 1
+		|| flags.filter(arg => arg.startsWith("--focus=")).length > 1;
 	if (files.length !== 1 || invalidFlags || duplicateFlags) {
-		console.error("Usage: node scripts/Analyze-NativeLayoutGeometry.mjs <layout-file> [--json] [--max-focused=N]");
+		console.error("Usage: node scripts/Analyze-NativeLayoutGeometry.mjs <layout-file> [--json] [--max-focused=N] [--focus=substring]");
 		process.exitCode = 2;
 	} else {
 		try {
@@ -244,7 +371,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
 			const maxFocused = limit ? Number(limit.split("=")[1]) : 35;
 			if (!Number.isInteger(maxFocused) || maxFocused < 1 || maxFocused > 200)
 				throw new Error("max-focused must be an integer from 1 to 200");
-			const report = AnalyzeVanillaGeometry(readFileSync(resolve(files[0]), "utf8"), { maxFocused });
+			const focusFlag = flags.find(arg => arg.startsWith("--focus="));
+			const focusLabel = focusFlag ? focusFlag.slice("--focus=".length) : null;
+			if (focusLabel !== null && (focusLabel.length < 1 || focusLabel.length > 128))
+				throw new Error("focus must be a nonempty substring up to 128 characters");
+			const focusPattern = focusLabel ? new RegExp(focusLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\const report = AnalyzeVanillaGeometry(readFileSync(resolve(files[0]), "utf8"), { maxFocused });"), "i") : undefined;
+			const report = AnalyzeVanillaGeometry(readFileSync(resolve(files[0]), "utf8"), {
+				maxFocused, focusPattern, focusLabel: focusLabel ?? undefined
+			});
 			console.log(args.includes("--json") ? JSON.stringify(report, null, 2) : FormatVanillaGeometry(report));
 		} catch (error) {
 			console.error("Geometry analysis failed: " + String(error?.message ?? error));
