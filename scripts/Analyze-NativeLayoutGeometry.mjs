@@ -377,7 +377,7 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 		id: item.id, name: names.get(item.id)?.name ?? "", mode: item.mode
 	}));
 	return {
-		phase: "3M",
+		phase: "3F",
 		status: "OFFLINE_MODEL_COMPARISON_NOT_NATIVE_PARITY",
 		root,
 		parsedRoots: document.roots.length,
@@ -449,7 +449,7 @@ export function AnalyzeVanillaGeometry(source, options = {}) {
 
 export function FormatVanillaGeometry(report) {
 	const output = [
-		"# NIH Phase 3M — Actual layout geometry model comparison",
+		"# NIH Phase 3F — Actual layout geometry model comparison",
 		"",
 		"Offline model comparison, NOT a Workbench native parity result.",
 		"",
