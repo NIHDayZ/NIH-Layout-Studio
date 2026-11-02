@@ -100,12 +100,13 @@ function ShapeDocument(document) {
 function CountNodes(nodes, tally) {
 	for (const node of nodes) {
 		++tally.allDeclarations;
-		if (node.type.endsWith("WidgetClass"))
+		if (node.type.endsWith("WidgetClass")) {
 			++tally.widgets;
-		else
+			if (node.sourceHasNoIdentifier === true)
+				++tally.idless;
+		} else {
 			++tally.auxiliary;
-		if (node.sourceHasNoIdentifier === true)
-			++tally.idless;
+		}
 		tally.properties += node.properties.length;
 		CountNodes(node.children, tally);
 		CountNodes(node.sourceAuxiliaryBlocks ?? [], tally);
