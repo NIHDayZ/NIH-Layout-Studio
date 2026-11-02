@@ -9,6 +9,7 @@ class NIHGridMeasurementProbe {
 	protected Widget m_ComplexRoot;
 	protected Widget m_ColorRoot;
 	protected Widget m_PanelStyleRoot;
+	protected Widget m_NestedDependencyRoot;
 
 	void Start() {
 		if (g_Game.IsDedicatedServer())
@@ -25,6 +26,8 @@ class NIHGridMeasurementProbe {
 		Capture("post-update");
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeAndCapture, 900, false);
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(StartVariations, 1800, false);
+		// Phase 3L: schedule independently of earlier experimental fixtures.
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(StartNestedDependencies, 9500, false);
 	}
 
 	protected void ResizeAndCapture() {
@@ -238,6 +241,57 @@ class NIHGridMeasurementProbe {
 		entry += " flags=" + widget.GetFlags().ToString();
 		entry += " visible=" + widget.IsVisible().ToString();
 		Print(entry);
+	}
+
+	/**
+	 * Phase 3L native nested manager allocation evidence. This disposable,
+	 * client-only probe logs actual widget bounds instead of guessing
+	 * GridSpacer parent extents from visible color swatches in Workbench.
+	 * Widget identity uses names; generated IDs are not assumed present.
+	 */
+	protected void StartNestedDependencies() {
+		if (g_Game.IsDedicatedServer())
+			return;
+
+		m_NestedDependencyRoot = g_Game.GetWorkspace().CreateWidgets(
+			"NIH_GridMeasurementProbe/gui/layouts/NIH_Grid_Nested_Dependency_Matrix.layout");
+		if (!m_NestedDependencyRoot) {
+			Print("[NIH_LayoutStudio][NestedGridProbe] ERROR nested layout resource unavailable");
+			return;
+		}
+
+		CaptureNestedDependencies("after-create");
+		m_NestedDependencyRoot.Update();
+		CaptureNestedDependencies("post-update");
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(CaptureSettledNestedDependencies, 900, false);
+		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(ResizeNestedDependencies, 1800, false);
+	}
+
+	protected void CaptureNestedDependencies(string phase) {
+		if (!m_NestedDependencyRoot)
+			return;
+
+		Print("[NIH_LayoutStudio][NestedGridProbe] BEGIN " + phase);
+		CaptureTree(m_NestedDependencyRoot, phase);
+		Print("[NIH_LayoutStudio][NestedGridProbe] END " + phase);
+	}
+
+	protected void CaptureSettledNestedDependencies() {
+		if (!m_NestedDependencyRoot)
+			return;
+
+		m_NestedDependencyRoot.Update();
+		CaptureNestedDependencies("post-settle");
+	}
+
+	protected void ResizeNestedDependencies() {
+		if (!m_NestedDependencyRoot)
+			return;
+
+		m_NestedDependencyRoot.SetScreenPos(0, 0);
+		m_NestedDependencyRoot.SetScreenSize(1120, 720);
+		m_NestedDependencyRoot.Update();
+		CaptureNestedDependencies("after-resize-1120x720");
 	}
 
 	protected void CaptureComplex(string phase) {
