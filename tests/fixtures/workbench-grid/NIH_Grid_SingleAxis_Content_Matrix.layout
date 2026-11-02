@@ -1,0 +1,618 @@
+FrameWidgetClass NIHSingleAxisContentMatrix {
+	position 0 0
+	size 1920 1080
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		FrameWidgetClass SlotWidthOnlyExactBoth {
+			position 20 30
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundWidthOnlyExactBoth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.22 0.26 0.31 1
+				}
+				TextWidgetClass LabelWidthOnlyExactBoth {
+					position 20 15
+					size 380 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "WidthOnly: ExactBoth"
+				}
+				GridSpacerWidgetClass GridWidthOnlyExactBoth {
+					position 35 75
+					size 240 135
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 0
+					{
+						PanelWidgetClass WidthOnlyExactBothBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass WidthOnlyExactBothOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass WidthOnlyExactBothGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotWidthOnlyRelativeWidth {
+			position 490 30
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundWidthOnlyRelativeWidth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.22 0.26 0.31 1
+				}
+				TextWidgetClass LabelWidthOnlyRelativeWidth {
+					position 20 15
+					size 380 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "WidthOnly: RelativeWidth"
+				}
+				GridSpacerWidgetClass GridWidthOnlyRelativeWidth {
+					position 35 75
+					size 0.571428571 135
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 1
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 0
+					{
+						PanelWidgetClass WidthOnlyRelativeWidthBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass WidthOnlyRelativeWidthOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass WidthOnlyRelativeWidthGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotWidthOnlyRelativeHeight {
+			position 960 30
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundWidthOnlyRelativeHeight {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.22 0.26 0.31 1
+				}
+				TextWidgetClass LabelWidthOnlyRelativeHeight {
+					position 20 15
+					size 380 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "WidthOnly: RelativeHeight"
+				}
+				GridSpacerWidgetClass GridWidthOnlyRelativeHeight {
+					position 35 75
+					size 240 0.3
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 0
+					{
+						PanelWidgetClass WidthOnlyRelativeHeightBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass WidthOnlyRelativeHeightOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass WidthOnlyRelativeHeightGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotWidthOnlyRelativeBoth {
+			position 1430 30
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundWidthOnlyRelativeBoth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.22 0.26 0.31 1
+				}
+				TextWidgetClass LabelWidthOnlyRelativeBoth {
+					position 20 15
+					size 380 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "WidthOnly: RelativeBoth"
+				}
+				GridSpacerWidgetClass GridWidthOnlyRelativeBoth {
+					position 35 75
+					size 0.571428571 0.3
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 0
+					{
+						PanelWidgetClass WidthOnlyRelativeBothBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass WidthOnlyRelativeBothOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass WidthOnlyRelativeBothGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotHeightOnlyExactBoth {
+			position 20 555
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundHeightOnlyExactBoth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.32 0.27 0.27 1
+				}
+				TextWidgetClass LabelHeightOnlyExactBoth {
+					position 20 15
+					size 380 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "HeightOnly: ExactBoth"
+				}
+				GridSpacerWidgetClass GridHeightOnlyExactBoth {
+					position 35 75
+					size 240 135
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 0
+					"Size To Content V" 1
+					{
+						PanelWidgetClass HeightOnlyExactBothBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass HeightOnlyExactBothOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass HeightOnlyExactBothGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotHeightOnlyRelativeWidth {
+			position 490 555
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundHeightOnlyRelativeWidth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.32 0.27 0.27 1
+				}
+				TextWidgetClass LabelHeightOnlyRelativeWidth {
+					position 20 15
+					size 380 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "HeightOnly: RelativeWidth"
+				}
+				GridSpacerWidgetClass GridHeightOnlyRelativeWidth {
+					position 35 75
+					size 0.571428571 135
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 1
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 0
+					"Size To Content V" 1
+					{
+						PanelWidgetClass HeightOnlyRelativeWidthBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass HeightOnlyRelativeWidthOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass HeightOnlyRelativeWidthGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotHeightOnlyRelativeHeight {
+			position 960 555
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundHeightOnlyRelativeHeight {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.32 0.27 0.27 1
+				}
+				TextWidgetClass LabelHeightOnlyRelativeHeight {
+					position 20 15
+					size 380 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "HeightOnly: RelativeHeight"
+				}
+				GridSpacerWidgetClass GridHeightOnlyRelativeHeight {
+					position 35 75
+					size 240 0.3
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 0
+					"Size To Content V" 1
+					{
+						PanelWidgetClass HeightOnlyRelativeHeightBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass HeightOnlyRelativeHeightOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass HeightOnlyRelativeHeightGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotHeightOnlyRelativeBoth {
+			position 1430 555
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundHeightOnlyRelativeBoth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.32 0.27 0.27 1
+				}
+				TextWidgetClass LabelHeightOnlyRelativeBoth {
+					position 20 15
+					size 380 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "HeightOnly: RelativeBoth"
+				}
+				GridSpacerWidgetClass GridHeightOnlyRelativeBoth {
+					position 35 75
+					size 0.571428571 0.3
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 0
+					"Size To Content V" 1
+					{
+						PanelWidgetClass HeightOnlyRelativeBothBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass HeightOnlyRelativeBothOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass HeightOnlyRelativeBothGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+	}
+}
