@@ -129,5 +129,5 @@ test("Phase 3K fourth browser flag remains chained to earlier experimental gates
 	assert.ok(canvas.includes('get("experimentalAllocatedParentSingleAxisGrid") === "1"'));
 	assert.ok(canvas.includes("const allocatedSingleAxisGridPreviewEnabled = allocatedParentGridPreviewEnabled &&"));
 	assert.ok(canvas.includes("gridAllocatedParentSingleAxisPrototype: allocatedSingleAxisGridPreviewEnabled,"));
-	assert.ok(canvas.includes("allocatedSingleAxisGridPreviewEnabled, nodes, width, height]"));
+	assert.ok(canvas.includes("allocatedSingleAxisGridPreviewEnabled, nestedGridPreviewEnabled, nodes, width, height]"));
 });
