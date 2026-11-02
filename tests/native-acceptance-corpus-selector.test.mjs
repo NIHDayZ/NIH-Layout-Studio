@@ -29,7 +29,7 @@ function Layout(children, rootName = "Root") {
 	return [
 		"FrameWidgetClass " + rootName + " {",
 		"\t{",
-		...children.map((type, i) => "\t\t" + type + " Widget" + i + " {}"),
+		...children.flatMap((type, i) => ["\t\t" + type + " Widget" + i + " {", "\t\t}"]),
 		"\t}",
 		"}"
 	].join("\n");
@@ -111,7 +111,8 @@ test("native acceptance selection is read only and does not emit widget text or 
 			"    ImageWidgetClass {",
 			'\t\tName "SecretImageWidgetShouldNotAppear"',
 			"    }",
-			"    PanelWidgetClass SecretIdentifierShouldNotAppear {}",
+			"    PanelWidgetClass SecretIdentifierShouldNotAppear {",
+			"    }",
 			"\t}",
 			"}"
 		].join("\n")
