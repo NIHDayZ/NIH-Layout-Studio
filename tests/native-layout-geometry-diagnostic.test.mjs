@@ -261,3 +261,110 @@ test("Phase 3G secondary topology diagnosis exposes managed children after block
 	assert.match(FormatVanillaGeometry(report), /Child topology \(independent second gate\)/);
 	assert.match(FormatVanillaGeometry(report), /NestedScroll/);
 });
+
+
+
+test("Phase 3J reports allocated-parent activation separately from legacy grid strategies for all eight native cases", () => {
+	const matrix = readFileSync(new URL(
+		"./fixtures/workbench-grid/NIH_Grid_RelativeParent_Axis_Matrix.layout",
+		import.meta.url), "utf8");
+	const report = AnalyzeVanillaGeometry(matrix, {
+		focusPattern: /GridDirectRelativeBoth/,
+		maxFocused: 10
+	});
+	assert.equal(report.gridEligibility.totalGridSpacers, 8);
+	assert.equal(report.relativeSnapshotAppliedStrategies.length, 2);
+	assert.equal(report.allocatedSnapshotAppliedStrategies.length, 8);
+	assert.equal(report.allocatedSnapshotWidgets, report.relativeSnapshotWidgets);
+	assert.equal(report.allocatedSnapshotAppliedStrategies.filter(item =>
+		item.mode === "grid-allocated-parent-relative-prototype").length, 6);
+	assert.equal(report.allocatedSnapshotAppliedStrategies.filter(item =>
+		item.mode === "grid-relative-content-prototype").length, 2);
+	assert.equal(report.gridEligibility.allocatedReasonCounts["allocated-parent-grid-applied"], 6);
+	assert.equal(report.gridEligibility.allocatedReasonCounts["existing-exact-grid-applied"], 2);
+	assert.ok(report.allocatedVsRelative.totalChanged > 0);
+	assert.equal(report.allocatedVsRelative.totalChanged,
+		report.allocatedVsRelative.localRectChanged +
+		report.allocatedVsRelative.inheritedOnly);
+	const caseItem = report.gridEligibility.items.find(item =>
+		item.name === "GridDirectRelativeBoth");
+	assert.equal(caseItem.relativeReason, "parent-size-not-exact");
+	assert.equal(caseItem.allocatedReason, "allocated-parent-grid-applied");
+	assert.equal(caseItem.allocatedMode, "grid-allocated-parent-relative-prototype");
+	assert.equal(report.focused[0].name, "GridDirectRelativeBoth");
+	assert.ok(report.focused[0].allocatedLocal);
+	assert.ok(report.focused[0].allocatedVsRelativeDelta);
+});
+
+test("Phase 3J keeps unsupported single-axis and nested managed GridSpacers explicitly unactivated", () => {
+	const source = [
+		"FrameWidgetClass Root {",
+		"\tsize 1920 1080",
+		"\thexactsize 1",
+		"\tvexactsize 1",
+		"\t{",
+		"\t\tGridSpacerWidgetClass OneAxis {",
+		"\t\t\tsize 0.5 0.5",
+		'\t\t\t"Columns" 2',
+		'\t\t\t"Rows" 2',
+		'\t\t\t"Size To Content H" 1',
+		"\t\t\t{",
+		"\t\t\t\tPanelWidgetClass FixedChild {",
+		"\t\t\t\t\tsize 20 20",
+		"\t\t\t\t\thexactsize 1",
+		"\t\t\t\t\tvexactsize 1",
+		"\t\t\t\t}",
+		"\t\t\t}",
+		"\t\t}",
+		"\t\tGridSpacerWidgetClass NestedParent {",
+		"\t\t\tsize 0.5 0.5",
+		'\t\t\t"Columns" 2',
+		'\t\t\t"Rows" 2',
+		'\t\t\t"Size To Content H" 1',
+		'\t\t\t"Size To Content V" 1',
+		"\t\t\t{",
+		"\t\t\t\tScrollWidgetClass ChildScroll {",
+		"\t\t\t\t\tsize 20 20",
+		"\t\t\t\t}",
+		"\t\t\t}",
+		"\t\t}",
+		"\t}",
+		"}"
+	].join("\n");
+	const report = AnalyzeVanillaGeometry(source);
+	assert.equal(report.gridEligibility.totalGridSpacers, 2);
+	assert.equal(report.allocatedSnapshotAppliedStrategies.length, 0);
+	assert.equal(report.allocatedVsRelative.totalChanged, 0);
+	const a = report.gridEligibility.items.find(item => item.name === "OneAxis");
+	const b = report.gridEligibility.items.find(item => item.name === "NestedParent");
+	assert.equal(a.allocatedReason, "single-axis-content-unsupported");
+	assert.equal(b.allocatedReason, "unresolved-managed-child");
+	assert.equal(b.childTopologyBlocker, "ChildScroll");
+});
+
+test("Phase 3J CLI exposes scoped allocated-parent differences without certifying Workbench parity", () => {
+	const matrix = readFileSync(new URL(
+		"./fixtures/workbench-grid/NIH_Grid_RelativeParent_Axis_Matrix.layout",
+		import.meta.url), "utf8");
+	const dir = mkdtempSync(join(tmpdir(), "nih-phase3j-cli-"));
+	try {
+		const file = join(dir, "grid.layout");
+		writeFileSync(file, matrix);
+		const script = fileURLToPath(new URL(
+			"../scripts/Analyze-NativeLayoutGeometry.mjs", import.meta.url));
+		const result = JSON.parse(execFileSync(process.execPath, [
+			script, file, "--json", "--focus=GridDirectRelativeBoth", "--max-focused=3"
+		], { encoding: "utf8" }));
+		assert.equal(result.status, "OFFLINE_MODEL_COMPARISON_NOT_NATIVE_PARITY");
+		assert.equal(result.focusSelection, "GridDirectRelativeBoth");
+		assert.equal(result.allocatedSnapshotAppliedStrategies.length, 8);
+		assert.ok(result.focused.length <= 3);
+		const md = FormatVanillaGeometry(result);
+		assert.match(md, /Allocated-parent vs legacy relative snapshot root causes/);
+		assert.match(md, /Allocated-parent eligibility \/ activation/);
+		assert.match(md, /allocated-parent-grid-applied/);
+		assert.match(md, /not independently measured Workbench geometry/);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
+});
