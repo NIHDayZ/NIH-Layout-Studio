@@ -67,7 +67,8 @@ export function ProbeMixedAxisGrid(
 				// Scroll contents and scrollbar extents remain out of scope.
 				if (a.sizeToContentWidth || a.sizeToContentHeight
 					|| (child.strategy.requiresArrangement && !isScrollLeaf)
-					|| (isScrollLeaf && node.unresolvedContentHeight && !a.exactSizeY))
+					|| (isScrollLeaf && (!a.exactSizeY || !node.unresolvedContentHeight
+						|| node.nativeGrid.columns !== 1)))
 					return null;
 			}
 
