@@ -1,0 +1,739 @@
+FrameWidgetClass NIH_NestedGridDependencyMatrix {
+	position 0 0
+	size 1920 1080
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		FrameWidgetClass SlotHeightOuter {
+			position 20 30
+			size 570 465
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundHeightOuter {
+					position 0 0
+					size 570 465
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.24 0.27 0.31 1
+				}
+				TextWidgetClass LabelHeightOuter {
+					position 18 13
+					size 530 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "HeightOuter"
+				}
+				GridSpacerWidgetClass OuterHeightOuter {
+					position 32 72
+					size 0.7 0.72
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 8
+					"Margin" 5
+					"Ignore invisible" 1
+					"Size To Content H" 0
+					"Size To Content V" 1
+					{
+						GridSpacerWidgetClass InnerHeightOuter {
+							position 0 0
+							size 0.65 0.55
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							"Columns" 2
+							"Rows" 2
+							"Padding" 10
+							"Margin" 7
+							"Ignore invisible" 1
+							"Size To Content H" 1
+							"Size To Content V" 1
+							{
+								PanelWidgetClass HeightOuterBlue {
+									position 0 0
+									size 70 28
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.22 0.65 0.94 1
+								}
+								PanelWidgetClass HeightOuterOrange {
+									position 0 0
+									size 0.45 0.35
+									hexactpos 1
+									vexactpos 1
+									hexactsize 0
+									vexactsize 0
+									style rover_sim_colorable
+									color 0.95 0.57 0.19 1
+								}
+								PanelWidgetClass HeightOuterGreen {
+									position 0 0
+									size 46 48
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.26 0.84 0.50 1
+								}
+								PanelWidgetClass InnerMarkerHeightOuter {
+									position 0 0
+									size 24 24
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.94 0.35 0.76 1
+								}
+							}
+						}
+						PanelWidgetClass OuterMarkerHeightOuter {
+							position 0 0
+							size 32 32
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.96 0.92 0.22 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotWidthOuter {
+			position 645 30
+			size 570 465
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundWidthOuter {
+					position 0 0
+					size 570 465
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.24 0.27 0.31 1
+				}
+				TextWidgetClass LabelWidthOuter {
+					position 18 13
+					size 530 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "WidthOuter"
+				}
+				GridSpacerWidgetClass OuterWidthOuter {
+					position 32 72
+					size 0.7 0.72
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 8
+					"Margin" 5
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 0
+					{
+						GridSpacerWidgetClass InnerWidthOuter {
+							position 0 0
+							size 0.65 0.55
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							"Columns" 2
+							"Rows" 2
+							"Padding" 10
+							"Margin" 7
+							"Ignore invisible" 1
+							"Size To Content H" 1
+							"Size To Content V" 1
+							{
+								PanelWidgetClass WidthOuterBlue {
+									position 0 0
+									size 70 28
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.22 0.65 0.94 1
+								}
+								PanelWidgetClass WidthOuterOrange {
+									position 0 0
+									size 0.45 0.35
+									hexactpos 1
+									vexactpos 1
+									hexactsize 0
+									vexactsize 0
+									style rover_sim_colorable
+									color 0.95 0.57 0.19 1
+								}
+								PanelWidgetClass WidthOuterGreen {
+									position 0 0
+									size 46 48
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.26 0.84 0.50 1
+								}
+								PanelWidgetClass InnerMarkerWidthOuter {
+									position 0 0
+									size 24 24
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.94 0.35 0.76 1
+								}
+							}
+						}
+						PanelWidgetClass OuterMarkerWidthOuter {
+							position 0 0
+							size 32 32
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.96 0.92 0.22 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotBothOuter {
+			position 1270 30
+			size 570 465
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundBothOuter {
+					position 0 0
+					size 570 465
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.24 0.27 0.31 1
+				}
+				TextWidgetClass LabelBothOuter {
+					position 18 13
+					size 530 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "BothOuter"
+				}
+				GridSpacerWidgetClass OuterBothOuter {
+					position 32 72
+					size 0.7 0.72
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 8
+					"Margin" 5
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 1
+					{
+						GridSpacerWidgetClass InnerBothOuter {
+							position 0 0
+							size 0.65 0.55
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							"Columns" 2
+							"Rows" 2
+							"Padding" 10
+							"Margin" 7
+							"Ignore invisible" 1
+							"Size To Content H" 1
+							"Size To Content V" 1
+							{
+								PanelWidgetClass BothOuterBlue {
+									position 0 0
+									size 70 28
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.22 0.65 0.94 1
+								}
+								PanelWidgetClass BothOuterOrange {
+									position 0 0
+									size 0.45 0.35
+									hexactpos 1
+									vexactpos 1
+									hexactsize 0
+									vexactsize 0
+									style rover_sim_colorable
+									color 0.95 0.57 0.19 1
+								}
+								PanelWidgetClass BothOuterGreen {
+									position 0 0
+									size 46 48
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.26 0.84 0.50 1
+								}
+								PanelWidgetClass InnerMarkerBothOuter {
+									position 0 0
+									size 24 24
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.94 0.35 0.76 1
+								}
+							}
+						}
+						PanelWidgetClass OuterMarkerBothOuter {
+							position 0 0
+							size 32 32
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.96 0.92 0.22 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotHeightOuterWidthLeaf {
+			position 20 555
+			size 570 465
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundHeightOuterWidthLeaf {
+					position 0 0
+					size 570 465
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.28 0.29 0.34 1
+				}
+				TextWidgetClass LabelHeightOuterWidthLeaf {
+					position 18 13
+					size 530 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "HeightOuterWidthLeaf"
+				}
+				GridSpacerWidgetClass OuterHeightOuterWidthLeaf {
+					position 32 72
+					size 0.7 0.72
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 8
+					"Margin" 5
+					"Ignore invisible" 1
+					"Size To Content H" 0
+					"Size To Content V" 1
+					{
+						GridSpacerWidgetClass InnerHeightOuterWidthLeaf {
+							position 0 0
+							size 0.65 0.55
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							"Columns" 2
+							"Rows" 2
+							"Padding" 10
+							"Margin" 7
+							"Ignore invisible" 1
+							"Size To Content H" 1
+							"Size To Content V" 1
+							{
+								GridSpacerWidgetClass LeafHeightOuterWidthLeaf {
+									position 0 0
+									size 0.55 0.65
+									hexactpos 1
+									vexactpos 1
+									hexactsize 0
+									vexactsize 0
+									"Columns" 2
+									"Rows" 2
+									"Padding" 10
+									"Margin" 7
+									"Ignore invisible" 1
+									"Size To Content H" 1
+									"Size To Content V" 0
+									{
+										PanelWidgetClass HeightOuterWidthLeafBlue {
+											position 0 0
+											size 70 28
+											hexactpos 1
+											vexactpos 1
+											hexactsize 1
+											vexactsize 1
+											style rover_sim_colorable
+											color 0.22 0.65 0.94 1
+										}
+										PanelWidgetClass HeightOuterWidthLeafOrange {
+											position 0 0
+											size 0.45 0.35
+											hexactpos 1
+											vexactpos 1
+											hexactsize 0
+											vexactsize 0
+											style rover_sim_colorable
+											color 0.95 0.57 0.19 1
+										}
+										PanelWidgetClass HeightOuterWidthLeafGreen {
+											position 0 0
+											size 46 48
+											hexactpos 1
+											vexactpos 1
+											hexactsize 1
+											vexactsize 1
+											style rover_sim_colorable
+											color 0.26 0.84 0.50 1
+										}
+									}
+								}
+								PanelWidgetClass InnerMarkerHeightOuterWidthLeaf {
+									position 0 0
+									size 24 24
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.94 0.35 0.76 1
+								}
+							}
+						}
+						PanelWidgetClass OuterMarkerHeightOuterWidthLeaf {
+							position 0 0
+							size 32 32
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.96 0.92 0.22 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotWidthOuterWidthLeaf {
+			position 645 555
+			size 570 465
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundWidthOuterWidthLeaf {
+					position 0 0
+					size 570 465
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.28 0.29 0.34 1
+				}
+				TextWidgetClass LabelWidthOuterWidthLeaf {
+					position 18 13
+					size 530 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "WidthOuterWidthLeaf"
+				}
+				GridSpacerWidgetClass OuterWidthOuterWidthLeaf {
+					position 32 72
+					size 0.7 0.72
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 8
+					"Margin" 5
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 0
+					{
+						GridSpacerWidgetClass InnerWidthOuterWidthLeaf {
+							position 0 0
+							size 0.65 0.55
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							"Columns" 2
+							"Rows" 2
+							"Padding" 10
+							"Margin" 7
+							"Ignore invisible" 1
+							"Size To Content H" 1
+							"Size To Content V" 1
+							{
+								GridSpacerWidgetClass LeafWidthOuterWidthLeaf {
+									position 0 0
+									size 0.55 0.65
+									hexactpos 1
+									vexactpos 1
+									hexactsize 0
+									vexactsize 0
+									"Columns" 2
+									"Rows" 2
+									"Padding" 10
+									"Margin" 7
+									"Ignore invisible" 1
+									"Size To Content H" 1
+									"Size To Content V" 0
+									{
+										PanelWidgetClass WidthOuterWidthLeafBlue {
+											position 0 0
+											size 70 28
+											hexactpos 1
+											vexactpos 1
+											hexactsize 1
+											vexactsize 1
+											style rover_sim_colorable
+											color 0.22 0.65 0.94 1
+										}
+										PanelWidgetClass WidthOuterWidthLeafOrange {
+											position 0 0
+											size 0.45 0.35
+											hexactpos 1
+											vexactpos 1
+											hexactsize 0
+											vexactsize 0
+											style rover_sim_colorable
+											color 0.95 0.57 0.19 1
+										}
+										PanelWidgetClass WidthOuterWidthLeafGreen {
+											position 0 0
+											size 46 48
+											hexactpos 1
+											vexactpos 1
+											hexactsize 1
+											vexactsize 1
+											style rover_sim_colorable
+											color 0.26 0.84 0.50 1
+										}
+									}
+								}
+								PanelWidgetClass InnerMarkerWidthOuterWidthLeaf {
+									position 0 0
+									size 24 24
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.94 0.35 0.76 1
+								}
+							}
+						}
+						PanelWidgetClass OuterMarkerWidthOuterWidthLeaf {
+							position 0 0
+							size 32 32
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.96 0.92 0.22 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotBothOuterWidthLeaf {
+			position 1270 555
+			size 570 465
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundBothOuterWidthLeaf {
+					position 0 0
+					size 570 465
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.28 0.29 0.34 1
+				}
+				TextWidgetClass LabelBothOuterWidthLeaf {
+					position 18 13
+					size 530 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "BothOuterWidthLeaf"
+				}
+				GridSpacerWidgetClass OuterBothOuterWidthLeaf {
+					position 32 72
+					size 0.7 0.72
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 8
+					"Margin" 5
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 1
+					{
+						GridSpacerWidgetClass InnerBothOuterWidthLeaf {
+							position 0 0
+							size 0.65 0.55
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							"Columns" 2
+							"Rows" 2
+							"Padding" 10
+							"Margin" 7
+							"Ignore invisible" 1
+							"Size To Content H" 1
+							"Size To Content V" 1
+							{
+								GridSpacerWidgetClass LeafBothOuterWidthLeaf {
+									position 0 0
+									size 0.55 0.65
+									hexactpos 1
+									vexactpos 1
+									hexactsize 0
+									vexactsize 0
+									"Columns" 2
+									"Rows" 2
+									"Padding" 10
+									"Margin" 7
+									"Ignore invisible" 1
+									"Size To Content H" 1
+									"Size To Content V" 0
+									{
+										PanelWidgetClass BothOuterWidthLeafBlue {
+											position 0 0
+											size 70 28
+											hexactpos 1
+											vexactpos 1
+											hexactsize 1
+											vexactsize 1
+											style rover_sim_colorable
+											color 0.22 0.65 0.94 1
+										}
+										PanelWidgetClass BothOuterWidthLeafOrange {
+											position 0 0
+											size 0.45 0.35
+											hexactpos 1
+											vexactpos 1
+											hexactsize 0
+											vexactsize 0
+											style rover_sim_colorable
+											color 0.95 0.57 0.19 1
+										}
+										PanelWidgetClass BothOuterWidthLeafGreen {
+											position 0 0
+											size 46 48
+											hexactpos 1
+											vexactpos 1
+											hexactsize 1
+											vexactsize 1
+											style rover_sim_colorable
+											color 0.26 0.84 0.50 1
+										}
+									}
+								}
+								PanelWidgetClass InnerMarkerBothOuterWidthLeaf {
+									position 0 0
+									size 24 24
+									hexactpos 1
+									vexactpos 1
+									hexactsize 1
+									vexactsize 1
+									style rover_sim_colorable
+									color 0.94 0.35 0.76 1
+								}
+							}
+						}
+						PanelWidgetClass OuterMarkerBothOuterWidthLeaf {
+							position 0 0
+							size 32 32
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.96 0.92 0.22 1
+						}
+					}
+				}
+			}
+		}
+	}
+}
