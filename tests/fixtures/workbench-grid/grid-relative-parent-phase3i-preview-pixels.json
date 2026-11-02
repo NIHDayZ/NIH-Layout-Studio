@@ -1,0 +1,285 @@
+{
+  "phase": "3I",
+  "kind": "MEASURED_EXPERIMENTAL_STUDIO_GRID_PIXELS",
+  "captureDate": "2026-11-02",
+  "screenFile": "image(20261102-174115).png",
+  "screenshotSize": [
+    1918,
+    1029
+  ],
+  "urlQuery": "experimentalGeometrySnapshot=1&experimentalGridRelativeContent=1&experimentalAllocatedParentRelativeGrid=1",
+  "fixture": "tests/fixtures/workbench-grid/NIH_Grid_RelativeParent_Axis_Matrix.layout",
+  "measurementMethod": "Exact RGB connected regions; half-open [left,top,rightExclusive,bottomExclusive] pixel bounding boxes; background and swatches measured in same screenshot.",
+  "swatchRGB": {
+    "Blue": [
+      56,
+      166,
+      240
+    ],
+    "Orange": [
+      242,
+      145,
+      48
+    ],
+    "Green": [
+      66,
+      214,
+      128
+    ]
+  },
+  "zoom": 0.46,
+  "nativeComparisonPath": "tests/fixtures/workbench-grid/grid-relative-parent-phase3h-native-pixels.json",
+  "comparison": {
+    "channels": 96,
+    "previousDefaultMeanAbsolutePixelError": 9.1875,
+    "newPreviewMeanAbsolutePixelError": 0.9479,
+    "maximumNewErrorPixels": 2,
+    "meanErrorByAxisPixels": {
+      "x": 0.9167,
+      "y": 0.6667,
+      "width": 0.9583,
+      "height": 1.25
+    }
+  },
+  "limitations": [
+    "Workbench has a distinct preview origin; compare each swatch relative to its measured background panel.",
+    "Screen measurements are bounded by zoom rasterization, edge anti-aliasing and one-pixel segmentation.",
+    "Fixture consists only of eight simple parent GridSpacers with three PanelWidget children and both content axes; does not establish general compatibility for the vanilla server browser.",
+    "Screenshot validates geometry and visible child arrangements, not native panel color, font, imageset, clipping or actual DayZ game interactions.",
+    "No production rendering flags were enabled beyond the explicit three-flag experimental path."
+  ],
+  "cases": [
+    {
+      "name": "GridDirectExactBoth",
+      "backgroundRect": [
+        318,
+        235,
+        506,
+        437
+      ],
+      "swatches": {
+        "Blue": [
+          337,
+          273,
+          367,
+          284
+        ],
+        "Orange": [
+          374,
+          273,
+          402,
+          284
+        ],
+        "Green": [
+          337,
+          291,
+          357,
+          311
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeWidth",
+      "backgroundRect": [
+        530,
+        235,
+        719,
+        437
+      ],
+      "swatches": {
+        "Blue": [
+          550,
+          273,
+          580,
+          284
+        ],
+        "Orange": [
+          587,
+          273,
+          614,
+          284
+        ],
+        "Green": [
+          549,
+          291,
+          569,
+          311
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeHeight",
+      "backgroundRect": [
+        742,
+        235,
+        931,
+        437
+      ],
+      "swatches": {
+        "Blue": [
+          762,
+          273,
+          792,
+          284
+        ],
+        "Orange": [
+          799,
+          273,
+          827,
+          284
+        ],
+        "Green": [
+          762,
+          291,
+          781,
+          311
+        ]
+      }
+    },
+    {
+      "name": "GridDirectRelativeBoth",
+      "backgroundRect": [
+        955,
+        235,
+        1143,
+        437
+      ],
+      "swatches": {
+        "Blue": [
+          974,
+          273,
+          1005,
+          284
+        ],
+        "Orange": [
+          1011,
+          273,
+          1039,
+          284
+        ],
+        "Green": [
+          974,
+          291,
+          994,
+          311
+        ]
+      }
+    },
+    {
+      "name": "GridNestedExactBoth",
+      "backgroundRect": [
+        318,
+        472,
+        506,
+        675
+      ],
+      "swatches": {
+        "Blue": [
+          355,
+          528,
+          386,
+          539
+        ],
+        "Orange": [
+          392,
+          528,
+          408,
+          540
+        ],
+        "Green": [
+          355,
+          546,
+          375,
+          566
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeWidth",
+      "backgroundRect": [
+        530,
+        472,
+        718,
+        675
+      ],
+      "swatches": {
+        "Blue": [
+          568,
+          528,
+          598,
+          539
+        ],
+        "Orange": [
+          605,
+          528,
+          620,
+          539
+        ],
+        "Green": [
+          567,
+          546,
+          587,
+          567
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeHeight",
+      "backgroundRect": [
+        742,
+        472,
+        931,
+        675
+      ],
+      "swatches": {
+        "Blue": [
+          780,
+          528,
+          810,
+          539
+        ],
+        "Orange": [
+          817,
+          528,
+          832,
+          539
+        ],
+        "Green": [
+          780,
+          546,
+          800,
+          567
+        ]
+      }
+    },
+    {
+      "name": "GridNestedRelativeBoth",
+      "backgroundRect": [
+        955,
+        472,
+        1143,
+        675
+      ],
+      "swatches": {
+        "Blue": [
+          992,
+          528,
+          1023,
+          540
+        ],
+        "Orange": [
+          1029,
+          528,
+          1045,
+          540
+        ],
+        "Green": [
+          993,
+          546,
+          1012,
+          567
+        ]
+      }
+    }
+  ]
+}
