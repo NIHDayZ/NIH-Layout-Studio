@@ -22,6 +22,8 @@ export interface ArrangementOptions {
 	gridRelativeContentPrototype?: boolean;
 	/** Phase 3I opt-in: resolve relative Grid parent size from known parent allocation before cell planning. */
 	gridAllocatedParentRelativePrototype?: boolean;
+	/** Phase 3K separate research opt-in; only one Size To Content axis and parent-relative source. */
+	gridAllocatedParentSingleAxisPrototype?: boolean;
 	/** Native-derived fixed-child WrapSpacer only; no content-sized axes. */
 	fixedWrap?: boolean;
 	/** Opt-in Workbench-observed right-to-left and vertical-center fixed Wrap preview. */
@@ -66,7 +68,7 @@ export interface AppliedLayoutStrategy {
 	id: string;
 	kind: "grid" | "wrap";
 	evidence: "native-disassembly";
-	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "grid-allocated-parent-relative-prototype" | "fixed-wrap-prototype";
+	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "grid-allocated-parent-relative-prototype" | "grid-allocated-parent-single-axis-prototype" | "fixed-wrap-prototype";
 }
 
 export interface ChildArrangement {
@@ -179,9 +181,11 @@ function ArrangeRelativeGridContent(
 			id: parent.node.id,
 			kind: "grid",
 			evidence: "native-disassembly",
-			mode: measured.allocatedParentRelative
-				? "grid-allocated-parent-relative-prototype"
-				: "grid-relative-content-prototype"
+			mode: measured.allocatedParentSingleAxis
+				? "grid-allocated-parent-single-axis-prototype"
+				: (measured.allocatedParentRelative
+					? "grid-allocated-parent-relative-prototype"
+					: "grid-relative-content-prototype")
 		}
 	};
 }
