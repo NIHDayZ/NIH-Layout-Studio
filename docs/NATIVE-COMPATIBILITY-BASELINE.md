@@ -93,3 +93,54 @@ We should prioritize broad high-value work in the following order, adjusting bas
 ## Constraints
 
 No change was made to production Canvas rendering, PCHIP/gamma experiments, native geometry, implicit blank-style PanelWidget semantics, UI interaction code or save/export logic in this milestone. The audit surfaces evidence gaps so future changes can be evaluated on the full editor, not merely one property.
+
+## Phase 3B — Higher-fidelity native widget census from extracted layouts
+
+The first audit passed locally with **374 / 374 tests**, zero parse failures in the 26 public research fixtures, and no actual native widget-frequency data. This new census path addresses the critical missing input: real vanilla widget prevalence. The older raw PBO scanner can undercount **ID-less widget declarations and declarations using next-line braces**, so use the extracted-source census below when possible.
+
+New file: `scripts/Census-ExtractedNativeLayouts.mjs`. It invokes Studio's **production LayoutParser** against the local extracted `gui` tree. It supports both ID-less and ID-backed class declarations, ignores source auxiliary metadata, and counts actual widget types rather than matching one assumed declaration syntax. It emits only aggregate counts, relative filenames, and parse failure diagnostics. It never includes actual `.layout` source content or authored widget names.
+
+### Run locally on the DayZ workdrive
+
+```powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+
+$layoutRoot = 'P:\gui'
+$censusPath = Join-Path $env:TEMP 'nih-native-widget-census.json'
+
+if (!(Test-Path $layoutRoot)) {
+    throw "Missing extracted DayZ GUI directory: $layoutRoot"
+}
+
+# --silent keeps npm's script banners out of the JSON pipeline.
+npm --silent run audit:extracted-layouts -- "$layoutRoot" --json |
+    Set-Content -LiteralPath $censusPath -Encoding UTF8
+
+$census = Get-Content -LiteralPath $censusPath -Raw | ConvertFrom-Json
+$census | Select-Object source, layoutFiles, parsedLayoutFiles, parseFailures, widgetDeclarations, idlessWidgetDeclarations, distinctClasses
+$census.classes | Select-Object -First 20 name, count, layoutCount | Format-Table -AutoSize
+
+# Merge the native prevalence data into the 49-class evidence matrix.
+npm run audit:native-compatibility -- "--census=$censusPath"
+```
+
+PowerShell 5.1 `Set-Content -Encoding UTF8` writes a byte-order mark; the compatibility audit now strips that BOM when reading JSON. The preexisting PBO scanning route is retained for independent comparison, but its readable-layout regex is not a complete inventory of all native declaration forms.
+
+**Fail-closed boundaries:** The extracted scanner rejects empty/missing directories, reports files that have no parseable root, and records native ID-less declarations separately. Any parse failures mean native population statistics are incomplete; do not claim 100% coverage. Native prevalence is not native rendering fidelity. Avoid committing proprietary extracted layouts or their contents. Use the local temporary summary for prioritization.
+
+### Interpreting the new output
+
+The audit should now report `nativeCensusProvided: true`, `nativeCensusSource: local-extracted-layouts`, and explicit `nativeParseFailures` and `nativeIdlessWidgetDeclarations` fields. `overallParityPercentage` remains `null` until we have actual native render/edit/export acceptance for the representative high-frequency layouts.
+
+### Validation
+
+```powershell
+npm run test:geometry-engine
+npm run typecheck
+npm run build
+```
+
+The new seven extracted-layout census regression cases raise the expected count to **381**, pending local execution. They exercise ID-less widgets, mixed declaration formats, source metadata, duplicate source IDs, parse failure accounting, privacy, native-matrix ingestion, and a Windows PowerShell UTF-8 BOM round-trip.
+
+The subsequent project step is to select 3–5 *frequent* vanilla layouts from the census and validate the complete import → preview → edit → save → native Workbench reopen cycle. This is deliberately broader than another isolated color study.
