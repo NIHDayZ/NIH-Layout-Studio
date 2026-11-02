@@ -27,17 +27,23 @@ function Key(name, parent, ordinal) {
 
 function IndexDocument(nodes) {
 	const index = new Map();
+	const byParentName = new Map();
 	function Walk(node, parent, ordinal, ancestorNames) {
 		const key = Key(node.name, parent, ordinal);
 		const candidates = index.get(key) ?? [];
-		candidates.push({ node, ancestorNames });
+		const entry = { node, ancestorNames, ordinal };
+		candidates.push(entry);
 		index.set(key, candidates);
+		const nameKey = JSON.stringify([node.name, parent]);
+		const byName = byParentName.get(nameKey) ?? [];
+		byName.push(entry);
+		byParentName.set(nameKey, byName);
 		for (let i = 0; i < node.children.length; ++i)
 			Walk(node.children[i], node.name, i, [...ancestorNames, node.name]);
 	}
 	for (const root of nodes)
 		Walk(root, "", -1, []);
-	return index;
+	return { exact: index, byParentName };
 }
 
 function CompareRect(actual, expected) {
@@ -63,29 +69,70 @@ export function ComparePhase3NNative(source, reference = s_Reference) {
 	const referenceRows = reference.keyRects.map(([name,parent,ordinal,screen,visible]) =>
 		({ name,parent,ordinal,screen,visible }));
 	const hiddenNames = new Set(referenceRows.filter(row => !row.visible).map(row => row.name));
+	const nativeByName = new Map();
+	for (const row of referenceRows) {
+		const candidates = nativeByName.get(row.name) ?? [];
+		candidates.push(row);
+		nativeByName.set(row.name, candidates);
+	}
 	const rows = referenceRows.map(row => {
-		const candidates = nodes.get(Key(row.name, row.parent, row.ordinal)) ?? [];
+		let candidates = nodes.exact.get(Key(row.name, row.parent, row.ordinal)) ?? [];
+		// Native sibling enumeration may differ from parsed document order.
+		// Recover only an unambiguous name+parent match; report the discrepancy.
+		if (!candidates.length)
+			candidates = nodes.byParentName.get(JSON.stringify([row.name, row.parent])) ?? [];
 		if (!candidates.length)
 			return { ...row, status: "source-missing" };
 		if (candidates.length > 1)
 			return { ...row, status: "source-ambiguous" };
 		const candidate = candidates[0];
+		const sourceOrdinal = candidate.ordinal;
+		const sourceOrderDifference = sourceOrdinal !== row.ordinal;
 		const arranged = snapshot.byId.get(candidate.node.id);
 		if (!arranged)
 			return { ...row, status: "snapshot-missing" };
 		const rect = arranged.absoluteRect;
 		const studio = [rect.x, rect.y, rect.width, rect.height];
+		const identity = { ...row, sourceOrdinal, sourceOrderDifference, studio };
 		if (!row.visible)
-			return { ...row, studio, status: "native-hidden" };
+			return { ...identity, status: "native-hidden" };
 		if (candidate.ancestorNames.some(name => hiddenNames.has(name)))
-			return { ...row, studio, status: "hidden-ancestor" };
+			return { ...identity, status: "hidden-ancestor" };
 		if (row.screen[2] <= 0 || row.screen[3] <= 0)
-			return { ...row, studio, status: "native-zero-area" };
+			return { ...identity, status: "native-zero-area" };
 		const delta = CompareRect(studio, row.screen);
 		const maxDelta = Math.max(...delta.map(Math.abs));
-		return { ...row, studio, delta, maxDelta, status: maxDelta <= 0.025 ? "within-tolerance" : "mismatch" };
+		const nativeParents = nativeByName.get(row.parent) ?? [];
+		const nativeParent = nativeParents.length === 1 ? nativeParents[0] : null;
+		const nativeLocal = nativeParent ? [
+			row.screen[0] - nativeParent.screen[0],
+			row.screen[1] - nativeParent.screen[1],
+			row.screen[2], row.screen[3]
+		] : null;
+		const local = arranged.localRect;
+		const studioLocal = [local.x, local.y, local.width, local.height];
+		const localDelta = nativeLocal ? CompareRect(studioLocal, nativeLocal) : null;
+		return { ...identity, delta, maxDelta, nativeLocal, studioLocal, localDelta,
+			status: maxDelta <= 0.025 ? "within-tolerance" : "mismatch" };
 	});
 	const compared = rows.filter(row => row.status === "within-tolerance" || row.status === "mismatch");
+	const mismatches = compared.filter(row => row.status === "mismatch");
+	const byName = new Map(rows.map(row => [row.name, row]));
+	const firstMismatchRoots = new Map();
+	for (const row of mismatches) {
+		let ancestor = row.parent;
+		let root = row.name;
+		const visited = new Set();
+		while (ancestor && !visited.has(ancestor)) {
+			visited.add(ancestor);
+			const parentRow = byName.get(ancestor);
+			if (!parentRow || parentRow.status !== "mismatch")
+				break;
+			root = parentRow.name;
+			ancestor = parentRow.parent;
+		}
+		firstMismatchRoots.set(root, (firstMismatchRoots.get(root) ?? 0) + 1);
+	}
 	return {
 		phase: "3N",
 		status: "STUDIO_SNAPSHOT_VS_INDEPENDENT_DAYZ_RUNTIME",
@@ -94,7 +141,12 @@ export function ComparePhase3NNative(source, reference = s_Reference) {
 		nativePhaseDifferences: reference.observationDifferencesAcrossPhases,
 		compared: compared.length,
 		withinTolerance: compared.filter(row => row.status === "within-tolerance").length,
-		mismatches: compared.filter(row => row.status === "mismatch").length,
+		mismatches: mismatches.length,
+		mismatchRoots: Array.from(firstMismatchRoots, ([name, affected]) => ({ name, affected }))
+			.sort((a, b) => b.affected - a.affected),
+		sourceOrderDifferences: rows.filter(row => row.sourceOrderDifference)
+			.map(row => ({ name: row.name, parent: row.parent,
+				nativeOrdinal: row.ordinal, sourceOrdinal: row.sourceOrdinal })),
 		appliedStrategies: snapshot.appliedStrategies.filter(item => item.mode === "grid-nested-allocation-prototype").length,
 		issues: snapshot.issues.length,
 		rows,
@@ -110,6 +162,8 @@ export function FormatPhase3NNative(report) {
 		"Compared=" + report.compared + " matched=" + report.withinTolerance
 			+ " mismatched=" + report.mismatches,
 		"Five-flag nested strategies=" + report.appliedStrategies + " snapshot issues=" + report.issues,
+		"First mismatched ancestors: " + report.mismatchRoots.map(row => row.name + " (" + row.affected + ")").join(", "),
+		"Native/source sibling-order differences: " + report.sourceOrderDifferences.length,
 		""
 	];
 	for (const row of report.rows) {
@@ -117,6 +171,10 @@ export function FormatPhase3NNative(report) {
 		if (row.delta)
 			lines.push("  native=" + row.screen.join(",") + " studio=" + row.studio.join(",")
 				+ " delta=" + row.delta.join(","));
+		if (row.status === "mismatch" && row.localDelta)
+			lines.push("  localDelta=" + row.localDelta.join(","));
+		if (row.sourceOrderDifference)
+			lines.push("  native ordinal=" + row.ordinal + " source ordinal=" + row.sourceOrdinal);
 	}
 	lines.push("", report.warning);
 	return lines.join("\n");
