@@ -128,3 +128,57 @@ test("Phase 3F CLI accepts a bare Windows-compatible layout path and handles opt
 		rmSync(dir, { recursive: true, force: true });
 	}
 });
+
+
+
+test("Phase 3F eligibility report distinguishes intentionally gated relative Grid prototypes from fixed-grid candidates", () => {
+	const report = AnalyzeVanillaGeometry(realGridFixture);
+	const eligibility = report.gridEligibility;
+	assert.ok(eligibility.totalGridSpacers > 0);
+	assert.equal(eligibility.items.length, eligibility.totalGridSpacers);
+	assert.equal(Object.values(eligibility.relativeReasonCounts).reduce((a, b) => a + b, 0),
+		eligibility.totalGridSpacers);
+	assert.equal(Object.values(eligibility.fixedReasonCounts).reduce((a, b) => a + b, 0),
+		eligibility.totalGridSpacers);
+	assert.equal(eligibility.appliedStrategyCount, report.relativeSnapshotAppliedStrategies.length);
+	for (const item of eligibility.items) {
+		assert.equal(typeof item.name, "string");
+		assert.ok(Array.isArray(item.ancestry));
+		assert.equal(typeof item.relativeReason, "string");
+		assert.equal(typeof item.fixedReason, "string");
+		assert.ok(item.eligibleChildCount === null || item.eligibleChildCount <= item.childCount);
+		if (item.relativeReason === "not-content-sized")
+			assert.equal(item.contentWidth || item.contentHeight, false);
+	}
+	const markdown = FormatVanillaGeometry(report);
+	assert.match(markdown, /GridSpacer native-strategy eligibility/);
+	assert.match(markdown, /Relative prototype skip reasons/);
+});
+
+test("Phase 3F optional focus selects literal ancestry/descendant subtree and respects count limit", () => {
+	const root = mkdtempSync(join(tmpdir(), "nih-phase3f-focus-"));
+	try {
+		const filename = join(root, "source.layout");
+		writeFileSync(filename, realGridFixture);
+		const script = fileURLToPath(new URL("../scripts/Analyze-NativeLayoutGeometry.mjs", import.meta.url));
+		const response = JSON.parse(execFileSync(process.execPath, [
+			script, filename, "--json", "--focus=LSameRow", "--max-focused=3"
+		], { encoding: "utf8" }));
+		assert.equal(response.focusSelection, "LSameRow");
+		assert.ok(response.focusedCount > 0);
+		assert.ok(response.focused.length <= 3);
+		assert.ok(response.focused.every(item => item.name.toLowerCase().includes("lsamerow")
+			|| item.ancestry.some(name => name.toLowerCase().includes("lsamerow"))));
+		const literal = JSON.parse(execFileSync(process.execPath, [
+			script, filename, "--json", "--focus=LSameRow["
+		], { encoding: "utf8" }));
+		assert.equal(literal.focusedCount, 0, "brackets in a focus substring are treated literally");
+
+		for (const args of [["--focus="], ["--focus=x", "--focus=y"]]) {
+			const outcome = spawnSync(process.execPath, [script, filename, ...args], { encoding: "utf8" });
+			assert.equal(outcome.status, args.length === 1 ? 1 : 2);
+		}
+	} finally {
+		rmSync(root, { recursive: true, force: true });
+	}
+});
