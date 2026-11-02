@@ -8,6 +8,7 @@ class NIHServerBrowserGeometryProbe {
 	protected Widget m_Root;
 
 	void Start() {
+		Print("[NIH_LayoutStudio][ServerBrowserProbe] START invoked");
 		if (g_Game.IsDedicatedServer())
 			return;
 
@@ -155,14 +156,17 @@ modded class MissionGameplay {
 
 	override void OnInit() {
 		super.OnInit();
+		Print("[NIH_LayoutStudio][ServerBrowserProbe] HOOK OnInit invoked");
 		if (g_Game.IsDedicatedServer())
 			return;
 
 		m_NIH_ServerBrowserGeometryProbe = new NIHServerBrowserGeometryProbe();
+		Print("[NIH_LayoutStudio][ServerBrowserProbe] HOOK scheduling GUI callback");
 		g_Game.GetCallQueue(CALL_CATEGORY_GUI).CallLater(NIHStartServerBrowserGeometryProbe, 400, false);
 	}
 
 	protected void NIHStartServerBrowserGeometryProbe() {
+		Print("[NIH_LayoutStudio][ServerBrowserProbe] CALLBACK invoked");
 		if (m_NIH_ServerBrowserGeometryProbe)
 			m_NIH_ServerBrowserGeometryProbe.Start();
 	}
