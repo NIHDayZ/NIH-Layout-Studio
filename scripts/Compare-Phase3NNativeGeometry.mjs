@@ -148,6 +148,7 @@ export function ComparePhase3NNative(source, reference = s_Reference) {
 			.map(row => ({ name: row.name, parent: row.parent,
 				nativeOrdinal: row.ordinal, sourceOrdinal: row.sourceOrdinal })),
 		appliedStrategies: snapshot.appliedStrategies.filter(item => item.mode === "grid-nested-allocation-prototype").length,
+		mixedAppliedStrategies: snapshot.appliedStrategies.filter(item => item.mode === "grid-mixed-allocation-prototype").length,
 		issues: snapshot.issues.length,
 		rows,
 		warning: "The native source was a standalone DayZ client widget root, not the assembled server browser or a Workbench capture. Descendants of hidden ancestors cannot be scored as parity."
@@ -161,7 +162,8 @@ export function FormatPhase3NNative(report) {
 		"Native lifecycle differences: " + report.nativePhaseDifferences,
 		"Compared=" + report.compared + " matched=" + report.withinTolerance
 			+ " mismatched=" + report.mismatches,
-		"Five-flag nested strategies=" + report.appliedStrategies + " snapshot issues=" + report.issues,
+		"Five-flag strategies: Phase 3M nested=" + report.appliedStrategies
+			+ " Phase 3N mixed=" + report.mixedAppliedStrategies + " snapshot issues=" + report.issues,
 		"First mismatched ancestors: " + report.mismatchRoots.map(row => row.name + " (" + row.affected + ")").join(", "),
 		"Native/source sibling-order differences: " + report.sourceOrderDifferences.length,
 		""
