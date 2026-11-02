@@ -903,19 +903,24 @@ export function Canvas({ nodes, selected, selectedIds, onSelect, onGeometryChang
 	// Intentionally no production UI control or default behavior change.
 	const relativeGridPreviewEnabled = snapshotEnabled && typeof window !== "undefined"
 		&& new URLSearchParams(window.location.search).get("experimentalGridRelativeContent") === "1";
+	// Phase 3I research-only: require snapshot + relative-grid preview plus
+	// separate explicit opt-in. Defaults and existing probes stay unchanged.
+	const allocatedParentGridPreviewEnabled = relativeGridPreviewEnabled && typeof window !== "undefined"
+		&& new URLSearchParams(window.location.search).get("experimentalAllocatedParentRelativeGrid") === "1";
 	const geometryById = useMemo(() => {
 		if (!snapshotEnabled)
 			return undefined;
 		const snapshot = ArrangeMeasuredGeometry(MeasureLayoutTree(nodes), root, 1, {
 			constrainedGrid: relativeGridPreviewEnabled,
 			gridRelativeContentPrototype: relativeGridPreviewEnabled,
+			gridAllocatedParentRelativePrototype: allocatedParentGridPreviewEnabled,
 			fixedWrap: typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalSnapshotManaged") === "1",
 			fixedWrapPreview: typeof window !== "undefined" && new URLSearchParams(window.location.search).get("experimentalSnapshotManaged") === "1"
 		});
 		if (snapshot.issues.some((issue) => issue.code === "duplicate-widget-id"))
 			return undefined;
 		return snapshot.byId;
-	}, [snapshotEnabled, relativeGridPreviewEnabled, nodes, width, height]);
+	}, [snapshotEnabled, relativeGridPreviewEnabled, allocatedParentGridPreviewEnabled, nodes, width, height]);
 	const compareGeometry = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("compareGeometryPipelines") === "1";
 	useEffect(() => {
 		if (!compareGeometry)
