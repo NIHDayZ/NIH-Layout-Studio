@@ -9,6 +9,7 @@ import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
 import { ProbeGridNativeMeasurement, type GridNativeMeasurementPrototype } from "./GridNativeMeasurement.js";
 import { ProbeMeasuredRelativeGrid, ProbeAllocatedParentRelativeGrid, ProbeAllocatedParentSingleAxisGrid, type MeasuredRelativeGrid } from "./GridRelativeBridge.js";
+import { ProbeNestedAllocatedGrid } from "./NativeNestedGrid.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
 import { InspectAuthoredVisibility, type AuthoredVisibilityDiagnostic } from "./GeometryVisibility.js";
 import { MeasureArrangedDirectChildBounds, type ArrangedDirectChildBounds } from "./ContentBounds.js";
@@ -121,6 +122,7 @@ export function ArrangeMeasuredGeometry(
 	// No cross-frame or cross-document invalidation assumptions are needed.
 	const textCache = new WeakMap<MeasuredLayoutNode, Map<number, ConstrainedTextResult | null>>();
 	const relativeGridCache = new WeakMap<MeasuredLayoutNode, MeasuredRelativeGrid | null>();
+	const nestedGridPlans = new WeakMap<MeasuredLayoutNode, MeasuredRelativeGrid>();
 	function ProbeTextHeight(node: MeasuredLayoutNode, width: number): ConstrainedTextResult | null {
 		if (!options.constrainedTextPreview || !node.textFlow || !Number.isFinite(width) || width <= 0)
 			return null;
@@ -171,7 +173,7 @@ export function ArrangeMeasuredGeometry(
 			// unused authored coordinates for managed children.
 			const strategyRect = allocatedRects?.[index];
 			const authoredRect = strategyRect ?? ResolveAuthoredRect(authored, parentSize);
-			const measuredRelativeGrid = options.constrainedGrid && options.gridRelativeContentPrototype
+			let measuredRelativeGrid = options.constrainedGrid && options.gridRelativeContentPrototype
 				&& strategy.kind === "grid" && (prepared.unresolvedContentWidth || prepared.unresolvedContentHeight)
 				? (ProbeMeasuredRelativeGrid(prepared, relativeGridCache)
 					?? (options.gridAllocatedParentRelativePrototype && !strategyRect
@@ -181,6 +183,18 @@ export function ArrangeMeasuredGeometry(
 								: null))
 						: null))
 				: null;
+			if (options.constrainedGrid && options.gridRelativeContentPrototype
+				&& options.gridNestedAllocationPrototype && strategy.kind === "grid"
+				&& (prepared.unresolvedContentWidth || prepared.unresolvedContentHeight)) {
+				if (!strategyRect) {
+					const nested = ProbeNestedAllocatedGrid(prepared, parentSize.width, parentSize.height);
+					if (nested) {
+						for (const [gridNode, gridPlan] of nested.plans)
+							nestedGridPlans.set(gridNode, gridPlan);
+					}
+				}
+				measuredRelativeGrid = nestedGridPlans.get(prepared) ?? measuredRelativeGrid;
+			}
 			const measuredGridContent = !strategyRect && !options.gridRelativeContentPrototype
 				&& options.constrainedGrid && options.gridContentArrangement
 				? ProbeGridNativeMeasurement(prepared) : null;
