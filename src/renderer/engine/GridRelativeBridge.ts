@@ -18,6 +18,8 @@ export interface MeasuredRelativeGrid {
 	readonly allocatedParentRelative?: true;
 	/** Phase 3K single-axis candidate, separately gated from Phase 3I. */
 	readonly allocatedParentSingleAxis?: true;
+	/** Phase 3M opt-in: provisional nested cells and reconciled content axes. */
+	readonly nestedAllocatedGrid?: true;
 }
 
 /**
