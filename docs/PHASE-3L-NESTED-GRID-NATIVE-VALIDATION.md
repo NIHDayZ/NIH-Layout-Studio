@@ -75,3 +75,34 @@ Use a 1920×1080 authored root and 46% zoom in both. One complete **Workbench sc
 ## Acceptance remaining
 
 Even successful nested GridSpacer sizing would not finish NIH Layout Studio: scroll clipping, text and localization, images/styles, alpha and color, dynamic widget effects, source editing and native Workbench reopen need independent acceptance. This phase explicitly preserves the production/default renderer and the source round-trip baseline.
+
+## 2026-11-02 — Workbench screenshot captured and measured
+
+Workbench screenshot: `image(20261102-184916).png`, **1919×1032 screenshot px**, 1920×1080 authored root, zoom 46%. The six cases load normally. Frozen source-native measurements are stored in `tests/fixtures/workbench-grid/grid-nested-phase3l-workbench-pixels.json`: **six background rectangles and 27 distinct visible colored marker/swatches**, recorded as exact-RGB connected components with half-open bounds. Three bottom-row orange swatches have no separately distinguishable contiguous orange RGB region; they are recorded `null`, NOT given guessed sizes or visibility states.
+
+### Native screenshot patterns
+
+| Outer content sizing | Native yellow marker bounds (top / bottom) | Implication |
+|---|---|---|
+| Height-only | 88×14 / 88×15 screenshot px | Non-content width produces an equal-width cell |
+| Width-only | 14×73 / 14×73 screenshot px | Non-content height produces an equal-height cell |
+| Both | 14×14 / 15×15 screenshot px | Both content axes retain the marker's exact-size bounds |
+
+These values match the already validated non-content-axis cell arithmetic **without any inferred nested content-size result**. For a fixed 570×465 parent slot, the outer authored relative dimensions are 399×334.8. With two columns, two rows, margin 5, padding 8, the non-content column width is `(399 - 2×5 - 8)/2 = 190.5` authored units, or 87.63 screenshot pixels at 46%; the non-content row height is `(334.8 - 2×5 - 8)/2 = 158.4` authored units, or 72.86 screenshot pixels. The exact 32-unit marker is 14.72 screenshot px. These match the observed axis-specific yellow rectangles within one pixel.
+
+The deeper (three-tier) row also moves the blue swatch's origin 2–4 screenshot pixels right, reduces the green swatch's visible height by approximately 10 pixels, and moves the magenta marker to the right. This indicates nested child sizing has a visible effect. **It does not by itself prove whether the native algorithm measures the child before allocating the parent, allocates parent cells before resolving the child, or performs multiple dependency passes.**
+
+### Required native invisible-widget bounds
+
+The existing disposable client runtime file `tests/fixtures/workbench-grid/runtime-mod/NIH_GridMeasurementRuntime.c` has been extended (research-only) to load the new nested fixture and log **`Widget.GetPos`, `Widget.GetSize`, `Widget.GetScreenPos`, and `Widget.GetScreenSize`** for every widget in the six chains. It uses widget names and hierarchy traversal, not unreliable optional widget IDs. Four phases are captured:
+
+- `after-create`
+- `post-update`
+- `post-settle` (GUI queue, 900 ms later)
+- `after-resize-1120x720` (root explicitly resized; distinguish this from the original 1920×1080 capture)
+
+Log markers: `[NIH_LayoutStudio][NestedGridProbe] BEGIN <phase>` and `END <phase>`, with existing `[NIH_LayoutStudio][GridProbe] phase=<phase> name=<widget> ... localRect=... screenRect=...` lines in between. This is the **native DayZ runtime**, not an exported Workbench inspector view, so runtime environment and lifecycle differences must be preserved in the evidence.
+
+**To collect:** stage with `Prepare-GridProbe.ps1 -Overwrite`, build the disposable `NIH_GridMeasurementProbe` PBO via the existing DayZ mod build workflow, launch the DayZ **client** with that mod loaded, then collect the RPT section for `NestedGridProbe` (including `[GridProbe]` lines between `BEGIN`/`END`). Capture `post-update` and `post-settle` first; `after-resize-1120x720` is an additional cross-size check. No dedicated-server deployment is required. Do not add this probe to production servers.
+
+**Current test status:** 434 tests were locally verified before Phase 3L; four new native fixture/guard tests plus four new screenshot/runtime-probe regressions make **442 expected**, pending local execution. The screenshot evidence and runtime instrumentation do not modify Studio's parser, production renderer, source editor, or experimental GridSpacer algorithms. Do not enable nested parent sizing until actual native `GetSize`/`GetScreenSize` bounds are captured, including `Outer*`, `Inner*`, `Leaf*`, and their marker children.
