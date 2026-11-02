@@ -1,0 +1,658 @@
+FrameWidgetClass NIHRelativeParentSizeMatrix {
+	position 0 0
+	size 1920 1080
+	hexactpos 1
+	vexactpos 1
+	hexactsize 1
+	vexactsize 1
+	{
+		FrameWidgetClass SlotDirectExactBoth {
+			position 20 30
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundDirectExactBoth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.21 0.23 0.27 1
+				}
+				TextWidgetClass LabelDirectExactBoth {
+					position 20 15
+					size 370 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "Direct: ExactBoth"
+				}
+				GridSpacerWidgetClass GridDirectExactBoth {
+					position 35 75
+					size 240 135
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 1
+					{
+						PanelWidgetClass DirectExactBothBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass DirectExactBothOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass DirectExactBothGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotDirectRelativeWidth {
+			position 490 30
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundDirectRelativeWidth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.21 0.23 0.27 1
+				}
+				TextWidgetClass LabelDirectRelativeWidth {
+					position 20 15
+					size 370 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "Direct: RelativeWidth"
+				}
+				GridSpacerWidgetClass GridDirectRelativeWidth {
+					position 35 75
+					size 0.571428571 135
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 1
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 1
+					{
+						PanelWidgetClass DirectRelativeWidthBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass DirectRelativeWidthOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass DirectRelativeWidthGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotDirectRelativeHeight {
+			position 960 30
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundDirectRelativeHeight {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.21 0.23 0.27 1
+				}
+				TextWidgetClass LabelDirectRelativeHeight {
+					position 20 15
+					size 370 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "Direct: RelativeHeight"
+				}
+				GridSpacerWidgetClass GridDirectRelativeHeight {
+					position 35 75
+					size 240 0.3
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 1
+					{
+						PanelWidgetClass DirectRelativeHeightBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass DirectRelativeHeightOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass DirectRelativeHeightGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotDirectRelativeBoth {
+			position 1430 30
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundDirectRelativeBoth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.21 0.23 0.27 1
+				}
+				TextWidgetClass LabelDirectRelativeBoth {
+					position 20 15
+					size 370 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "Direct: RelativeBoth"
+				}
+				GridSpacerWidgetClass GridDirectRelativeBoth {
+					position 35 75
+					size 0.571428571 0.3
+					hexactpos 1
+					vexactpos 1
+					hexactsize 0
+					vexactsize 0
+					"Columns" 2
+					"Rows" 2
+					"Padding" 12
+					"Margin" 8
+					"Ignore invisible" 1
+					"Size To Content H" 1
+					"Size To Content V" 1
+					{
+						PanelWidgetClass DirectRelativeBothBlue {
+							position 0 0
+							size 70 28
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.22 0.65 0.94 1
+						}
+						PanelWidgetClass DirectRelativeBothOrange {
+							position 0 0
+							size 0.45 0.35
+							hexactpos 1
+							vexactpos 1
+							hexactsize 0
+							vexactsize 0
+							style rover_sim_colorable
+							color 0.95 0.57 0.19 1
+						}
+						PanelWidgetClass DirectRelativeBothGreen {
+							position 0 0
+							size 46 48
+							hexactpos 1
+							vexactpos 1
+							hexactsize 1
+							vexactsize 1
+							style rover_sim_colorable
+							color 0.26 0.84 0.50 1
+						}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotNestedExactBoth {
+			position 20 555
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundNestedExactBoth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.30 0.30 0.33 1
+				}
+				TextWidgetClass LabelNestedExactBoth {
+					position 20 15
+					size 370 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "Nested: ExactBoth"
+				}
+				FrameWidgetClass ParentNestedExactBoth {
+					position 50 70
+					size 300 240
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					{
+					GridSpacerWidgetClass GridNestedExactBoth {
+						position 25 45
+						size 180 96
+						hexactpos 1
+						vexactpos 1
+						hexactsize 1
+						vexactsize 1
+						"Columns" 2
+						"Rows" 2
+						"Padding" 12
+						"Margin" 8
+						"Ignore invisible" 1
+						"Size To Content H" 1
+						"Size To Content V" 1
+						{
+							PanelWidgetClass NestedExactBothBlue {
+								position 0 0
+								size 70 28
+								hexactpos 1
+								vexactpos 1
+								hexactsize 1
+								vexactsize 1
+								style rover_sim_colorable
+								color 0.22 0.65 0.94 1
+							}
+							PanelWidgetClass NestedExactBothOrange {
+								position 0 0
+								size 0.45 0.35
+								hexactpos 1
+								vexactpos 1
+								hexactsize 0
+								vexactsize 0
+								style rover_sim_colorable
+								color 0.95 0.57 0.19 1
+							}
+							PanelWidgetClass NestedExactBothGreen {
+								position 0 0
+								size 46 48
+								hexactpos 1
+								vexactpos 1
+								hexactsize 1
+								vexactsize 1
+								style rover_sim_colorable
+								color 0.26 0.84 0.50 1
+							}
+						}
+					}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotNestedRelativeWidth {
+			position 490 555
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundNestedRelativeWidth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.30 0.30 0.33 1
+				}
+				TextWidgetClass LabelNestedRelativeWidth {
+					position 20 15
+					size 370 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "Nested: RelativeWidth"
+				}
+				FrameWidgetClass ParentNestedRelativeWidth {
+					position 50 70
+					size 300 240
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					{
+					GridSpacerWidgetClass GridNestedRelativeWidth {
+						position 25 45
+						size 0.6 96
+						hexactpos 1
+						vexactpos 1
+						hexactsize 0
+						vexactsize 1
+						"Columns" 2
+						"Rows" 2
+						"Padding" 12
+						"Margin" 8
+						"Ignore invisible" 1
+						"Size To Content H" 1
+						"Size To Content V" 1
+						{
+							PanelWidgetClass NestedRelativeWidthBlue {
+								position 0 0
+								size 70 28
+								hexactpos 1
+								vexactpos 1
+								hexactsize 1
+								vexactsize 1
+								style rover_sim_colorable
+								color 0.22 0.65 0.94 1
+							}
+							PanelWidgetClass NestedRelativeWidthOrange {
+								position 0 0
+								size 0.45 0.35
+								hexactpos 1
+								vexactpos 1
+								hexactsize 0
+								vexactsize 0
+								style rover_sim_colorable
+								color 0.95 0.57 0.19 1
+							}
+							PanelWidgetClass NestedRelativeWidthGreen {
+								position 0 0
+								size 46 48
+								hexactpos 1
+								vexactpos 1
+								hexactsize 1
+								vexactsize 1
+								style rover_sim_colorable
+								color 0.26 0.84 0.50 1
+							}
+						}
+					}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotNestedRelativeHeight {
+			position 960 555
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundNestedRelativeHeight {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.30 0.30 0.33 1
+				}
+				TextWidgetClass LabelNestedRelativeHeight {
+					position 20 15
+					size 370 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "Nested: RelativeHeight"
+				}
+				FrameWidgetClass ParentNestedRelativeHeight {
+					position 50 70
+					size 300 240
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					{
+					GridSpacerWidgetClass GridNestedRelativeHeight {
+						position 25 45
+						size 180 0.4
+						hexactpos 1
+						vexactpos 1
+						hexactsize 1
+						vexactsize 0
+						"Columns" 2
+						"Rows" 2
+						"Padding" 12
+						"Margin" 8
+						"Ignore invisible" 1
+						"Size To Content H" 1
+						"Size To Content V" 1
+						{
+							PanelWidgetClass NestedRelativeHeightBlue {
+								position 0 0
+								size 70 28
+								hexactpos 1
+								vexactpos 1
+								hexactsize 1
+								vexactsize 1
+								style rover_sim_colorable
+								color 0.22 0.65 0.94 1
+							}
+							PanelWidgetClass NestedRelativeHeightOrange {
+								position 0 0
+								size 0.45 0.35
+								hexactpos 1
+								vexactpos 1
+								hexactsize 0
+								vexactsize 0
+								style rover_sim_colorable
+								color 0.95 0.57 0.19 1
+							}
+							PanelWidgetClass NestedRelativeHeightGreen {
+								position 0 0
+								size 46 48
+								hexactpos 1
+								vexactpos 1
+								hexactsize 1
+								vexactsize 1
+								style rover_sim_colorable
+								color 0.26 0.84 0.50 1
+							}
+						}
+					}
+					}
+				}
+			}
+		}
+		FrameWidgetClass SlotNestedRelativeBoth {
+			position 1430 555
+			size 420 450
+			hexactpos 1
+			vexactpos 1
+			hexactsize 1
+			vexactsize 1
+			{
+				PanelWidgetClass BackgroundNestedRelativeBoth {
+					position 0 0
+					size 420 450
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					style rover_sim_colorable
+					color 0.30 0.30 0.33 1
+				}
+				TextWidgetClass LabelNestedRelativeBoth {
+					position 20 15
+					size 370 28
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					text "Nested: RelativeBoth"
+				}
+				FrameWidgetClass ParentNestedRelativeBoth {
+					position 50 70
+					size 300 240
+					hexactpos 1
+					vexactpos 1
+					hexactsize 1
+					vexactsize 1
+					{
+					GridSpacerWidgetClass GridNestedRelativeBoth {
+						position 25 45
+						size 0.6 0.4
+						hexactpos 1
+						vexactpos 1
+						hexactsize 0
+						vexactsize 0
+						"Columns" 2
+						"Rows" 2
+						"Padding" 12
+						"Margin" 8
+						"Ignore invisible" 1
+						"Size To Content H" 1
+						"Size To Content V" 1
+						{
+							PanelWidgetClass NestedRelativeBothBlue {
+								position 0 0
+								size 70 28
+								hexactpos 1
+								vexactpos 1
+								hexactsize 1
+								vexactsize 1
+								style rover_sim_colorable
+								color 0.22 0.65 0.94 1
+							}
+							PanelWidgetClass NestedRelativeBothOrange {
+								position 0 0
+								size 0.45 0.35
+								hexactpos 1
+								vexactpos 1
+								hexactsize 0
+								vexactsize 0
+								style rover_sim_colorable
+								color 0.95 0.57 0.19 1
+							}
+							PanelWidgetClass NestedRelativeBothGreen {
+								position 0 0
+								size 46 48
+								hexactpos 1
+								vexactpos 1
+								hexactsize 1
+								vexactsize 1
+								style rover_sim_colorable
+								color 0.26 0.84 0.50 1
+							}
+						}
+					}
+					}
+				}
+			}
+		}
+	}
+}
