@@ -62,7 +62,7 @@ Do not change the production GridSpacer algorithm, default font renderer, panel 
 
 ## Phase 3E A/B update — live GridSpacer path enabled
 
-User screenshot: `image(20261102-071906).png`, 1669x904 screenshot, Studio URL `http://localhost:5173/?experimentalGridLayout=1&experimentalNativeConstrainedGrid=1`. Studio displays `VANILLA P:\gui`, the original `server_browser_tab_pages.layout`, 1920×1080, 46% zoom. The original default Studio and native Workbench screenshots from the earlier baseline are preserved in the chat; no original source was edited.
+User screenshot: `image(20261102-071906).png`, 1919x1033 screenshot, Studio URL `http://localhost:5173/?experimentalGridLayout=1&experimentalNativeConstrainedGrid=1`. Studio displays `VANILLA P:\gui`, the original `server_browser_tab_pages.layout`, 1920×1080, 46% zoom. The original default Studio and native Workbench screenshots from the earlier baseline are preserved in the chat; no original source was edited.
 
 | Visual feature | Default Studio | Live Grid candidate | Native Workbench baseline | Outcome |
 |---|---|---|---|---|
