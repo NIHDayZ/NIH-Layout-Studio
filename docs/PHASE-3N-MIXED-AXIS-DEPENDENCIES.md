@@ -130,3 +130,38 @@ node scripts\Analyze-Phase3NMixedCandidate.mjs $layoutPath |
 The updated native comparator groups inherited mismatch ancestry and reports local geometry deltas. The new mixed-axis candidate tests cover a synthetic structural reproduction of both observed hierarchies, all six previously validated Phase 3M nested controls, and rejection of an unmeasured Scroll height. These tests are evidence-based regression checks, **not new independent native captures**.
 
 Expected geometry-test total: **466** (previously 460 + two comparator regression cases + four candidate cases), pending local confirmation. Do not claim acceptance until the local suite and vanilla `phase3n-mixed-candidate.txt` both pass scrutiny. Native source capture is at 1920×1080 and does not validate arbitrary viewport sizes.
+
+## 2026-11-02 — Five-flag experimental snapshot integration
+
+Local test results independently reported **466/466**, TypeScript and Vite build PASS. The local vanilla source produced:
+
+- Original five-flag snapshot: 34 native visible rectangles comparable; 9 matched and 25 mismatched. First-mismatch ancestors: `right_area_root` (21 affected), `server_list_root` (4 affected).
+- The separately implemented, read-only `ProbeMixedAxisGrid` candidate: **33 comparable native rectangles, 33 matched, 0 mismatches**. It did not use the frozen native rectangles to calculate its predictions. The standalone native root is excluded from this second count.
+
+The bounded mixed-axis planner is now wired as a **fallback inside the existing five-flag, opt-in nested Grid path** in `GeometrySnapshot.ts`. No sixth browser option, no default enablement, and no changes to default authored geometry. The previously validated, narrower Phase 3M `ProbeNestedAllocatedGrid` always takes precedence if it accepts the node. Phase 3N only attempts additional ordinary relative siblings and exact-height, non-content ScrollWidgets in observed one-column measured-content stacks; unsupported dependencies continue to reject.
+
+A new `grid-mixed-allocation-prototype` applied-strategy **report label** distinguishes mixed plans from Phase 3M's `grid-nested-allocation-prototype`. It is a diagnostic label, not a new user-facing flag.
+
+A synthetic widget-tree regression captures native *structural* patterns for the server list and filter panel, without committing game layouts or using native pixels to drive the solver. The integration tests check all **34 visible static native reference rectangles** (including the standalone root), require the mixed strategy on the two top-level roots, and assert earlier four-flag and default behavior remain unchanged. Existing six controlled Phase 3M native tests remain required. The synthetic test does not substitute for actual parity on the locally extracted vanilla source or at other viewports.
+
+Local validation needed:
+
+```powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+npm run test:geometry-engine
+npm run typecheck
+npm run build
+
+$layoutPath = 'P:\gui\layouts\new_ui\server_browser\pc\server_browser_tab_pages.layout'
+node scripts\Compare-Phase3NNativeGeometry.mjs $layoutPath |
+    Tee-Object -FilePath phase3n-integrated-native-comparison.txt
+
+node scripts\Analyze-NativeLayoutGeometry.mjs $layoutPath --json |
+    ConvertFrom-Json |
+    Select-Object -ExpandProperty nestedSnapshotAppliedStrategies |
+    Group-Object mode |
+    Select-Object Name,Count
+```
+
+Expected tests: **468** (466 before integration + 2 new snapshot tests), pending verification. Expected compared static native rectangles: 34, with a hoped-for 34/34, but only actual local output establishes that. The standalone `details_root` is invisible and deliberately excluded. Only when native-vs-Studio comparison confirms the output should the five-flag browser preview be visually checked against the standalone native client capture. The local DayZ build may require localized text/font and image resources separately; geometric parity alone does not certify appearance or live menu behavior.
