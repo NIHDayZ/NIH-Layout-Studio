@@ -1,0 +1,300 @@
+{
+  "phase": "3L",
+  "kind": "INDEPENDENT_NATIVE_WORKBENCH_NESTED_GRID_VISIBLE_PIXEL_RECTS",
+  "captureDate": "2026-11-02",
+  "image": "image(20261102-184916).png",
+  "imageSize": [
+    1919,
+    1032
+  ],
+  "root": [
+    1920,
+    1080
+  ],
+  "zoom": 0.46,
+  "source": "tests/fixtures/workbench-grid/NIH_Grid_Nested_Dependency_Matrix.layout",
+  "method": "Connected exact-RGB components in the original Workbench screenshot. Half-open bounds [x0,y0,x1,y1], color interior only; anti-aliased edges omitted. Null means no distinct contiguous region of that swatch color was found, not proven invisible or absent.",
+  "colorRGB": {
+    "Blue": [
+      129,
+      211,
+      248
+    ],
+    "Orange": [
+      249,
+      199,
+      120
+    ],
+    "Green": [
+      139,
+      236,
+      188
+    ],
+    "InnerMarker": [
+      248,
+      160,
+      226
+    ],
+    "OuterMarker": [
+      251,
+      246,
+      129
+    ],
+    "TopBackground": [
+      134,
+      142,
+      151
+    ],
+    "BottomBackground": [
+      144,
+      147,
+      158
+    ]
+  },
+  "cases": [
+    {
+      "name": "HeightOuter",
+      "backgroundRect": [
+        498,
+        170,
+        760,
+        384
+      ],
+      "visibleRects": {
+        "Blue": [
+          518,
+          208,
+          550,
+          221
+        ],
+        "Orange": [
+          555,
+          208,
+          570,
+          221
+        ],
+        "Green": [
+          518,
+          226,
+          539,
+          248
+        ],
+        "InnerMarker": [
+          555,
+          226,
+          566,
+          237
+        ],
+        "OuterMarker": [
+          606,
+          205,
+          694,
+          219
+        ]
+      },
+      "orangeObservation": null
+    },
+    {
+      "name": "WidthOuter",
+      "backgroundRect": [
+        786,
+        170,
+        1049,
+        384
+      ],
+      "visibleRects": {
+        "Blue": [
+          807,
+          208,
+          838,
+          221
+        ],
+        "Orange": [
+          843,
+          208,
+          865,
+          221
+        ],
+        "Green": [
+          807,
+          226,
+          827,
+          248
+        ],
+        "InnerMarker": [
+          843,
+          226,
+          854,
+          237
+        ],
+        "OuterMarker": [
+          873,
+          205,
+          887,
+          278
+        ]
+      },
+      "orangeObservation": null
+    },
+    {
+      "name": "BothOuter",
+      "backgroundRect": [
+        1074,
+        170,
+        1337,
+        384
+      ],
+      "visibleRects": {
+        "Blue": [
+          1095,
+          208,
+          1127,
+          221
+        ],
+        "Orange": [
+          1132,
+          208,
+          1153,
+          221
+        ],
+        "Green": [
+          1095,
+          226,
+          1116,
+          248
+        ],
+        "InnerMarker": [
+          1132,
+          226,
+          1142,
+          237
+        ],
+        "OuterMarker": [
+          1161,
+          205,
+          1175,
+          219
+        ]
+      },
+      "orangeObservation": null
+    },
+    {
+      "name": "HeightOuterWidthLeaf",
+      "backgroundRect": [
+        498,
+        412,
+        760,
+        626
+      ],
+      "visibleRects": {
+        "Blue": [
+          522,
+          454,
+          553,
+          466
+        ],
+        "Orange": null,
+        "Green": [
+          522,
+          471,
+          542,
+          483
+        ],
+        "InnerMarker": [
+          566,
+          451,
+          577,
+          461
+        ],
+        "OuterMarker": [
+          606,
+          447,
+          694,
+          462
+        ]
+      },
+      "orangeObservation": "not-separately-visible-in-captured-exact-RGB"
+    },
+    {
+      "name": "WidthOuterWidthLeaf",
+      "backgroundRect": [
+        786,
+        412,
+        1049,
+        626
+      ],
+      "visibleRects": {
+        "Blue": [
+          810,
+          454,
+          842,
+          466
+        ],
+        "Orange": null,
+        "Green": [
+          810,
+          471,
+          831,
+          483
+        ],
+        "InnerMarker": [
+          855,
+          451,
+          866,
+          461
+        ],
+        "OuterMarker": [
+          873,
+          447,
+          887,
+          520
+        ]
+      },
+      "orangeObservation": "not-separately-visible-in-captured-exact-RGB"
+    },
+    {
+      "name": "BothOuterWidthLeaf",
+      "backgroundRect": [
+        1075,
+        412,
+        1337,
+        626
+      ],
+      "visibleRects": {
+        "Blue": [
+          1098,
+          454,
+          1130,
+          466
+        ],
+        "Orange": null,
+        "Green": [
+          1098,
+          471,
+          1119,
+          483
+        ],
+        "InnerMarker": [
+          1143,
+          451,
+          1154,
+          461
+        ],
+        "OuterMarker": [
+          1161,
+          447,
+          1176,
+          462
+        ]
+      },
+      "orangeObservation": "not-separately-visible-in-captured-exact-RGB"
+    }
+  ],
+  "nativeLimits": [
+    "These are visible swatch and marker pixel rectangles, NOT GetSize/GetScreenSize of invisible GridSpacer ancestors.",
+    "Compute local relative pixel rectangles by subtracting each case background's top-left corner; Workbench and Studio have different preview origins.",
+    "Bottom-row orange is not separately detected in the screenshot; it may be occluded or overlapped. Do not impute any rectangle.",
+    "Parent width/height and recursive allocation order remain unresolved; capture actual native sizes with the disposable runtime Grid probe before implementing a nested algorithm.",
+    "The screenshot is of Workbench; actual DayZ runtime may apply different resolution/visibility lifecycle. Preserve both forms of evidence separately."
+  ]
+}
