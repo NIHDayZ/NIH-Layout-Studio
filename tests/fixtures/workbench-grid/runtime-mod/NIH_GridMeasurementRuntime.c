@@ -243,6 +243,12 @@ class NIHGridMeasurementProbe {
 		Print(entry);
 	}
 
+	protected void CaptureComplex(string phase) {
+		Print("[NIH_LayoutStudio][GridProbe] BEGIN " + phase);
+		CaptureTree(m_ComplexRoot, phase);
+		Print("[NIH_LayoutStudio][GridProbe] END " + phase);
+	}
+
 	/**
 	 * Phase 3L native nested manager allocation evidence. This disposable,
 	 * client-only probe logs actual widget bounds instead of guessing
@@ -292,12 +298,6 @@ class NIHGridMeasurementProbe {
 		m_NestedDependencyRoot.SetScreenSize(1120, 720);
 		m_NestedDependencyRoot.Update();
 		CaptureNestedDependencies("after-resize-1120x720");
-	}
-
-	protected void CaptureComplex(string phase) {
-		Print("[NIH_LayoutStudio][GridProbe] BEGIN " + phase);
-		CaptureTree(m_ComplexRoot, phase);
-		Print("[NIH_LayoutStudio][GridProbe] END " + phase);
 	}
 
 	protected void CaptureRelative(string phase) {
