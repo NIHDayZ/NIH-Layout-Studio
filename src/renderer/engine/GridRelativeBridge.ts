@@ -92,3 +92,67 @@ export function ProbeMeasuredRelativeGrid(
 	cache.set(parent, result);
 	return result;
 }
+
+/**
+ * Phase 3I: strictly scoped, opt-in experiment for content-sized GridSpacers
+ * whose authored size is relative to a KNOWN, already allocated parent rect.
+ *
+ * Unlike ProbeMeasuredRelativeGrid, these parent dimensions are resolved
+ * before invoking the native-derived cell planner. Reject nested content-
+ * sized / other managed children: their allocation must be solved separately.
+ * This is not used by the existing exact-size bridge or default renderer.
+ */
+export function ProbeAllocatedParentRelativeGrid(
+	parent: MeasuredLayoutNode,
+	allocatedParentWidth: number,
+	allocatedParentHeight: number
+): MeasuredRelativeGrid | null {
+	const grid = parent.nativeGrid;
+	const authored = parent.authored;
+	if (parent.strategy.kind !== "grid" || !grid
+		|| !parent.unresolvedContentWidth || !parent.unresolvedContentHeight
+		|| (authored.exactSizeX && authored.exactSizeY)
+		|| !Number.isFinite(allocatedParentWidth) || allocatedParentWidth <= 0
+		|| !Number.isFinite(allocatedParentHeight) || allocatedParentHeight <= 0)
+		return null;
+	const resolvedWidth = authored.exactSizeX
+		? authored.sizeX : allocatedParentWidth * authored.sizeX;
+	const resolvedHeight = authored.exactSizeY
+		? authored.sizeY : allocatedParentHeight * authored.sizeY;
+	if (![resolvedWidth, resolvedHeight].every(Number.isFinite)
+		|| resolvedWidth <= 0 || resolvedHeight <= 0)
+		return null;
+	const indices = SelectManagedChildIndices(parent.children, parent.nativeIgnoreInvisible);
+	if (!indices || indices.length === 0)
+		return null;
+	const children: NativeRelativeGridChild[] = [];
+	for (const index of indices) {
+		const child = parent.children[index];
+		const a = child.authored;
+		// No guessed nested content allocation, hidden-child reinterpretation,
+		// or unsupported manager invocation in this phase.
+		if (a.sizeToContentWidth || a.sizeToContentHeight
+			|| child.strategy.requiresArrangement
+			|| !Number.isFinite(a.sizeX) || !Number.isFinite(a.sizeY)
+			|| a.sizeX < 0 || a.sizeY < 0)
+			return null;
+		children.push({
+			width: a.sizeX,
+			height: a.sizeY,
+			exactWidth: a.exactSizeX,
+			exactHeight: a.exactSizeY
+		});
+	}
+	const plan = PlanNativeRelativeGrid({
+		columns: grid.columns,
+		rows: grid.rows,
+		padding: grid.padding,
+		margin: grid.margin,
+		authoredWidth: resolvedWidth,
+		authoredHeight: resolvedHeight,
+		contentWidth: true,
+		contentHeight: true,
+		children
+	});
+	return plan ? { plan, participatingIndices: indices } : null;
+}
