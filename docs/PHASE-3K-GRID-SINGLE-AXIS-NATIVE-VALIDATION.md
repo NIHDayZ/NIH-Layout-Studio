@@ -17,6 +17,10 @@ On 2026-11-02, Phase 3J passed **419/419** regression tests on the user's Window
 
 The only two activated grids were `right_area_buttons` and `filters_content`. The `filters_content` prototype changes its local rectangle from `(0,0,129.6,648)` to `(0,0,129.6,300)`. Its filter rows move in 30-unit increments. However, `right_area_root`, `filters_root`, `server_list_root`, and `server_list_content_root` remain outside this research prototype. The `129.6` width is a **Studio model measurement**, not independently verified native Workbench parent geometry. More controls becoming visible does not establish correct sizing or clipping.
 
+Existing exact-parent native evidence: Phase 2K already captured single-axis RContentH and RContentV cases in tests/fixtures/workbench-grid/grid-relative-phase2k-native.json. RContentH measured a 145.5 by 100 parent; RContentV measured a 240 by 63 parent. These validate the existing pure planner for exact-size single-axis grids.
+
+Phase 3K specifically measures the missing combination: single-axis Size To Content with relative-sized parent axes. It does not repeat the earlier exact-parent discovery.
+
 **Decision:** Do not extend the new strategy to single-axis content sizing without independent native measurements. The existing pure planner contains potential single-axis rules, but the allocated-parent bridge explicitly requires both axes because the previous 8-case Workbench fixture only tested both-axis mode.
 
 ## New eight-case native fixture
