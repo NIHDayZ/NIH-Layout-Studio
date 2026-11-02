@@ -89,3 +89,19 @@ The native swatch geometry alone does not reveal invisible GridSpacer final boun
 Only after native evidence for both single-axis modes, test the **independent pure planner**, then introduce a separate experimental bridge. Do not remove the current content-both-axes restriction globally or change the default Canvas. The server browser's 28 width-only and 8 height-only grids are a priority, but many also have independently unsupported nested or managed children; a single-axis fix will not automatically resolve the entire screen.
 
 This phase changes **one research-only .layout fixture, four tests, the staging manifest, and this documentation**. It makes no changes to existing parser, serializer, geometry algorithms, default UI behavior, or saved vanilla GUI files.
+
+## Native measurement and four-flag experimental result
+
+Workbench screenshot `image(20261102-182720).png` (1919×1034 pixels), 1920×1080 root at 46% zoom. Frozen native evidence: `tests/fixtures/workbench-grid/grid-single-axis-phase3k-native-pixels.json` (8 background bounds and 24 colored swatch bounds).
+
+The prior pure native-derived cell planner, with authored relative Grid sizes resolved against fixed parent frames, predicts all 96 swatch x/y/width/height coordinates to **0.457 px mean absolute** and **1.394 px maximum absolute** screenshot error. The native swatch pattern is invariant within one screenshot pixel across four parent exact/relative size combinations for each single-axis mode.
+
+An additional **fourth opt-in flag** now activates the single-axis relative-parent candidate:
+
+`http://localhost:5173/?experimentalGeometrySnapshot=1&experimentalGridRelativeContent=1&experimentalAllocatedParentRelativeGrid=1&experimentalAllocatedParentSingleAxisGrid=1`
+
+The new bridge rejects invalid parent allocations and unsupported managed/content-sized children, requires exactly one content-sizing axis and at least one authored relative size axis, and does not affect existing exact-sized or both-axis cases. Its strategy identifier is `grid-allocated-parent-single-axis-prototype`.
+
+The read-only native layout audit now includes the four-flag model, `singleAxisSnapshotAppliedStrategies`, the `singleAxisVsAllocated` ancestor-difference report and a per-GridSpacer `singleAxisMode`. This distinguishes actual strategy activation from the eligibility hypothesis.
+
+Local test baseline confirmed before these changes: **419 pass**. New fixture, native-evidence, four-flag preview and diagnostic regression cases make the **expected total 434**, pending local tests, typecheck and Vite build. No default geometry or production application behavior changed. The next gate is the real vanilla server-browser 43-grid audit followed by a four-flag visual capture.
