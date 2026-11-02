@@ -17,6 +17,7 @@ $sourceFiles = @(
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_Complex_Visual.layout'); Relative = 'gui\layouts\NIH_Grid_Complex_Visual.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_RelativeParent_Axis_Matrix.layout'); Relative = 'gui\layouts\NIH_Grid_RelativeParent_Axis_Matrix.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_SingleAxis_Content_Matrix.layout'); Relative = 'gui\layouts\NIH_Grid_SingleAxis_Content_Matrix.layout' },
+	@{ Source = (Join-Path $fixtureRoot 'NIH_Grid_Nested_Dependency_Matrix.layout'); Relative = 'gui\layouts\NIH_Grid_Nested_Dependency_Matrix.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Panel_Color_Alpha_Calibration.layout'); Relative = 'gui\layouts\NIH_Panel_Color_Alpha_Calibration.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Panel_Background_Calibration.layout'); Relative = 'gui\layouts\NIH_Panel_Background_Calibration.layout' },
 	@{ Source = (Join-Path $fixtureRoot 'NIH_Panel_Style_Comparison.layout'); Relative = 'gui\layouts\NIH_Panel_Style_Comparison.layout' },
