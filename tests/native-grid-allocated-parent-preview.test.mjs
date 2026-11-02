@@ -178,5 +178,5 @@ test("Phase 3I preview stays behind three explicit URL gates and does not alter 
 	assert.ok(canvas.includes('get("experimentalAllocatedParentRelativeGrid") === "1"'));
 	assert.ok(canvas.includes("const allocatedParentGridPreviewEnabled = relativeGridPreviewEnabled &&"));
 	assert.ok(canvas.includes("gridAllocatedParentRelativePrototype: allocatedParentGridPreviewEnabled,"));
-	assert.ok(canvas.includes("[snapshotEnabled, relativeGridPreviewEnabled, allocatedParentGridPreviewEnabled, nodes, width, height]"));
+	assert.ok(canvas.includes("[snapshotEnabled, relativeGridPreviewEnabled, allocatedParentGridPreviewEnabled, allocatedSingleAxisGridPreviewEnabled, nodes, width, height]"));
 });
