@@ -81,3 +81,51 @@ Test `http://localhost:5173/?experimentalGeometrySnapshot=1&experimentalGridRela
 To obtain diagnostic values when the screenshot cannot discriminate, use the existing `compareGeometryPipelines=1` and/or `debugWidgetGeometry=1` flags on a subsequent isolated run, after selecting a specific affected widget. Record the exact widget name and root-relative rectangle; do not infer native geometry directly from full-app screenshot coordinates because the Workbench and browser chrome/viewport differ.
 
 **Status:** Grid live A/B performed; shared snapshot A/B pending. Production changes remain blocked until at least one generic cause is confirmed on multiple native widgets.
+
+## Phase 3E snapshot A/B captured; Phase 3F offline geometry diagnostic
+
+**Third user-provided capture:** `image(20261102-072231).png`, Studio `?experimentalGeometrySnapshot=1&experimentalGridRelativeContent=1`, root 1920x1080, zoom 46%, `VANILLA P:\gui` loaded. The other experimental Grid flags were not enabled.
+
+| Scene component | Live Grid A/B | Shared snapshot A/B | Workbench reference |
+|---|---|---|---|
+| Server-list headings | Spread horizontally near top | Overlap tightly in upper-left | Mostly spread horizontally | Snapshot visibly worse |
+| Bottom list bar | Positioned near bottom | Positioned near bottom | Near the bottom of the left-hand list, higher relative to the root | Both remain offset from reference |
+| Filter subtree | Some controls visible but grouped toward lower middle | Most controls disappear again | Panel controls visible in upper-right | Neither is native-correct |
+| Filter heading | Upper-right | Upper-right | Upper-right | Heading alone doesn't validate subtree |
+
+**Interpretation:** Both experimental arrangements reveal different subsets of the content, and neither yields the complete native hierarchy visually. The snapshot appears to lose part of the live Grid improvement. That may reflect unsupported managed children, wrong content sizing/alignment, or paint/clipping; without numerical rectangles it would be premature to assign one root cause. Keep the preview paths experimental.
+
+### Phase 3F — Compute model divergence without another screenshot
+
+Committed a **read-only** `scripts/Analyze-NativeLayoutGeometry.mjs` diagnostic. It uses the actual production parser and the existing production-equivalent pure geometry research functions against the user's local extracted vanilla layout:
+
+- Baseline: `ArrangeMeasuredGeometry` without native-grid options.
+- Shared snapshot candidate: `ArrangeMeasuredGeometry` with `constrainedGrid=true` and `gridRelativeContentPrototype=true`, exactly matching the Phase 3E flag set.
+- Live Grid candidate: existing `CompareLiveToSnapshot(..., {gridLayout:true, nativeConstrainedGrid:true, nativeWrapLayout:false})`, compared with the basic snapshot.
+- Reports scoped strategy applications, counts of *local* rectangle changes versus inherited ancestor offsets, dominant root-cause widgets, unresolved geometry issues, and focused server list/filter ancestry and rectangles.
+
+No source file or output file is written by the tool; reports are printed to standard output. **These are disagreements among Studio models, not Workbench native rectangle captures.** The focus list contains widget names and rectangle values, not property source bodies.
+
+Run after pulling the branch:
+
+```powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+npm run test:geometry-engine
+npm run typecheck
+npm run build
+
+$layoutPath = 'P:\gui\layouts\new_ui\server_browser\pc\server_browser_tab_pages.layout'
+npm run audit:native-layout-geometry -- "$layoutPath"
+```
+
+Expected suite count: **397** after four new read-only diagnostic tests, pending local execution. The output should show `Relative snapshot root causes`, `Live Grid vs basic snapshot root causes`, and a focused ancestry/rect list. Share this text to guide the first minimal native-verifiable fix.
+
+For detailed structured data:
+
+```powershell
+npm --silent run audit:native-layout-geometry -- "$layoutPath" --json |
+    Set-Content -LiteralPath (Join-Path $env:TEMP 'nih-server-browser-geometry.json') -Encoding UTF8
+```
+
+The correct next fix is the earliest significant *local* divergence that affects many children. Do not patch multiple descendant coordinates, promote native alpha to production, or change visible widget styles before confirming whether those descendants have a wrong allocated parent rectangle. This keeps the project focused on universal layout behavior.
