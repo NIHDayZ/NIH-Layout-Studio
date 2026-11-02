@@ -165,3 +165,23 @@ node scripts\Analyze-NativeLayoutGeometry.mjs $layoutPath --json |
 ```
 
 Expected tests: **468** (466 before integration + 2 new snapshot tests), pending verification. Expected compared static native rectangles: 34, with a hoped-for 34/34, but only actual local output establishes that. The standalone `details_root` is invisible and deliberately excluded. Only when native-vs-Studio comparison confirms the output should the five-flag browser preview be visually checked against the standalone native client capture. The local DayZ build may require localized text/font and image resources separately; geometric parity alone does not certify appearance or live menu behavior.
+
+## 2026-11-02 — Accepted scoped Phase 3N native rectangle comparison
+
+The user ran `npm run test:geometry-engine` on the integrated five-flag branch and confirmed **468/468 passing**, `npm run typecheck` PASS and `npm run build` PASS (91 transformed modules).
+
+The unmodified local vanilla `server_browser_tab_pages.layout` produced this **actual integrated Studio-vs-independent-DayZ-native** result at 1920×1080:
+
+- `Compared=34 matched=34 mismatched=0`, tolerance 0.025 unzoomed px.
+- `Native lifecycle differences=0` (after-create / post-update / post-settle).
+- `First mismatched ancestors`: none.
+- `Native/source sibling-order differences=1` in the hidden details subtree; the unique name+parent match recovers it.
+- `snapshot issues=69` across the whole standalone source; these are **not** 69 mismatches in the 34 verified visible rectangles. They require separate classification before claims of broad parity.
+- `details_root` is invisible; its description descendants are excluded from visual parity scoring.
+- Comparison previously said `Five-flag nested strategies=0` because it counted only the *older Phase 3M mode*. The comparator now reports `Phase 3M nested` and `Phase 3N mixed` separately. This is **reporting-only**, no solver change.
+
+**Scoped acceptance:** the Phase 3N mixed one-column nested allocation extension reproduces all measured visible, static rectangles for the standalone vanilla server browser at 1920×1080. This is not acceptance for the full live server-browser application, non-visible states, resource styling/fonts, or other resolutions.
+
+**Next evidence recommended before broad enablement:** capture or validate an independent 1440×810 standalone native measurement of this same layout and run a second unrelated vanilla layout through the same measured-comparison process. Then inspect the Studio browser preview with the five existing flags, at identical viewport, and classify residual `snapshot issues` by code and whether they affect visible widgets. Retain the Phase 3M controlled fixtures and default/four-flag regression gates. Do not infer all native layout behavior from this one success.
+
+One new comparator-reporting regression test has been registered. Expected geometry tests **469** after pulling the reporting-only commit; local validation is still required.
