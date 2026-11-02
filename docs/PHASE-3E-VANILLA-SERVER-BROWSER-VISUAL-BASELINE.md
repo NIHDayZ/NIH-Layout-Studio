@@ -119,7 +119,7 @@ $layoutPath = 'P:\gui\layouts\new_ui\server_browser\pc\server_browser_tab_pages.
 npm run audit:native-layout-geometry -- "$layoutPath"
 ```
 
-Expected suite count: **397** after four new read-only diagnostic tests, pending local execution. The output should show `Relative snapshot root causes`, `Live Grid vs basic snapshot root causes`, and a focused ancestry/rect list. Share this text to guide the first minimal native-verifiable fix.
+Phase 3F initial local validation: **396 passed / 1 failed** out of 397 tests. The new diagnostic CLI rejected the required positional layout filename as an unknown option; both the local geometry command and its CLI regression test printed usage. This was a CLI validator defect, not a confirmed geometry-engine regression. The validator now validates only `--`-prefixed arguments as flags and rejects duplicate or unknown options. An additional regression test covers bare Windows-compatible layout paths, valid and invalid options. **398 tests are now expected, pending local validation.** The output should show `Relative snapshot root causes`, `Live Grid vs basic snapshot root causes`, and a focused ancestry/rect list. Share this text to guide the first minimal native-verifiable fix.
 
 For detailed structured data:
 
