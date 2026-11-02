@@ -70,7 +70,7 @@ export interface AppliedLayoutStrategy {
 	id: string;
 	kind: "grid" | "wrap";
 	evidence: "native-disassembly";
-	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "grid-allocated-parent-relative-prototype" | "grid-allocated-parent-single-axis-prototype" | "grid-nested-allocation-prototype" | "fixed-wrap-prototype";
+	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "grid-allocated-parent-relative-prototype" | "grid-allocated-parent-single-axis-prototype" | "grid-nested-allocation-prototype" | "grid-mixed-allocation-prototype" | "fixed-wrap-prototype";
 }
 
 export interface ChildArrangement {
@@ -183,7 +183,8 @@ function ArrangeRelativeGridContent(
 			id: parent.node.id,
 			kind: "grid",
 			evidence: "native-disassembly",
-			mode: measured.nestedAllocatedGrid ? "grid-nested-allocation-prototype"
+			mode: measured.mixedAllocatedGrid ? "grid-mixed-allocation-prototype"
+				: measured.nestedAllocatedGrid ? "grid-nested-allocation-prototype"
 				: measured.allocatedParentSingleAxis
 				? "grid-allocated-parent-single-axis-prototype"
 				: (measured.allocatedParentRelative
