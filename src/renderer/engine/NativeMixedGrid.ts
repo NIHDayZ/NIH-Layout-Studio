@@ -4,12 +4,12 @@ import { SelectManagedChildIndices } from "./ManagedVisibility.js";
 import { PlanNativeRelativeGrid, type NativeRelativeGridChild } from "./GridRelativeContent.js";
 
 /**
- * Research-only follow-up to Phase 3N. Does NOT participate in Studio rendering.
+ * Phase 3N fallback for the existing five-flag opt-in nested layout preview.
  *
- * Generalizes the native-derived provisional-cell pass just enough to examine
+ * Generalizes the native-derived provisional-cell pass conservatively to handle
  * mixed ordinary relative-width siblings and a non-content-sized ScrollWidget
  * with an exact measured height. Never read native fixture coordinates here.
- * This is a candidate for further independent validation, not native parity.
+ * Applied only when the narrower Phase 3M probe rejects; not enabled by default.
  */
 export interface MixedAxisGridCandidate {
 	readonly root: MeasuredRelativeGrid;
@@ -122,7 +122,8 @@ export function ProbeMixedAxisGrid(
 		const result: MeasuredRelativeGrid = {
 			plan: { ...finalPlan, width, height },
 			participatingIndices: indices,
-			nestedAllocatedGrid: true
+			nestedAllocatedGrid: true,
+			mixedAllocatedGrid: true
 		};
 		plans.set(node, result);
 		return result;
