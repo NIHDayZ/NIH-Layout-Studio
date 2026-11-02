@@ -5,3 +5,4 @@ export { SelectManagedChildIndices } from "./ManagedVisibility.js";
 export { ProbeAllocatedParentRelativeGrid } from "./GridRelativeBridge.js";
 export { ProbeAllocatedParentSingleAxisGrid } from "./GridRelativeBridge.js";
 export { ProbeNestedAllocatedGrid } from "./NativeNestedGrid.js";
+export { ProbeMixedAxisGrid } from "./NativeMixedGrid.js";
