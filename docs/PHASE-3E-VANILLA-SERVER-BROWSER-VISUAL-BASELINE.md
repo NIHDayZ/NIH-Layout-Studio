@@ -59,3 +59,25 @@ The existing `debugSpacerLayout=1` flag can report the GridSpacer parent/child a
 - **Edit -> export -> Workbench reopen:** PENDING.
 
 Do not change the production GridSpacer algorithm, default font renderer, panel alpha model or sources until the isolated A/B resolves at least one root cause. Treat this as the first whole-layout visual acceptance checkpoint, with confirmed failures and explicitly unresolved causes.
+
+## Phase 3E A/B update — live GridSpacer path enabled
+
+User screenshot: `image(20261102-071906).png`, 1669x904 screenshot, Studio URL `http://localhost:5173/?experimentalGridLayout=1&experimentalNativeConstrainedGrid=1`. Studio displays `VANILLA P:\gui`, the original `server_browser_tab_pages.layout`, 1920×1080, 46% zoom. The original default Studio and native Workbench screenshots from the earlier baseline are preserved in the chat; no original source was edited.
+
+| Visual feature | Default Studio | Live Grid candidate | Native Workbench baseline | Outcome |
+|---|---|---|---|---|
+| Server-list header labels | Concentrated at left | Now distributed across the upper region | Several labels along top of server list | Moves toward expected role distribution; still too small/incorrect text |
+| Bottom server-list/navigation bar | Located in upper-middle area | Now near bottom of preview | Near lower edge of left-hand list region, but substantially higher within root than Studio | Changed considerably, not confirmed native-correct |
+| Filter controls | Mostly absent from visible filter area | Small edit/checkbox-like controls appear in a vertical cluster near the lower middle | Many controls visible directly below the upper-right filter header | Still materially incorrect, likely parent/child geometry or visibility |
+| Filter heading | Upper-right | Remains upper-right | Upper-right with panel body beneath | Heading alone is insufficient as geometry proof |
+| Native assets | `VANILLA P:\gui` loaded | Still loaded | Native GUI resources | Missing standalone Studio Project folder is not the explanation |
+
+**Conclusion:** Enabling the live Grid candidate materially changes placement and exposes some previously unseen controls; it does not achieve full native placement. We cannot conclude the whole discrepancy is caused by GridSpacer or that the current candidate is universally better. In particular, it appears to over-displace the bottom navigation and filter subtree relative to the native reference.
+
+### Next isolation — use the independent shared geometry snapshot
+
+Test `http://localhost:5173/?experimentalGeometrySnapshot=1&experimentalGridRelativeContent=1` **without** `experimentalGridLayout` or `experimentalNativeConstrainedGrid`; take one same-root Studio screenshot. This routes eligible geometry through the shared prepared-tree snapshot and the bounded relative-grid preview rather than the live child planner. Reload vanilla `P:\gui` and the original layout only if the URL reload clears the browser workspace. Do not combine these tests with font, style or alpha flags.
+
+To obtain diagnostic values when the screenshot cannot discriminate, use the existing `compareGeometryPipelines=1` and/or `debugWidgetGeometry=1` flags on a subsequent isolated run, after selecting a specific affected widget. Record the exact widget name and root-relative rectangle; do not infer native geometry directly from full-app screenshot coordinates because the Workbench and browser chrome/viewport differ.
+
+**Status:** Grid live A/B performed; shared snapshot A/B pending. Production changes remain blocked until at least one generic cause is confirmed on multiple native widgets.
