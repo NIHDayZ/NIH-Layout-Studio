@@ -160,3 +160,43 @@ npm run audit:native-layout-geometry -- "$layoutPath" '--focus=filters_content' 
 For machine-readable inspection, append `--json`. The output is a read-only model comparison and does not edit sources or enable any production rendering behavior.
 
 **Expected test count: 400** after two additional diagnostic/CLI regression tests, pending the user's local execution. Do not promote any snapshot code path until we have evidence of a native-eligible scenario in this or another representative layout.
+
+## Phase 3G — All 43 native GridSpacers blocked at parent exact-size gate
+
+The user completed the enhanced Phase 3F audit with **400/400 passing tests** and the following actual vanilla results (1920×1080 root, 269 parsed widgets):
+
+| Audit finding | Result |
+|---|---:|
+| GridSpacers measured | 43 |
+| Relative prototype rejected: `parent-size-not-exact` | 43 |
+| Fixed prototype rejected: `content-size-requires-separate-strategy` | 43 |
+| Relative strategies applied | 0 |
+| Live managed Grid vs basic snapshot | 105 changes |
+| Relative snapshot vs basic snapshot | 0 changes |
+
+`filters_content` has 18 direct children but only 10 currently eligible managed children under the `Ignore invisible` behavior. Its basic snapshot local rectangle is `(0,0,129.6,648)` in 1920×1080 authored units, and the live candidate changes its height by `-108` without moving its local origin. Its descendant rows (`search_ip_setting_container`, `map_setting_container`) also move in the live candidate. These are **Studio-to-Studio model comparisons**, not confirmed native Workbench dimensions.
+
+The *common parent gate* is implemented in `src/renderer/engine/GridRelativeBridge.ts` and requires **both** `authored.exactSizeX` and `authored.exactSizeY` even for a content-sized parent. `DecodeAuthoredGeometry` maps these to `hexactsize`/`vexactsize`: a zero denotes relative size, not an invalid widget. The current native relative-grid planner uses authored parent-size values as its constraint basis, so interpreting relative fractions as pixel dimensions by simply deleting that guard would be incorrect.
+
+### Phase 3G independent second-gate diagnostic
+
+Extend the **read-only** `scripts/Analyze-NativeLayoutGeometry.mjs` report to distinguish a GridSpacer parent being authored with relative width/height from deeper child-topology limitations. The new `childTopologyReasonCounts` / `contentSizingModeCounts` summarize all measured grids, and each row includes authored relative size, resolved basic parent dimensions, exact-size flags, and the *first secondary child blocker* if present.
+
+The child topology check runs independently of the original parent guard. It identifies unsupported nested Size To Content axes, nested content GridSpacers with relative parent axes, and other managed children requiring separate arrangement. It **never bypasses a guard, allocates hypothetical cells, or updates Canvas**.
+
+### Validate and inspect
+
+```powershell
+cd Z:\GitHub\NIH-Layout-Studio
+git pull --ff-only
+npm run test:geometry-engine
+
+$layoutPath = 'P:\gui\layouts\new_ui\server_browser\pc\server_browser_tab_pages.layout'
+npm run audit:native-layout-geometry -- "$layoutPath" '--focus=filters_content' '--max-focused=20'
+```
+
+The expected count is **402** (400 previously verified + 2 new regression cases), pending local execution. Please report the lines `Child topology (independent second gate)`, `Content sizing modes`, and the `filters_content` row. This tells us whether the relative-parent guard is the only immediate obstacle for the filter root or whether its nested descendants need separate native sizing evidence first.
+
+### Next architectural decision
+
+Do not enable the native relative-grid planner on all relative parent sizes merely to match the screenshots. Correct resolution requires knowing which **parent coordinate space** the native code uses when combining relative authored dimensions with Size To Content, which may be a parent-allocated cell rather than the original `size` fractions. Determine that from native layout snapshots or Workbench runtime geometry first. Then validate a general algorithm on multiple content-sized nested grids—not only this server-browser screen—before promoting it.
