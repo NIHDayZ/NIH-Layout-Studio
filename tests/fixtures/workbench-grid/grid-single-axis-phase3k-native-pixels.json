@@ -1,0 +1,300 @@
+{
+  "phase": "3K",
+  "kind": "INDEPENDENT_NATIVE_WORKBENCH_SCREENSHOT_SWATCH_RECTANGLES",
+  "captureDate": "2026-11-02",
+  "screenshot": "image(20261102-182720).png",
+  "imageSize": [
+    1919,
+    1034
+  ],
+  "source": "NIH_Grid_SingleAxis_Content_Matrix.layout",
+  "rootSize": [
+    1920,
+    1080
+  ],
+  "zoom": 0.46,
+  "method": "Exact-RGB 4-connected pixel components for three colored swatches, background areas sampled and bounded from exact RGB; half-open [x0,y0,x1,y1]; observations frozen before any change to relative-parent single-axis bridge.",
+  "colorRGB": {
+    "Blue": [
+      129,
+      211,
+      248
+    ],
+    "Orange": [
+      249,
+      199,
+      120
+    ],
+    "Green": [
+      139,
+      236,
+      188
+    ],
+    "WidthOnlyBackground": [
+      129,
+      139,
+      151
+    ],
+    "HeightOnlyBackground": [
+      154,
+      142,
+      142
+    ]
+  },
+  "cases": [
+    {
+      "name": "GridWidthOnlyExactBoth",
+      "contentMode": "WidthOnly",
+      "parentAxisMode": "ExactBoth",
+      "backgroundRect": [
+        500,
+        155,
+        693,
+        362
+      ],
+      "swatches": {
+        "Blue": [
+          520,
+          194,
+          551,
+          218
+        ],
+        "Orange": [
+          557,
+          194,
+          586,
+          218
+        ],
+        "Green": [
+          520,
+          224,
+          540,
+          248
+        ]
+      }
+    },
+    {
+      "name": "GridWidthOnlyRelativeWidth",
+      "contentMode": "WidthOnly",
+      "parentAxisMode": "RelativeWidth",
+      "backgroundRect": [
+        716,
+        155,
+        909,
+        362
+      ],
+      "swatches": {
+        "Blue": [
+          736,
+          194,
+          768,
+          218
+        ],
+        "Orange": [
+          774,
+          194,
+          802,
+          218
+        ],
+        "Green": [
+          736,
+          224,
+          757,
+          248
+        ]
+      }
+    },
+    {
+      "name": "GridWidthOnlyRelativeHeight",
+      "contentMode": "WidthOnly",
+      "parentAxisMode": "RelativeHeight",
+      "backgroundRect": [
+        933,
+        155,
+        1126,
+        362
+      ],
+      "swatches": {
+        "Blue": [
+          953,
+          194,
+          984,
+          218
+        ],
+        "Orange": [
+          990,
+          194,
+          1019,
+          218
+        ],
+        "Green": [
+          953,
+          224,
+          973,
+          248
+        ]
+      }
+    },
+    {
+      "name": "GridWidthOnlyRelativeBoth",
+      "contentMode": "WidthOnly",
+      "parentAxisMode": "RelativeBoth",
+      "backgroundRect": [
+        1149,
+        155,
+        1342,
+        362
+      ],
+      "swatches": {
+        "Blue": [
+          1169,
+          194,
+          1201,
+          218
+        ],
+        "Orange": [
+          1207,
+          194,
+          1235,
+          218
+        ],
+        "Green": [
+          1169,
+          224,
+          1190,
+          248
+        ]
+      }
+    },
+    {
+      "name": "GridHeightOnlyExactBoth",
+      "contentMode": "HeightOnly",
+      "parentAxisMode": "ExactBoth",
+      "backgroundRect": [
+        500,
+        397,
+        693,
+        604
+      ],
+      "swatches": {
+        "Blue": [
+          520,
+          435,
+          568,
+          448
+        ],
+        "Orange": [
+          574,
+          435,
+          622,
+          448
+        ],
+        "Green": [
+          520,
+          454,
+          568,
+          476
+        ]
+      }
+    },
+    {
+      "name": "GridHeightOnlyRelativeWidth",
+      "contentMode": "HeightOnly",
+      "parentAxisMode": "RelativeWidth",
+      "backgroundRect": [
+        716,
+        397,
+        909,
+        604
+      ],
+      "swatches": {
+        "Blue": [
+          736,
+          435,
+          784,
+          448
+        ],
+        "Orange": [
+          790,
+          435,
+          839,
+          448
+        ],
+        "Green": [
+          736,
+          454,
+          784,
+          476
+        ]
+      }
+    },
+    {
+      "name": "GridHeightOnlyRelativeHeight",
+      "contentMode": "HeightOnly",
+      "parentAxisMode": "RelativeHeight",
+      "backgroundRect": [
+        933,
+        397,
+        1126,
+        604
+      ],
+      "swatches": {
+        "Blue": [
+          953,
+          435,
+          1001,
+          448
+        ],
+        "Orange": [
+          1007,
+          435,
+          1055,
+          448
+        ],
+        "Green": [
+          953,
+          454,
+          1001,
+          476
+        ]
+      }
+    },
+    {
+      "name": "GridHeightOnlyRelativeBoth",
+      "contentMode": "HeightOnly",
+      "parentAxisMode": "RelativeBoth",
+      "backgroundRect": [
+        1149,
+        397,
+        1342,
+        604
+      ],
+      "swatches": {
+        "Blue": [
+          1169,
+          435,
+          1217,
+          448
+        ],
+        "Orange": [
+          1223,
+          435,
+          1272,
+          448
+        ],
+        "Green": [
+          1169,
+          454,
+          1217,
+          476
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "All rectangles measure visible swatch interior pixels, not invisible GridSpacer final bounds.",
+    "Compare swatches relative to their own background; Workbench screen origin is not the Studio screen origin.",
+    "Only fixed immediate FrameWidget parent allocations with three PanelWidget children are represented.",
+    "The screenshot cannot certify recursive nested parent layout, disabled/hidden child behavior, or production Canvas."
+  ]
+}
