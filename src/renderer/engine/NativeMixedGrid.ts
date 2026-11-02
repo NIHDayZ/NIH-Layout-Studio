@@ -62,22 +62,14 @@ export function ProbeMixedAxisGrid(
 			if (isNested) {
 				nestedIndices.push(i);
 			} else {
+				// Only fixed-height ScrollWidgets were captured as
+				// participating managed children on a content-height axis.
+				// Scroll contents and scrollbar extents remain out of scope.
 				if (a.sizeToContentWidth || a.sizeToContentHeight
 					|| (child.strategy.requiresArrangement && !isScrollLeaf)
-					|| (isScrollLeaf && ((!a.exactSizeX && node.unresolvedContentWidth)
-						&& (!a.exactSizeY && node.unresolvedContentHeight))))
-					return null;
-				// A ScrollWidget may be used only as a fixed-height leaf on
-				// the measured content axis; its child scrolling is separate.
-				if (isScrollLeaf && node.unresolvedContentHeight && !a.exactSizeY)
+					|| (isScrollLeaf && node.unresolvedContentHeight && !a.exactSizeY))
 					return null;
 			}
-			// Relative ordinary siblings next to managers are currently
-			// supported by independent native evidence only in 1-column grids.
-			if (!isNested && node.nativeGrid.columns !== 1
-				&& nestedIndices.length > 0
-				&& (!a.exactSizeX || !a.exactSizeY))
-				return null;
 
 			sourceChildren.push({
 				width: a.sizeX, height: a.sizeY,
