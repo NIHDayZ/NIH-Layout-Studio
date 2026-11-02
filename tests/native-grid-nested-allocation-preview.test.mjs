@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { LayoutParser } from "../.geometry-engine-test-build/LayoutParser.js";
+import { AnalyzeVanillaGeometry, FormatVanillaGeometry } from "../scripts/Analyze-NativeLayoutGeometry.mjs";
 import {
 	MeasureLayoutTree, ArrangeMeasuredGeometry, ProbeNestedAllocatedGrid
 } from "../.geometry-engine-test-build/SnapshotForTests.js";
@@ -172,4 +173,18 @@ test("Phase 3M browser preview requires all four previous gates and a fifth URL 
 	assert.ok(canvas.includes("nestedGridPreviewEnabled = allocatedSingleAxisGridPreviewEnabled &&"));
 	assert.ok(canvas.includes("gridNestedAllocationPrototype: nestedGridPreviewEnabled,"));
 	assert.ok(canvas.includes("nestedGridPreviewEnabled, nodes, width, height]"));
+});
+
+test("Phase 3M audit reports actual nested-strategy activation separately from four-flag results", () => {
+	const report = AnalyzeVanillaGeometry(s_Source, { focusPattern: /OuterHeightOuter/, maxFocused: 4 });
+	assert.equal(report.gridEligibility.totalGridSpacers, 15);
+	assert.equal(report.nestedSnapshotAppliedStrategies.filter(item =>
+		item.mode === "grid-nested-allocation-prototype").length, 15);
+	assert.ok(report.nestedVsSingleAxis.totalChanged > 0);
+	assert.equal(report.nestedVsSingleAxis.totalChanged,
+		report.nestedVsSingleAxis.localRectChanged +
+		report.nestedVsSingleAxis.inheritedOnly);
+	assert.ok(report.focused.some(item => item.nestedLocal));
+	assert.match(FormatVanillaGeometry(report), /Five-flag nested strategies applied: 15/);
+	assert.match(report.warning, /not independently measured Workbench geometry/);
 });
