@@ -104,3 +104,17 @@ test("Phase 3N groups inherited mismatch chains and reports native local deltas"
 	assert.deepEqual(report.rows.find(row => row.name === "InnerHeightOuter").localDelta,
 		[-1, 0, 0, 0]);
 });
+
+test("Phase 3N comparator reports both distinct strategy activations", () => {
+	const reference = {
+		root: [1920, 1080], phases: ["post-update"],
+		kind: "CONTROLLED_NATIVE_NESTED_FIXTURE", observationDifferencesAcrossPhases: 0,
+		keyRects: [
+			["NIH_NestedGridDependencyMatrix", "", -1, [0,0,1920,1080], true]
+		]
+	};
+	const report = ComparePhase3NNative(s_NestedSource, reference);
+	assert.equal(typeof report.appliedStrategies, "number");
+	assert.equal(typeof report.mixedAppliedStrategies, "number");
+	assert.match(FormatPhase3NNative(report), /Phase 3M nested=\d+ Phase 3N mixed=\d+/);
+});
