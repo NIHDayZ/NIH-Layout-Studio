@@ -15,7 +15,8 @@ const s_Manifest = "tests/fixtures/compatibility/baseline-evidence.json";
 const s_Axes = ["geometry", "render", "interaction", "roundtrip"];
 
 function ReadJson(path) {
-	return JSON.parse(readFileSync(path, "utf8"));
+	// Windows PowerShell 5.1 Set-Content -Encoding UTF8 writes a BOM.
+	return JSON.parse(readFileSync(path, "utf8").replace(/^\uFEFF/, ""));
 }
 
 function FindLayoutFiles(folder) {
@@ -165,7 +166,11 @@ export function BuildNativeCompatibilityBaseline(options = {}) {
 			Object.values(item.automatedTests).some(paths => paths.length > 0)).length,
 		classesWithPendingNativeComparisons: classes.filter(item => item.pendingEvidence.length > 0).length,
 		nativeCensusProvided: census !== null,
+		nativeCensusSource: census?.source ?? (census ? "gui.pbo-readable-payloads" : null),
 		nativeLayoutFiles: census?.layoutFiles ?? null,
+		nativeParsedLayoutFiles: census?.parsedLayoutFiles ?? null,
+		nativeParseFailures: census?.parseFailures ?? null,
+		nativeIdlessWidgetDeclarations: census?.idlessWidgetDeclarations ?? null,
 		skippedCompressedNativeLayouts: census?.skippedCompressedLayouts ?? null,
 		unknownLocalClasses: unexpectedLocal.length,
 		unknownNativeClasses: additionalNative.length,
@@ -182,8 +187,10 @@ export function BuildNativeCompatibilityBaseline(options = {}) {
 		crossCutting: manifest.crossCutting,
 		limitations: manifest.notes,
 		warning: census === null
-			? "No native gui.pbo class census supplied; occurrence-weighted prioritization unavailable"
-			: "Census counts indicate usage, not rendering or editing compatibility"
+			? "No native widget census supplied; occurrence-weighted prioritization unavailable"
+			: (census.parseFailures > 0
+				? "Native extraction has parse failures: do not treat the counts as complete"
+				: "Census counts indicate usage, not rendering or editing compatibility")
 	};
 }
 
@@ -204,6 +211,9 @@ export function FormatNativeCompatibilityMarkdown(report) {
 		"- Classes with capability-specific tests: " + s.classesWithAutomatedEvidence,
 		"- Classes with pending native comparisons: " + s.classesWithPendingNativeComparisons,
 		"- Native gui.pbo census provided: " + (s.nativeCensusProvided ? "yes" : "no"),
+		"- Native census input: " + (s.nativeCensusSource ?? "none"),
+		"- Native extracted layout parse failures: " + (s.nativeParseFailures ?? "not measured"),
+		"- Native ID-less widget declarations: " + (s.nativeIdlessWidgetDeclarations ?? "not measured"),
 		"- Overall parity percentage: NOT MEASURABLE",
 		"",
 		"## Widget-family matrix",
