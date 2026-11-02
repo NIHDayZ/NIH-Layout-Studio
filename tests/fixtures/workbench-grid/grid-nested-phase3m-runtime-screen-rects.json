@@ -1,0 +1,421 @@
+{
+  "phase": "3M",
+  "kind": "INDEPENDENT_DAYZ_CLIENT_NESTED_POST_UPDATE_SCREEN_RECTS",
+  "root": [
+    1920,
+    1080
+  ],
+  "otherRoot": [
+    1440,
+    810
+  ],
+  "basis": "User-provided [NestedGridProbe] post-update native script log, November 2 2026. Values are GetScreenPos/GetScreenSize native runtime coordinates. Post-settle equals post-update in both captures.",
+  "format": "[x,y,width,height] native screen pixels",
+  "cases": [
+    {
+      "name": "HeightOuter",
+      "rects": {
+        "Outer": [
+          52,
+          102,
+          399,
+          110
+        ],
+        "Inner": [
+          57,
+          107,
+          190.5,
+          100
+        ],
+        "Blue": [
+          64,
+          114,
+          70,
+          28
+        ],
+        "Orange": [
+          144,
+          114,
+          32.625,
+          28
+        ],
+        "Green": [
+          64,
+          152,
+          46,
+          48
+        ],
+        "InnerMarker": [
+          144,
+          152,
+          24,
+          24
+        ],
+        "OuterMarker": [
+          255.5,
+          107,
+          190.5,
+          32
+        ]
+      }
+    },
+    {
+      "name": "WidthOuter",
+      "rects": {
+        "Outer": [
+          677,
+          102,
+          192.982,
+          334.8
+        ],
+        "Inner": [
+          682,
+          107,
+          142.982,
+          158.4
+        ],
+        "Blue": [
+          689,
+          114,
+          70,
+          28
+        ],
+        "Orange": [
+          769,
+          114,
+          48.9825,
+          28
+        ],
+        "Green": [
+          689,
+          152,
+          46,
+          48
+        ],
+        "InnerMarker": [
+          769,
+          152,
+          24,
+          24
+        ],
+        "OuterMarker": [
+          832.982,
+          107,
+          32,
+          158.4
+        ]
+      }
+    },
+    {
+      "name": "BothOuter",
+      "rects": {
+        "Outer": [
+          1302,
+          102,
+          192.982,
+          110
+        ],
+        "Inner": [
+          1307,
+          107,
+          142.982,
+          100
+        ],
+        "Blue": [
+          1314,
+          114,
+          70,
+          28
+        ],
+        "Orange": [
+          1394,
+          114,
+          48.9825,
+          28
+        ],
+        "Green": [
+          1314,
+          152,
+          46,
+          48
+        ],
+        "InnerMarker": [
+          1394,
+          152,
+          24,
+          24
+        ],
+        "OuterMarker": [
+          1457.98,
+          107,
+          32,
+          32
+        ]
+      }
+    },
+    {
+      "name": "HeightOuterWidthLeaf",
+      "rects": {
+        "Outer": [
+          52,
+          627,
+          399,
+          103.976
+        ],
+        "Inner": [
+          57,
+          632,
+          190.5,
+          93.976
+        ],
+        "Leaf": [
+          64,
+          639,
+          94,
+          79.976
+        ],
+        "Blue": [
+          71,
+          646,
+          70,
+          27.988
+        ],
+        "Orange": [
+          151,
+          646,
+          0,
+          27.988
+        ],
+        "Green": [
+          71,
+          683.988,
+          46,
+          27.988
+        ],
+        "InnerMarker": [
+          168,
+          639,
+          24,
+          24
+        ],
+        "OuterMarker": [
+          255.5,
+          632,
+          190.5,
+          32
+        ]
+      }
+    },
+    {
+      "name": "WidthOuterWidthLeaf",
+      "rects": {
+        "Outer": [
+          677,
+          627,
+          193.965,
+          334.8
+        ],
+        "Inner": [
+          682,
+          632,
+          143.965,
+          158.4
+        ],
+        "Leaf": [
+          689,
+          639,
+          95.9654,
+          78.26
+        ],
+        "Blue": [
+          696,
+          646,
+          70,
+          27.13
+        ],
+        "Orange": [
+          776,
+          646,
+          1.96538,
+          27.13
+        ],
+        "Green": [
+          696,
+          683.13,
+          46,
+          27.13
+        ],
+        "InnerMarker": [
+          794.965,
+          639,
+          24,
+          24
+        ],
+        "OuterMarker": [
+          833.965,
+          632,
+          32,
+          158.4
+        ]
+      }
+    },
+    {
+      "name": "BothOuterWidthLeaf",
+      "rects": {
+        "Outer": [
+          1302,
+          627,
+          193.965,
+          103.976
+        ],
+        "Inner": [
+          1307,
+          632,
+          143.965,
+          93.976
+        ],
+        "Leaf": [
+          1314,
+          639,
+          95.9654,
+          79.976
+        ],
+        "Blue": [
+          1321,
+          646,
+          70,
+          27.988
+        ],
+        "Orange": [
+          1401,
+          646,
+          1.96538,
+          27.988
+        ],
+        "Green": [
+          1321,
+          683.988,
+          46,
+          27.988
+        ],
+        "InnerMarker": [
+          1419.97,
+          639,
+          24,
+          24
+        ],
+        "OuterMarker": [
+          1458.97,
+          632,
+          32,
+          32
+        ]
+      }
+    }
+  ],
+  "nativeCrossResolution": [
+    {
+      "name": "OuterHeightOuter",
+      "screen1440": [
+        39,
+        76.5,
+        299.25,
+        82.5
+      ]
+    },
+    {
+      "name": "InnerHeightOuter",
+      "screen1440": [
+        42.75,
+        80.25,
+        142.875,
+        75
+      ]
+    },
+    {
+      "name": "HeightOuterOrange",
+      "screen1440": [
+        108,
+        85.5,
+        24.4688,
+        21
+      ]
+    },
+    {
+      "name": "OuterWidthOuter",
+      "screen1440": [
+        507.75,
+        76.5,
+        144.737,
+        251.1
+      ]
+    },
+    {
+      "name": "InnerWidthOuter",
+      "screen1440": [
+        511.5,
+        80.25,
+        107.237,
+        118.8
+      ]
+    },
+    {
+      "name": "WidthOuterOrange",
+      "screen1440": [
+        576.75,
+        85.5,
+        36.7369,
+        21
+      ]
+    },
+    {
+      "name": "LeafHeightOuterWidthLeaf",
+      "screen1440": [
+        48,
+        479.25,
+        70.5,
+        59.982
+      ]
+    },
+    {
+      "name": "HeightOuterWidthLeafOrange",
+      "screen1440": [
+        113.25,
+        484.5,
+        0,
+        20.991
+      ]
+    },
+    {
+      "name": "LeafWidthOuterWidthLeaf",
+      "screen1440": [
+        516.75,
+        479.25,
+        71.974,
+        58.695
+      ]
+    },
+    {
+      "name": "WidthOuterWidthLeafOrange",
+      "screen1440": [
+        582,
+        484.5,
+        1.47403,
+        20.3475
+      ]
+    },
+    {
+      "name": "LeafBothOuterWidthLeaf",
+      "screen1440": [
+        985.5,
+        479.25,
+        71.974,
+        59.982
+      ]
+    }
+  ],
+  "limits": [
+    "This is DayZ client runtime, not Workbench inspector; earlier Workbench screenshot is independent visual corroboration.",
+    "The native model is validated only for covered nested shapes. The feature remains opt-in."
+  ]
+}
