@@ -8,7 +8,7 @@ import { EstimateNativeScrollExtent, type AuthoredScrollViewport, type NativeScr
 import type { IntrinsicEvidence, IntrinsicFamily } from "./IntrinsicMeasurements.js";
 import type { ConstrainedTextResult } from "./ConstrainedText.js";
 import { ProbeGridNativeMeasurement, type GridNativeMeasurementPrototype } from "./GridNativeMeasurement.js";
-import { ProbeMeasuredRelativeGrid, type MeasuredRelativeGrid } from "./GridRelativeBridge.js";
+import { ProbeMeasuredRelativeGrid, ProbeAllocatedParentRelativeGrid, type MeasuredRelativeGrid } from "./GridRelativeBridge.js";
 import { ResolveBoundedParentHeight, type ParentContentAttempt } from "./ParentContent.js";
 import { InspectAuthoredVisibility, type AuthoredVisibilityDiagnostic } from "./GeometryVisibility.js";
 import { MeasureArrangedDirectChildBounds, type ArrangedDirectChildBounds } from "./ContentBounds.js";
@@ -173,7 +173,11 @@ export function ArrangeMeasuredGeometry(
 			const authoredRect = strategyRect ?? ResolveAuthoredRect(authored, parentSize);
 			const measuredRelativeGrid = options.constrainedGrid && options.gridRelativeContentPrototype
 				&& strategy.kind === "grid" && (prepared.unresolvedContentWidth || prepared.unresolvedContentHeight)
-				? ProbeMeasuredRelativeGrid(prepared, relativeGridCache) : null;
+				? (ProbeMeasuredRelativeGrid(prepared, relativeGridCache)
+					?? (options.gridAllocatedParentRelativePrototype && !strategyRect
+						? ProbeAllocatedParentRelativeGrid(prepared, parentSize.width, parentSize.height)
+						: null))
+				: null;
 			const measuredGridContent = !strategyRect && !options.gridRelativeContentPrototype
 				&& options.constrainedGrid && options.gridContentArrangement
 				? ProbeGridNativeMeasurement(prepared) : null;
