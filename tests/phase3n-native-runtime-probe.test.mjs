@@ -25,6 +25,8 @@ test("Phase 3N captures after-create, post-update and post-settle separately", (
 		assert.ok(s_Runtime.includes(marker), "missing " + marker);
 	assert.ok(s_Runtime.includes("g_Game.IsDedicatedServer()"));
 	assert.ok(s_Runtime.includes("override void OnInit()"));
+	for (const marker of ["HOOK OnInit invoked", "HOOK scheduling GUI callback", "CALLBACK invoked", "START invoked"])
+		assert.ok(s_Runtime.includes(marker), "missing bootstrap log: " + marker);
 	assert.ok(s_Runtime.includes("missingLine += phase;"));
 	assert.ok(s_Runtime.includes("Print(missingLine);"));
 });
