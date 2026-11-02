@@ -24,6 +24,8 @@ export interface ArrangementOptions {
 	gridAllocatedParentRelativePrototype?: boolean;
 	/** Phase 3K separate research opt-in; only one Size To Content axis and parent-relative source. */
 	gridAllocatedParentSingleAxisPrototype?: boolean;
+	/** Phase 3M separate native nested provisional-cell sizing experiment. */
+	gridNestedAllocationPrototype?: boolean;
 	/** Native-derived fixed-child WrapSpacer only; no content-sized axes. */
 	fixedWrap?: boolean;
 	/** Opt-in Workbench-observed right-to-left and vertical-center fixed Wrap preview. */
@@ -68,7 +70,7 @@ export interface AppliedLayoutStrategy {
 	id: string;
 	kind: "grid" | "wrap";
 	evidence: "native-disassembly";
-	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "grid-allocated-parent-relative-prototype" | "grid-allocated-parent-single-axis-prototype" | "fixed-wrap-prototype";
+	mode: "constrained-grid-prototype" | "grid-content-prototype" | "grid-relative-content-prototype" | "grid-allocated-parent-relative-prototype" | "grid-allocated-parent-single-axis-prototype" | "grid-nested-allocation-prototype" | "fixed-wrap-prototype";
 }
 
 export interface ChildArrangement {
@@ -181,7 +183,8 @@ function ArrangeRelativeGridContent(
 			id: parent.node.id,
 			kind: "grid",
 			evidence: "native-disassembly",
-			mode: measured.allocatedParentSingleAxis
+			mode: measured.nestedAllocatedGrid ? "grid-nested-allocation-prototype"
+				: measured.allocatedParentSingleAxis
 				? "grid-allocated-parent-single-axis-prototype"
 				: (measured.allocatedParentRelative
 					? "grid-allocated-parent-relative-prototype"
